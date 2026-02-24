@@ -744,6 +744,7 @@ body {
   color: var(--text-mid);
   border-radius: 999px;
   padding: 5px 12px;
+  font-family: 'Mona Sans', sans-serif;
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;

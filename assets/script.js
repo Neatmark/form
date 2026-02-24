@@ -672,7 +672,7 @@ document.addEventListener('DOMContentLoaded', () => {
       clearConfirmModal.style.display = 'flex';
     });
 
-    clearConfirmBtn.addEventListener('click', () => {
+    clearConfirmBtn.addEventListener('click', async () => {
       form.reset();
       clearDraft();
       clearConfirmModal.setAttribute('aria-hidden', 'true');
