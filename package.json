@@ -1,0 +1,15 @@
+{
+  "name": "neatmark-form-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Netlify function backend for form export and email delivery",
+  "scripts": {
+    "start": "netlify dev"
+  },
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0",
+    "@supabase/supabase-js": "^2.49.1",
+    "docx": "^9.5.1",
+    "pdf-lib": "^1.17.1"
+  }
+}

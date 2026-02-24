@@ -1,0 +1,334 @@
+{
+  "common": {
+    "appTitle": "Formulaire d'admission client Neatmark",
+    "light": "Clair",
+    "dark": "Sombre",
+    "noResponse": "Pas de réponse"
+  },
+  "header": {
+    "themeToggle": "Basculer le thème"
+  },
+  "form": {
+    "title": "FORMULAIRE D'ADMISSION",
+    "hero": {
+      "badge": "Identité de marque",
+      "description": "Aidez-nous à comprendre votre entreprise et votre vision créative. Il n'y a pas de mauvaises réponses, plus vous serez honnête, plus votre marque sera forte."
+    },
+    "draftBanner": "📝 Vous avez un brouillon enregistré, vos réponses précédentes ont été restaurées.",
+    "clearDraftBtn": "Effacer le brouillon",
+    "cta": {
+      "submit": "Soumettre le formulaire",
+      "clear": "Effacer",
+      "note": "Vos réponses sont automatiquement enregistrées dans votre navigateur pour que vous puissiez revenir et modifier à tout moment. Nous examinherons votre soumission et vous recontacterons dans les 2 jours ouvrables."
+    },
+    "metadata": {
+      "clientName": "Votre nom",
+      "clientNamePlaceholder": "Nom complet",
+      "brandName": "Marque / Entreprise",
+      "brandNamePlaceholder": "Nom de votre marque",
+      "email": "Email",
+      "emailPlaceholder": "votre@email.com",
+      "deliveryDate": "Date de livraison",
+      "deliveryDateOptions": {
+        "select": "Sélectionnez un délai",
+        "asap": "ASAP (dès que possible)",
+        "weeks2to4": "2–4 semaines",
+        "months1to2": "1–2 mois",
+        "months3plus": "3+ mois"
+      }
+    },
+    "sections": {
+      "badge1": "Section 01",
+      "badge2": "Section 02",
+      "foundation": "Fondation de la marque",
+      "visual": "Direction visuelle"
+    },
+    "questions": {
+      "q1": {
+        "label": "Décrivez votre entreprise en 2-3 phrases, comme si vous l'expliquiez à un inconnu au dîner.",
+        "hint": "Évitez le jargon. Concentrez-vous sur ce que vous faites, qui vous servez et pourquoi c'est important.",
+        "placeholder": "Nous aidons les thérapeutes indépendants à construire une pratique qui leur ressemble..."
+      },
+      "q2": {
+        "label": "Quel problème résolvez-vous et à quoi ressemble la vie de votre client après avoir travaillé avec vous?",
+        "hint": "Pensez à la transformation : avant et après.",
+        "placeholder": "Avant : ils luttent avec... Après : ils se sentent..."
+      },
+      "q3": {
+        "label": "Peignez un portrait vivant de votre client idéal.",
+        "hint": "Âge, style de vie, valeurs, aspirations, ce qu'ils lisent, comment ils passent leurs week-ends.",
+        "placeholder": "Elle a environ 40 ans, dirige une petite entreprise créative, valorise l'authenticité plus que les tendances..."
+      },
+      "q4": {
+        "label": "Énumérez 2-4 concurrents ou marques similaires. Qu'est-ce qu'ils font bien et où est l'écart que vous combler?",
+        "hint": "Ces n'ont pas besoin d'être des concurrents directs, n'importe quelle marque que votre audience pourrait considérer.",
+        "placeholder": "La marque A est forte en X, mais semble trop froide. Nous nous différencions par..."
+      },
+      "q5": {
+        "label": "Si votre marque était une personne, comment entrerait-elle dans une pièce?",
+        "hint": "Présence, ton de voix, comment elle s'habille, comment elle fait sentir les gens. Tout est personnalité, pas de produit.",
+        "placeholder": "Confiant mais jamais arrogant. Ils parlent lentement et délibérément..."
+      },
+      "q6": {
+        "label": "Où se situe votre marque sur ces spectres de personnalité?",
+        "hint": "1 = extrême gauche, 5 = extrême droite. Fiez-vous à votre instinct.",
+        "playfulSerious": {
+          "left": "Ludique",
+          "right": "Sérieux"
+        },
+        "minimalistExpressive": {
+          "left": "Minimaliste",
+          "right": "Expressif"
+        },
+        "approachableAuthoritative": {
+          "left": "Accessible",
+          "right": "Autoritaire"
+        },
+        "classicContemporary": {
+          "left": "Classique",
+          "right": "Contemporain"
+        }
+      },
+      "q7": {
+        "label": "Quelles sont vos valeurs fondamentales? (Les 3-5 qui définissent votre fonctionnement.)",
+        "hint": "Les croyances qui guident les décisions même quand c'est coûteux.",
+        "placeholder": "Authenticité, Transparence, Innovation, Impact..."
+      },
+      "q8": {
+        "label": "Décrivez votre positionnement en une phrase. (Complétez : \"Nous sommes [la catégorie] qui [le différenciateur]...\")",
+        "hint": "Ceci est votre différence clé - ce qui vous rend mémorable.",
+        "placeholder": "Nous sommes l'agence de branding personnel qui aide les thérapeutes à devenir des leaders d'opinion..."
+      },
+      "q9": {
+        "label": "Imaginez que c'est dans 3 ans. Qu'a réalisé votre marque? Comment en parlent les gens?",
+        "hint": "La vision à long terme inspire à la fois votre travail et votre public.",
+        "placeholder": "Les thérapeutes de notre réseau sont connus comme des leaders..."
+      },
+      "q10": {
+        "hint": "Recherchez les marques qui partagent une sensibilité similaire, pas seulement votre secteur.",
+        "label": "Énumérez 3-5 marques que vous admirez vraiment - leur approche, leurs visuels, leur communauté ou leur énergie.",
+        "placeholder": "Mailchimp, Slack, Patagonia, Nike..."
+      },
+      "q11": {
+        "label": "Énumérez 2-3 marques dont l'approche vous déplaît activement ou que vous voulez éviter.",
+        "hint": "Parfois, savoir ce que vous ne voulez pas définit aussi clairement qui vous êtes.",
+        "placeholder": "Trop corporatif, dépassé, froid, inauthentique..."
+      },
+      "q12": {
+        "label": "Quelles couleurs, palettes ou histoires de couleurs résonnent avec votre marque?",
+        "hint": "La couleur est émotion. Elle transmet avant les mots.",
+        "placeholder": "Tons de terre chauds, bleus océan, neutres modernes avec des touches d'accent...",
+        "options": {
+          "warmNeutrals": "Neutres chauds (crème, sable, terre cuite)",
+          "coolNeutrals": "Neutres froids (ardoise, pierre, brume)",
+          "deepMoody": "Profond & intense (marine, forêt, bordeaux)",
+          "boldSaturated": "Vif & saturé (primaires vibrantes)",
+          "pastels": "Pastels & tons doux",
+          "monochrome": "Noir & blanc / monochrome",
+          "metallic": "Métallique / tons luxe (or, bronze)",
+          "natureInspired": "Inspiré de la nature (mousse, rouille, argile)"
+        }
+      },
+      "q13": {
+        "label": "Y a-t-il des couleurs que vous voulez éviter?",
+        "hint": "En raison de préférences personnelles, d'associations industrielles ou d'utilisation concurrente.",
+        "placeholder": "Éviter : néon brillant, bleu corporatif, pastel excessif..."
+      },
+      "q14": {
+        "label": "Quels styles de typographie résonnent avec votre marque? (Serif, sans-serif, géométrique, organique, ludique, sérieux?)",
+        "hint": "Les polices sont une voix - précisez le caractère que vous projetez.",
+        "placeholder": "Sans-serif moderne épuré avec une police d'accent manuscrite...",
+        "options": {
+          "elegantSerif": "Serif élégant (éditorial, raffiné)",
+          "geometricSans": "Sans géométrique (propre, moderne)",
+          "handwrittenScript": "Manuscrit / script (personnel, artisanal)",
+          "humanistSans": "Sans humaniste (chaleureux, accessible)",
+          "condensedDisplay": "Condensé / display (audacieux, affirmé)",
+          "monospace": "Monospace (technique, précis)"
+        }
+      },
+      "q15": {
+        "label": "Peignez une direction esthétique visuelle pour votre marque.",
+        "hint": "Pensez texture, attitude, énergie - au-delà des mots-clés. Ayez un ressenti, pas une liste.",
+        "placeholder": "Minimal, naturel, chaud, accueillant. Pensez au design scandinave rencontrant un café douillet...",
+        "options": {
+          "luxuryRefined": "Luxe & raffiné",
+          "organicArtisan": "Organique & artisanal",
+          "minimalFunctional": "Minimal & fonctionnel",
+          "boldGraphic": "Audacieux & graphique",
+          "playfulIllustrative": "Ludique & illustratif",
+          "editorialIntellectual": "Éditorial & intellectuel",
+          "techForward": "Tourné vers la tech & innovant",
+          "nostalgicHeritage": "Nostalgique & patrimonial"
+        }
+      },
+      "q15Description": {
+        "label": "Des notes esthétiques supplémentaires?",
+        "placeholder": "Éviter : photographie de stock, mises en page encombrées, sensation corporatif froide..."
+      },
+      "q16": {
+        "label": "Si votre marque était un espace physique, à quoi ressemblerait-il et comment se sentirait-il?",
+        "hint": "Matériaux, éclairage, atmosphère. Cela révèle la texture de votre marque au-delà d'un écran.",
+        "placeholder": "Éclairage chaud, mobilier en bois, plantes, musique jazz discrète, étagères bien organisées..."
+      },
+      "q17": {
+        "label": "Avez-vous des ressources de marque existantes (logo, couleurs, polices, motifs) que vous souhaitez conserver ou développer?",
+        "hint": "Si vous commencez à partir de zéro, écrivez \"aucun.\". Si vous conservez des éléments, expliquez quoi et pourquoi.",
+        "placeholder": "Nous avons un logo actuel mais voulons le moderniser..."
+      },
+      "q18": {
+        "label": "De quels livrables avez-vous besoin? (Logo, directives de marque, modèles de médias sociaux, mises à jour de site Web, etc.)",
+        "hint": "Sélectionnez tout ce qui s'applique, nous confirmerons la portée lors de notre appel de lancement.",
+        "placeholder": "Logo, directives de marque, modèles de médias sociaux, signature email...",
+        "options": {
+          "primaryLogo": "Logo principal",
+          "logoVariations": "Variantes de logo & sous-marques",
+          "colorTypography": "Palette de couleurs & système typographique",
+          "brandGuidelines": "Document de directives de marque",
+          "stationery": "Cartes de visite & papeterie",
+          "socialMedia": "Modèles réseaux sociaux",
+          "websiteDesign": "Design de site web",
+          "packaging": "Design packaging"
+        }
+      },
+      "q19": {
+        "label": "Quelle est la seule chose que vous voulez que les gens ressentent quand ils rencontrent votre marque pour la première fois?",
+        "hint": "UNE émotion. Ne partagez pas tout - c'est votre super pouvoir émotionnel.",
+        "placeholder": "Fiable. Inspiré. Soulagé. Excité..."
+      },
+      "q20": {
+        "label": "Y a-t-il quelque chose d'autre que nous devrions savoir avant de commencer?",
+        "hint": "Parlez librement - des inquiétudes, des histoires, des exigences, toute chose importante.",
+        "placeholder": "La dernière agence nous a donné quelque chose de trop générique. Nous voulons vraiment que cela nous ressemble..."
+      }
+    }
+  },
+  "modal": {
+    "duplicate": {
+      "title": "Soumission en double",
+      "message": "Vous avez déjà envoyé une soumission pour cette marque. Voulez-vous remplacer la soumission précédente ou envoyer une toute nouvelle?",
+      "override": "Remplacer",
+      "sendNew": "Envoyer comme nouveau",
+      "cancel": "✕ Annuler"
+    },
+    "clearConfirm": {
+      "title": "Effacer le formulaire",
+      "message": "Êtes-vous sûr de vouloir effacer tous les champs? Cela ne peut pas être annulé.",
+      "confirm": "Effacer tout",
+      "cancel": "✕ Annuler"
+    },
+    "deleteConfirm": {
+      "title": "Supprimer la soumission",
+      "message": "Êtes-vous sûr? Cela ne peut pas être annulé.",
+      "confirm": "Supprimer",
+      "cancel": "Annuler"
+    }
+  },
+  "messages": {
+    "submitSuccess": "Merci! Votre formulaire a été soumis et les fichiers ont été envoyés par email avec succès.",
+    "submitSuccessLocal": "Merci! Votre formulaire a été soumis et enregistré localement pour les tests du tableau de bord.",
+    "submitError": "La soumission a échoué: {{error}}",
+    "clearSuccess": "Formulaire effacé. Votre brouillon a été supprimé de votre navigateur.",
+    "deleteSuccess": "Soumission supprimée avec succès."
+  },
+  "dashboard": {
+    "title": "Tableau de bord des formulaires",
+    "header": {
+      "title": "Soumissions des clients",
+      "subtitle": "Gérer et examiner toutes les soumissions d'admission"
+    },
+    "toolbar": {
+      "search": "Rechercher par marque, client ou email...",
+      "filter": "Filtrer",
+      "export": "Exporter",
+      "refresh": "Actualiser",
+      "dateOptions": {
+        "all": "Toutes les dates",
+        "today": "Aujourd'hui",
+        "last7": "7 derniers jours",
+        "last30": "30 derniers jours",
+        "thisMonth": "Ce mois-ci",
+        "lastMonth": "Mois dernier"
+      }
+    },
+    "table": {
+      "columns": {
+        "date": "Date",
+        "time": "Heure",
+        "clientName": "Nom du client",
+        "brandName": "Nom de la marque",
+        "email": "Email",
+        "status": "Statut",
+        "actions": "Actions"
+      },
+      "status": {
+        "original": "Original",
+        "edited": "Édité",
+        "latest": "Dernier"
+      }
+    },
+    "stats": {
+      "totalSubmissions": "Total des soumissions",
+      "thisMonth": "Ce mois-ci",
+      "thisWeek": "Cette semaine",
+      "today": "Aujourd'hui"
+    },
+    "empty": {
+      "title": "Aucune soumission pour le moment",
+      "message": "Les soumissions apparaîtront ici une fois qu'elles seront soumises."
+    },
+    "empty_search": {
+      "title": "Aucun résultat trouvé",
+      "message": "Essayez d'ajuster vos termes de recherche."
+    },
+    "actions": {
+      "view": "Afficher",
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "download": "Télécharger"
+    }
+  },
+  "detailPanel": {
+    "title": "Détails de la soumission",
+    "editingBanner": "Modification de la soumission",
+    "savingChanges": "Enregistrement des modifications...",
+    "unsavedWarning": "Vous avez des modifications non enregistrées.",
+    "buttons": {
+      "save": "Enregistrer les modifications",
+      "cancel": "Annuler",
+      "close": "Fermer",
+      "edit": "Modifier",
+      "download": "Télécharger"
+    },
+    "sections": {
+      "metadata": "Métadonnées",
+      "responses": "Réponses",
+      "history": "Historique des modifications"
+    }
+  },
+  "history": {
+    "title": "Historique des modifications",
+    "originalSubmission": "Soumission originale",
+    "edited": "Édité",
+    "latest": "Dernier",
+    "byAdmin": "Par l'administrateur",
+    "byClient": "Par le client",
+    "noEdits": "Aucune modification pour le moment"
+  },
+  "logoUpload": {
+    "title": "Téléchargement de logo",
+    "dragDrop": "Glissez-déposez votre logo ici ou cliquez pour parcourir",
+    "accepted": "Formats acceptés: PNG, JPG, SVG",
+    "maxSize": "Taille maximale du fichier: 5MB",
+    "errorSize": "La taille du fichier dépasse 5MB. Veuillez choisir un fichier plus petit.",
+    "errorFormat": "Format de fichier invalide. Veuillez télécharger PNG, JPG ou SVG.",
+    "remove": "Supprimer",
+    "replace": "Remplacer"
+  },
+  "language": {
+    "label": "Langue",
+    "en": "English",
+    "fr": "Français",
+    "ar": "العربية"
+  }
+}

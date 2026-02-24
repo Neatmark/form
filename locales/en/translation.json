@@ -1,0 +1,334 @@
+{
+  "common": {
+    "appTitle": "Neatmark Client Intake",
+    "light": "Light",
+    "dark": "Dark",
+    "noResponse": "No response"
+  },
+  "header": {
+    "themeToggle": "Toggle theme"
+  },
+  "form": {
+    "title": "CLIENT INTAKE",
+    "hero": {
+      "badge": "Brand Identity",
+      "description": "Help us understand your business and creative vision. No wrong answers, the more honest you are, the stronger your brand will be."
+    },
+    "draftBanner": "📝 You have a saved draft, your previous answers have been restored.",
+    "clearDraftBtn": "Clear Draft",
+    "cta": {
+      "submit": "Submit Form",
+      "clear": "Clear",
+      "note": "Your answers are auto-saved in your browser so you can return and edit anytime. We'll review your submission and reach out within 2 business days."
+    },
+    "metadata": {
+      "clientName": "Your Name",
+      "clientNamePlaceholder": "Full name",
+      "brandName": "Brand / Business",
+      "brandNamePlaceholder": "Your brand name",
+      "email": "Email",
+      "emailPlaceholder": "your@email.com",
+      "deliveryDate": "Delivery Date",
+      "deliveryDateOptions": {
+        "select": "Select a timeframe",
+        "asap": "ASAP (As Soon As Possible)",
+        "weeks2to4": "2–4 weeks",
+        "months1to2": "1–2 months",
+        "months3plus": "3+ months"
+      }
+    },
+    "sections": {
+      "badge1": "Section 01",
+      "badge2": "Section 02",
+      "foundation": "Brand Foundation",
+      "visual": "Visual Direction"
+    },
+    "questions": {
+      "q1": {
+        "label": "Describe your business in 2-3 sentences, as if explaining it to a stranger at dinner.",
+        "hint": "Avoid jargon. Focus on what you do, who you serve, and why it matters.",
+        "placeholder": "We help independent therapists build a practice that feels like them..."
+      },
+      "q2": {
+        "label": "What problem do you solve, and what does life look like for your customer after working with you?",
+        "hint": "Think transformation: the before and after.",
+        "placeholder": "Before: they struggle with... After: they feel..."
+      },
+      "q3": {
+        "label": "Paint a vivid picture of your ideal customer.",
+        "hint": "Age, lifestyle, values, aspirations, what they read, how they spend their weekends.",
+        "placeholder": "She's in her early 40s, runs a small creative business, values authenticity over trends..."
+      },
+      "q4": {
+        "label": "List 2-4 competitors or similar brands. What do they do well, and where's the gap you fill?",
+        "hint": "These don't need to be direct competitors, any brand your audience might also consider.",
+        "placeholder": "Brand A is strong at X, but feels too cold. We differentiate by..."
+      },
+      "q5": {
+        "label": "If your brand were a person, how would they walk into a room?",
+        "hint": "Presence, tone of voice, how they dress, how they make people feel. All personality, no product.",
+        "placeholder": "Confident but never arrogant. They speak slowly and deliberately..."
+      },
+      "q6": {
+        "label": "Where does your brand sit on these personality spectrums?",
+        "hint": "1 = far left, 5 = far right. Go with your gut.",
+        "playfulSerious": {
+          "left": "Playful",
+          "right": "Serious"
+        },
+        "minimalistExpressive": {
+          "left": "Minimalist",
+          "right": "Expressive"
+        },
+        "approachableAuthoritative": {
+          "left": "Approachable",
+          "right": "Authoritative"
+        },
+        "classicContemporary": {
+          "left": "Classic",
+          "right": "Contemporary"
+        }
+      },
+      "q7": {
+        "label": "What are your core values? (The 3-5 that define how you operate.)",
+        "hint": "The beliefs that drive decisions even when it's costly.",
+        "placeholder": "Authenticity, Transparency, Innovation, Impact..."
+      },
+      "q8": {
+        "label": "Describe your positioning in one sentence. (Complete: \"We are the [category] that [differentiator]...\")",
+        "hint": "Your positioning in one line. Rough is fine, just try.",
+        "placeholder": "We are the personal branding agency that helps therapists become thought leaders in their niche..."
+      },
+      "q9": {
+        "label": "Imagine it's 3 years from now. What has your brand achieved? How are people talking about you?",
+        "hint": "Long-term vision inspires both your work and your audience.",
+        "placeholder": "Therapists in our network are known as leaders..."
+      },
+      "q10": {
+        "label": "List 3-5 brands you genuinely admire, including their approach, visuals, community, or energy.",
+        "hint": "Logos, websites, packaging, editorial layouts, even spaces. Links or names both work.",
+        "placeholder": "Mailchimp, Slack, Patagonia, Nike..."
+      },
+      "q11": {
+        "label": "List 2-3 brands whose approach you actively dislike or want to avoid.",
+        "hint": "Knowing what to avoid is just as valuable as knowing what to pursue.",
+        "placeholder": "Overly corporate, outdated, cold, inauthentic..."
+      },
+      "q12": {
+        "label": "What colors, palettes, or color stories resonate with your brand?",
+        "hint": "Don't overthink, gut instinct only.",
+        "placeholder": "Warm earth tones, ocean blues, modern neutrals with pops of accent...",
+        "options": {
+          "warmNeutrals": "Warm neutrals (cream, sand, terracotta)",
+          "coolNeutrals": "Cool neutrals (slate, stone, mist)",
+          "deepMoody": "Deep & moody (navy, forest, burgundy)",
+          "boldSaturated": "Bold & saturated (vibrant primaries)",
+          "pastels": "Pastels & soft tones",
+          "monochrome": "Black & white / monochrome",
+          "metallic": "Metallic / luxury tones (gold, bronze)",
+          "natureInspired": "Nature-inspired (moss, rust, clay)"
+        }
+      },
+      "q13": {
+        "label": "Are there colors you want to avoid?",
+        "hint": "Due to personal preference, industry association, or competitor use.",
+        "placeholder": "Avoid: bright neon, corporate blue, overly pastel..."
+      },
+      "q14": {
+        "label": "What typography styles resonate with your brand? (Serif, sans-serif, geometric, organic, playful, serious?)",
+        "hint": "Fonts reflect your voice. Choose the character you want to project.",
+        "placeholder": "Clean modern sans-serif with a handwritten accent font...",
+        "options": {
+          "elegantSerif": "Elegant serif (editorial, refined)",
+          "geometricSans": "Geometric sans (clean, modern)",
+          "handwrittenScript": "Handwritten / script (personal, craft)",
+          "humanistSans": "Humanist sans (friendly, accessible)",
+          "condensedDisplay": "Condensed / display (bold, confident)",
+          "monospace": "Monospace (technical, precise)"
+        }
+      },
+      "q15": {
+        "hint": "Think about texture, attitude, and energy. Focus on the overall feel, not just keywords.",
+        "label": "Paint a visual aesthetic direction for your brand.",
+        "placeholder": "Minimal, natural, warm, inviting. Think Scandinavian design meets cozy coffee shop...",
+        "options": {
+          "luxuryRefined": "Luxury & refined",
+          "organicArtisan": "Organic & artisan",
+          "minimalFunctional": "Minimal & functional",
+          "boldGraphic": "Bold & graphic",
+          "playfulIllustrative": "Playful & illustrative",
+          "editorialIntellectual": "Editorial & intellectual",
+          "techForward": "Tech-forward & innovative",
+          "nostalgicHeritage": "Nostalgic & heritage"
+        }
+      },
+      "q15Description": {
+        "label": "Any additional aesthetic notes?",
+        "placeholder": "Avoid: stock photography, cluttered layouts, cold corporate feel..."
+      },
+      "q16": {
+        "label": "If your brand were a physical space, what would it look like and feel like?",
+        "hint": "Materials, lighting, atmosphere. This reveals your brand's texture beyond a screen.",
+        "placeholder": "Warm lighting, wooden furniture, plants, quiet jazz playing, well-organized shelves..."
+      },
+      "q17": {
+        "label": "Do you have any existing brand assets (logo, colors, fonts, patterns) you want to keep or evolve?",
+        "hint": "If starting fresh, write \"none.\" If keeping elements, explain what and why.",
+        "placeholder": "We have a current logo but want to modernize it..."
+      },
+      "q18": {
+        "label": "What deliverables do you need? (Logo, brand guidelines, social templates, website updates, etc.)",
+        "hint": "Select all that apply, we'll confirm scope during our kickoff call.",
+        "placeholder": "Logo, brand guidelines, social media templates, email signature...",
+        "options": {
+          "primaryLogo": "Primary logo",
+          "logoVariations": "Logo variations & submarks",
+          "colorTypography": "Color palette & typography system",
+          "brandGuidelines": "Brand guidelines document",
+          "stationery": "Business cards & stationery",
+          "socialMedia": "Social media templates",
+          "websiteDesign": "Website design",
+          "packaging": "Packaging design"
+        }
+      },
+      "q19": {
+        "label": "What's the one thing you most want people to feel when they first encounter your brand?",
+        "hint": "A single word or short phrase is perfect.",
+        "placeholder": "Trusted. Inspired. Relieved. Excited..."
+      },
+      "q20": {
+        "label": "Anything else we should know before we begin?",
+        "hint": "Fears, strong preferences, past branding experiences, or anything that feels important.",
+        "placeholder": "The last agency gave us something too generic. We really want this to feel like us..."
+      }
+    }
+  },
+  "modal": {
+    "duplicate": {
+      "title": "Duplicate Submission",
+      "message": "You've already sent a submission for this brand. Would you like to override the previous submission or send a completely new one?",
+      "override": "Override",
+      "sendNew": "Send as New",
+      "cancel": "✕ Cancel"
+    },
+    "clearConfirm": {
+      "title": "Clear Form",
+      "message": "Are you sure you want to clear all fields? This cannot be undone.",
+      "confirm": "Clear All",
+      "cancel": "✕ Cancel"
+    },
+    "deleteConfirm": {
+      "title": "Delete Submission",
+      "message": "Are you sure? This cannot be undone.",
+      "confirm": "Delete",
+      "cancel": "Cancel"
+    }
+  },
+  "messages": {
+    "submitSuccess": "Thanks! Your form was submitted and files were emailed successfully.",
+    "submitSuccessLocal": "Thanks! Your form was submitted and saved locally for dashboard testing.",
+    "submitError": "Submission failed: {{error}}",
+    "clearSuccess": "Form cleared. Your draft has been removed from the browser.",
+    "deleteSuccess": "Submission deleted successfully."
+  },
+  "dashboard": {
+    "title": "Form Dashboard",
+    "header": {
+      "title": "Client Submissions",
+      "subtitle": "Manage and review all intake submissions"
+    },
+    "toolbar": {
+      "search": "Search by brand, client, or email...",
+      "filter": "Filter",
+      "export": "Export",
+      "refresh": "Refresh",
+      "dateOptions": {
+        "all": "All dates",
+        "today": "Today",
+        "last7": "Last 7 days",
+        "last30": "Last 30 days",
+        "thisMonth": "This month",
+        "lastMonth": "Last month"
+      }
+    },
+    "table": {
+      "columns": {
+        "date": "Date",
+        "time": "Time",
+        "clientName": "Client Name",
+        "brandName": "Brand Name",
+        "email": "Email",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "status": {
+        "original": "Original",
+        "edited": "Edited",
+        "latest": "Latest"
+      }
+    },
+    "stats": {
+      "totalSubmissions": "Total Submissions",
+      "thisMonth": "This Month",
+      "thisWeek": "This Week",
+      "today": "Today"
+    },
+    "empty": {
+      "title": "No submissions yet",
+      "message": "Submissions will appear here once they are submitted."
+    },
+    "empty_search": {
+      "title": "No results found",
+      "message": "Try adjusting your search terms."
+    },
+    "actions": {
+      "view": "View",
+      "edit": "Edit",
+      "delete": "Delete",
+      "download": "Download"
+    }
+  },
+  "detailPanel": {
+    "title": "Submission Details",
+    "editingBanner": "Editing submission",
+    "savingChanges": "Saving changes...",
+    "unsavedWarning": "You have unsaved changes.",
+    "buttons": {
+      "save": "Save Changes",
+      "cancel": "Cancel",
+      "close": "Close",
+      "edit": "Edit",
+      "download": "Download"
+    },
+    "sections": {
+      "metadata": "Metadata",
+      "responses": "Responses",
+      "history": "Edit History"
+    }
+  },
+  "history": {
+    "title": "Edit History",
+    "originalSubmission": "Original Submission",
+    "edited": "Edited",
+    "latest": "Latest",
+    "byAdmin": "By Admin",
+    "byClient": "By Client",
+    "noEdits": "No edits yet"
+  },
+  "logoUpload": {
+    "title": "Logo Upload",
+    "dragDrop": "Drag and drop your logo here or click to browse",
+    "accepted": "Accepted formats: PNG, JPG, SVG",
+    "maxSize": "Max file size: 5MB",
+    "errorSize": "File size exceeds 5MB. Please choose a smaller file.",
+    "errorFormat": "Invalid file format. Please upload PNG, JPG, or SVG.",
+    "remove": "Remove",
+    "replace": "Replace"
+  },
+  "language": {
+    "label": "Language",
+    "en": "English",
+    "fr": "Français",
+    "ar": "العربية"
+  }
+}
