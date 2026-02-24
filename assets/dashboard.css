@@ -217,13 +217,19 @@ body {
 }
 
 .search-filter-row {
-  display: grid;
-  grid-template-columns: 1fr 220px;
+  display: flex;
+  align-items: stretch;
+  grid-template-columns: minmax(0, 1fr) auto;
   gap: 10px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 16px;
   padding: 10px;
+}
+
+.search-filter-row > .search-box-wrap {
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .toolbar-row {
@@ -252,13 +258,6 @@ body {
     min-width: 0;
   }
 
-  .btn-sort-date {
-    flex: 0 0 auto;
-    width: 96px;
-    min-width: 96px;
-    padding-left: 8px;
-    padding-right: 8px;
-  }
 }
 
 .selection-info {
@@ -316,6 +315,7 @@ body {
 .search-box,
 .date-filter {
   min-width: 0;
+  width: 100%;
   background: var(--input-bg);
   border: 1.5px solid var(--input-border);
   border-radius: 13px;
@@ -332,7 +332,21 @@ body {
 }
 
 .search-box-wrap .search-box {
+  padding: 12px 15px;
   padding-left: 40px;
+}
+
+.date-filter {
+  flex: 0 0 auto;
+  width: 220px;
+  padding-right: 40px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 16px;
 }
 
 .search-icon {
@@ -349,6 +363,59 @@ body {
 
 .search-box::placeholder {
   color: var(--text-lo);
+}
+
+/* Date filter dropdown */
+.date-filter-dropdown {
+  position: relative;
+}
+
+.date-filter-menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 6px;
+  min-width: 180px;
+  z-index: 100;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .25);
+  animation: dropIn .18s ease;
+}
+
+.date-filter-menu.open {
+  display: flex;
+  flex-direction: column;
+}
+
+.date-filter-option {
+  background: none;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-family: 'Mona Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-hi);
+  cursor: pointer;
+  text-align: left;
+  transition: background .15s;
+}
+
+.date-filter-option:hover {
+  background: var(--surface-2);
+}
+
+.date-filter-option.active {
+  background: var(--surface-2);
+  color: var(--accent);
+}
+
+/* Hide native date filter for custom implementation */
+.date-filter.native-hidden {
+  display: none;
 }
 
 .search-box:focus,
@@ -824,6 +891,7 @@ body {
 }
 
 .modal-header {
+  border-radius: 24px 24px 0px 0px;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -1117,6 +1185,7 @@ body {
 }
 
 .modal-actions {
+  border-radius: 0px 0px 24px 24px;
   display: flex;
   gap: 12px;
   margin-top: 16px;
@@ -1578,7 +1647,6 @@ body {
   }
 
   .modal-header {
-    border-radius: 24px 24px 0px 0px;
     align-items: flex-start;
     gap: 8px;
     padding: 16px 16px 14px;
@@ -1595,7 +1663,6 @@ body {
   }
 
   .modal-actions {
-    border-radius: 0px 0px 24px 24px;
     flex-direction: column;
     padding: 14px 16px 16px;
   }
