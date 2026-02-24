@@ -365,59 +365,6 @@ body {
   color: var(--text-lo);
 }
 
-/* Date filter dropdown */
-.date-filter-dropdown {
-  position: relative;
-}
-
-.date-filter-menu {
-  display: none;
-  position: absolute;
-  top: calc(100% + 6px);
-  right: 0;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 6px;
-  min-width: 180px;
-  z-index: 100;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, .25);
-  animation: dropIn .18s ease;
-}
-
-.date-filter-menu.open {
-  display: flex;
-  flex-direction: column;
-}
-
-.date-filter-option {
-  background: none;
-  border: none;
-  border-radius: 10px;
-  padding: 10px 14px;
-  font-family: 'Mona Sans', sans-serif;
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--text-hi);
-  cursor: pointer;
-  text-align: left;
-  transition: background .15s;
-}
-
-.date-filter-option:hover {
-  background: var(--surface-2);
-}
-
-.date-filter-option.active {
-  background: var(--surface-2);
-  color: var(--accent);
-}
-
-/* Hide native date filter for custom implementation */
-.date-filter.native-hidden {
-  display: none;
-}
-
 .search-box:focus,
 .date-filter:focus {
   border-color: var(--input-focus);
@@ -479,7 +426,6 @@ body {
 .submission-card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-left: 4px solid var(--text-lo);
   border-radius: 20px;
   padding: 24px;
   transition: border-color .2s, transform .2s;
