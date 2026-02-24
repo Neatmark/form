@@ -526,32 +526,49 @@ function renderQ6SpectrumGroup(q6Values, isEditMode = false) {
     }).join('');
   }
 
-  // View mode: render as grouped spectrum card
+  // View mode: render both desktop slider and mobile numbered buttons (CSS shows the right one)
   const spectrumRowsHtml = spectrumDefs.map(({ key, leftLabel, rightLabel }) => {
     const rawValue = q6Values[key];
     const value = Number(rawValue) || 3;
     const hasResponse = Boolean(rawValue && !Number.isNaN(Number(rawValue)));
     const labelClass = hasResponse ? '' : ' no-response';
     const percentage = ((value - 1) / 4) * 100;
+    const displayValue = hasResponse ? value : 'N/A';
 
-    return `
-      <div class="scale-row">
+    // Desktop: slider row
+    const sliderRow = `
+      <div class="scale-row q6-desktop-row">
         <div class="scale-end${labelClass}">${escapeHtml(leftLabel)}</div>
         <div class="scale-slider">
           <div class="q6-track">
             <div class="q6-fill" style="width: ${percentage}%;"></div>
             <div class="q6-thumb" style="left: ${percentage}%;"></div>
           </div>
-          <div class="scale-value${labelClass}">${hasResponse ? value : 'N/A'}</div>
+          <div class="scale-value${labelClass}">${displayValue}</div>
         </div>
         <div class="scale-end right${labelClass}">${escapeHtml(rightLabel)}</div>
       </div>
     `;
+
+    // Mobile: numbered button row
+    const buttons = [1, 2, 3, 4, 5].map(n => {
+      const isActive = hasResponse && n === value;
+      return `<button class="q6-num-btn${isActive ? ' active' : ''}" disabled aria-label="${n}">${n}</button>`;
+    }).join('');
+    const numRow = `
+      <div class="q6-num-row q6-mobile-row">
+        <div class="q6-num-left-label">${escapeHtml(leftLabel)}</div>
+        <div class="q6-num-buttons">${buttons}</div>
+        <div class="q6-num-right-label">${escapeHtml(rightLabel)}</div>
+      </div>
+    `;
+
+    return sliderRow + numRow;
   }).join('');
 
   return `
     <article class="qa-card q6-spectrum-card">
-      <div class="qa-label">Q6 — Where does your brand sit on these personality spectrums?</div>
+      <div class="qa-label-row"><span class="qa-num-badge">06</span><span class="qa-label-text">Personality Spectrums</span></div>
       <div class="q6-hint">1 = far left, 5 = far right</div>
       <div class="q6-spectrums">
         ${spectrumRowsHtml}
@@ -765,9 +782,14 @@ async function uploadLogoFile(file) {
 
 function setModalActionButtons(mode) {
   const modalActions = document.getElementById('modalActions');
+  const modalEditIconBtn = document.getElementById('modalEditIconBtn');
+  const modalDeleteIconBtn = document.getElementById('modalDeleteIconBtn');
   if (!modalActions) return;
 
   if (mode === 'edit') {
+    // Hide header icon buttons while editing
+    if (modalEditIconBtn) modalEditIconBtn.style.display = 'none';
+    if (modalDeleteIconBtn) modalDeleteIconBtn.style.display = 'none';
     modalActions.innerHTML = `
       <button class="btn" id="cancelEditBtn">Cancel</button>
       <button class="btn btn-primary" id="saveEditBtn">Save Changes</button>
@@ -775,7 +797,10 @@ function setModalActionButtons(mode) {
     return;
   }
 
-  modalActions.innerHTML = '<button class="btn" id="enterEditBtn"><span aria-hidden="true"><i data-lucide="pen" class="icon icon-btn"></i></span><span>Edit</span></button><button class="btn btn-danger" id="modalDeleteBtn"><span aria-hidden="true"><i data-lucide="trash" class="icon icon-btn"></i></span><span>Delete</span></button>';
+  // view mode: show header icon buttons, clear modal-actions
+  if (modalEditIconBtn) modalEditIconBtn.style.display = '';
+  if (modalDeleteIconBtn) modalDeleteIconBtn.style.display = '';
+  modalActions.innerHTML = '';
 }
 
 function syncDraftFromInputs() {
@@ -1254,16 +1279,23 @@ function renderDetailPanel() {
       return renderQ6SpectrumGroup(q6Values, isEditingSubmission);
     }
 
-    const label = key
-      .replace(/^q(\d+)-/, 'Q$1 - ')
+    // Extract number badge and text label from key like "q1-business-description"
+    const numMatch = key.match(/^q(\d+)-/);
+    const qNum = numMatch ? numMatch[1].padStart(2, '0') : null;
+    const labelText = key
+      .replace(/^q\d+-/, '')
       .replace(/-/g, ' ')
       .replace(/\b\w/g, l => l.toUpperCase());
-    const safeLabel = escapeHtml(label);
+    const safeLabel = escapeHtml(labelText);
 
     if (isEditingSubmission) {
+      const editLabel = key
+        .replace(/^q(\d+)-/, 'Q$1 - ')
+        .replace(/-/g, ' ')
+        .replace(/\b\w/g, l => l.toUpperCase());
       return `
         <article class="qa-card">
-          <label class="qa-label" for="edit-${escapeHtml(key)}">${safeLabel}</label>
+          <label class="qa-label" for="edit-${escapeHtml(key)}">${escapeHtml(editLabel)}</label>
           <textarea id="edit-${escapeHtml(key)}" class="edit-textarea" data-edit-key="${escapeHtml(key)}">${escapeHtml(String(value ?? ''))}</textarea>
         </article>
       `;
@@ -1274,7 +1306,11 @@ function renderDetailPanel() {
       ? `<div class="qa-value">${escapeHtml(displayValue)}</div>`
       : '<div class="qa-value qa-empty">No response</div>';
 
-    return `<article class="qa-card"><div class="qa-label">${safeLabel}</div>${valueMarkup}</article>`;
+    const labelHtml = qNum
+      ? `<div class="qa-label-row"><span class="qa-num-badge">${qNum}</span><span class="qa-label-text">${safeLabel}</span></div>`
+      : `<div class="qa-label">${safeLabel}</div>`;
+
+    return `<article class="qa-card">${labelHtml}${valueMarkup}</article>`;
   }).join('');
 
   const questionnaireCallout = hasAnyResponse
@@ -1292,26 +1328,31 @@ function renderDetailPanel() {
   modalBody.innerHTML = `${overviewSection}${historySection}${questionnaireSection}`;
   setModalActionButtons(isEditingSubmission ? 'edit' : 'view');
 
-  const enterEditBtn = document.getElementById('enterEditBtn');
-  const modalDeleteBtn = document.getElementById('modalDeleteBtn');
+  const modalEditIconBtn = document.getElementById('modalEditIconBtn');
+  const modalDeleteIconBtn = document.getElementById('modalDeleteIconBtn');
   const cancelEditBtn = document.getElementById('cancelEditBtn');
   const saveEditBtn = document.getElementById('saveEditBtn');
 
-  enterEditBtn?.addEventListener('click', () => {
-    if (!currentSubmission) return;
-    isEditingSubmission = true;
-    editDraftData = cloneSubmissionData(currentSubmission.data || {});
-    editOriginalData = cloneSubmissionData(currentSubmission.data || {});
-    editValidationErrors = {};
-    pendingLogoFile = null;
-    removeExistingLogo = false;
-    editDirty = false;
-    renderDetailPanel();
-  });
+  // Re-attach listeners to persistent header icon buttons
+  if (modalEditIconBtn) {
+    modalEditIconBtn.onclick = () => {
+      if (!currentSubmission) return;
+      isEditingSubmission = true;
+      editDraftData = cloneSubmissionData(currentSubmission.data || {});
+      editOriginalData = cloneSubmissionData(currentSubmission.data || {});
+      editValidationErrors = {};
+      pendingLogoFile = null;
+      removeExistingLogo = false;
+      editDirty = false;
+      renderDetailPanel();
+    };
+  }
 
-  modalDeleteBtn?.addEventListener('click', () => {
-    deleteCurrentSubmission();
-  });
+  if (modalDeleteIconBtn) {
+    modalDeleteIconBtn.onclick = () => {
+      deleteCurrentSubmission();
+    };
+  }
 
   cancelEditBtn?.addEventListener('click', async () => {
     if (editDirty) {

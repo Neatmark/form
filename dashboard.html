@@ -161,14 +161,18 @@
           </div>
         </div>
       </div>
-      <button class="modal-close" id="modalCloseBtn">×</button>
+      <div class="modal-header-actions">
+        <button class="modal-icon-btn modal-edit-icon-btn" id="modalEditIconBtn" aria-label="Edit submission">
+          <i data-lucide="pen" class="icon icon-btn"></i>
+        </button>
+        <button class="modal-icon-btn modal-delete-icon-btn" id="modalDeleteIconBtn" aria-label="Delete submission">
+          <i data-lucide="trash" class="icon icon-btn"></i>
+        </button>
+        <button class="modal-close" id="modalCloseBtn">×</button>
+      </div>
     </div>
     <div id="modalBody" class="detail-scroll"></div>
     <div class="modal-actions" id="modalActions">
-      <button class="btn btn-danger" id="modalDeleteBtn">
-        <span aria-hidden="true"><i data-lucide="trash" class="icon icon-btn"></i></span>
-        <span>Delete</span>
-      </button>
     </div>
   </div>
 </div>

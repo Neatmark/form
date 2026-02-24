@@ -9,6 +9,102 @@ function updateThemeToggleIcon() {
   // Icons are handled via CSS based on the [data-theme] attribute.
 }
 
+// Custom branded alert popup — replaces native alert()
+function showAlert(message, type = 'success') {
+  const overlay = document.getElementById('customAlertOverlay');
+  const msgEl = document.getElementById('customAlertMsg');
+  const titleEl = document.getElementById('customAlertTitle');
+  const iconWrap = document.getElementById('customAlertIconWrap');
+  const icon = document.getElementById('customAlertIcon');
+  const closeBtn = document.getElementById('customAlertCloseBtn');
+  if (!overlay || !msgEl) { alert(message); return; }
+
+  const isError = type === 'error';
+  msgEl.textContent = message;
+  titleEl.textContent = isError ? 'Something went wrong' : 'Success';
+  iconWrap.className = 'custom-alert-icon-wrap' + (isError ? ' error' : '');
+  closeBtn.className = 'custom-alert-close-btn' + (isError ? ' error-btn' : '');
+
+  // Swap icon via lucide
+  icon.setAttribute('data-lucide', isError ? 'x-circle' : 'check-circle');
+  if (window.lucide) window.lucide.createIcons();
+
+  overlay.setAttribute('aria-hidden', 'false');
+  overlay.classList.add('active');
+
+  return new Promise(resolve => {
+    function dismiss() {
+      overlay.classList.remove('active');
+      overlay.setAttribute('aria-hidden', 'true');
+      overlay.removeEventListener('click', onOverlayClick);
+      closeBtn.removeEventListener('click', dismiss);
+      resolve();
+    }
+    function onOverlayClick(e) { if (e.target === overlay) dismiss(); }
+    closeBtn.addEventListener('click', dismiss);
+    overlay.addEventListener('click', onOverlayClick);
+  });
+}
+
+
+
+// Custom branded confirm popup — replaces native confirm()
+function showConfirm(message) {
+  return new Promise(resolve => {
+    // Reuse the alert overlay with two buttons
+    const overlay = document.getElementById('customAlertOverlay');
+    const msgEl = document.getElementById('customAlertMsg');
+    const titleEl = document.getElementById('customAlertTitle');
+    const iconWrap = document.getElementById('customAlertIconWrap');
+    const icon = document.getElementById('customAlertIcon');
+    const closeBtn = document.getElementById('customAlertCloseBtn');
+    if (!overlay) { resolve(confirm(message)); return; }
+
+    msgEl.textContent = message;
+    titleEl.textContent = 'Are you sure?';
+    iconWrap.className = 'custom-alert-icon-wrap error';
+    icon.setAttribute('data-lucide', 'alert-triangle');
+    if (window.lucide) window.lucide.createIcons();
+
+    // Inject a cancel button temporarily
+    closeBtn.textContent = 'Yes, clear it';
+    closeBtn.className = 'custom-alert-close-btn error-btn';
+    let cancelBtn = document.getElementById('customAlertCancelBtn');
+    if (!cancelBtn) {
+      cancelBtn = document.createElement('button');
+      cancelBtn.id = 'customAlertCancelBtn';
+      cancelBtn.type = 'button';
+      cancelBtn.className = 'custom-alert-cancel-btn';
+      cancelBtn.textContent = 'Keep draft';
+      closeBtn.parentNode.insertBefore(cancelBtn, closeBtn);
+    }
+    cancelBtn.style.display = '';
+
+    overlay.setAttribute('aria-hidden', 'false');
+    overlay.classList.add('active');
+
+    function cleanup(result) {
+      overlay.classList.remove('active');
+      overlay.setAttribute('aria-hidden', 'true');
+      closeBtn.textContent = 'OK';
+      closeBtn.className = 'custom-alert-close-btn';
+      if (cancelBtn) cancelBtn.style.display = 'none';
+      overlay.removeEventListener('click', onOverlayClick);
+      closeBtn.removeEventListener('click', onConfirm);
+      cancelBtn.removeEventListener('click', onCancel);
+      resolve(result);
+    }
+    function onConfirm() { cleanup(true); }
+    function onCancel() { cleanup(false); }
+    function onOverlayClick(e) { if (e.target === overlay) cleanup(false); }
+    closeBtn.addEventListener('click', onConfirm);
+    cancelBtn.addEventListener('click', onCancel);
+    overlay.addEventListener('click', onOverlayClick);
+  });
+}
+
+
+
 function formDataToObject(formData) {
   const payload = {};
 
@@ -436,9 +532,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // Clear draft button
   const clearDraftBtn = document.getElementById('clearDraftBtn');
   if (clearDraftBtn) {
-    clearDraftBtn.addEventListener('click', (e) => {
+    clearDraftBtn.addEventListener('click', async (e) => {
       e.preventDefault();
-      if (confirm('Clear your saved draft? All unsaved answers will be removed.')) {
+      if (await showConfirm('Clear your saved draft? All unsaved answers will be removed.')) {
         clearDraft();
         form.reset();
         // Reset range badges and step buttons back to default
@@ -549,12 +645,12 @@ document.addEventListener('DOMContentLoaded', () => {
       await submitToSupabase(formData);
 
       clearDraft();
-      alert(window.i18n.t('messages.submitSuccess'));
+      await showAlert(window.i18n.t('messages.submitSuccess'), 'success');
       // ✓ Form is NOT auto-reset here, user must click "Clear" button for explicit reset
     } catch (error) {
       console.error(error);
       const message = error instanceof Error ? error.message : 'Unknown error';
-      alert(window.i18n.t('messages.submitError', {error: message}));
+      await showAlert(window.i18n.t('messages.submitError', {error: message}), 'error');
     } finally {
       if (submitButton) {
         submitButton.disabled = false;
@@ -581,7 +677,7 @@ document.addEventListener('DOMContentLoaded', () => {
       clearDraft();
       clearConfirmModal.setAttribute('aria-hidden', 'true');
       clearConfirmModal.style.display = 'none';
-      alert(window.i18n.t('messages.clearSuccess'));
+      await showAlert(window.i18n.t('messages.clearSuccess'), 'success');
     });
 
     clearCancelBtn.addEventListener('click', () => {
