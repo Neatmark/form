@@ -979,6 +979,18 @@ function renderSubmissions(submissions) {
   if (window.lucide && typeof window.lucide.createIcons === 'function') {
     window.lucide.createIcons();
   }
+
+  // Restore persisted theme and update button state
+  try {
+    const saved = localStorage.getItem('dashboard-theme');
+    if (saved === 'light' || saved === 'dark') {
+      applyTheme(saved);
+    } else {
+      applyTheme(document.documentElement.getAttribute('data-theme') || 'dark');
+    }
+  } catch (_) {
+    applyTheme(document.documentElement.getAttribute('data-theme') || 'dark');
+  }
 }
 
 function updateSelectionToolbar() {
@@ -1815,10 +1827,24 @@ function handleExport(format, submissionsOverride) {
 
 /* ── End export helpers ────────────────────────────────── */
 
-function toggleTheme() {
+function applyTheme(theme) {
   const html = document.documentElement;
-  const current = html.getAttribute('data-theme');
-  html.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+  html.setAttribute('data-theme', theme);
+  try { localStorage.setItem('dashboard-theme', theme); } catch (_) {}
+
+  const isDark = theme === 'dark';
+  const darkIcon = document.querySelector('.theme-icon-dark');
+  const lightIcon = document.querySelector('.theme-icon-light');
+  const label = document.getElementById('themeBtnLabel');
+
+  if (darkIcon) darkIcon.style.display = isDark ? '' : 'none';
+  if (lightIcon) lightIcon.style.display = isDark ? 'none' : '';
+  if (label) label.textContent = isDark ? 'Dark' : 'Light';
+}
+
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme');
+  applyTheme(current === 'dark' ? 'light' : 'dark');
 }
 
 document.addEventListener('DOMContentLoaded', () => {
