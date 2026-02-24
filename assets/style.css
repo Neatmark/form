@@ -53,6 +53,38 @@ html[lang="ar"] select {
   --logo-filter:brightness(0) saturate(100%) invert(13%) sepia(40%) saturate(900%) hue-rotate(145deg) brightness(90%);
 }
 
+/* Lucide icon utility */
+.icon {
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.icon-theme {
+  width: 18px;
+  height: 18px;
+}
+
+.theme-toggle-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-theme--sun,
+.icon-theme--moon {
+  display: none;
+}
+
+[data-theme="dark"] .icon-theme--sun {
+  display: inline-block;
+}
+
+[data-theme="light"] .icon-theme--moon {
+  display: inline-block;
+}
+
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{
   background: var(--bg);

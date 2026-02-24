@@ -25,39 +25,59 @@
     <header class="site-header">
       <h1 class="header-title">DASHBOARD</h1>
       <div class="header-actions">
-        <button class="btn" id="importBtn">📤 Import MD</button>
+        <button class="btn" id="importBtn">
+          <span aria-hidden="true"><i data-lucide="import" class="icon icon-btn"></i></span>
+          <span>Import MD</span>
+        </button>
         <div class="export-dropdown">
-          <button class="btn" id="exportBtn">📥 Export As ▾</button>
+          <button class="btn" id="exportBtn">
+            <span aria-hidden="true"><i data-lucide="export" class="icon icon-btn"></i></span>
+            <span class="btn-label">Export As ▾</span>
+          </button>
           <div class="export-menu" id="exportMenu">
             <button class="export-option" data-format="md">Markdown (.md)</button>
             <button class="export-option" data-format="pdf">PDF (.pdf)</button>
             <button class="export-option" data-format="docx">Word (.docx)</button>
           </div>
         </div>
-        <button class="btn" id="themeBtn">🌓 Theme</button>
-        <button class="btn" id="refreshBtn">↻ Refresh</button>
+        <button class="btn" id="themeBtn">
+          <span aria-hidden="true"><i data-lucide="moon" class="icon icon-btn"></i></span>
+          <span>Theme</span>
+        </button>
+        <button class="btn" id="refreshBtn">
+          <span aria-hidden="true"><i data-lucide="refresh-cw" class="icon icon-btn"></i></span>
+          <span>Refresh</span>
+        </button>
         <button class="btn" id="accountBtn">Account</button>
       </div>
     </header>
 
     <div class="stats">
       <div class="stat-card">
-        <div class="stat-icon" aria-hidden="true">📥</div>
+        <div class="stat-icon" aria-hidden="true">
+          <i data-lucide="file-text" class="icon icon-stat"></i>
+        </div>
         <div class="stat-value" id="totalCount">-</div>
         <div class="stat-label">Total Submissions</div>
       </div>
       <div class="stat-card">
-        <div class="stat-icon" aria-hidden="true">🗓️</div>
+        <div class="stat-icon" aria-hidden="true">
+          <i data-lucide="calendar" class="icon icon-stat"></i>
+        </div>
         <div class="stat-value" id="withDeliveryCount">-</div>
         <div class="stat-label">With Delivery Date</div>
       </div>
       <div class="stat-card">
-        <div class="stat-icon" aria-hidden="true">⚠️</div>
+        <div class="stat-icon" aria-hidden="true">
+          <i data-lucide="alert-triangle" class="icon icon-stat"></i>
+        </div>
         <div class="stat-value" id="noResponseCount">-</div>
         <div class="stat-label">No Response</div>
       </div>
       <div class="stat-card">
-        <div class="stat-icon" aria-hidden="true">🕒</div>
+        <div class="stat-icon" aria-hidden="true">
+          <i data-lucide="clock" class="icon icon-stat"></i>
+        </div>
         <div class="stat-value stat-value--small" id="latestSubmissionDate">-</div>
         <div class="stat-label">Latest Submission</div>
       </div>
@@ -65,7 +85,12 @@
 
     <div class="filters">
       <div class="search-filter-row">
-        <input type="text" class="search-box" id="searchBox" placeholder="🔍 Search by brand, client, or email...">
+        <div class="search-box-wrap">
+          <span class="search-icon" aria-hidden="true">
+            <i data-lucide="search" class="icon"></i>
+          </span>
+          <input type="text" class="search-box" id="searchBox" placeholder="Search by brand, client, or email...">
+        </div>
         <select class="date-filter" id="dateFilter">
           <option value="all">All dates</option>
           <option value="today">Today</option>
@@ -81,7 +106,10 @@
           <button class="btn" id="selectVisibleBtn">Select Visible</button>
           <button class="btn" id="clearSelectionBtn" disabled>Clear Selection</button>
           <span class="toolbar-divider" aria-hidden="true"></span>
-          <button class="btn btn-danger" id="deleteSelectedBtn" disabled>🗑️ Delete Selected</button>
+          <button class="btn btn-danger" id="deleteSelectedBtn" disabled>
+            <span aria-hidden="true"><i data-lucide="trash" class="icon icon-btn"></i></span>
+            <span>Delete Selected</span>
+          </button>
         </div>
         <div class="selection-info" id="selectionInfo">Showing 0 submissions</div>
       </div>
@@ -101,8 +129,18 @@
         <div class="detail-hero-text">
           <h2 id="modalTitle">Submission Details</h2>
           <div class="detail-subhead">
-            <div class="detail-chip" id="detailClientChip">👤 Unknown Client</div>
-            <div class="detail-chip" id="detailEmailChip">✉️ N/A</div>
+            <div class="detail-chip" id="detailClientChip">
+              <span class="detail-chip-icon" aria-hidden="true">
+                <i data-lucide="user" class="icon icon-btn"></i>
+              </span>
+              <span class="detail-chip-text">Unknown Client</span>
+            </div>
+            <div class="detail-chip" id="detailEmailChip">
+              <span class="detail-chip-icon" aria-hidden="true">
+                <i data-lucide="mail" class="icon icon-btn"></i>
+              </span>
+              <span class="detail-chip-text">N/A</span>
+            </div>
           </div>
         </div>
       </div>
@@ -110,7 +148,10 @@
     </div>
     <div id="modalBody" class="detail-scroll"></div>
     <div class="modal-actions" id="modalActions">
-      <button class="btn btn-danger" id="modalDeleteBtn">🗑️ Delete</button>
+      <button class="btn btn-danger" id="modalDeleteBtn">
+        <span aria-hidden="true"><i data-lucide="trash" class="icon icon-btn"></i></span>
+        <span>Delete</span>
+      </button>
     </div>
   </div>
 </div>
@@ -133,6 +174,7 @@
 <script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
 <script src="https://unpkg.com/dayjs@1.11.13/dayjs.min.js"></script>
 <script src="https://unpkg.com/dayjs@1.11.13/plugin/relativeTime.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
 <script src="assets/dashboard.js?v=20260223"></script>
 
 </body>

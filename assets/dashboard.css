@@ -55,6 +55,28 @@ html[lang="ar"] select {
   --logo-filter: brightness(0) saturate(100%) invert(13%) sepia(40%) saturate(900%) hue-rotate(145deg) brightness(90%);
 }
 
+/* Lucide icon utility */
+.icon {
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.icon-btn {
+  margin-right: 6px;
+}
+
+.icon-stat {
+  width: 18px;
+  height: 18px;
+}
+
+.icon-section {
+  width: 16px;
+  height: 16px;
+}
+
 *,
 *::before,
 *::after {
@@ -303,6 +325,26 @@ body {
   padding: 12px 15px;
   outline: none;
   transition: border-color .2s;
+}
+
+.search-box-wrap {
+  position: relative;
+}
+
+.search-box-wrap .search-box {
+  padding-left: 40px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-lo);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
 }
 
 .search-box::placeholder {
@@ -562,6 +604,9 @@ body {
   font-size: 13px;
   font-weight: 800;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .card-edit-btn:hover,
@@ -579,6 +624,9 @@ body {
   font-size: 13px;
   font-weight: 800;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .card-export-btn:hover,

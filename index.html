@@ -49,7 +49,12 @@
       </ul>
     </div>
     <button class="hdr-circle" id="themeToggle" type="button"
-            aria-label="Toggle theme" title="Toggle theme">☀️</button>
+            aria-label="Toggle theme" title="Toggle theme">
+      <span class="theme-toggle-icon" aria-hidden="true">
+        <i data-lucide="sun" class="icon icon-theme icon-theme--sun"></i>
+        <i data-lucide="moon" class="icon icon-theme icon-theme--moon"></i>
+      </span>
+    </button>
   </div>
 </header>
 
@@ -58,8 +63,11 @@
 
   <!-- DRAFT BANNER -->
   <div class="draft-banner" id="draftBanner" style="display:none">
-    <span>📝 You have a saved draft, your previous answers have been restored.</span>
-    <button class="clear-draft-btn" type="button" id="clearDraftBtn">Clear Draft</button>
+    <span class="draft-banner-icon" aria-hidden="true">
+      <i data-lucide="file-text" class="icon icon-draft"></i>
+    </span>
+    <span class="draft-banner-text" data-i18n="form.draftBanner">You have a saved draft, your previous answers have been restored.</span>
+    <button class="clear-draft-btn" type="button" id="clearDraftBtn" data-i18n="form.clearDraftBtn">Clear Draft</button>
   </div>
 
   <!-- HERO -->
@@ -359,7 +367,7 @@
     <div class="duplicate-modal-actions">
       <button type="button" class="duplicate-action-btn" id="duplicateOverrideBtn" data-i18n="modal.duplicate.override">Override</button>
       <button type="button" class="duplicate-action-btn" id="duplicateSendNewBtn" data-i18n="modal.duplicate.sendNew">Send as New</button>
-      <button type="button" class="duplicate-action-btn" id="duplicateCancelBtn" data-i18n="modal.duplicate.cancel">✕ Cancel</button>
+      <button type="button" class="duplicate-action-btn" id="duplicateCancelBtn" data-i18n="modal.duplicate.cancel">Cancel</button>
     </div>
   </div>
 </div>
@@ -369,11 +377,12 @@
     <p class="duplicate-modal-message" id="clearConfirmMessage" data-i18n="modal.clearConfirm.message">Are you sure you want to clear all fields? This cannot be undone.</p>
     <div class="duplicate-modal-actions">
       <button type="button" class="duplicate-action-btn" id="clearConfirmBtn" data-i18n="modal.clearConfirm.confirm">Clear All</button>
-      <button type="button" class="duplicate-action-btn" id="clearCancelBtn" data-i18n="modal.clearConfirm.cancel">✕ Cancel</button>
+      <button type="button" class="duplicate-action-btn" id="clearCancelBtn" data-i18n="modal.clearConfirm.cancel">Cancel</button>
     </div>
   </div>
 </div>
 
+<script src="https://unpkg.com/lucide@latest"></script>
 <script src="assets/script.js"></script>
 </body>
 </html>

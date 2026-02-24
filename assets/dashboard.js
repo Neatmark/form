@@ -204,19 +204,22 @@ function renderHistoryTimeline(historyEntries, options = {}) {
       : entry.editedBy === 'client'
         ? 'By Client'
         : 'Unknown';
-    const editedByIcon = entry.editedBy === 'admin'
-      ? '🛡️'
+    const editedByIconName = entry.editedBy === 'admin'
+      ? 'shield'
       : entry.editedBy === 'client'
-        ? '👤'
-        : '❓';
+        ? 'user'
+        : 'help-circle';
 
     return `
       <li class="history-node${isLatest ? ' latest' : ''}">
-        <div class="history-marker${isOriginal ? ' original' : ''}">${isOriginal ? '★' : '●'}</div>
+        <div class="history-marker${isOriginal ? ' original' : ''}"></div>
         <div class="history-content">
           <div class="history-head">
             <span class="history-badge ${isOriginal ? 'original' : 'edited'}">${badgeText}</span>
-            <span class="history-attribution ${entry.editedBy}">${editedByIcon} ${editedByText}</span>
+            <span class="history-attribution ${entry.editedBy}">
+              <span aria-hidden="true"><i data-lucide="${editedByIconName}" class="icon icon-btn"></i></span>
+              <span>${editedByText}</span>
+            </span>
             ${isLatest ? '<span class="history-latest-tag">Latest</span>' : ''}
           </div>
           <div class="history-date">${escapeHtml(toFriendlyDate(entry.parsedDate))}</div>
@@ -429,14 +432,14 @@ async function loadSubmissions() {
     console.error('Error loading submissions:', error);
     const message = error instanceof Error ? error.message : 'Failed to load submissions';
     if (message === 'Forbidden') {
-      container.innerHTML = '<div class="empty">⚠️ Access denied. Ask the site admin to add your email to ADMIN_EMAILS.</div>';
+      container.innerHTML = '<div class="empty"><strong>Access denied.</strong> Ask the site admin to add your email to ADMIN_EMAILS.</div>';
       return;
     }
     if (message === 'Unauthorized') {
-      container.innerHTML = '<div class="empty">⚠️ Your session expired. Please log in again.</div>';
+      container.innerHTML = '<div class="empty"><strong>Your session expired.</strong> Please log in again.</div>';
       return;
     }
-    container.innerHTML = '<div class="empty">⚠️ Failed to load submissions. Please try again.</div>';
+    container.innerHTML = '<div class="empty"><strong>Failed to load submissions.</strong> Please try again.</div>';
   }
 }
 
@@ -568,7 +571,9 @@ function buildBrandInitials(brandName) {
 function sectionHeader(icon, title) {
   return `
     <div class="detail-section-head">
-      <span class="detail-section-icon" aria-hidden="true">${icon}</span>
+      <span class="detail-section-icon" aria-hidden="true">
+        <i data-lucide="${icon}" class="icon icon-section"></i>
+      </span>
       <h3 class="detail-section-title">${title}</h3>
     </div>
   `;
@@ -600,13 +605,16 @@ function updateExportButtonLabel() {
   const exportBtn = document.getElementById('exportBtn');
   if (!exportBtn) return;
 
+  const labelEl = exportBtn.querySelector('.btn-label');
+  if (!labelEl) return;
+
   const visibleCount = currentRenderedSubmissions.length;
   if (hasActiveFilters()) {
-    exportBtn.textContent = `📥 Export filtered (${visibleCount}) ▾`;
+    labelEl.textContent = `Export filtered (${visibleCount}) ▾`;
     return;
   }
 
-  exportBtn.textContent = `📥 Export visible (${visibleCount}) ▾`;
+  labelEl.textContent = `Export visible (${visibleCount}) ▾`;
 }
 
 function questionnaireSortKey(key) {
@@ -734,7 +742,7 @@ function setModalActionButtons(mode) {
     return;
   }
 
-  modalActions.innerHTML = '<button class="btn" id="enterEditBtn">✏️ Edit</button><button class="btn btn-danger" id="modalDeleteBtn">🗑️ Delete</button>';
+  modalActions.innerHTML = '<button class="btn" id="enterEditBtn"><span aria-hidden="true"><i data-lucide="pen" class="icon icon-btn"></i></span><span>Edit</span></button><button class="btn btn-danger" id="modalDeleteBtn"><span aria-hidden="true"><i data-lucide="trash" class="icon icon-btn"></i></span><span>Delete</span></button>';
 }
 
 function syncDraftFromInputs() {
@@ -760,7 +768,9 @@ function renderSubmissions(submissions) {
   if (submissions.length === 0) {
     container.innerHTML = `
       <div class="empty-state" role="status" aria-live="polite">
-        <div class="empty-state-icon" aria-hidden="true">📭</div>
+        <div class="empty-state-icon" aria-hidden="true">
+          <i data-lucide="inbox" class="icon icon-stat"></i>
+        </div>
         <div class="empty-state-title">No submissions found</div>
         <div class="empty-state-copy">Try adjusting your search or date filter.</div>
         <button class="btn empty-state-action" id="clearFiltersBtn">Clear filters</button>
@@ -837,9 +847,15 @@ function renderSubmissions(submissions) {
         </div>
         <div class="submission-meta">
           <div class="submission-date" title="${relativeTime}">${dateStr} · ${timeStr}</div>
-          <button class="card-edit-btn" aria-label="Edit submission ${brandName}">✏️ Edit</button>
+          <button class="card-edit-btn" aria-label="Edit submission ${brandName}">
+            <span aria-hidden="true"><i data-lucide="pen" class="icon icon-btn"></i></span>
+            <span>Edit</span>
+          </button>
           <div class="card-export">
-            <button class="card-export-btn" aria-haspopup="menu" aria-expanded="${exportMenuOpen ? 'true' : 'false'}" aria-label="Export submission ${brandName}">⤓ Export</button>
+            <button class="card-export-btn" aria-haspopup="menu" aria-expanded="${exportMenuOpen ? 'true' : 'false'}" aria-label="Export submission ${brandName}">
+              <span aria-hidden="true"><i data-lucide="download" class="icon icon-btn"></i></span>
+              <span>Export</span>
+            </button>
             <div class="card-export-menu${exportMenuOpen ? ' open' : ''}" role="menu">
               <button class="card-export-option" data-format="md" role="menuitem">Markdown (.md)</button>
               <button class="card-export-option" data-format="pdf" role="menuitem">PDF (.pdf)</button>
@@ -926,6 +942,10 @@ function renderSubmissions(submissions) {
   container.innerHTML = '';
   container.appendChild(grid);
   updateSelectionToolbar();
+
+  if (window.lucide && typeof window.lucide.createIcons === 'function') {
+    window.lucide.createIcons();
+  }
 }
 
 function updateSelectionToolbar() {
@@ -1101,8 +1121,14 @@ function renderDetailPanel() {
   const logoRef = getLogoRefFromData(data);
 
   if (titleEl) titleEl.textContent = brandName;
-  if (clientChipEl) clientChipEl.textContent = `👤 ${clientName}`;
-  if (emailChipEl) emailChipEl.textContent = `✉️ ${email}`;
+  if (clientChipEl) {
+    const clientTextEl = clientChipEl.querySelector('.detail-chip-text');
+    if (clientTextEl) clientTextEl.textContent = clientName;
+  }
+  if (emailChipEl) {
+    const emailTextEl = emailChipEl.querySelector('.detail-chip-text');
+    if (emailTextEl) emailTextEl.textContent = email;
+  }
   setHeroAvatar(brandName, logoRef);
 
   modal?.classList.toggle('editing-active', isEditingSubmission);
@@ -1112,7 +1138,7 @@ function renderDetailPanel() {
     overviewSection = `
       <section class="detail-section">
         <div class="edit-banner">Editing submission, changes are not saved yet</div>
-        ${sectionHeader('📋', 'Overview')}
+        ${sectionHeader('list', 'Overview')}
         <div class="logo-upload-wrap">
           <label class="logo-dropzone" id="logoDropzone" tabindex="0" aria-label="Upload brand logo">
             <input id="logoFileInput" type="file" accept=".png,.jpg,.jpeg,.svg,.webp,image/png,image/jpeg,image/svg+xml,image/webp" hidden />
@@ -1122,11 +1148,11 @@ function renderDetailPanel() {
           <div class="edit-error" id="logoUploadError"></div>
         </div>
         <div class="overview-grid">
-          ${renderEditableField('👤 Client Name', 'client-name', 'text')}
-          ${renderEditableField('✉️ Email', 'email', 'email')}
-          ${renderEditableField('🏷️ Brand Name', 'brand-name', 'text')}
+          ${renderEditableField('Client Name', 'client-name', 'text')}
+          ${renderEditableField('Email', 'email', 'email')}
+          ${renderEditableField('Brand Name', 'brand-name', 'text')}
           <div class="overview-card edit-field">
-            <label class="overview-label" for="edit-delivery-date">🗓️ Delivery Date</label>
+            <label class="overview-label" for="edit-delivery-date">Delivery Date</label>
             <input id="edit-delivery-date" class="edit-input" type="date" data-edit-key="delivery-date" value="${escapeHtml(normalizeDateInputValue(data['delivery-date']))}" />
           </div>
         </div>
@@ -1135,12 +1161,12 @@ function renderDetailPanel() {
   } else {
     overviewSection = `
       <section class="detail-section">
-        ${sectionHeader('📋', 'Overview')}
+        ${sectionHeader('list', 'Overview')}
         <div class="overview-grid">
-          <div class="overview-card"><div class="overview-label">👤 Client Name</div><div class="overview-value">${escapeHtml(clientName)}</div></div>
-          <div class="overview-card"><div class="overview-label">✉️ Email</div><div class="overview-value">${escapeHtml(email)}</div></div>
-          <div class="overview-card"><div class="overview-label">🏷️ Brand Name</div><div class="overview-value">${escapeHtml(brandName)}</div></div>
-          <div class="overview-card"><div class="overview-label">🗓️ Delivery Date</div><div class="overview-value">${formatDeliveryDateForOverview(data['delivery-date'])}</div></div>
+          <div class="overview-card"><div class="overview-label">Client Name</div><div class="overview-value">${escapeHtml(clientName)}</div></div>
+          <div class="overview-card"><div class="overview-label">Email</div><div class="overview-value">${escapeHtml(email)}</div></div>
+          <div class="overview-card"><div class="overview-label">Brand Name</div><div class="overview-value">${escapeHtml(brandName)}</div></div>
+          <div class="overview-card"><div class="overview-label">Delivery Date</div><div class="overview-value">${formatDeliveryDateForOverview(data['delivery-date'])}</div></div>
         </div>
       </section>
     `;
@@ -1148,7 +1174,7 @@ function renderDetailPanel() {
 
   const historySection = `
     <section class="detail-section">
-      ${sectionHeader('🕒', 'Submission History')}
+      ${sectionHeader('history', 'Submission History')}
       ${renderHistoryTimeline(history, { isLoading: !Array.isArray(history) })}
     </section>
   `;
@@ -1212,7 +1238,7 @@ function renderDetailPanel() {
 
   const questionnaireSection = `
     <section class="detail-section">
-      ${sectionHeader('🧩', 'Brand Questionnaire')}
+      ${sectionHeader('puzzle', 'Brand Questionnaire')}
       ${questionnaireCallout}
       <div class="qa-grid">${questionnaireItems}</div>
     </section>
@@ -1265,6 +1291,10 @@ function renderDetailPanel() {
 
   setupEditModeInteractions();
   modal?.classList.add('active');
+
+  if (window.lucide && typeof window.lucide.createIcons === 'function') {
+    window.lucide.createIcons();
+  }
 }
 
 function setupEditModeInteractions() {
@@ -1747,6 +1777,10 @@ function toggleTheme() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  if (window.lucide && typeof window.lucide.createIcons === 'function') {
+    window.lucide.createIcons();
+  }
+
   const searchBox = document.getElementById('searchBox');
   const dateFilter = document.getElementById('dateFilter');
   const loginBtn = document.getElementById('loginBtn');
@@ -1886,11 +1920,11 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error(`Import failed: ${response.statusText}`);
       }
 
-      alert(`✅ Successfully imported: ${parsedData['brand-name']}`);
+      alert(`Successfully imported: ${parsedData['brand-name']}`);
       loadSubmissions();
     } catch (error) {
       console.error('Import error:', error);
-      alert(`❌ Import failed: ${error.message}`);
+      alert(`Import failed: ${error.message}`);
     }
   }
 

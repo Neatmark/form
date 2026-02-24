@@ -14,7 +14,7 @@
       "badge": "Identité de marque",
       "description": "Aidez-nous à comprendre votre entreprise et votre vision créative. Il n'y a pas de mauvaises réponses, plus vous serez honnête, plus votre marque sera forte."
     },
-    "draftBanner": "📝 Vous avez un brouillon enregistré, vos réponses précédentes ont été restaurées.",
+    "draftBanner": "Vous avez un brouillon enregistré, vos réponses précédentes ont été restaurées.",
     "clearDraftBtn": "Effacer le brouillon",
     "cta": {
       "submit": "Soumettre le formulaire",
@@ -209,13 +209,13 @@
       "message": "Vous avez déjà envoyé une soumission pour cette marque. Voulez-vous remplacer la soumission précédente ou envoyer une toute nouvelle?",
       "override": "Remplacer",
       "sendNew": "Envoyer comme nouveau",
-      "cancel": "✕ Annuler"
+      "cancel": "Annuler"
     },
     "clearConfirm": {
       "title": "Effacer le formulaire",
       "message": "Êtes-vous sûr de vouloir effacer tous les champs? Cela ne peut pas être annulé.",
       "confirm": "Effacer tout",
-      "cancel": "✕ Annuler"
+      "cancel": "Annuler"
     },
     "deleteConfirm": {
       "title": "Supprimer la soumission",

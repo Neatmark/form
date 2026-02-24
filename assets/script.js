@@ -6,10 +6,7 @@ function toggleTheme() {
 }
 
 function updateThemeToggleIcon() {
-  const btn = document.getElementById('themeToggle');
-  if (!btn) return;
-  const isDark = (document.documentElement.getAttribute('data-theme') || 'dark') === 'dark';
-  btn.textContent = isDark ? '☀️' : '🌙';
+  // Icons are handled via CSS based on the [data-theme] attribute.
 }
 
 function formDataToObject(formData) {
@@ -233,6 +230,10 @@ function showDraftBanner(visible) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  if (window.lucide && typeof window.lucide.createIcons === 'function') {
+    window.lucide.createIcons();
+  }
+
   /* ── Theme toggle ─────────────────────────────────── */
   const themeToggleButton = document.getElementById('themeToggle');
   if (themeToggleButton) {
