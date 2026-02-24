@@ -247,7 +247,9 @@ body{
   letter-spacing: .4px;
   min-width: 22px;
 }
-
+.arabic-lm {
+  font-family: 'IBM Plex Sans Arabic', sans-serif;
+}
 /* RTL: flip dropdown alignment */
 html[dir="rtl"] .lang-menu {
   right: auto;

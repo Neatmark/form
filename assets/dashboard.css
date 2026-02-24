@@ -48,6 +48,7 @@ html[lang="ar"] select {
   --pill-text: #e6fcf8;
   --btn-bg: #006d77;
   --btn-text: #e6fcf8;
+  --q6-bg: hsl(169 50% 92%);
   --input-bg: #ffffff;
   --input-border: rgba(0, 109, 119, 0.22);
   --input-focus: #006d77;
@@ -61,6 +62,7 @@ html[lang="ar"] select {
   height: 16px;
   display: inline-block;
   vertical-align: middle;
+  stroke-width: 2.5px;
 }
 
 .icon-btn {
@@ -1236,7 +1238,31 @@ body {
   background: var(--text-lo);
   border: 1px solid var(--border);
   margin-top: 2px;
+  position: relative;
 }
+
+.history-marker::before {
+  content: '';
+  display: block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--pill-text);
+}
+
+.history-marker.original::before {
+  content: '\2605'; /* Unicode star */
+  display: block;
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  background: none;
+  color: var(--pill-text);
+  font-size: 15px;
+  line-height: 1;
+  text-align: center;
+}
+
 
 .history-marker.original {
   background: var(--mid);
