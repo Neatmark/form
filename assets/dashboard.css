@@ -95,6 +95,7 @@ body {
   font-size: 18px;
   transition: background .3s, color .3s;
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
 .page {
@@ -423,6 +424,8 @@ body {
 .submissions-grid {
   display: grid;
   gap: 12px;
+  min-width: 0;
+  width: 100%;
 }
 
 .submission-card {
@@ -433,6 +436,8 @@ body {
   transition: border-color .2s, transform .2s;
   cursor: pointer;
   animation: slideUp .32s ease both;
+  min-width: 0;
+  overflow: hidden;
 }
 
 @keyframes slideUp {
@@ -1692,11 +1697,11 @@ body {
   }
 
   .stats {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .stat-card {
-    padding: 18px;
+    padding: 12px;
   }
 
   .stat-value {
