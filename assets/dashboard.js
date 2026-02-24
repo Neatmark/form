@@ -1,5 +1,6 @@
 let allSubmissions = [];
 let sortAscending = false;
+let sortMode = 'date-desc'; // date-desc | date-asc | name-asc | name-desc | delivery-asc | delivery-desc
 let currentSubmission = null;
 let selectedSubmissionIds = new Set();
 let currentRenderedSubmissions = [];
@@ -308,9 +309,23 @@ function applyCurrentFiltersAndRender() {
 
   if (isSortApplied) {
     submissions = [...submissions].sort((a, b) => {
-      const dateA = new Date(a.created_at);
-      const dateB = new Date(b.created_at);
-      return sortAscending ? dateA - dateB : dateB - dateA;
+      if (sortMode === 'date-asc' || sortMode === 'date-desc') {
+        const dateA = new Date(a.created_at);
+        const dateB = new Date(b.created_at);
+        return sortMode === 'date-asc' ? dateA - dateB : dateB - dateA;
+      }
+      if (sortMode === 'name-asc' || sortMode === 'name-desc') {
+        const nameA = String(a.data?.['brand-name'] || '').toLowerCase();
+        const nameB = String(b.data?.['brand-name'] || '').toLowerCase();
+        const cmp = nameA.localeCompare(nameB);
+        return sortMode === 'name-asc' ? cmp : -cmp;
+      }
+      if (sortMode === 'delivery-asc' || sortMode === 'delivery-desc') {
+        const dA = new Date(a.data?.['delivery-date'] || '9999-12-31').getTime();
+        const dB = new Date(b.data?.['delivery-date'] || '9999-12-31').getTime();
+        return sortMode === 'delivery-asc' ? dA - dB : dB - dA;
+      }
+      return 0;
     });
   }
 
@@ -446,26 +461,41 @@ async function loadSubmissions() {
 function updateStats() {
   const totalCountEl = document.getElementById('totalCount');
   const withDeliveryEl = document.getElementById('withDeliveryCount');
-  const noResponseEl = document.getElementById('noResponseCount');
   const latestSubmissionEl = document.getElementById('latestSubmissionDate');
+  const latestSubmissionShortEl = document.getElementById('latestSubmissionDateShort');
 
   const total = allSubmissions.length;
   const withDelivery = allSubmissions.filter(hasDeliveryDate).length;
-  const noResponse = allSubmissions.filter(submission => !hasAnyQuestionnaireResponse(submission)).length;
 
   let latestText = '-';
+  let latestShort = '-';
   if (total > 0) {
     const latestSubmission = [...allSubmissions].sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0];
     const latestDate = new Date(latestSubmission.created_at);
-    latestText = Number.isNaN(latestDate.getTime())
-      ? 'Unknown'
-      : toFriendlyDate(latestDate);
+    if (!Number.isNaN(latestDate.getTime())) {
+      latestText = toFriendlyDate(latestDate);
+      const mo = latestDate.toLocaleDateString('en-US', { month: 'short' });
+      const day = latestDate.getDate();
+      const h = latestDate.getHours();
+      const ampm = h >= 12 ? 'pm' : 'am';
+      const h12 = h % 12 || 12;
+      const min = String(latestDate.getMinutes()).padStart(2, '0');
+      latestShort = `${mo} ${day} · ${h12}:${min}${ampm}`;
+    } else {
+      latestText = 'Unknown';
+      latestShort = '?';
+    }
   }
 
   if (totalCountEl) totalCountEl.textContent = String(total);
   if (withDeliveryEl) withDeliveryEl.textContent = String(withDelivery);
-  if (noResponseEl) noResponseEl.textContent = String(noResponse);
-  if (latestSubmissionEl) latestSubmissionEl.textContent = latestText;
+  if (latestSubmissionEl) {
+    latestSubmissionEl.textContent = latestText;
+    latestSubmissionEl.dataset.short = latestShort;
+  }
+  if (latestSubmissionShortEl) {
+    latestSubmissionShortEl.textContent = latestShort;
+  }
 }
 
 /**
@@ -606,15 +636,18 @@ function updateExportButtonLabel() {
   if (!exportBtn) return;
 
   const labelEl = exportBtn.querySelector('.btn-label');
+  const countEl = exportBtn.querySelector('.btn-count');
   if (!labelEl) return;
 
   const visibleCount = currentRenderedSubmissions.length;
   if (hasActiveFilters()) {
     labelEl.textContent = `Export filtered (${visibleCount}) ▾`;
+    if (countEl) countEl.textContent = `(${visibleCount}) ▾`;
     return;
   }
 
   labelEl.textContent = `Export visible (${visibleCount}) ▾`;
+  if (countEl) countEl.textContent = `(${visibleCount}) ▾`;
 }
 
 function questionnaireSortKey(key) {
@@ -848,13 +881,13 @@ function renderSubmissions(submissions) {
         <div class="submission-meta">
           <div class="submission-date" title="${relativeTime}">${dateStr} · ${timeStr}</div>
           <button class="card-edit-btn" aria-label="Edit submission ${brandName}">
-            <span aria-hidden="true"><i data-lucide="pen" class="icon icon-btn"></i></span>
-            <span>Edit</span>
+            <i data-lucide="pen" class="icon icon-btn"></i>
+            <span class="card-btn-label">Edit</span>
           </button>
           <div class="card-export">
             <button class="card-export-btn" aria-haspopup="menu" aria-expanded="${exportMenuOpen ? 'true' : 'false'}" aria-label="Export submission ${brandName}">
-              <span aria-hidden="true"><i data-lucide="download" class="icon icon-btn"></i></span>
-              <span>Export</span>
+              <i data-lucide="download" class="icon icon-btn"></i>
+              <span class="card-btn-label">Export</span>
             </button>
             <div class="card-export-menu${exportMenuOpen ? ' open' : ''}" role="menu">
               <button class="card-export-option" data-format="md" role="menuitem">Markdown (.md)</button>
@@ -973,7 +1006,7 @@ function updateSelectionToolbar() {
   }
 
   if (selectVisibleBtn) {
-    selectVisibleBtn.textContent = allVisibleSelected ? 'Deselect Visible' : 'Select Visible';
+    selectVisibleBtn.title = allVisibleSelected ? 'Deselect Visible' : 'Select Visible';
     selectVisibleBtn.disabled = visibleIds.length === 0;
   }
 }
@@ -1554,10 +1587,22 @@ async function deleteCurrentSubmission() {
   }
 }
 
-function sortSubmissions() {
+function sortSubmissions(mode) {
   isSortApplied = true;
-  sortAscending = !sortAscending;
+  sortMode = mode;
   applyCurrentFiltersAndRender();
+  // Update active state on menu options
+  document.querySelectorAll('.sort-option').forEach(opt => {
+    opt.classList.toggle('active', opt.dataset.sort === mode);
+  });
+  // Update sort button label
+  const labels = {
+    'date-desc': 'Newest', 'date-asc': 'Oldest',
+    'name-asc': 'A→Z', 'name-desc': 'Z→A',
+    'delivery-asc': 'Soonest', 'delivery-desc': 'Latest'
+  };
+  const labelEl = document.querySelector('.sort-btn-label');
+  if (labelEl) labelEl.textContent = labels[mode] || 'Sort';
 }
 
 /* ── Export helpers ─────────────────────────────────────── */
@@ -1788,6 +1833,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const refreshBtn = document.getElementById('refreshBtn');
   const accountBtn = document.getElementById('accountBtn');
   const sortBtn = document.getElementById('sortBtn');
+  const sortMenu = document.getElementById('sortMenu');
+  const sortDropdown = document.getElementById('sortDropdown');
   const selectVisibleBtn = document.getElementById('selectVisibleBtn');
   const clearSelectionBtn = document.getElementById('clearSelectionBtn');
   const deleteSelectedBtn = document.getElementById('deleteSelectedBtn');
@@ -1966,7 +2013,26 @@ document.addEventListener('DOMContentLoaded', () => {
   themeBtn?.addEventListener('click', () => toggleTheme());
   refreshBtn?.addEventListener('click', () => loadSubmissions());
   accountBtn?.addEventListener('click', () => window.netlifyIdentity?.open());
-  sortBtn?.addEventListener('click', () => sortSubmissions());
+  sortBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isOpen = sortMenu?.classList.toggle('open');
+    sortBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  });
+
+  document.querySelectorAll('.sort-option').forEach(opt => {
+    opt.addEventListener('click', () => {
+      sortSubmissions(opt.dataset.sort);
+      sortMenu?.classList.remove('open');
+      sortBtn?.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  document.addEventListener('click', (e) => {
+    if (sortDropdown && !sortDropdown.contains(e.target)) {
+      sortMenu?.classList.remove('open');
+      sortBtn?.setAttribute('aria-expanded', 'false');
+    }
+  });
   selectVisibleBtn?.addEventListener('click', () => toggleSelectVisible());
   clearSelectionBtn?.addEventListener('click', () => clearSelection());
   deleteSelectedBtn?.addEventListener('click', () => deleteSelectedSubmissions());

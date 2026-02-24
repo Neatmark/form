@@ -26,13 +26,14 @@
       <h1 class="header-title">DASHBOARD</h1>
       <div class="header-actions">
         <button class="btn" id="importBtn">
-          <span aria-hidden="true"><i data-lucide="import" class="icon icon-btn"></i></span>
-          <span>Import MD</span>
+          <span aria-hidden="true"><i data-lucide="upload" class="icon icon-btn"></i></span>
+          <span class="header-btn-label">Import MD</span>
         </button>
         <div class="export-dropdown">
           <button class="btn" id="exportBtn">
             <span aria-hidden="true"><i data-lucide="download" class="icon icon-btn"></i></span>
             <span class="btn-label">Export As ▾</span>
+            <span class="btn-count" aria-hidden="true"></span>
           </button>
           <div class="export-menu" id="exportMenu">
             <button class="export-option" data-format="md">Markdown (.md)</button>
@@ -42,15 +43,15 @@
         </div>
         <button class="btn" id="themeBtn">
           <span aria-hidden="true"><i data-lucide="moon" class="icon icon-btn"></i></span>
-          <span>Theme</span>
+          <span class="header-btn-label">Theme</span>
         </button>
         <button class="btn" id="refreshBtn">
           <span aria-hidden="true"><i data-lucide="refresh-cw" class="icon icon-btn"></i></span>
-          <span>Refresh</span>
+          <span class="header-btn-label">Refresh</span>
         </button>
         <button class="btn" id="accountBtn">
           <span aria-hidden="true"><i data-lucide="user-round" class="icon icon-btn"></i></span>
-          <span>Account</span>
+          <span class="header-btn-label">Account</span>
         </button>
       </div>
     </header>
@@ -72,16 +73,10 @@
       </div>
       <div class="stat-card">
         <div class="stat-icon" aria-hidden="true">
-          <i data-lucide="alert-triangle" class="icon icon-stat"></i>
-        </div>
-        <div class="stat-value" id="noResponseCount">-</div>
-        <div class="stat-label">No Response</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon" aria-hidden="true">
           <i data-lucide="clock" class="icon icon-stat"></i>
         </div>
         <div class="stat-value stat-value--small" id="latestSubmissionDate">-</div>
+        <div class="stat-value stat-value--small stat-value-short" id="latestSubmissionDateShort" aria-hidden="true">-</div>
         <div class="stat-label">Latest Submission</div>
       </div>
     </div>
@@ -105,13 +100,29 @@
       </div>
       <div class="toolbar-row">
         <div class="filter-actions">
-          <button class="btn" id="sortBtn">Sort by Date</button>
-          <button class="btn" id="selectVisibleBtn">Select Visible</button>
-          <button class="btn" id="clearSelectionBtn" disabled>Clear Selection</button>
-          <span class="toolbar-divider" aria-hidden="true"></span>
-          <button class="btn btn-danger" id="deleteSelectedBtn" disabled>
-            <span aria-hidden="true"><i data-lucide="trash" class="icon icon-btn"></i></span>
-            <span>Delete Selected</span>
+          <div class="sort-dropdown" id="sortDropdown">
+            <button class="btn sort-btn" id="sortBtn" aria-haspopup="menu" aria-expanded="false">
+              <i data-lucide="arrow-up-down" class="icon icon-btn"></i>
+              <span class="sort-btn-label">Sort by</span>
+              <i data-lucide="chevron-down" class="icon sort-chevron"></i>
+            </button>
+            <div class="sort-menu" id="sortMenu" role="menu">
+              <button class="sort-option" data-sort="date-desc" role="menuitem">Newest first</button>
+              <button class="sort-option" data-sort="date-asc" role="menuitem">Oldest first</button>
+              <button class="sort-option" data-sort="name-asc" role="menuitem">Name A→Z</button>
+              <button class="sort-option" data-sort="name-desc" role="menuitem">Name Z→A</button>
+              <button class="sort-option" data-sort="delivery-asc" role="menuitem">Delivery soonest</button>
+              <button class="sort-option" data-sort="delivery-desc" role="menuitem">Delivery latest</button>
+            </div>
+          </div>
+          <button class="btn action-icon-btn" id="selectVisibleBtn" title="Select Visible" disabled>
+            <i data-lucide="check-square" class="icon"></i>
+          </button>
+          <button class="btn action-icon-btn" id="clearSelectionBtn" title="Clear Selection" disabled>
+            <i data-lucide="x" class="icon"></i>
+          </button>
+          <button class="btn btn-danger action-icon-btn" id="deleteSelectedBtn" title="Delete Selected" disabled>
+            <i data-lucide="trash" class="icon"></i>
           </button>
         </div>
         <div class="selection-info" id="selectionInfo">Showing 0 submissions</div>
