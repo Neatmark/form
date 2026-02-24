@@ -268,67 +268,69 @@ exports.handler = async (event) => {
 
     const baseFilename = `${brandPart}_${clientPart}_${dateStr}_${timeStr}`;
 
-    let markdown;
-    let docxBuffer;
-    let pdfBuffer;
+    if (submissionAction !== 'override') {
+      let markdown;
+      let docxBuffer;
+      let pdfBuffer;
 
-    try {
-      markdown = buildMarkdown(payload);
-      docxBuffer = await buildDocxBuffer(payload);
-      pdfBuffer = await buildPdfBuffer(payload);
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Unknown document generation error';
-      throw new Error(`Document generation failed: ${message}`);
-    }
-
-    try {
-      const adminEmail = buildAdminEmail({
-        brandName: normalizeValue(payload['brand-name']),
-        clientName: normalizeValue(payload['client-name']),
-        email: normalizeValue(payload.email),
-        deliveryDate: normalizeValue(payload['delivery-date'])
-      });
-
-      const adminAttachments = [
-        { filename: `${baseFilename}.md`, content: Buffer.from(markdown, 'utf8').toString('base64') },
-        { filename: `${baseFilename}.docx`, content: docxBuffer.toString('base64') },
-        { filename: `${baseFilename}.pdf`, content: pdfBuffer.toString('base64') }
-      ];
-
-      await sendResendEmail({
-        apiKey: resendApiKey,
-        to: destinationEmail,
-        from: fromEmail,
-        subject: adminEmail.subject,
-        html: adminEmail.html,
-        text: adminEmail.text,
-        attachments: adminAttachments
-      });
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Unknown admin email error';
-      throw new Error(`Admin email failed: ${message}`);
-    }
-
-    const clientEmail = normalizeValue(payload.email);
-    if (clientEmail && clientEmail.includes('@')) {
       try {
-        const clientMessage = buildClientEmail({
+        markdown = buildMarkdown(payload);
+        docxBuffer = await buildDocxBuffer(payload);
+        pdfBuffer = await buildPdfBuffer(payload);
+      } catch (error) {
+        const message = error instanceof Error ? error.message : 'Unknown document generation error';
+        throw new Error(`Document generation failed: ${message}`);
+      }
+
+      try {
+        const adminEmail = buildAdminEmail({
           brandName: normalizeValue(payload['brand-name']),
-          clientName: normalizeValue(payload['client-name'])
+          clientName: normalizeValue(payload['client-name']),
+          email: normalizeValue(payload.email),
+          deliveryDate: normalizeValue(payload['delivery-date'])
         });
+
+        const adminAttachments = [
+          { filename: `${baseFilename}.md`, content: Buffer.from(markdown, 'utf8').toString('base64') },
+          { filename: `${baseFilename}.docx`, content: docxBuffer.toString('base64') },
+          { filename: `${baseFilename}.pdf`, content: pdfBuffer.toString('base64') }
+        ];
 
         await sendResendEmail({
           apiKey: resendApiKey,
-          to: clientEmail,
+          to: destinationEmail,
           from: fromEmail,
-          subject: clientMessage.subject,
-          html: clientMessage.html,
-          text: clientMessage.text,
-          attachments: [{ filename: `${baseFilename}.pdf`, content: pdfBuffer.toString('base64') }]
+          subject: adminEmail.subject,
+          html: adminEmail.html,
+          text: adminEmail.text,
+          attachments: adminAttachments
         });
       } catch (error) {
-        const message = error instanceof Error ? error.message : 'Unknown confirmation email error';
-        throw new Error(`Confirmation email failed: ${message}`);
+        const message = error instanceof Error ? error.message : 'Unknown admin email error';
+        throw new Error(`Admin email failed: ${message}`);
+      }
+
+      const clientEmail = normalizeValue(payload.email);
+      if (clientEmail && clientEmail.includes('@')) {
+        try {
+          const clientMessage = buildClientEmail({
+            brandName: normalizeValue(payload['brand-name']),
+            clientName: normalizeValue(payload['client-name'])
+          });
+
+          await sendResendEmail({
+            apiKey: resendApiKey,
+            to: clientEmail,
+            from: fromEmail,
+            subject: clientMessage.subject,
+            html: clientMessage.html,
+            text: clientMessage.text,
+            attachments: [{ filename: `${baseFilename}.pdf`, content: pdfBuffer.toString('base64') }]
+          });
+        } catch (error) {
+          const message = error instanceof Error ? error.message : 'Unknown confirmation email error';
+          throw new Error(`Confirmation email failed: ${message}`);
+        }
       }
     }
 
