@@ -196,10 +196,16 @@
         "hint": "UNE émotion. Ne partagez pas tout - c'est votre super pouvoir émotionnel.",
         "placeholder": "Fiable. Inspiré. Soulagé. Excité..."
       },
-      "q20": {
+      "q21": {
         "label": "Y a-t-il quelque chose d'autre que nous devrions savoir avant de commencer?",
         "hint": "Parlez librement - des inquiétudes, des histoires, des exigences, toute chose importante.",
         "placeholder": "La dernière agence nous a donné quelque chose de trop générique. Nous voulons vraiment que cela nous ressemble..."
+      },
+      "q20": {
+        "label": "Avez-vous des logos, photos ou moodboards qui inspirent la direction de votre marque ? Déposez-les ici — plus je vois ce qui vous touche, mieux je peux concevoir pour vous.",
+        "hint": "Jusqu'à 8 images. PNG, JPG, WEBP ou GIF.",
+        "uploadPrompt": "Cliquez ou glissez des images ici",
+        "uploadLimit": "Jusqu'à 8 images · PNG, JPG, WEBP, GIF"
       }
     }
   },

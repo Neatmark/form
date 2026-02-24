@@ -283,9 +283,8 @@ function isWithinRelativeDateRange(date, range) {
 
 function getFilteredSubmissions() {
   const searchBox = document.getElementById('searchBox');
-  const dateFilter = document.getElementById('dateFilter');
   const query = (searchBox && searchBox.value ? searchBox.value : '').toLowerCase().trim();
-  const selectedRange = dateFilter ? dateFilter.value : 'all';
+  const selectedRange = document.querySelector('.date-filter-option[aria-selected="true"]')?.dataset.value || 'all';
 
   return allSubmissions.filter(submission => {
     const data = submission.data || {};
@@ -513,17 +512,31 @@ function renderQ6SpectrumGroup(q6Values, isEditMode = false) {
   ];
 
   if (isEditMode) {
-    // In edit mode, render as textareas like other fields
-    return spectrumDefs.map(({ key, leftLabel, rightLabel }) => {
-      const label = `Q6 - ${leftLabel}/${rightLabel}`;
-      const value = q6Values[key] ?? '';
+    const editRows = spectrumDefs.map(({ key, leftLabel, rightLabel }) => {
+      const rawValue = q6Values[key];
+      const value = Number(rawValue) || 3;
+
+      const buttons = [1, 2, 3, 4, 5].map(n => {
+        const isActive = n === value;
+        return `<button type="button" class="q6-num-btn${isActive ? ' active' : ''}" data-edit-key="${escapeHtml(key)}" data-val="${n}">${n}</button>`;
+      }).join('');
+
       return `
-        <article class="qa-card">
-          <label class="qa-label" for="edit-${escapeHtml(key)}">${escapeHtml(label)}</label>
-          <textarea id="edit-${escapeHtml(key)}" class="edit-textarea" data-edit-key="${escapeHtml(key)}">${escapeHtml(String(value))}</textarea>
-        </article>
+        <div class="q6-num-row q6-edit-row">
+          <div class="q6-num-left-label">${escapeHtml(leftLabel)}</div>
+          <div class="q6-num-buttons">${buttons}</div>
+          <div class="q6-num-right-label">${escapeHtml(rightLabel)}</div>
+        </div>
       `;
     }).join('');
+
+    return `
+      <article class="qa-card q6-spectrum-card">
+        <div class="qa-label-row"><span class="qa-num-badge">06</span><span class="qa-label-text">Personality Spectrums</span></div>
+        <div class="q6-hint">1 = far left, 5 = far right</div>
+        <div class="q6-spectrums q6-edit-spectrums">${editRows}</div>
+      </article>
+    `;
   }
 
   // View mode: render both desktop slider and mobile numbered buttons (CSS shows the right one)
@@ -642,9 +655,8 @@ function hasAnyQuestionnaireResponse(submission) {
 
 function hasActiveFilters() {
   const searchBox = document.getElementById('searchBox');
-  const dateFilter = document.getElementById('dateFilter');
   const query = String(searchBox?.value || '').trim();
-  const range = String(dateFilter?.value || 'all');
+  const range = document.querySelector('.date-filter-option[aria-selected="true"]')?.dataset.value || 'all';
   return query.length > 0 || range !== 'all';
 }
 
@@ -780,6 +792,40 @@ async function uploadLogoFile(file) {
   return String(result.logoRef || '');
 }
 
+async function setSubmissionStatus(submissionId, status) {
+  try {
+    const response = await fetch('/.netlify/functions/submit-form', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        __submissionAction: 'override',
+        __overrideSubmissionId: submissionId,
+        __editedBy: 'admin',
+        editedBy: 'admin',
+        status
+      })
+    });
+    if (!response.ok) throw new Error('Failed to update status');
+    const result = await response.json();
+    const updatedSubmission = result.submission;
+    if (updatedSubmission) {
+      allSubmissions = allSubmissions.map(item => String(item.id) === String(updatedSubmission.id) ? updatedSubmission : item);
+      currentSubmission = updatedSubmission;
+    } else {
+      // Patch locally
+      if (currentSubmission) {
+        currentSubmission = { ...currentSubmission, data: { ...currentSubmission.data, status } };
+      }
+      allSubmissions = allSubmissions.map(item => String(item.id) === String(submissionId) ? { ...item, data: { ...item.data, status } } : item);
+    }
+    applyCurrentFiltersAndRender();
+    renderDetailPanel();
+  } catch (error) {
+    console.error('setSubmissionStatus failed:', error);
+    alert('Failed to update status. Please try again.');
+  }
+}
+
 function setModalActionButtons(mode) {
   const modalActions = document.getElementById('modalActions');
   const modalEditIconBtn = document.getElementById('modalEditIconBtn');
@@ -794,13 +840,40 @@ function setModalActionButtons(mode) {
       <button class="btn" id="cancelEditBtn">Cancel</button>
       <button class="btn btn-primary" id="saveEditBtn">Save Changes</button>
     `;
+
+    // Add cancel icon button to header
+    const headerActions = document.getElementById('modalHeaderActions');
+    let cancelIconBtn = document.getElementById('modalCancelIconBtn');
+    if (!cancelIconBtn && headerActions) {
+      cancelIconBtn = document.createElement('button');
+      cancelIconBtn.id = 'modalCancelIconBtn';
+      cancelIconBtn.className = 'modal-icon-btn modal-cancel-icon-btn';
+      cancelIconBtn.setAttribute('aria-label', 'Cancel editing');
+      cancelIconBtn.innerHTML = '<i data-lucide="rotate-ccw" class="icon icon-btn"></i>';
+      const closeBtn = document.getElementById('modalCloseBtn');
+      closeBtn?.parentNode?.insertBefore(cancelIconBtn, closeBtn);
+    }
+    if (cancelIconBtn) cancelIconBtn.style.display = '';
+    if (window.lucide) window.lucide.createIcons();
     return;
   }
 
-  // view mode: show header icon buttons, clear modal-actions
+  // view mode: show header icon buttons, clear modal-actions, hide cancel icon
   if (modalEditIconBtn) modalEditIconBtn.style.display = '';
   if (modalDeleteIconBtn) modalDeleteIconBtn.style.display = '';
-  modalActions.innerHTML = '';
+  const cancelIconBtn = document.getElementById('modalCancelIconBtn');
+  if (cancelIconBtn) cancelIconBtn.style.display = 'none';
+
+  // Render approve/reject buttons based on current status
+  const status = currentSubmission?.data?.status || 'pending';
+  let statusButtons = '';
+  if (status !== 'approved') {
+    statusButtons += `<button class="btn btn-approve" id="approveBtn"><i data-lucide="check-circle" class="icon icon-btn"></i> Approve</button>`;
+  }
+  if (status !== 'rejected') {
+    statusButtons += `<button class="btn btn-reject" id="rejectBtn"><i data-lucide="x-circle" class="icon icon-btn"></i> Reject</button>`;
+  }
+  modalActions.innerHTML = statusButtons;
 }
 
 function syncDraftFromInputs() {
@@ -837,12 +910,20 @@ function renderSubmissions(submissions) {
     const clearFiltersBtn = document.getElementById('clearFiltersBtn');
     clearFiltersBtn?.addEventListener('click', () => {
       const searchBox = document.getElementById('searchBox');
-      const dateFilter = document.getElementById('dateFilter');
       if (searchBox instanceof HTMLInputElement) {
         searchBox.value = '';
       }
-      if (dateFilter instanceof HTMLSelectElement) {
-        dateFilter.value = 'all';
+      // Reset custom date filter dropdown
+      const dfMenu = document.getElementById('dateFilterMenu');
+      const dfLabel = document.getElementById('dateFilterLabel');
+      if (dfMenu) {
+        dfMenu.querySelectorAll('.date-filter-option').forEach(o => {
+          o.classList.remove('active');
+          o.setAttribute('aria-selected', 'false');
+        });
+        const allOpt = dfMenu.querySelector('[data-value="all"]');
+        if (allOpt) { allOpt.classList.add('active'); allOpt.setAttribute('aria-selected', 'true'); }
+        if (dfLabel) dfLabel.textContent = 'All dates';
       }
       applyCurrentFiltersAndRender();
     });
@@ -860,10 +941,23 @@ function renderSubmissions(submissions) {
     const brandName = escapeHtml(data['brand-name'] || 'Unknown Brand');
     const clientName = escapeHtml(data['client-name'] || 'Unknown Client');
     const email = escapeHtml(data['email'] || 'N/A');
+    const submissionStatus = String(data['status'] || 'pending').toLowerCase();
+    const statusLabel = submissionStatus === 'approved' ? 'Approved' : submissionStatus === 'rejected' ? 'Rejected' : 'Pending';
+    const statusBadge = `<span class="status-badge ${submissionStatus}">${statusLabel}</span>`;
+    const agreedDeliveryRaw = getDisplayValue(data['agreed-delivery-date']);
     const deliveryRaw = getDisplayValue(data['delivery-date']);
-    const deliveryDate = deliveryRaw
-      ? escapeHtml(deliveryRaw)
-      : '<span class="delivery-badge-not-set">Not set</span>';
+    let deliveryDisplay;
+    let deliveryLabel;
+    if (agreedDeliveryRaw) {
+      deliveryDisplay = escapeHtml(agreedDeliveryRaw);
+      deliveryLabel = 'Agreed';
+    } else if (deliveryRaw) {
+      deliveryDisplay = `${escapeHtml(deliveryRaw)} <span class="delivery-proposed-tag">Proposed</span>`;
+      deliveryLabel = 'Delivery';
+    } else {
+      deliveryDisplay = '<span class="delivery-badge-not-set">Not set</span>';
+      deliveryLabel = 'Delivery';
+    }
     const avatarInitials = escapeHtml(buildBrandInitials(data['brand-name'] || 'Unknown Brand'));
     const logoRef = getLogoRefFromData(data);
     const logoUrl = logoRef ? getLogoUrlFromRef(logoRef) : '';
@@ -899,7 +993,7 @@ function renderSubmissions(submissions) {
             </label>
           </div>
           <div>
-            <div class="submission-brand">${brandName}</div>
+            <div class="submission-brand">${brandName} ${statusBadge}</div>
             <div class="submission-client">${clientName}</div>
           </div>
         </div>
@@ -918,6 +1012,7 @@ function renderSubmissions(submissions) {
               <button class="card-export-option" data-format="md" role="menuitem">Markdown (.md)</button>
               <button class="card-export-option" data-format="pdf" role="menuitem">PDF (.pdf)</button>
               <button class="card-export-option" data-format="docx" role="menuitem">Word (.docx)</button>
+              <button class="card-export-option" data-format="csv" role="menuitem">CSV (.csv)</button>
             </div>
           </div>
         </div>
@@ -928,8 +1023,8 @@ function renderSubmissions(submissions) {
           <div class="detail-value">${email}</div>
         </div>
         <div class="detail-item">
-          <div class="detail-label">Delivery</div>
-          <div class="detail-value">${deliveryDate}</div>
+          <div class="detail-label">${deliveryLabel}</div>
+          <div class="detail-value">${deliveryDisplay}</div>
         </div>
       </div>
     `;
@@ -1225,6 +1320,10 @@ function renderDetailPanel() {
             <label class="overview-label" for="edit-delivery-date">Delivery Date</label>
             <input id="edit-delivery-date" class="edit-input" type="date" data-edit-key="delivery-date" value="${escapeHtml(normalizeDateInputValue(data['delivery-date']))}" />
           </div>
+          <div class="overview-card edit-field">
+            <label class="overview-label" for="edit-agreed-delivery-date">Agreed Delivery Date</label>
+            <input id="edit-agreed-delivery-date" class="edit-input" type="date" data-edit-key="agreed-delivery-date" value="${escapeHtml(normalizeDateInputValue(data['agreed-delivery-date']))}" />
+          </div>
         </div>
       </section>
     `;
@@ -1237,6 +1336,7 @@ function renderDetailPanel() {
           <div class="overview-card"><div class="overview-label">Email</div><div class="overview-value">${escapeHtml(email)}</div></div>
           <div class="overview-card"><div class="overview-label">Brand Name</div><div class="overview-value">${escapeHtml(brandName)}</div></div>
           <div class="overview-card"><div class="overview-label">Delivery Date</div><div class="overview-value">${formatDeliveryDateForOverview(data['delivery-date'])}</div></div>
+          <div class="overview-card"><div class="overview-label">Agreed Delivery Date</div><div class="overview-value">${data['agreed-delivery-date'] ? escapeHtml(formatDeliveryDateForOverview(data['agreed-delivery-date'])) : '<span class="overview-empty-badge">Not set yet</span>'}</div></div>
         </div>
       </section>
     `;
@@ -1302,6 +1402,16 @@ function renderDetailPanel() {
     }
 
     const displayValue = getDisplayValue(value);
+
+    // Special rendering for q20-inspiration-refs
+    if (key === 'q20-inspiration-refs' && !isEditingSubmission) {
+      const refs = Array.isArray(value) ? value : (value ? [value] : []);
+      const imagesHtml = refs.length > 0
+        ? `<div class="q20-dash-preview-grid">${refs.map((ref, i) => `<div class="q20-dash-thumb-wrap"><img src="${escapeHtml(getLogoUrlFromRef(String(ref)))}" class="q20-dash-thumb" alt="Inspiration ${i + 1}" loading="lazy" /></div>`).join('')}</div>`
+        : '<div class="qa-value qa-empty">No images uploaded</div>';
+      return `<article class="qa-card"><div class="qa-label-row"><span class="qa-num-badge">20</span><span class="qa-label-text">Inspiration Images</span></div>${imagesHtml}</article>`;
+    }
+
     const valueMarkup = displayValue
       ? `<div class="qa-value">${escapeHtml(displayValue)}</div>`
       : '<div class="qa-value qa-empty">No response</div>';
@@ -1332,6 +1442,38 @@ function renderDetailPanel() {
   const modalDeleteIconBtn = document.getElementById('modalDeleteIconBtn');
   const cancelEditBtn = document.getElementById('cancelEditBtn');
   const saveEditBtn = document.getElementById('saveEditBtn');
+
+  // Approve / Reject buttons (view mode)
+  const approveBtn = document.getElementById('approveBtn');
+  const rejectBtn = document.getElementById('rejectBtn');
+  if (approveBtn) {
+    approveBtn.addEventListener('click', () => {
+      if (currentSubmission) setSubmissionStatus(String(currentSubmission.id), 'approved');
+    });
+  }
+  if (rejectBtn) {
+    rejectBtn.addEventListener('click', () => {
+      if (currentSubmission) setSubmissionStatus(String(currentSubmission.id), 'rejected');
+    });
+  }
+
+  // Cancel icon button in header (edit mode)
+  const modalCancelIconBtn = document.getElementById('modalCancelIconBtn');
+  if (modalCancelIconBtn) {
+    modalCancelIconBtn.onclick = async () => {
+      if (editDirty) {
+        const shouldDiscard = await confirmDiscardChanges();
+        if (!shouldDiscard) return;
+      }
+      isEditingSubmission = false;
+      editDraftData = cloneSubmissionData(editOriginalData || currentSubmission?.data || {});
+      editValidationErrors = {};
+      pendingLogoFile = null;
+      removeExistingLogo = false;
+      editDirty = false;
+      renderDetailPanel();
+    };
+  }
 
   // Re-attach listeners to persistent header icon buttons
   if (modalEditIconBtn) {
@@ -1394,6 +1536,21 @@ function setupEditModeInteractions() {
     element.addEventListener('input', () => {
       markEditDirty();
       syncDraftFromInputs();
+    });
+  });
+
+  // Q6 interactive buttons in edit mode
+  modalBody.querySelectorAll('.q6-edit-spectrums .q6-num-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const key = btn.getAttribute('data-edit-key');
+      const val = btn.getAttribute('data-val');
+      if (!key || !val || !editDraftData) return;
+      editDraftData[key] = val;
+      markEditDirty();
+      const row = btn.closest('.q6-num-row');
+      row?.querySelectorAll('.q6-num-btn').forEach(b => {
+        b.classList.toggle('active', b === btn);
+      });
     });
   });
 
@@ -1860,10 +2017,51 @@ async function exportAsDOCX(submissionsOverride) {
   downloadBlob(blob, `submissions-${Date.now()}.docx`);
 }
 
+function exportAsCSV(submissionsOverride) {
+  const submissions = resolveExportSubmissions(submissionsOverride);
+  if (submissions.length === 0) { alert('No submissions to export.'); return; }
+
+  const columns = [
+    'id', 'created_at', 'status',
+    'client-name', 'brand-name', 'email', 'delivery-date', 'agreed-delivery-date',
+    'q1-business-description', 'q2-problem-transformation', 'q3-ideal-customer',
+    'q4-competitors', 'q5-brand-personality',
+    'q6-playful-serious', 'q6-minimalist-expressive', 'q6-approachable-authoritative', 'q6-classic-contemporary',
+    'q7-core-values', 'q8-positioning', 'q9-success-vision',
+    'q10-brands-admired', 'q11-brands-disliked',
+    'q12-color', 'q13-colors-to-avoid', 'q14-typography', 'q15-aesthetic', 'q15-aesthetic-description',
+    'q16-brand-space', 'q17-existing-assets', 'q18-deliverables',
+    'q19-first-feeling', 'q20-inspiration-refs', 'q21-anything-else'
+  ];
+
+  function escapeCSVCell(value) {
+    const str = Array.isArray(value) ? value.join(' | ') : String(value ?? '');
+    if (str.includes(',') || str.includes('\n') || str.includes('"')) {
+      return '"' + str.replace(/"/g, '""') + '"';
+    }
+    return str;
+  }
+
+  const header = columns.map(escapeCSVCell).join(',');
+  const rows = submissions.map(sub => {
+    return columns.map(col => {
+      if (col === 'id') return escapeCSVCell(sub.id);
+      if (col === 'created_at') return escapeCSVCell(sub.created_at);
+      if (col === 'status') return escapeCSVCell(sub.data?.status || 'pending');
+      return escapeCSVCell(sub.data?.[col] ?? '');
+    }).join(',');
+  });
+
+  const csv = [header, ...rows].join('\r\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+  downloadBlob(blob, `submissions-${Date.now()}.csv`);
+}
+
 function handleExport(format, submissionsOverride) {
   if (format === 'md') exportAsMarkdown(submissionsOverride);
   else if (format === 'pdf') exportAsPDF(submissionsOverride);
   else if (format === 'docx') exportAsDOCX(submissionsOverride);
+  else if (format === 'csv') exportAsCSV(submissionsOverride);
 }
 
 /* ── End export helpers ────────────────────────────────── */
@@ -1894,7 +2092,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const searchBox = document.getElementById('searchBox');
-  const dateFilter = document.getElementById('dateFilter');
   const loginBtn = document.getElementById('loginBtn');
   const themeBtn = document.getElementById('themeBtn');
   const refreshBtn = document.getElementById('refreshBtn');
@@ -1910,6 +2107,44 @@ document.addEventListener('DOMContentLoaded', () => {
   const exportBtn = document.getElementById('exportBtn');
   const exportMenu = document.getElementById('exportMenu');
   const importBtn = document.getElementById('importBtn');
+
+  function parseCSVRow(line) {
+    const result = [];
+    let current = '';
+    let inQuotes = false;
+    for (let i = 0; i < line.length; i++) {
+      const ch = line[i];
+      if (ch === '"') {
+        if (inQuotes && line[i + 1] === '"') { current += '"'; i++; }
+        else { inQuotes = !inQuotes; }
+      } else if (ch === ',' && !inQuotes) {
+        result.push(current);
+        current = '';
+      } else {
+        current += ch;
+      }
+    }
+    result.push(current);
+    return result;
+  }
+
+  function parseCSVSubmission(text) {
+    const lines = text.split(/\r?\n/).filter(line => line.trim());
+    if (lines.length < 2) throw new Error('CSV must have at least a header row and one data row.');
+    const headers = parseCSVRow(lines[0]);
+    const values = parseCSVRow(lines[1]);
+    const data = {};
+    const arrayFields = new Set(['q12-color', 'q14-typography', 'q15-aesthetic', 'q18-deliverables', 'q20-inspiration-refs']);
+    headers.forEach((header, i) => {
+      const value = values[i] ?? '';
+      if (arrayFields.has(header) && value.includes(' | ')) {
+        data[header] = value.split(' | ').map(v => v.trim()).filter(Boolean);
+      } else if (header !== 'id' && header !== 'created_at') {
+        data[header] = value;
+      }
+    });
+    return data;
+  }
 
   // Parse markdown submission file
   function parseMarkdownSubmission(text) {
@@ -1984,15 +2219,30 @@ document.addEventListener('DOMContentLoaded', () => {
       'Q17 — Existing Assets To Keep': 'q17-existing-assets',
       'Q18 — Needed Deliverables': 'q18-deliverables',
       'Q19 — First Feeling': 'q19-first-feeling',
-      'Q20 — Anything Else': 'q20-anything-else'
+      'Q20 — Inspiration Images': 'q20-inspiration-refs',
+      'Q21 — Anything Else': 'q21-anything-else'
     };
     return map[heading] || heading.toLowerCase().replace(/\s+/g, '-');
   }
 
   async function handleImport(file) {
+    const isCSV = file.name.endsWith('.csv') || file.type === 'text/csv';
+    const isMarkdown = file.name.endsWith('.md') || file.name.endsWith('.markdown');
+
+    if (!isCSV && !isMarkdown) {
+      alert('Unsupported file type. Please use .md or .csv');
+      return;
+    }
+
     try {
       const text = await file.text();
-      const parsedData = parseMarkdownSubmission(text);
+      let parsedData;
+
+      if (isCSV) {
+        parsedData = parseCSVSubmission(text);
+      } else {
+        parsedData = parseMarkdownSubmission(text);
+      }
       
       // Validate required fields
       if (!parsedData['brand-name'] || !parsedData['client-name'] || !parsedData['email']) {
@@ -2046,7 +2296,7 @@ document.addEventListener('DOMContentLoaded', () => {
   importBtn?.addEventListener('click', () => {
     const input = document.createElement('input');
     input.type = 'file';
-    input.accept = '.md,.markdown,text/markdown';
+    input.accept = '.md,.markdown,.csv,text/markdown,text/csv';
     input.onchange = (e) => {
       const file = e.target?.files?.[0];
       if (file) {
@@ -2069,12 +2319,40 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  if (dateFilter) {
-    dateFilter.addEventListener('change', () => {
+  // Custom date filter dropdown (Feature 6)
+  const dateFilterBtn = document.getElementById('dateFilterBtn');
+  const dateFilterMenu = document.getElementById('dateFilterMenu');
+  const dateFilterLabel = document.getElementById('dateFilterLabel');
+  const dateFilterDropdown = document.getElementById('dateFilterDropdown');
+
+  dateFilterBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isOpen = dateFilterMenu?.classList.toggle('open');
+    dateFilterBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  });
+
+  dateFilterMenu?.querySelectorAll('.date-filter-option').forEach(opt => {
+    opt.addEventListener('click', () => {
+      dateFilterMenu.querySelectorAll('.date-filter-option').forEach(o => {
+        o.classList.remove('active');
+        o.setAttribute('aria-selected', 'false');
+      });
+      opt.classList.add('active');
+      opt.setAttribute('aria-selected', 'true');
+      if (dateFilterLabel) dateFilterLabel.textContent = opt.textContent;
+      dateFilterMenu.classList.remove('open');
+      dateFilterBtn?.setAttribute('aria-expanded', 'false');
       openCardExportSubmissionId = null;
       applyCurrentFiltersAndRender();
     });
-  }
+  });
+
+  document.addEventListener('click', (e) => {
+    if (dateFilterDropdown && !dateFilterDropdown.contains(e.target)) {
+      dateFilterMenu?.classList.remove('open');
+      dateFilterBtn?.setAttribute('aria-expanded', 'false');
+    }
+  });
 
   loginBtn?.addEventListener('click', () => window.netlifyIdentity?.open());
   themeBtn?.addEventListener('click', () => toggleTheme());

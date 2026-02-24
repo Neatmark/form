@@ -336,9 +336,22 @@
     </div>
 
     <div class="q-card">
-      <div class="q-header"><span class="q-num">20</span><p class="q-label" data-i18n="form.questions.q20.label">Anything else we should know before we begin?</p></div>
-      <p class="q-hint" data-i18n="form.questions.q20.hint">Fears, strong preferences, past branding experiences, or anything that feels important.</p>
-      <textarea name="q20-anything-else" data-i18n-placeholder="form.questions.q20.placeholder" placeholder="The last agency gave us something too generic. We really want this to feel like us..."></textarea>
+      <div class="q-header"><span class="q-num">20</span><p class="q-label" data-i18n="form.questions.q20.label">Got any logos, photos, or moodboards that inspire your brand's direction? Drop them here — the more I see what moves you, the better I can design for you.</p></div>
+      <p class="q-hint" data-i18n="form.questions.q20.hint">Up to 8 images. PNG, JPG, WEBP, or GIF.</p>
+      <div class="q20-upload-area" id="q20UploadArea">
+        <input type="file" id="q20FileInput" accept=".png,.jpg,.jpeg,.webp,.gif,image/png,image/jpeg,image/webp,image/gif" multiple hidden />
+        <div class="q20-dropzone" id="q20Dropzone" tabindex="0" role="button" aria-label="Upload inspiration images">
+          <i data-lucide="upload-cloud" class="icon q20-upload-icon"></i>
+          <span class="q20-upload-label" data-i18n="form.questions.q20.uploadPrompt">Click or drag images here</span>
+          <span class="q20-upload-sub" data-i18n="form.questions.q20.uploadLimit">Up to 8 images · PNG, JPG, WEBP, GIF</span>
+        </div>
+        <div class="q20-preview-grid" id="q20PreviewGrid"></div>
+      </div>
+    </div>
+    <div class="q-card">
+      <div class="q-header"><span class="q-num">21</span><p class="q-label" data-i18n="form.questions.q21.label">Anything else we should know before we begin?</p></div>
+      <p class="q-hint" data-i18n="form.questions.q21.hint">Fears, strong preferences, past branding experiences, or anything that feels important.</p>
+      <textarea name="q21-anything-else" data-i18n-placeholder="form.questions.q21.placeholder" placeholder="The last agency gave us something too generic. We really want this to feel like us..."></textarea>
     </div>
   </section>
 

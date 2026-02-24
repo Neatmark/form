@@ -7,10 +7,12 @@ create table if not exists submissions (
   id uuid primary key default gen_random_uuid(),
   created_at timestamptz not null default now(),
   history jsonb not null default '[]'::jsonb,
+  "status" text not null default 'pending',
   "client-name" text,
   "brand-name" text,
   "email" text,
   "delivery-date" text,
+  "agreed-delivery-date" text,
   "q1-business-description" text,
   "q2-problem-transformation" text,
   "q3-ideal-customer" text,
@@ -34,10 +36,15 @@ create table if not exists submissions (
   "q17-existing-assets" text,
   "q18-deliverables" text[],
   "q19-first-feeling" text,
-  "q20-anything-else" text,
+  "q20-inspiration-refs" text[],
+  "q21-anything-else" text,
   "brand-logo-ref" text
 );
 
 -- Migration for existing tables (run once if the table already exists):
 -- alter table submissions add column if not exists history jsonb not null default '[]'::jsonb;
 -- alter table submissions add column if not exists "brand-logo-ref" text;
+-- alter table submissions add column if not exists "agreed-delivery-date" text;
+-- alter table submissions add column if not exists "status" text not null default 'pending';
+-- alter table submissions add column if not exists "q20-inspiration-refs" text[];
+-- alter table submissions rename column "q20-anything-else" to "q21-anything-else";

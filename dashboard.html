@@ -39,6 +39,7 @@
             <button class="export-option" data-format="md">Markdown (.md)</button>
             <button class="export-option" data-format="pdf">PDF (.pdf)</button>
             <button class="export-option" data-format="docx">Word (.docx)</button>
+            <button class="export-option" data-format="csv">CSV (.csv)</button>
           </div>
         </div>
         <button class="btn" id="themeBtn">
@@ -92,14 +93,20 @@
           </span>
           <input type="text" class="search-box" id="searchBox" placeholder="Search by brand, client, or email...">
         </div>
-        <select class="date-filter" id="dateFilter">
-          <option value="all">All dates</option>
-          <option value="today">Today</option>
-          <option value="last7">Last 7 days</option>
-          <option value="last30">Last 30 days</option>
-          <option value="thisMonth">This month</option>
-          <option value="lastMonth">Last month</option>
-        </select>
+        <div class="custom-dropdown date-filter-dropdown" id="dateFilterDropdown">
+          <button type="button" class="btn date-filter-btn" id="dateFilterBtn" aria-haspopup="listbox" aria-expanded="false">
+            <span class="date-filter-label" id="dateFilterLabel">All dates</span>
+            <i data-lucide="chevron-down" class="icon date-filter-caret"></i>
+          </button>
+          <div class="date-filter-menu" id="dateFilterMenu" role="listbox" aria-label="Filter by date">
+            <button class="date-filter-option active" data-value="all" role="option" aria-selected="true">All dates</button>
+            <button class="date-filter-option" data-value="today" role="option" aria-selected="false">Today</button>
+            <button class="date-filter-option" data-value="last7" role="option" aria-selected="false">Last 7 days</button>
+            <button class="date-filter-option" data-value="last30" role="option" aria-selected="false">Last 30 days</button>
+            <button class="date-filter-option" data-value="thisMonth" role="option" aria-selected="false">This month</button>
+            <button class="date-filter-option" data-value="lastMonth" role="option" aria-selected="false">Last month</button>
+          </div>
+        </div>
       </div>
       <div class="toolbar-row">
         <div class="filter-actions">
@@ -161,7 +168,7 @@
           </div>
         </div>
       </div>
-      <div class="modal-header-actions">
+      <div class="modal-header-actions" id="modalHeaderActions">
         <button class="modal-icon-btn modal-edit-icon-btn" id="modalEditIconBtn" aria-label="Edit submission">
           <i data-lucide="pen" class="icon icon-btn"></i>
         </button>

@@ -196,10 +196,16 @@
         "hint": "A single word or short phrase is perfect.",
         "placeholder": "Trusted. Inspired. Relieved. Excited..."
       },
-      "q20": {
+      "q21": {
         "label": "Anything else we should know before we begin?",
         "hint": "Fears, strong preferences, past branding experiences, or anything that feels important.",
         "placeholder": "The last agency gave us something too generic. We really want this to feel like us..."
+      },
+      "q20": {
+        "label": "Got any logos, photos, or moodboards that inspire your brand's direction? Drop them here — the more I see what moves you, the better I can design for you.",
+        "hint": "Up to 8 images. PNG, JPG, WEBP, or GIF.",
+        "uploadPrompt": "Click or drag images here",
+        "uploadLimit": "Up to 8 images · PNG, JPG, WEBP, GIF"
       }
     }
   },

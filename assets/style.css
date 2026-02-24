@@ -1151,3 +1151,25 @@ html[dir="rtl"] .timeline-marker {
 .custom-alert-cancel-btn:hover {
   opacity: .85;
 }
+
+
+/* ── Q20 Inspiration Upload ──────────────────────────── */
+.q20-dropzone {
+  border: 2px dashed var(--input-border);
+  border-radius: 16px;
+  padding: 28px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color .2s, background .2s;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  background: var(--input-bg);
+}
+.q20-dropzone.dragging, .q20-dropzone:hover { border-color: var(--mid); background: var(--surface-2); }
+.q20-upload-icon { width: 32px; height: 32px; color: var(--text-mid); }
+.q20-upload-label { font-family: 'Mona Sans', sans-serif; font-size: 15px; font-weight: 700; color: var(--text-hi); }
+.q20-upload-sub { font-family: 'Mona Sans', sans-serif; font-size: 13px; color: var(--text-mid); }
+.q20-preview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 10px; margin-top: 12px; }
+.q20-thumb-wrap { position: relative; border-radius: 10px; overflow: hidden; aspect-ratio: 1/1; }
+.q20-thumb { width: 100%; height: 100%; object-fit: cover; display: block; }
+.q20-remove-btn { position: absolute; top: 4px; right: 4px; width: 22px; height: 22px; border-radius: 50%; background: rgba(0,0,0,.55); border: none; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.q20-remove-btn .icon { width: 12px; height: 12px; }

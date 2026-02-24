@@ -242,7 +242,7 @@ body {
   min-width: 0;
 }
 
-.search-filter-row > .date-filter {
+.search-filter-row > .date-filter-dropdown {
   flex: 1 1 0%;
   min-width: 0;
   width: auto;
@@ -299,7 +299,7 @@ body {
     flex: 3 1 0%;
   }
 
-  .search-filter-row > .date-filter {
+  .search-filter-row > .date-filter-dropdown {
     flex: 1 1 0%;
     width: auto;
     min-width: 0;
@@ -348,8 +348,7 @@ body {
   }
 }
 
-.search-box,
-.date-filter {
+.search-box {
   min-width: 0;
   width: 100%;
   background: var(--input-bg);
@@ -372,18 +371,71 @@ body {
   padding-left: 40px;
 }
 
-.date-filter {
+/* Custom date filter dropdown */
+.date-filter-dropdown {
+  position: relative;
   flex: 0 0 auto;
-  width: 220px;
-  min-width: 80px;
-  padding-right: 40px;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
-  background-repeat: no-repeat;
-  background-position: right 14px center;
-  background-size: 16px;
+}
+
+.date-filter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+  min-width: 130px;
+}
+
+.date-filter-caret {
+  width: 14px;
+  height: 14px;
+  transition: transform .2s;
+}
+
+.date-filter-btn[aria-expanded="true"] .date-filter-caret {
+  transform: rotate(180deg);
+}
+
+.date-filter-menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 6px;
+  min-width: 160px;
+  z-index: 200;
+  box-shadow: 0 8px 32px rgba(0,0,0,.22);
+  flex-direction: column;
+  animation: dropIn .18s ease;
+}
+
+.date-filter-menu.open {
+  display: flex;
+}
+
+.date-filter-option {
+  background: none;
+  border: none;
+  border-radius: 10px;
+  padding: 9px 12px;
+  font-family: 'Mona Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-hi);
+  cursor: pointer;
+  text-align: left;
+  transition: background .15s;
+}
+
+.date-filter-option:hover {
+  background: var(--surface-2);
+}
+
+.date-filter-option.active {
+  background: var(--accent);
+  color: #fff;
 }
 
 .search-icon {
@@ -402,8 +454,7 @@ body {
   color: var(--text-lo);
 }
 
-.search-box:focus,
-.date-filter:focus {
+.search-box:focus {
   border-color: var(--input-focus);
 }
 
@@ -1797,9 +1848,6 @@ body {
     min-width: 220px;
   }
 
-  .date-filter {
-    min-width: 200px;
-  }
 
   .submission-details {
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -1960,9 +2008,6 @@ body {
     min-width: 0;
   }
 
-  .date-filter {
-    min-width: 0;
-  }
 
   .filters .sort-btn {
     width: 100%;
@@ -2165,4 +2210,125 @@ body {
   .modal-header h2 {
     font-size: 22px;
   }
+}
+/* ── Feature 2: Status Badges ─────────────────────────── */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-family: 'Mona Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  vertical-align: middle;
+  margin-left: 6px;
+}
+.status-badge.pending  { background: var(--input-bg); color: var(--text-mid); border: 1px solid var(--border); }
+.status-badge.approved { background: rgba(22,163,74,.15); color: #16a34a; border: 1px solid rgba(22,163,74,.3); }
+.status-badge.rejected { background: rgba(220,38,38,.12); color: var(--red); border: 1px solid rgba(220,38,38,.25); }
+
+/* ── Feature 2: Approve/Reject buttons ────────────────── */
+.btn-approve {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(22,163,74,.15);
+  color: #16a34a;
+  border: 1px solid rgba(22,163,74,.3);
+  border-radius: 10px;
+  padding: 8px 16px;
+  font-family: 'Mona Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .18s, transform .15s;
+}
+.btn-approve:hover { background: rgba(22,163,74,.25); transform: scale(1.02); }
+
+.btn-reject {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(220,38,38,.12);
+  color: var(--red);
+  border: 1px solid rgba(220,38,38,.25);
+  border-radius: 10px;
+  padding: 8px 16px;
+  font-family: 'Mona Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .18s, transform .15s;
+}
+.btn-reject:hover { background: rgba(220,38,38,.22); transform: scale(1.02); }
+
+/* ── Feature 4: Cancel icon button in edit mode ───────── */
+.modal-cancel-icon-btn {
+  background: var(--pill-bg);
+  color: var(--pill-text);
+}
+.modal-cancel-icon-btn:hover { opacity: .82; transform: scale(1.07); }
+
+/* ── Feature 5: Q6 edit mode buttons ─────────────────── */
+.q6-edit-row {
+  display: flex !important;
+  flex-direction: column;
+}
+.q6-edit-spectrums .q6-num-btn {
+  cursor: pointer;
+}
+.q6-edit-spectrums .q6-num-btn:hover {
+  border-color: var(--accent);
+  background: var(--surface-2);
+}
+
+/* ── Feature 3: Q20 inspiration refs dashboard grid ──── */
+.q20-dash-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+.q20-dash-thumb-wrap {
+  border-radius: 8px;
+  overflow: hidden;
+  aspect-ratio: 1/1;
+}
+.q20-dash-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Feature 1: Proposed delivery tag */
+.delivery-proposed-tag {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 2px 7px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  background: var(--input-bg);
+  color: var(--text-mid);
+  border: 1px solid var(--border);
+  margin-left: 4px;
+}
+
+/* Feature 6: Date filter mobile bottom sheet */
+@media (max-width: 768px) {
+  .date-filter-menu.open {
+    position: fixed;
+    top: auto; bottom: 0; left: 0; right: 0;
+    border-radius: 18px 18px 0 0;
+    min-width: 0; width: 100%;
+    padding: 12px 8px 24px;
+    animation: slideUp .22s ease;
+    z-index: 300;
+  }
+  .date-filter-option { font-size: 16px; padding: 13px 16px; }
 }

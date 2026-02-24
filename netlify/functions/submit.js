@@ -21,6 +21,8 @@ const ALLOWED_FIELDS = [
   'brand-name',
   'email',
   'delivery-date',
+  'agreed-delivery-date',
+  'status',
   'q1-business-description',
   'q2-problem-transformation',
   'q3-ideal-customer',
@@ -44,7 +46,8 @@ const ALLOWED_FIELDS = [
   'q17-existing-assets',
   'q18-deliverables',
   'q19-first-feeling',
-  'q20-anything-else',
+  'q20-inspiration-refs',
+  'q21-anything-else',
   'brand-logo-ref'
 ];
 
@@ -59,7 +62,8 @@ const ARRAY_FIELDS = new Set([
   'q12-color',
   'q14-typography',
   'q15-aesthetic',
-  'q18-deliverables'
+  'q18-deliverables',
+  'q20-inspiration-refs'
 ]);
 
 function normalizeFieldValue(field, value) {
