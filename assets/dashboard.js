@@ -794,7 +794,8 @@ async function uploadLogoFile(file) {
 
 async function setSubmissionStatus(submissionId, status) {
   try {
-    const response = await fetch('/.netlify/functions/submit-form', {
+    // Use submit.js — skips emails gracefully and does not hard-fail on missing RESEND_API_KEY
+    const response = await fetch('/.netlify/functions/submit', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -805,24 +806,28 @@ async function setSubmissionStatus(submissionId, status) {
         status
       })
     });
-    if (!response.ok) throw new Error('Failed to update status');
-    const result = await response.json();
-    const updatedSubmission = result.submission;
-    if (updatedSubmission) {
-      allSubmissions = allSubmissions.map(item => String(item.id) === String(updatedSubmission.id) ? updatedSubmission : item);
-      currentSubmission = updatedSubmission;
-    } else {
-      // Patch locally
-      if (currentSubmission) {
-        currentSubmission = { ...currentSubmission, data: { ...currentSubmission.data, status } };
-      }
-      allSubmissions = allSubmissions.map(item => String(item.id) === String(submissionId) ? { ...item, data: { ...item.data, status } } : item);
+
+    if (!response.ok) {
+      let errMsg = 'Server error ' + response.status;
+      try { const j = await response.json(); errMsg = j.error || errMsg; } catch (_) {}
+      throw new Error(errMsg);
     }
+
+    // submit.js returns { success: true } — patch state locally
+    if (currentSubmission && String(currentSubmission.id) === String(submissionId)) {
+      currentSubmission = { ...currentSubmission, data: { ...currentSubmission.data, status } };
+    }
+    allSubmissions = allSubmissions.map(item =>
+      String(item.id) === String(submissionId)
+        ? { ...item, data: { ...item.data, status } }
+        : item
+    );
     applyCurrentFiltersAndRender();
     renderDetailPanel();
   } catch (error) {
     console.error('setSubmissionStatus failed:', error);
-    alert('Failed to update status. Please try again.');
+    const msg = error instanceof Error ? error.message : String(error);
+    alert('Failed to update status: ' + msg + '\n\nMake sure you have run the SQL migration to add the \"status\" column.');
   }
 }
 
@@ -1305,11 +1310,16 @@ function renderDetailPanel() {
         <div class="edit-banner">Editing submission, changes are not saved yet</div>
         ${sectionHeader('list', 'Overview')}
         <div class="logo-upload-wrap">
-          <label class="logo-dropzone" id="logoDropzone" tabindex="0" aria-label="Upload brand logo">
-            <input id="logoFileInput" type="file" accept=".png,.jpg,.jpeg,.svg,.webp,image/png,image/jpeg,image/svg+xml,image/webp" hidden />
-            <span>Drop logo here or click to upload (PNG, JPG, SVG, WEBP · max 2MB)</span>
-          </label>
-          <button class="btn" id="removeLogoBtn" type="button">Remove Logo</button>
+          <div class="logo-upload-row">
+            <label class="logo-dropzone" id="logoDropzone" tabindex="0" aria-label="Upload brand logo">
+              <input id="logoFileInput" type="file" accept=".png,.jpg,.jpeg,.svg,.webp,image/png,image/jpeg,image/svg+xml,image/webp" hidden />
+              <i data-lucide="upload" class="icon" style="width:15px;height:15px;margin-right:6px;"></i>
+              <span>Drop logo or click to upload</span>
+            </label>
+            <button class="modal-icon-btn logo-remove-btn" id="removeLogoBtn" type="button" aria-label="Remove logo" title="Remove logo">
+              <i data-lucide="trash-2" class="icon icon-btn"></i>
+            </button>
+          </div>
           <div class="edit-error" id="logoUploadError"></div>
         </div>
         <div class="overview-grid">
@@ -1317,8 +1327,20 @@ function renderDetailPanel() {
           ${renderEditableField('Email', 'email', 'email')}
           ${renderEditableField('Brand Name', 'brand-name', 'text')}
           <div class="overview-card edit-field">
-            <label class="overview-label" for="edit-delivery-date">Delivery Date</label>
-            <input id="edit-delivery-date" class="edit-input" type="date" data-edit-key="delivery-date" value="${escapeHtml(normalizeDateInputValue(data['delivery-date']))}" />
+            <label class="overview-label" for="edit-delivery-date">Delivery Date (Client Proposal)</label>
+            <div class="custom-delivery-select" id="editDeliveryDropdown">
+              <button type="button" class="edit-input edit-delivery-btn" id="editDeliveryBtn" aria-haspopup="listbox" aria-expanded="false">
+                <span class="edit-delivery-label" id="editDeliveryLabel">${escapeHtml(data['delivery-date'] || 'Select a timeframe')}</span>
+                <i data-lucide="chevron-down" class="icon edit-delivery-caret"></i>
+              </button>
+              <div class="edit-delivery-menu" id="editDeliveryMenu" role="listbox">
+                <button class="edit-delivery-option${!data['delivery-date'] ? ' active' : ''}" data-value="" role="option">— Not set —</button>
+                <button class="edit-delivery-option${data['delivery-date'] === 'ASAP' ? ' active' : ''}" data-value="ASAP" role="option">ASAP (As Soon As Possible)</button>
+                <button class="edit-delivery-option${data['delivery-date'] === '2–4 weeks' ? ' active' : ''}" data-value="2–4 weeks" role="option">2–4 weeks</button>
+                <button class="edit-delivery-option${data['delivery-date'] === '1–2 months' ? ' active' : ''}" data-value="1–2 months" role="option">1–2 months</button>
+                <button class="edit-delivery-option${data['delivery-date'] === '3+ months' ? ' active' : ''}" data-value="3+ months" role="option">3+ months</button>
+              </div>
+            </div>
           </div>
           <div class="overview-card edit-field">
             <label class="overview-label" for="edit-agreed-delivery-date">Agreed Delivery Date</label>
@@ -1538,6 +1560,43 @@ function setupEditModeInteractions() {
       syncDraftFromInputs();
     });
   });
+
+  // ── Delivery date custom dropdown ──────────────────────────────────
+  const editDeliveryBtn = document.getElementById('editDeliveryBtn');
+  const editDeliveryMenu = document.getElementById('editDeliveryMenu');
+  const editDeliveryLabel = document.getElementById('editDeliveryLabel');
+  const editDeliveryDropdown = document.getElementById('editDeliveryDropdown');
+
+  if (editDeliveryBtn && editDeliveryMenu) {
+    editDeliveryBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = editDeliveryMenu.classList.toggle('open');
+      editDeliveryBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+
+    editDeliveryMenu.querySelectorAll('.edit-delivery-option').forEach(opt => {
+      opt.addEventListener('click', () => {
+        const val = opt.dataset.value || '';
+        editDeliveryMenu.querySelectorAll('.edit-delivery-option').forEach(o => o.classList.remove('active'));
+        opt.classList.add('active');
+        if (editDeliveryLabel) editDeliveryLabel.textContent = val || '— Not set —';
+        editDeliveryMenu.classList.remove('open');
+        editDeliveryBtn.setAttribute('aria-expanded', 'false');
+        if (editDraftData) editDraftData['delivery-date'] = val;
+        markEditDirty();
+      });
+    });
+
+    const closeDeliveryOnOutsideClick = (e) => {
+      if (editDeliveryDropdown && !editDeliveryDropdown.contains(e.target)) {
+        editDeliveryMenu.classList.remove('open');
+        editDeliveryBtn.setAttribute('aria-expanded', 'false');
+      }
+    };
+    document.addEventListener('click', closeDeliveryOnOutsideClick);
+    // Store for cleanup (will be garbage collected with modal re-render)
+    if (editDeliveryDropdown) editDeliveryDropdown._closeHandler = closeDeliveryOnOutsideClick;
+  }
 
   // Q6 interactive buttons in edit mode
   modalBody.querySelectorAll('.q6-edit-spectrums .q6-num-btn').forEach(btn => {
