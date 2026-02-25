@@ -1317,7 +1317,7 @@ function renderDetailPanel() {
               <span>Drop logo or click to upload</span>
             </label>
             <button class="modal-icon-btn logo-remove-btn" id="removeLogoBtn" type="button" aria-label="Remove logo" title="Remove logo">
-              <i data-lucide="trash-2" class="icon icon-btn"></i>
+              <i data-lucide="trash" class="icon icon-btn"></i>
             </button>
           </div>
           <div class="edit-error" id="logoUploadError"></div>
@@ -1327,7 +1327,7 @@ function renderDetailPanel() {
           ${renderEditableField('Email', 'email', 'email')}
           ${renderEditableField('Brand Name', 'brand-name', 'text')}
           <div class="overview-card edit-field">
-            <label class="overview-label" for="edit-delivery-date">Delivery Date (Client Proposal)</label>
+            <label class="overview-label" for="edit-delivery-date">Form Delivery Date</label>
             <div class="custom-delivery-select" id="editDeliveryDropdown">
               <button type="button" class="edit-input edit-delivery-btn" id="editDeliveryBtn" aria-haspopup="listbox" aria-expanded="false">
                 <span class="edit-delivery-label" id="editDeliveryLabel">${escapeHtml(data['delivery-date'] || 'Select a timeframe')}</span>
