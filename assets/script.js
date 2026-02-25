@@ -645,6 +645,20 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // ── Q7: show "Please specify" textbox only when "Other" is selected ──
+  const q7OtherInput = document.getElementById('q7OtherInput');
+  const q7Radios = form.querySelectorAll('input[type="radio"][name="q7-decision-maker"]');
+  function syncQ7Other() {
+    if (!q7OtherInput) return;
+    const otherSelected = Array.from(q7Radios).some(r => r.value === 'Other' && r.checked);
+    q7OtherInput.style.display = otherSelected ? '' : 'none';
+    if (!otherSelected) q7OtherInput.value = '';
+  }
+  q7Radios.forEach(r => r.addEventListener('change', syncQ7Other));
+  syncQ7Other(); // initial state (also covers draft restore)
+  // Re-sync after draft load (draft load runs before this, safe here)
+  // ── End Q7 ────────────────────────────────────────────────────────────
+
   // ── Q15 inspiration image uploads ────────────────────────────────
   const q15Dropzone = document.getElementById('q15Dropzone');
   const q15FileInput = document.getElementById('q15FileInput');

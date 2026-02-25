@@ -16,6 +16,7 @@ const CORS_HEADERS = {
   'Access-Control-Allow-Headers': 'Content-Type, Authorization'
 };
 
+// Fields accepted from the form and stored in Supabase
 const ALLOWED_FIELDS = [
   'client-name',
   'brand-name',
@@ -29,64 +30,48 @@ const ALLOWED_FIELDS = [
   'q3-ideal-customer',
   'q4-competitors',
   'q5-brand-personality',
-  'q6-playful-serious',
-  'q6-minimalist-expressive',
-  'q6-approachable-authoritative',
-  'q6-classic-contemporary',
-  'q7-core-values',
-  'q8-positioning',
-  'q9-success-vision',
-  'q10-brands-admired',
-  'q11-brands-disliked',
-  'q12-color',
-  'q13-colors-to-avoid',
-  'q14-typography',
-  'q15-aesthetic',
-  'q15-aesthetic-description',
-  'q16-brand-space',
-  'q17-existing-assets',
-  'q18-deliverables',
-  'q19-first-feeling',
-  'q20-inspiration-refs',
-  'q21-anything-else',
+  'q6-positioning',
+  'q7-decision-maker',
+  'q7-decision-maker-other',
+  'q8-brands-admired',
+  'q9-color',
+  'q10-colors-to-avoid',
+  'q11-aesthetic',
+  'q11-aesthetic-description',
+  'q12-existing-assets',
+  'q13-deliverables',
+  'q14-budget',
+  'q15-inspiration-refs',
+  'q16-anything-else',
   'brand-logo-ref'
 ];
 
-const RANGE_FIELDS = new Set([
-  'q6-playful-serious',
-  'q6-minimalist-expressive',
-  'q6-approachable-authoritative',
-  'q6-classic-contemporary'
+// Fields that accept multiple values (checkboxes / multi-select)
+const ARRAY_FIELDS = new Set([
+  'q9-color',
+  'q11-aesthetic',
+  'q13-deliverables',
+  'q15-inspiration-refs'
 ]);
 
-const ARRAY_FIELDS = new Set([
-  'q12-color',
-  'q14-typography',
-  'q15-aesthetic',
-  'q18-deliverables',
-  'q20-inspiration-refs'
+// Fields that should NOT appear in generated documents (Supabase internals)
+const DOCUMENT_SKIP_FIELDS = new Set([
+  'created_at',
+  'history',
+  'status',
+  'project-status',
+  'agreed-delivery-date'
 ]);
 
 function normalizeFieldValue(field, value) {
   if (ARRAY_FIELDS.has(field)) {
-    if (value === undefined || value === null || value === '') {
-      return null;
-    }
-
+    if (value === undefined || value === null || value === '') return null;
     if (Array.isArray(value)) {
       const cleaned = value.filter(Boolean).map((item) => String(item));
       return cleaned.length > 0 ? cleaned : null;
     }
-
     return [String(value)];
   }
-
-  if (RANGE_FIELDS.has(field)) {
-    const raw = Array.isArray(value) ? value[0] : value;
-    const parsed = Number.parseInt(String(raw ?? ''), 10);
-    return Number.isNaN(parsed) ? raw : parsed;
-  }
-
   return value;
 }
 
@@ -101,11 +86,7 @@ function parseBody(event) {
 
 exports.handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') {
-    return {
-      statusCode: 204,
-      headers: CORS_HEADERS,
-      body: ''
-    };
+    return { statusCode: 204, headers: CORS_HEADERS, body: '' };
   }
 
   if (event.httpMethod !== 'POST') {
@@ -146,7 +127,6 @@ exports.handler = async (event) => {
     }
   });
 
-  // Build history entry for new submissions
   const historyEntry = { label: 'original', date: record.created_at, editedBy: 'client' };
 
   try {
@@ -155,7 +135,6 @@ exports.handler = async (event) => {
     });
 
     if (submissionAction === 'override' && overrideSubmissionId) {
-      // Fetch existing row to preserve and append history
       const { data: existingRow, error: fetchError } = await supabase
         .from('submissions')
         .select('history, created_at')
@@ -164,7 +143,6 @@ exports.handler = async (event) => {
 
       if (fetchError || !existingRow) {
         console.error('Override target not found, inserting as new', fetchError);
-        // Fall through to insert as new
         record.history = [historyEntry];
         const { error } = await supabase.from('submissions').insert([record]);
         if (error) {
@@ -186,24 +164,17 @@ exports.handler = async (event) => {
         }
       }
     } else {
-      // Normal insert (new submission or "send-as-new")
       record.history = [historyEntry];
-      const { error } = await supabase
-        .from('submissions')
-        .insert([record]);
+      const { error } = await supabase.from('submissions').insert([record]);
 
       if (error) {
         return { statusCode: 500, headers: CORS_HEADERS, body: JSON.stringify({ success: false, error: error.message }) };
       }
     }
 
-    // Only send email for brand-new submissions, NOT for admin overrides (approve/reject/edit)
+    // Only send emails for brand-new submissions
     if (submissionAction === 'override') {
-      return {
-        statusCode: 200,
-        headers: CORS_HEADERS,
-        body: JSON.stringify({ success: true })
-      };
+      return { statusCode: 200, headers: CORS_HEADERS, body: JSON.stringify({ success: true }) };
     }
 
     const resendApiKey = process.env.RESEND_API_KEY;
@@ -218,13 +189,18 @@ exports.handler = async (event) => {
       const clientPart = sanitizeFilenamePart(record['client-name'], 'client');
       const baseFilename = `${brandPart}_${clientPart}_${dateStr}_${timeStr}`;
 
+      // Build a clean document payload — exclude Supabase internal fields
+      const docPayload = Object.fromEntries(
+        Object.entries(record).filter(([key]) => !DOCUMENT_SKIP_FIELDS.has(key))
+      );
+
       let pdfBuffer;
       let docxBuffer;
       let markdown;
       try {
-        markdown = buildMarkdown(record);
-        docxBuffer = await buildDocxBuffer(record);
-        pdfBuffer = await buildPdfBuffer(record);
+        markdown = buildMarkdown(docPayload);
+        docxBuffer = await buildDocxBuffer(docPayload);
+        pdfBuffer = await buildPdfBuffer(docPayload);
       } catch (err) {
         console.error('Document generation failed', err);
         markdown = null;

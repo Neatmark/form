@@ -100,16 +100,29 @@ function sanitizeFilenamePart(value, fallback) {
 
 /* ─── Document Builders ─── */
 
+const SYSTEM_FIELDS = new Set(['created_at', 'history', 'status', 'project-status', 'agreed-delivery-date']);
+
+function formatHumanDate(date) {
+  return date.toLocaleString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true
+  });
+}
+
 function buildMarkdown(payload) {
   const now = new Date();
-  const submittedAt = now.toISOString();
+  const submittedAt = formatHumanDate(now);
   const clientName = normalizeValue(payload['client-name']) || 'Unknown Client';
   const brandName = normalizeValue(payload['brand-name']) || 'Unknown Brand';
 
   const lines = [
     '# Client Intake Submission',
     '',
-    `- **Submitted at:** ${submittedAt}`,
+    `- **Submitted:** ${submittedAt}`,
     `- **Client Name:** ${clientName}`,
     `- **Brand Name:** ${brandName}`,
     '',
@@ -118,6 +131,7 @@ function buildMarkdown(payload) {
   ];
 
   for (const [key, rawValue] of sortedEntries(payload)) {
+    if (SYSTEM_FIELDS.has(key)) continue;
     const value = normalizeValue(rawValue) || '_No response_';
     const label = FIELD_LABELS[key] || prettifyKey(key);
     lines.push(`## ${label}`);
@@ -131,14 +145,7 @@ function buildMarkdown(payload) {
 
 async function buildDocxBuffer(payload) {
   const now = new Date();
-  const submittedAt = now.toISOString();
-  const submittedAtDisplay = now.toLocaleString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit'
-  });
+  const submittedAtDisplay = formatHumanDate(now);
   const clientName = normalizeValue(payload['client-name']) || 'Unknown Client';
   const brandName = normalizeValue(payload['brand-name']) || 'Unknown Brand';
   const clientEmail = normalizeValue(payload.email) || 'Not provided';
@@ -167,7 +174,7 @@ async function buildDocxBuffer(payload) {
     new Paragraph({
       children: [
         new TextRun({ text: 'Submitted: ', bold: true }),
-        new TextRun({ text: `${submittedAtDisplay} (${submittedAt})` })
+        new TextRun({ text: submittedAtDisplay })
       ],
       spacing: { after: 80 }
     }),
@@ -192,6 +199,7 @@ async function buildDocxBuffer(payload) {
   let currentSection = null;
   for (const [key, rawValue] of sortedEntries(payload)) {
     if (['client-name', 'brand-name', 'email', 'delivery-date'].includes(key)) continue;
+    if (SYSTEM_FIELDS.has(key)) continue;
 
     const value = normalizeValue(rawValue) || 'No response';
     const label = FIELD_LABELS[key] || prettifyKey(key);
@@ -328,8 +336,8 @@ async function buildPdfBuffer(payload) {
   };
 
   const now = new Date();
-  const submittedAt = now.toISOString();
-  const submittedDate = submittedAt.split('T')[0];
+  const submittedAtDisplay = formatHumanDate(now);
+  const submittedDate = now.toISOString().split('T')[0];
 
   drawLine('CLIENT INTAKE REPORT', { size: 18, font: boldFont });
   drawLine(submittedDate, { size: 10 });
@@ -340,14 +348,14 @@ async function buildPdfBuffer(payload) {
   drawWrapped(`Client: ${normalizeValue(payload['client-name']) || 'N/A'}`, { size: 10 });
   drawWrapped(`Email: ${normalizeValue(payload.email) || 'N/A'}`, { size: 10 });
   drawWrapped(`Delivery Date: ${normalizeValue(payload['delivery-date']) || 'N/A'}`, { size: 10 });
-  drawWrapped(`Submitted: ${submittedAt}`, { size: 10 });
+  drawWrapped(`Submitted: ${submittedAtDisplay}`, { size: 10 });
   addSpacer(12);
 
   const metadataFields = new Set(['client-name', 'brand-name', 'email', 'delivery-date']);
   let currentSection = null;
 
   for (const [key, rawValue] of sortedEntries(payload)) {
-    if (metadataFields.has(key)) continue;
+    if (metadataFields.has(key) || SYSTEM_FIELDS.has(key)) continue;
 
     const value = normalizeValue(rawValue) || 'No response';
     const label = FIELD_LABELS[key] || prettifyKey(key);

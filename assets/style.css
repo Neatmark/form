@@ -657,6 +657,41 @@ textarea:focus, input[type="text"]:focus, select:focus { border-color: var(--inp
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
+
+/* ── Custom radio buttons (same language as checkboxes) ── */
+.check-label input[type="radio"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--input-border);
+  border-radius: 50%;
+  background: var(--input-bg);
+  cursor: pointer;
+  flex-shrink: 0;
+  position: relative;
+  transition: background .15s, border-color .15s;
+}
+.check-label input[type="radio"]:checked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.check-label input[type="radio"]:checked::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #fff;
+}
+.check-label input[type="radio"]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
 .check-label span { font-size: 15px; font-weight: 500; color: var(--text-hi); line-height: 1.4; }
 
 /* DRAFT BANNER */
