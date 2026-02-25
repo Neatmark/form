@@ -30,6 +30,7 @@ html[lang="ar"] select {
   --btn-text: #e6fcf8;
   --input-bg: rgba(0, 69, 78, 0.8);
   --q6-bg: rgba(0, 69, 78, 0.5);
+  --q6-text: #e6fcf8;
   --input-border: rgba(131, 197, 190, 0.22);
   --input-focus: #83c5be;
   --accent: #6284d8;
@@ -40,7 +41,7 @@ html[lang="ar"] select {
   --bg: #e6fcf8;
   --surface: #fafefe;
   --surface-2: #f0faf8;
-  --border: rgba(0, 55, 60, 0.12);
+  --border: #d3e3e1;
   --text-hi: #00373c;
   --text-mid: #006d77;
   --text-lo: rgba(0, 55, 60, 0.38);
@@ -49,6 +50,7 @@ html[lang="ar"] select {
   --btn-bg: #006d77;
   --btn-text: #e6fcf8;
   --q6-bg: hsl(169 50% 92%);
+  --q6-text: #006d77;
   --input-bg: #ffffff;
   --input-border: rgba(0, 109, 119, 0.22);
   --input-focus: #006d77;
@@ -472,9 +474,24 @@ body {
 
 .stats {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, auto) 1fr;
   gap: 10px;
   margin-bottom: 32px;
+}
+
+/* First two stat cards are auto-sized; last one fills the rest */
+.stats .stat-card:last-child {
+  grid-column: 3 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.stats .stat-card:last-child .stat-value--small {
+  font-size: 16px;
+  font-weight: 800;
 }
 
 .stat-card {
@@ -1358,6 +1375,7 @@ button.detail-section-toggle[aria-expanded="true"] .detail-section-chevron {
 .detail-section-title {
   font-size: 16px;
   font-weight: 800;
+  font-family: "Mona Sans";
   letter-spacing: .08em;
   text-transform: uppercase;
   color: var(--text-mid);
@@ -1873,13 +1891,13 @@ button.detail-section-toggle[aria-expanded="true"] .detail-section-chevron {
   align-items: center;
   gap: 12px;
   background: var(--input-bg);
-  border: 1px solid var(--mid);
+  border: 1px solid var(--border);
   border-radius: 15px;
   padding: 10px 18px;
 }
 
 .q6-view-row .q6-num-left-label {
-  color: rgba(255,255,255,0.92);
+  color: var(--q6-text);
   font-size: 15px;
   font-weight: 700;
   white-space: nowrap;
@@ -1888,7 +1906,7 @@ button.detail-section-toggle[aria-expanded="true"] .detail-section-chevron {
 }
 
 .q6-view-row .q6-num-right-label {
-  color: rgba(255,255,255,0.92);
+  color: var(--q6-text);
   font-size: 15px;
   font-weight: 700;
   white-space: nowrap;
@@ -1911,11 +1929,12 @@ button.detail-section-toggle[aria-expanded="true"] .detail-section-chevron {
   aspect-ratio: unset;
   border-radius: 10px;
   background: var(--input-bg);
-  border: 1.5px solid var(--mid);
+  border: 1.5px solid var(--border);
   color: var(--text-hi);
   font-size: 18px;
   font-weight: 600;
   cursor: default;
+  padding: 16px 12px;
 }
 
 .q6-spectrums:not(.q6-edit-spectrums) .q6-view-row .q6-num-btn.active {
@@ -1938,7 +1957,10 @@ button.detail-section-toggle[aria-expanded="true"] .detail-section-chevron {
 
 .q6-num-btn {
   flex: 1;
+  /* Force true square: min-width matches the height so every button is identical */
   aspect-ratio: 1 / 1;
+  min-width: 0;
+  width: 0; /* let flex distribute evenly, height = width via aspect-ratio */
   border: 1.5px solid var(--border);
   border-radius: 10px;
   background: var(--input-bg);
@@ -1951,7 +1973,7 @@ button.detail-section-toggle[aria-expanded="true"] .detail-section-chevron {
   align-items: center;
   justify-content: center;
   transition: background .15s, color .15s, border-color .15s;
-  min-width: 0;
+  overflow: hidden;
 }
 
 .q6-num-btn.active {
@@ -2456,13 +2478,13 @@ button.detail-section-toggle[aria-expanded="true"] .detail-section-chevron {
   align-items: center;
   gap: 12px;
   background: var(--input-bg);
-  border: 1px solid var(--mid) !important;
+  border: 1px solid var(--border) !important;
   border-radius: 15px;
   padding: 10px 18px;
 }
 
 .q6-edit-row .q6-num-left-label {
-  color: rgba(255,255,255,0.92);
+  color: var(--text-mid);
   font-size: 15px;
   font-weight: 700;
   white-space: nowrap;
@@ -2471,7 +2493,7 @@ button.detail-section-toggle[aria-expanded="true"] .detail-section-chevron {
 }
 
 .q6-edit-row .q6-num-right-label {
-  color: rgba(255,255,255,0.92);
+  color: var(--text-mid);
   font-size: 15px;
   font-weight: 700;
   white-space: nowrap;
@@ -2493,8 +2515,8 @@ button.detail-section-toggle[aria-expanded="true"] .detail-section-chevron {
   aspect-ratio: unset;
   border-radius: 10px;
   background: var(--input-bg);
-  border: 1.5px solid var(--mid);
-  color: var(--text-midmid);
+  border: 1.5px solid var(--border);
+  color: var(--text-q6);
   font-size: 18px;
   font-weight: 600;
   cursor: pointer;
@@ -2628,7 +2650,7 @@ button.detail-section-toggle[aria-expanded="true"] .detail-section-chevron {
     aspect-ratio: 1 / 1 !important;
     font-size: 16px !important;
     border-radius: 10px !important;
-    padding: 5px 12px !important;
+    padding: 16px 12px !important;
   }
 
   .q6-edit-spectrums .q6-num-btn.active {
