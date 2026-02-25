@@ -28,26 +28,19 @@ const SUPABASE_FIELDS = new Set([
   'q3-ideal-customer',
   'q4-competitors',
   'q5-brand-personality',
-  'q6-playful-serious',
-  'q6-minimalist-expressive',
-  'q6-approachable-authoritative',
-  'q6-classic-contemporary',
-  'q7-core-values',
-  'q8-positioning',
-  'q9-success-vision',
-  'q10-brands-admired',
-  'q11-brands-disliked',
-  'q12-color',
-  'q13-colors-to-avoid',
-  'q14-typography',
-  'q15-aesthetic',
-  'q15-aesthetic-description',
-  'q16-brand-space',
-  'q17-existing-assets',
-  'q18-deliverables',
-  'q19-first-feeling',
-  'q20-inspiration-refs',
-  'q21-anything-else',
+  'q6-positioning',
+  'q7-decision-maker',
+  'q7-decision-maker-other',
+  'q8-brands-admired',
+  'q9-color',
+  'q10-colors-to-avoid',
+  'q11-aesthetic',
+  'q11-aesthetic-description',
+  'q12-existing-assets',
+  'q13-deliverables',
+  'q14-budget',
+  'q15-inspiration-refs',
+  'q16-anything-else',
   'brand-logo-ref'
 ]);
 
@@ -103,11 +96,10 @@ function ensureHistoryArray(existingHistory, fallbackDate) {
 }
 
 const ARRAY_COLUMNS = new Set([
-  'q12-color',
-  'q14-typography',
-  'q15-aesthetic',
-  'q18-deliverables',
-  'q20-inspiration-refs'
+  'q9-color',
+  'q11-aesthetic',
+  'q13-deliverables',
+  'q15-inspiration-refs'
 ]);
 
 function buildSupabasePayload(payload) {

@@ -16,27 +16,21 @@ const FIELD_LABELS = {
   'q1-business-description': 'Q1 - Business Description',
   'q2-problem-transformation': 'Q2 - Problem + Transformation',
   'q3-ideal-customer': 'Q3 - Ideal Customer',
-  'q4-competitors': 'Q4 - Competitors + Market Gap',
+  'q4-competitors': 'Q4 - Competitors',
   'q5-brand-personality': 'Q5 - Brand Personality',
-  'q6-playful-serious': 'Q6 - Playful <-> Serious',
-  'q6-minimalist-expressive': 'Q6 - Minimalist <-> Expressive',
-  'q6-approachable-authoritative': 'Q6 - Approachable <-> Authoritative',
-  'q6-classic-contemporary': 'Q6 - Classic <-> Contemporary',
-  'q7-core-values': 'Q7 - Core Values',
-  'q8-positioning': 'Q8 - Positioning Statement',
-  'q9-success-vision': 'Q9 - 3-Year Success Vision',
-  'q10-brands-admired': 'Q10 - Admired Brands',
-  'q11-brands-disliked': 'Q11 - Disliked Brands',
-  'q12-color': 'Q12 - Color Directions',
-  'q13-colors-to-avoid': 'Q13 - Colors To Avoid',
-  'q14-typography': 'Q14 - Typography Directions',
-  'q15-aesthetic': 'Q15 - Aesthetic Direction',
-  'q15-aesthetic-description': 'Q15 - Additional Aesthetic Notes',
-  'q16-brand-space': 'Q16 - Brand As Physical Space',
-  'q17-existing-assets': 'Q17 - Existing Assets To Keep',
-  'q18-deliverables': 'Q18 - Needed Deliverables',
-  'q19-first-feeling': 'Q19 - First Feeling',
-  'q20-anything-else': 'Q20 - Anything Else'
+  'q6-positioning': 'Q6 - Positioning Statement',
+  'q7-decision-maker': 'Q7 - Decision Maker',
+  'q7-decision-maker-other': 'Q7 - Decision Maker (Other)',
+  'q8-brands-admired': 'Q8 - Admired Brands',
+  'q9-color': 'Q9 - Color Directions',
+  'q10-colors-to-avoid': 'Q10 - Colors To Avoid',
+  'q11-aesthetic': 'Q11 - Aesthetic Direction',
+  'q11-aesthetic-description': 'Q11 - Additional Aesthetic Notes',
+  'q12-existing-assets': 'Q12 - Existing Assets To Keep',
+  'q13-deliverables': 'Q13 - Needed Deliverables',
+  'q14-budget': 'Q14 - Budget Approach',
+  'q15-inspiration-refs': 'Q15 - Inspiration References',
+  'q16-anything-else': 'Q16 - Anything Else'
 };
 
 /* ─── Helpers ─── */
@@ -91,8 +85,8 @@ function extractQuestionNumber(key) {
 
 function getSectionLabel(questionNumber) {
   if (!questionNumber) return null;
-  if (questionNumber >= 1 && questionNumber <= 9) return 'Section 01 - Brand Foundation';
-  if (questionNumber >= 10 && questionNumber <= 20) return 'Section 02 - Visual Direction';
+  if (questionNumber >= 1 && questionNumber <= 7) return 'Section 01 - Brand Foundation';
+  if (questionNumber >= 8 && questionNumber <= 16) return 'Section 02 - Visual Direction';
   return null;
 }
 

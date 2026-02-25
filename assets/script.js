@@ -537,18 +537,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (await showConfirm('Clear your saved draft? All unsaved answers will be removed.')) {
         clearDraft();
         form.reset();
-        // Reset range badges and step buttons back to default
-        form.querySelectorAll('.q6-range').forEach(r => {
-          const badge = r.parentElement?.querySelector('.scale-value');
-          if (badge) badge.textContent = r.value;
-          const stepsContainer = form.querySelector(`.q6-steps[data-for="${CSS.escape(r.name)}"]`);
-          if (stepsContainer) {
-            stepsContainer.querySelectorAll('.q6-step').forEach(btn => {
-              btn.classList.toggle('active', btn.getAttribute('data-val') === r.value);
-            });
-          }
-        });
-        // Reset checkbox styling
+        // Reset checkbox/radio styling
         form.querySelectorAll('.check-label').forEach(label => {
           label.classList.remove('checked');
         });
@@ -556,57 +545,19 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  const q6Ranges = form.querySelectorAll('.q6-range');
-  q6Ranges.forEach(range => {
-    const valueBadge = range.parentElement?.querySelector('.scale-value');
-    if (valueBadge) {
-      valueBadge.textContent = range.value;
-    }
-
-    range.addEventListener('input', () => {
-      const liveBadge = range.parentElement?.querySelector('.scale-value');
-      if (liveBadge) {
-        liveBadge.textContent = range.value;
-      }
-      // Sync step buttons
-      syncStepButtons(range.name, range.value);
-    });
-  });
-
-  // Q6 step buttons (mobile-friendly)
-  function syncStepButtons(name, value) {
-    const stepsContainer = form.querySelector(`.q6-steps[data-for="${CSS.escape(name)}"]`);
-    if (!stepsContainer) return;
-    stepsContainer.querySelectorAll('.q6-step').forEach(btn => {
-      btn.classList.toggle('active', btn.getAttribute('data-val') === String(value));
-    });
-  }
-
-  form.querySelectorAll('.q6-steps').forEach(container => {
-    const inputName = container.getAttribute('data-for');
-    const range = form.querySelector(`input[name="${CSS.escape(inputName)}"]`);
-
-    // Init step buttons from range value (handles draft restore)
-    if (range) syncStepButtons(inputName, range.value);
-
-    container.querySelectorAll('.q6-step').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const val = btn.getAttribute('data-val');
-        if (!range || !val) return;
-        range.value = val;
-        range.dispatchEvent(new Event('input', { bubbles: true }));
-      });
-    });
-  });
-
-  // Checkbox checked styling
+  // Checkbox and radio checked styling
   form.querySelectorAll('.check-label').forEach(label => {
-    const cb = label.querySelector('input[type="checkbox"]');
-    if (!cb) return;
-    // Init from restored draft
-    label.classList.toggle('checked', cb.checked);
-    cb.addEventListener('change', () => {
-      label.classList.toggle('checked', cb.checked);
+    const input = label.querySelector('input[type="checkbox"], input[type="radio"]');
+    if (!input) return;
+    label.classList.toggle('checked', input.checked);
+    input.addEventListener('change', () => {
+      if (input.type === 'radio') {
+        form.querySelectorAll(`input[type="radio"][name="${CSS.escape(input.name)}"]`).forEach(r => {
+          r.closest('.check-label')?.classList.toggle('checked', r.checked);
+        });
+      } else {
+        label.classList.toggle('checked', input.checked);
+      }
     });
   });
 
@@ -694,15 +645,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ── Q20 inspiration image uploads ────────────────────────────────
-  const q20Dropzone = document.getElementById('q20Dropzone');
-  const q20FileInput = document.getElementById('q20FileInput');
-  const q20PreviewGrid = document.getElementById('q20PreviewGrid');
-  const MAX_Q20_IMAGES = 8;
-  let q20UploadedRefs = [];
+  // ── Q15 inspiration image uploads ────────────────────────────────
+  const q15Dropzone = document.getElementById('q15Dropzone');
+  const q15FileInput = document.getElementById('q15FileInput');
+  const q15PreviewGrid = document.getElementById('q15PreviewGrid');
+  const MAX_Q15_IMAGES = 8;
+  let q15UploadedRefs = [];
 
-  function getQ20Count() {
-    return q20UploadedRefs.length;
+  function getQ15Count() {
+    return q15UploadedRefs.length;
   }
 
   async function uploadImageToStorage(file) {
@@ -722,9 +673,9 @@ document.addEventListener('DOMContentLoaded', () => {
     return String(result.logoRef || '');
   }
 
-  function renderQ20Preview() {
-    if (!q20PreviewGrid) return;
-    q20PreviewGrid.innerHTML = q20UploadedRefs.map((ref, i) => `
+  function renderQ15Preview() {
+    if (!q15PreviewGrid) return;
+    q15PreviewGrid.innerHTML = q15UploadedRefs.map((ref, i) => `
       <div class="q20-thumb-wrap">
         <img src="/.netlify/functions/get-logo?ref=${encodeURIComponent(ref)}" class="q20-thumb" alt="Inspiration ${i + 1}" />
         <button type="button" class="q20-remove-btn" data-index="${i}" aria-label="Remove image ${i + 1}">
@@ -733,36 +684,36 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     `).join('');
 
-    q20PreviewGrid.querySelectorAll('.q20-remove-btn').forEach(btn => {
+    q15PreviewGrid.querySelectorAll('.q20-remove-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
         const idx = parseInt(btn.dataset.index, 10);
-        q20UploadedRefs.splice(idx, 1);
-        renderQ20Preview();
-        syncQ20HiddenInputs();
+        q15UploadedRefs.splice(idx, 1);
+        renderQ15Preview();
+        syncQ15HiddenInputs();
         if (window.lucide) window.lucide.createIcons();
       });
     });
 
     if (window.lucide) window.lucide.createIcons();
-    if (q20Dropzone) q20Dropzone.style.display = getQ20Count() >= MAX_Q20_IMAGES ? 'none' : '';
+    if (q15Dropzone) q15Dropzone.style.display = getQ15Count() >= MAX_Q15_IMAGES ? 'none' : '';
   }
 
-  function syncQ20HiddenInputs() {
-    document.querySelectorAll('input[name="q20-inspiration-refs"]').forEach(el => el.remove());
+  function syncQ15HiddenInputs() {
+    document.querySelectorAll('input[name="q15-inspiration-refs"]').forEach(el => el.remove());
     const form = document.querySelector('form[name="brand-intake"]');
     if (!form) return;
-    q20UploadedRefs.forEach(ref => {
+    q15UploadedRefs.forEach(ref => {
       const input = document.createElement('input');
       input.type = 'hidden';
-      input.name = 'q20-inspiration-refs';
+      input.name = 'q15-inspiration-refs';
       input.value = ref;
       form.appendChild(input);
     });
   }
 
-  async function handleQ20Files(files) {
-    const remaining = MAX_Q20_IMAGES - getQ20Count();
+  async function handleQ15Files(files) {
+    const remaining = MAX_Q15_IMAGES - getQ15Count();
     const toUpload = Array.from(files).slice(0, remaining);
     for (const file of toUpload) {
       const allowedTypes = new Set(['image/png', 'image/jpeg', 'image/webp', 'image/gif']);
@@ -770,20 +721,20 @@ document.addEventListener('DOMContentLoaded', () => {
       if (file.size > 5 * 1024 * 1024) continue;
       try {
         const ref = await uploadImageToStorage(file);
-        q20UploadedRefs.push(ref);
-        renderQ20Preview();
-        syncQ20HiddenInputs();
-      } catch (e) { console.error('Q20 upload failed', e); }
+        q15UploadedRefs.push(ref);
+        renderQ15Preview();
+        syncQ15HiddenInputs();
+      } catch (e) { console.error('Q15 upload failed', e); }
     }
   }
 
-  if (q20Dropzone && q20FileInput) {
-    q20Dropzone.addEventListener('click', () => q20FileInput.click());
-    q20Dropzone.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); q20FileInput.click(); } });
-    q20FileInput.addEventListener('change', () => { if (q20FileInput.files) handleQ20Files(q20FileInput.files); });
-    q20Dropzone.addEventListener('dragover', e => { e.preventDefault(); q20Dropzone.classList.add('dragging'); });
-    q20Dropzone.addEventListener('dragleave', () => q20Dropzone.classList.remove('dragging'));
-    q20Dropzone.addEventListener('drop', e => { e.preventDefault(); q20Dropzone.classList.remove('dragging'); if (e.dataTransfer && e.dataTransfer.files) handleQ20Files(e.dataTransfer.files); });
+  if (q15Dropzone && q15FileInput) {
+    q15Dropzone.addEventListener('click', () => q15FileInput.click());
+    q15Dropzone.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); q15FileInput.click(); } });
+    q15FileInput.addEventListener('change', () => { if (q15FileInput.files) handleQ15Files(q15FileInput.files); });
+    q15Dropzone.addEventListener('dragover', e => { e.preventDefault(); q15Dropzone.classList.add('dragging'); });
+    q15Dropzone.addEventListener('dragleave', () => q15Dropzone.classList.remove('dragging'));
+    q15Dropzone.addEventListener('drop', e => { e.preventDefault(); q15Dropzone.classList.remove('dragging'); if (e.dataTransfer && e.dataTransfer.files) handleQ15Files(e.dataTransfer.files); });
   }
-  // ── End Q20 ──────────────────────────────────────────────────────
+  // ── End Q15 ──────────────────────────────────────────────────────
 });

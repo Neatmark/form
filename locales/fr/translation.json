@@ -19,7 +19,7 @@
     "cta": {
       "submit": "Soumettre le formulaire",
       "clear": "Effacer",
-      "note": "Vos réponses sont automatiquement enregistrées dans votre navigateur pour que vous puissiez revenir et modifier à tout moment. Nous examinherons votre soumission et vous recontacterons dans les 2 jours ouvrables."
+      "note": "Vos réponses sont automatiquement enregistrées dans votre navigateur pour que vous puissiez revenir et modifier à tout moment. Nous examinerons votre soumission et vous recontacterons dans les 2 jours ouvrables."
     },
     "metadata": {
       "clientName": "Votre nom",
@@ -56,13 +56,13 @@
       },
       "q3": {
         "label": "Peignez un portrait vivant de votre client idéal.",
-        "hint": "Âge, style de vie, valeurs, aspirations, ce qu'ils lisent, comment ils passent leurs week-ends.",
-        "placeholder": "Elle a environ 40 ans, dirige une petite entreprise créative, valorise l'authenticité plus que les tendances..."
+        "hint": "Ce qui les intéresse, comment ils veulent être perçus, et ce qui les a poussés à vous chercher spécifiquement.",
+        "placeholder": "Elle dirige une petite entreprise créative, valorise l'authenticité sur les tendances, et veut que sa marque reflète le soin qu'elle met dans son travail..."
       },
       "q4": {
-        "label": "Énumérez 2-4 concurrents ou marques similaires. Qu'est-ce qu'ils font bien et où est l'écart que vous combler?",
-        "hint": "Ces n'ont pas besoin d'être des concurrents directs, n'importe quelle marque que votre audience pourrait considérer.",
-        "placeholder": "La marque A est forte en X, mais semble trop froide. Nous nous différencions par..."
+        "label": "Énumérez 2-4 concurrents ou marques similaires. Qu'est-ce qu'ils font bien, et qu'est-ce que votre audience trouve manquant chez eux?",
+        "hint": "Ils n'ont pas besoin d'être des concurrents directs — toute marque que votre audience pourrait considérer.",
+        "placeholder": "La marque A est forte en X, mais semble trop froide. Notre audience trouve chez eux un manque de..."
       },
       "q5": {
         "label": "Si votre marque était une personne, comment entrerait-elle dans une pièce?",
@@ -70,54 +70,27 @@
         "placeholder": "Confiant mais jamais arrogant. Ils parlent lentement et délibérément..."
       },
       "q6": {
-        "label": "Où se situe votre marque sur ces spectres de personnalité?",
-        "hint": "1 = extrême gauche, 5 = extrême droite. Fiez-vous à votre instinct.",
-        "playfulSerious": {
-          "left": "Ludique",
-          "right": "Sérieux"
-        },
-        "minimalistExpressive": {
-          "left": "Minimaliste",
-          "right": "Expressif"
-        },
-        "approachableAuthoritative": {
-          "left": "Accessible",
-          "right": "Autoritaire"
-        },
-        "classicContemporary": {
-          "left": "Classique",
-          "right": "Contemporain"
-        }
+        "label": "Complétez cette phrase : « Nous sommes le/la seul(e) _____ qui _____.",
+        "hint": "Votre positionnement en une ligne. Une ébauche, c'est très bien, essayez juste.",
+        "placeholder": "Nous sommes le seul cabinet comptable qui s'adresse aux freelances créatifs sans les faire se sentir diminués."
       },
       "q7": {
-        "label": "Quelles sont vos valeurs fondamentales? (Les 3-5 qui définissent votre fonctionnement.)",
-        "hint": "Les croyances qui guident les décisions même quand c'est coûteux.",
-        "placeholder": "Authenticité, Transparence, Innovation, Impact..."
+        "label": "Qui est le principal décideur pour ce projet?",
+        "options": {
+          "me": "Moi / moi-même",
+          "boss": "Mon patron / le patron",
+          "other": "Autre (précisez):"
+        },
+        "otherPlaceholder": "Veuillez préciser..."
       },
       "q8": {
-        "label": "Décrivez votre positionnement en une phrase. (Complétez : \"Nous sommes [la catégorie] qui [le différenciateur]...\")",
-        "hint": "Ceci est votre différence clé - ce qui vous rend mémorable.",
-        "placeholder": "Nous sommes l'agence de branding personnel qui aide les thérapeutes à devenir des leaders d'opinion..."
+        "label": "Partagez 3-5 marques ou références visuelles que vous admirez, dans votre secteur ou en dehors.",
+        "hint": "Logos, sites web, emballages, mises en page éditoriales, même des espaces. Liens ou noms, les deux fonctionnent.",
+        "placeholder": "Apple (épuré, premium), Aesop (naturel, typographique), Dieter Rams (beauté fonctionnelle)..."
       },
       "q9": {
-        "label": "Imaginez que c'est dans 3 ans. Qu'a réalisé votre marque? Comment en parlent les gens?",
-        "hint": "La vision à long terme inspire à la fois votre travail et votre public.",
-        "placeholder": "Les thérapeutes de notre réseau sont connus comme des leaders..."
-      },
-      "q10": {
-        "hint": "Recherchez les marques qui partagent une sensibilité similaire, pas seulement votre secteur.",
-        "label": "Énumérez 3-5 marques que vous admirez vraiment - leur approche, leurs visuels, leur communauté ou leur énergie.",
-        "placeholder": "Mailchimp, Slack, Patagonia, Nike..."
-      },
-      "q11": {
-        "label": "Énumérez 2-3 marques dont l'approche vous déplaît activement ou que vous voulez éviter.",
-        "hint": "Parfois, savoir ce que vous ne voulez pas définit aussi clairement qui vous êtes.",
-        "placeholder": "Trop corporatif, dépassé, froid, inauthentique..."
-      },
-      "q12": {
-        "label": "Quelles couleurs, palettes ou histoires de couleurs résonnent avec votre marque?",
-        "hint": "La couleur est émotion. Elle transmet avant les mots.",
-        "placeholder": "Tons de terre chauds, bleus océan, neutres modernes avec des touches d'accent...",
+        "label": "Quelles directions de couleurs semblent justes pour votre marque? Sélectionnez tout ce qui s'applique.",
+        "hint": "Ne réfléchissez pas trop — instinct brut uniquement.",
         "options": {
           "warmNeutrals": "Neutres chauds (crème, sable, terre cuite)",
           "coolNeutrals": "Neutres froids (ardoise, pierre, brume)",
@@ -129,28 +102,14 @@
           "natureInspired": "Inspiré de la nature (mousse, rouille, argile)"
         }
       },
-      "q13": {
-        "label": "Y a-t-il des couleurs que vous voulez éviter?",
+      "q10": {
+        "label": "Y a-t-il des couleurs totalement interdites?",
         "hint": "En raison de préférences personnelles, d'associations industrielles ou d'utilisation concurrente.",
-        "placeholder": "Éviter : néon brillant, bleu corporatif, pastel excessif..."
+        "placeholder": "Évitez le violet, notre principal concurrent l'utilise..."
       },
-      "q14": {
-        "label": "Quels styles de typographie résonnent avec votre marque? (Serif, sans-serif, géométrique, organique, ludique, sérieux?)",
-        "hint": "Les polices sont une voix - précisez le caractère que vous projetez.",
-        "placeholder": "Sans-serif moderne épuré avec une police d'accent manuscrite...",
-        "options": {
-          "elegantSerif": "Serif élégant (éditorial, raffiné)",
-          "geometricSans": "Sans géométrique (propre, moderne)",
-          "handwrittenScript": "Manuscrit / script (personnel, artisanal)",
-          "humanistSans": "Sans humaniste (chaleureux, accessible)",
-          "condensedDisplay": "Condensé / display (audacieux, affirmé)",
-          "monospace": "Monospace (technique, précis)"
-        }
-      },
-      "q15": {
-        "label": "Peignez une direction esthétique visuelle pour votre marque.",
-        "hint": "Pensez texture, attitude, énergie - au-delà des mots-clés. Ayez un ressenti, pas une liste.",
-        "placeholder": "Minimal, naturel, chaud, accueillant. Pensez au design scandinave rencontrant un café douillet...",
+      "q11": {
+        "label": "Quelle direction esthétique décrit le mieux comment votre marque devrait paraître et se ressentir? Sélectionnez jusqu'à deux.",
+        "hint": "Pensez texture, attitude, énergie. Concentrez-vous sur le ressenti général, pas seulement les mots-clés.",
         "options": {
           "luxuryRefined": "Luxe & raffiné",
           "organicArtisan": "Organique & artisanal",
@@ -162,24 +121,17 @@
           "nostalgicHeritage": "Nostalgique & patrimonial"
         }
       },
-      "q15Description": {
-        "label": "Des notes esthétiques supplémentaires?",
-        "placeholder": "Éviter : photographie de stock, mises en page encombrées, sensation corporatif froide..."
+      "q11Description": {
+        "placeholder": "Ou décrivez votre propre direction esthétique..."
       },
-      "q16": {
-        "label": "Si votre marque était un espace physique, à quoi ressemblerait-il et comment se sentirait-il?",
-        "hint": "Matériaux, éclairage, atmosphère. Cela révèle la texture de votre marque au-delà d'un écran.",
-        "placeholder": "Éclairage chaud, mobilier en bois, plantes, musique jazz discrète, étagères bien organisées..."
+      "q12": {
+        "label": "Avez-vous des ressources de marque existantes qui doivent être intégrées dans la nouvelle identité?",
+        "hint": "Si vous commencez de zéro, écrivez « aucun ». Si vous conservez des éléments, expliquez quoi et pourquoi.",
+        "placeholder": "Nous voulons garder notre logo actuel mais tout redesigner d'autre..."
       },
-      "q17": {
-        "label": "Avez-vous des ressources de marque existantes (logo, couleurs, polices, motifs) que vous souhaitez conserver ou développer?",
-        "hint": "Si vous commencez à partir de zéro, écrivez \"aucun.\". Si vous conservez des éléments, expliquez quoi et pourquoi.",
-        "placeholder": "Nous avons un logo actuel mais voulons le moderniser..."
-      },
-      "q18": {
-        "label": "De quels livrables avez-vous besoin? (Logo, directives de marque, modèles de médias sociaux, mises à jour de site Web, etc.)",
-        "hint": "Sélectionnez tout ce qui s'applique, nous confirmerons la portée lors de notre appel de lancement.",
-        "placeholder": "Logo, directives de marque, modèles de médias sociaux, signature email...",
+      "q13": {
+        "label": "Quels livrables avez-vous besoin pour ce projet?",
+        "hint": "Sélectionnez tout ce qui s'applique — nous confirmerons la portée lors de notre appel de lancement.",
         "options": {
           "primaryLogo": "Logo principal",
           "logoVariations": "Variantes de logo & sous-marques",
@@ -191,21 +143,25 @@
           "packaging": "Design packaging"
         }
       },
-      "q19": {
-        "label": "Quelle est la seule chose que vous voulez que les gens ressentent quand ils rencontrent votre marque pour la première fois?",
-        "hint": "UNE émotion. Ne partagez pas tout - c'est votre super pouvoir émotionnel.",
-        "placeholder": "Fiable. Inspiré. Soulagé. Excité..."
+      "q14": {
+        "label": "Quelle est votre approche budgétaire pour ce projet?",
+        "options": {
+          "low": "Faible / coût le plus bas possible",
+          "mid": "Moyen / équilibre prix-qualité",
+          "high": "Élevé / premium",
+          "best": "Je veux le meilleur résultat possible quel qu'en soit le coût"
+        }
       },
-      "q21": {
-        "label": "Y a-t-il quelque chose d'autre que nous devrions savoir avant de commencer?",
-        "hint": "Parlez librement - des inquiétudes, des histoires, des exigences, toute chose importante.",
-        "placeholder": "La dernière agence nous a donné quelque chose de trop générique. Nous voulons vraiment que cela nous ressemble..."
-      },
-      "q20": {
+      "q15": {
         "label": "Avez-vous des logos, photos ou moodboards qui inspirent la direction de votre marque ? Déposez-les ici — plus je vois ce qui vous touche, mieux je peux concevoir pour vous.",
         "hint": "Jusqu'à 8 images. PNG, JPG, WEBP ou GIF.",
         "uploadPrompt": "Cliquez ou glissez des images ici",
         "uploadLimit": "Jusqu'à 8 images · PNG, JPG, WEBP, GIF"
+      },
+      "q16": {
+        "label": "Y a-t-il quelque chose concernant vos expériences passées en matière de branding, vos préférences fortes, ou vos craintes que nous devrions savoir avant de commencer?",
+        "hint": "Plus vous partagez ouvertement, mieux nous pouvons adapter cela pour vous.",
+        "placeholder": "La dernière agence nous a donné quelque chose de trop générique. Nous voulons vraiment que cela nous ressemble..."
       }
     }
   },

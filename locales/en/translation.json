@@ -56,13 +56,13 @@
       },
       "q3": {
         "label": "Paint a vivid picture of your ideal customer.",
-        "hint": "Age, lifestyle, values, aspirations, what they read, how they spend their weekends.",
-        "placeholder": "She's in her early 40s, runs a small creative business, values authenticity over trends..."
+        "hint": "What do they care about, what do they want to be seen as, and what made them look for you specifically.",
+        "placeholder": "She runs a small creative business, values authenticity over trends, and wants her brand to feel as considered as her work..."
       },
       "q4": {
-        "label": "List 2-4 competitors or similar brands. What do they do well, and where's the gap you fill?",
-        "hint": "These don't need to be direct competitors, any brand your audience might also consider.",
-        "placeholder": "Brand A is strong at X, but feels too cold. We differentiate by..."
+        "label": "List 2-4 competitors or similar brands. What do they do well, and what does your audience find missing from them?",
+        "hint": "These don't need to be direct competitors — any brand your audience might also consider.",
+        "placeholder": "Brand A is strong at X, but feels too cold. Our audience finds them lacking in..."
       },
       "q5": {
         "label": "If your brand were a person, how would they walk into a room?",
@@ -70,54 +70,27 @@
         "placeholder": "Confident but never arrogant. They speak slowly and deliberately..."
       },
       "q6": {
-        "label": "Where does your brand sit on these personality spectrums?",
-        "hint": "1 = far left, 5 = far right. Go with your gut.",
-        "playfulSerious": {
-          "left": "Playful",
-          "right": "Serious"
-        },
-        "minimalistExpressive": {
-          "left": "Minimalist",
-          "right": "Expressive"
-        },
-        "approachableAuthoritative": {
-          "left": "Approachable",
-          "right": "Authoritative"
-        },
-        "classicContemporary": {
-          "left": "Classic",
-          "right": "Contemporary"
-        }
+        "label": "Complete this sentence: \"We are the only _____ that _____.",
+        "hint": "Your positioning in one line. Rough is fine, just try.",
+        "placeholder": "We are the only accounting firm that speaks to creative freelancers without making them feel small."
       },
       "q7": {
-        "label": "What are your core values? (The 3-5 that define how you operate.)",
-        "hint": "The beliefs that drive decisions even when it's costly.",
-        "placeholder": "Authenticity, Transparency, Innovation, Impact..."
+        "label": "Who is the main action taker / decision maker for this project?",
+        "options": {
+          "me": "Me / myself",
+          "boss": "My boss / the boss",
+          "other": "Other (please specify):"
+        },
+        "otherPlaceholder": "Please specify..."
       },
       "q8": {
-        "label": "Describe your positioning in one sentence. (Complete: \"We are the [category] that [differentiator]...\")",
-        "hint": "Your positioning in one line. Rough is fine, just try.",
-        "placeholder": "We are the personal branding agency that helps therapists become thought leaders in their niche..."
+        "label": "Share 3-5 brands or visual references you admire, inside or outside your industry.",
+        "hint": "Logos, websites, packaging, editorial layouts, even spaces. Links or names both work.",
+        "placeholder": "Apple (clean, premium), Aesop (earthy, typographic), Dieter Rams (functional beauty)..."
       },
       "q9": {
-        "label": "Imagine it's 3 years from now. What has your brand achieved? How are people talking about you?",
-        "hint": "Long-term vision inspires both your work and your audience.",
-        "placeholder": "Therapists in our network are known as leaders..."
-      },
-      "q10": {
-        "label": "List 3-5 brands you genuinely admire, including their approach, visuals, community, or energy.",
-        "hint": "Logos, websites, packaging, editorial layouts, even spaces. Links or names both work.",
-        "placeholder": "Mailchimp, Slack, Patagonia, Nike..."
-      },
-      "q11": {
-        "label": "List 2-3 brands whose approach you actively dislike or want to avoid.",
-        "hint": "Knowing what to avoid is just as valuable as knowing what to pursue.",
-        "placeholder": "Overly corporate, outdated, cold, inauthentic..."
-      },
-      "q12": {
-        "label": "What colors, palettes, or color stories resonate with your brand?",
-        "hint": "Don't overthink, gut instinct only.",
-        "placeholder": "Warm earth tones, ocean blues, modern neutrals with pops of accent...",
+        "label": "Which color directions feel right for your brand? Select all that apply.",
+        "hint": "Don't overthink — gut instinct only.",
         "options": {
           "warmNeutrals": "Warm neutrals (cream, sand, terracotta)",
           "coolNeutrals": "Cool neutrals (slate, stone, mist)",
@@ -129,28 +102,14 @@
           "natureInspired": "Nature-inspired (moss, rust, clay)"
         }
       },
-      "q13": {
-        "label": "Are there colors you want to avoid?",
+      "q10": {
+        "label": "Are there any colors that are completely off-limits?",
         "hint": "Due to personal preference, industry association, or competitor use.",
-        "placeholder": "Avoid: bright neon, corporate blue, overly pastel..."
+        "placeholder": "Please avoid purple, our main competitor uses it..."
       },
-      "q14": {
-        "label": "What typography styles resonate with your brand? (Serif, sans-serif, geometric, organic, playful, serious?)",
-        "hint": "Fonts reflect your voice. Choose the character you want to project.",
-        "placeholder": "Clean modern sans-serif with a handwritten accent font...",
-        "options": {
-          "elegantSerif": "Elegant serif (editorial, refined)",
-          "geometricSans": "Geometric sans (clean, modern)",
-          "handwrittenScript": "Handwritten / script (personal, craft)",
-          "humanistSans": "Humanist sans (friendly, accessible)",
-          "condensedDisplay": "Condensed / display (bold, confident)",
-          "monospace": "Monospace (technical, precise)"
-        }
-      },
-      "q15": {
+      "q11": {
+        "label": "Which aesthetic direction best describes how your brand should look and feel? Select up to two.",
         "hint": "Think about texture, attitude, and energy. Focus on the overall feel, not just keywords.",
-        "label": "Paint a visual aesthetic direction for your brand.",
-        "placeholder": "Minimal, natural, warm, inviting. Think Scandinavian design meets cozy coffee shop...",
         "options": {
           "luxuryRefined": "Luxury & refined",
           "organicArtisan": "Organic & artisan",
@@ -162,24 +121,17 @@
           "nostalgicHeritage": "Nostalgic & heritage"
         }
       },
-      "q15Description": {
-        "label": "Any additional aesthetic notes?",
-        "placeholder": "Avoid: stock photography, cluttered layouts, cold corporate feel..."
+      "q11Description": {
+        "placeholder": "Or describe your own aesthetic direction..."
       },
-      "q16": {
-        "label": "If your brand were a physical space, what would it look like and feel like?",
-        "hint": "Materials, lighting, atmosphere. This reveals your brand's texture beyond a screen.",
-        "placeholder": "Warm lighting, wooden furniture, plants, quiet jazz playing, well-organized shelves..."
-      },
-      "q17": {
-        "label": "Do you have any existing brand assets (logo, colors, fonts, patterns) you want to keep or evolve?",
+      "q12": {
+        "label": "Do you have existing brand assets that must carry into the new identity?",
         "hint": "If starting fresh, write \"none.\" If keeping elements, explain what and why.",
-        "placeholder": "We have a current logo but want to modernize it..."
+        "placeholder": "We want to keep our current logo mark but redesign everything else..."
       },
-      "q18": {
-        "label": "What deliverables do you need? (Logo, brand guidelines, social templates, website updates, etc.)",
-        "hint": "Select all that apply, we'll confirm scope during our kickoff call.",
-        "placeholder": "Logo, brand guidelines, social media templates, email signature...",
+      "q13": {
+        "label": "Which deliverables do you need from this project?",
+        "hint": "Select all that apply — we'll confirm scope during our kickoff call.",
         "options": {
           "primaryLogo": "Primary logo",
           "logoVariations": "Logo variations & submarks",
@@ -191,21 +143,25 @@
           "packaging": "Packaging design"
         }
       },
-      "q19": {
-        "label": "What's the one thing you most want people to feel when they first encounter your brand?",
-        "hint": "A single word or short phrase is perfect.",
-        "placeholder": "Trusted. Inspired. Relieved. Excited..."
+      "q14": {
+        "label": "What is your budget approach for this project?",
+        "options": {
+          "low": "Low / lowest possible cost",
+          "mid": "Mid-range / balanced price–quality",
+          "high": "High / premium",
+          "best": "I want the best possible result no matter the cost"
+        }
       },
-      "q21": {
-        "label": "Anything else we should know before we begin?",
-        "hint": "Fears, strong preferences, past branding experiences, or anything that feels important.",
-        "placeholder": "The last agency gave us something too generic. We really want this to feel like us..."
-      },
-      "q20": {
+      "q15": {
         "label": "Got any logos, photos, or moodboards that inspire your brand's direction? Drop them here — the more I see what moves you, the better I can design for you.",
         "hint": "Up to 8 images. PNG, JPG, WEBP, or GIF.",
         "uploadPrompt": "Click or drag images here",
         "uploadLimit": "Up to 8 images · PNG, JPG, WEBP, GIF"
+      },
+      "q16": {
+        "label": "Is there anything about your past branding experience, strong preferences, or fears we should know before we start?",
+        "hint": "The more openly you share, the better we can tailor this to you.",
+        "placeholder": "The last agency gave us something too generic. We really want this to feel like us..."
       }
     }
   },
