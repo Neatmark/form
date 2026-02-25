@@ -539,44 +539,24 @@ function renderQ6SpectrumGroup(q6Values, isEditMode = false) {
     `;
   }
 
-  // View mode: render both desktop slider and mobile numbered buttons (CSS shows the right one)
+  // View mode: numbered button rows (same layout as edit mode but disabled)
   const spectrumRowsHtml = spectrumDefs.map(({ key, leftLabel, rightLabel }) => {
     const rawValue = q6Values[key];
     const value = Number(rawValue) || 3;
     const hasResponse = Boolean(rawValue && !Number.isNaN(Number(rawValue)));
-    const labelClass = hasResponse ? '' : ' no-response';
-    const percentage = ((value - 1) / 4) * 100;
-    const displayValue = hasResponse ? value : 'N/A';
 
-    // Desktop: slider row
-    const sliderRow = `
-      <div class="scale-row q6-desktop-row">
-        <div class="scale-end${labelClass}">${escapeHtml(leftLabel)}</div>
-        <div class="scale-slider">
-          <div class="q6-track">
-            <div class="q6-fill" style="width: ${percentage}%;"></div>
-            <div class="q6-thumb" style="left: ${percentage}%;"></div>
-          </div>
-          <div class="scale-value${labelClass}">${displayValue}</div>
-        </div>
-        <div class="scale-end right${labelClass}">${escapeHtml(rightLabel)}</div>
-      </div>
-    `;
-
-    // Mobile: numbered button row
     const buttons = [1, 2, 3, 4, 5].map(n => {
       const isActive = hasResponse && n === value;
       return `<button class="q6-num-btn${isActive ? ' active' : ''}" disabled aria-label="${n}">${n}</button>`;
     }).join('');
-    const numRow = `
-      <div class="q6-num-row q6-mobile-row">
+
+    return `
+      <div class="q6-num-row q6-view-row">
         <div class="q6-num-left-label">${escapeHtml(leftLabel)}</div>
         <div class="q6-num-buttons">${buttons}</div>
         <div class="q6-num-right-label">${escapeHtml(rightLabel)}</div>
       </div>
     `;
-
-    return sliderRow + numRow;
   }).join('');
 
   return `
@@ -628,7 +608,18 @@ function buildBrandInitials(brandName) {
   return (words[0].slice(0, 1) + words[1].slice(0, 1)).toUpperCase();
 }
 
-function sectionHeader(icon, title) {
+function sectionHeader(icon, title, opts = {}) {
+  if (opts.collapsible) {
+    return `
+      <button type="button" class="detail-section-head detail-section-toggle${opts.collapsed ? ' collapsed' : ''}" aria-expanded="${opts.collapsed ? 'false' : 'true'}" data-collapse-target="${opts.targetId || ''}">
+        <span class="detail-section-icon" aria-hidden="true">
+          <i data-lucide="${icon}" class="icon icon-section"></i>
+        </span>
+        <h3 class="detail-section-title">${title}</h3>
+        <i data-lucide="chevron-down" class="icon detail-section-chevron"></i>
+      </button>
+    `;
+  }
   return `
     <div class="detail-section-head">
       <span class="detail-section-icon" aria-hidden="true">
@@ -869,16 +860,8 @@ function setModalActionButtons(mode) {
   const cancelIconBtn = document.getElementById('modalCancelIconBtn');
   if (cancelIconBtn) cancelIconBtn.style.display = 'none';
 
-  // Render approve/reject buttons based on current status
-  const status = currentSubmission?.data?.status || 'pending';
-  let statusButtons = '';
-  if (status !== 'approved') {
-    statusButtons += `<button class="btn btn-approve" id="approveBtn"><i data-lucide="check-circle" class="icon icon-btn"></i> Approve</button>`;
-  }
-  if (status !== 'rejected') {
-    statusButtons += `<button class="btn btn-reject" id="rejectBtn"><i data-lucide="x-circle" class="icon icon-btn"></i> Reject</button>`;
-  }
-  modalActions.innerHTML = statusButtons;
+  // No approve/reject buttons in footer — they live in the overview card dropdown
+  modalActions.innerHTML = '';
 }
 
 function syncDraftFromInputs() {
@@ -949,6 +932,13 @@ function renderSubmissions(submissions) {
     const submissionStatus = String(data['status'] || 'pending').toLowerCase();
     const statusLabel = submissionStatus === 'approved' ? 'Approved' : submissionStatus === 'rejected' ? 'Rejected' : 'Pending';
     const statusBadge = `<span class="status-badge ${submissionStatus}">${statusLabel}</span>`;
+
+    const projectStatusRaw = String(data['project-status'] || '').toLowerCase();
+    const projectStatusLabels = { 'not-started': 'Not Started', 'in-progress': 'In Progress', 'done': 'Done', 'abandoned': 'Abandoned' };
+    const projectStatusBadge = projectStatusRaw && projectStatusLabels[projectStatusRaw]
+      ? `<span class="status-badge project-status-badge project-status-${projectStatusRaw}">${projectStatusLabels[projectStatusRaw]}</span>`
+      : '';
+
     const agreedDeliveryRaw = getDisplayValue(data['agreed-delivery-date']);
     const deliveryRaw = getDisplayValue(data['delivery-date']);
     let deliveryDisplay;
@@ -997,8 +987,9 @@ function renderSubmissions(submissions) {
               <input type="checkbox" class="submission-select" data-submission-id="${escapedSubmissionId}" ${isSelected ? 'checked' : ''}>
             </label>
           </div>
-          <div>
-            <div class="submission-brand">${brandName} ${statusBadge}</div>
+          <div class="submission-text">
+            <div class="submission-brand">${brandName}</div>
+            <div class="submission-badges">${statusBadge}${projectStatusBadge}</div>
             <div class="submission-client">${clientName}</div>
           </div>
         </div>
@@ -1346,6 +1337,36 @@ function renderDetailPanel() {
             <label class="overview-label" for="edit-agreed-delivery-date">Agreed Delivery Date</label>
             <input id="edit-agreed-delivery-date" class="edit-input" type="date" data-edit-key="agreed-delivery-date" value="${escapeHtml(normalizeDateInputValue(data['agreed-delivery-date']))}" />
           </div>
+          <div class="overview-card edit-field">
+            <label class="overview-label">Submission Status</label>
+            <div class="custom-delivery-select" id="editSubmissionStatusDropdown">
+              <button type="button" class="edit-input edit-delivery-btn" id="editSubmissionStatusBtn" aria-haspopup="listbox" aria-expanded="false">
+                <span class="edit-delivery-label" id="editSubmissionStatusLabel">${(function(){ const s = String(data['status'] || 'pending').toLowerCase(); return s === 'approved' ? 'Approved' : s === 'rejected' ? 'Rejected' : 'Pending'; })()}</span>
+                <i data-lucide="chevron-down" class="icon edit-delivery-caret"></i>
+              </button>
+              <div class="edit-delivery-menu" id="editSubmissionStatusMenu" role="listbox">
+                <button class="edit-delivery-option submission-status-option submission-status-pending${(!data['status'] || data['status'] === 'pending') ? ' active' : ''}" data-value="pending" role="option">Pending</button>
+                <button class="edit-delivery-option submission-status-option submission-status-approved${data['status'] === 'approved' ? ' active' : ''}" data-value="approved" role="option">Approved</button>
+                <button class="edit-delivery-option submission-status-option submission-status-rejected${data['status'] === 'rejected' ? ' active' : ''}" data-value="rejected" role="option">Rejected</button>
+              </div>
+            </div>
+          </div>
+          <div class="overview-card edit-field">
+            <label class="overview-label">Project Status</label>
+            <div class="custom-delivery-select" id="editProjectStatusDropdown">
+              <button type="button" class="edit-input edit-delivery-btn" id="editProjectStatusBtn" aria-haspopup="listbox" aria-expanded="false">
+                <span class="edit-delivery-label" id="editProjectStatusLabel">${(function(){ const ps = String(data['project-status'] || ''); const lbs = {'not-started':'Not Started','in-progress':'In Progress','done':'Done','abandoned':'Abandoned'}; return ps && lbs[ps] ? lbs[ps] : '— Not set —'; })()}</span>
+                <i data-lucide="chevron-down" class="icon edit-delivery-caret"></i>
+              </button>
+              <div class="edit-delivery-menu" id="editProjectStatusMenu" role="listbox">
+                <button class="edit-delivery-option${!data['project-status'] ? ' active' : ''}" data-value="" role="option">— Not set —</button>
+                <button class="edit-delivery-option project-status-option project-status-not-started${data['project-status'] === 'not-started' ? ' active' : ''}" data-value="not-started" role="option">Not Started</button>
+                <button class="edit-delivery-option project-status-option project-status-in-progress${data['project-status'] === 'in-progress' ? ' active' : ''}" data-value="in-progress" role="option">In Progress</button>
+                <button class="edit-delivery-option project-status-option project-status-done${data['project-status'] === 'done' ? ' active' : ''}" data-value="done" role="option">Done</button>
+                <button class="edit-delivery-option project-status-option project-status-abandoned${data['project-status'] === 'abandoned' ? ' active' : ''}" data-value="abandoned" role="option">Abandoned</button>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
     `;
@@ -1359,6 +1380,8 @@ function renderDetailPanel() {
           <div class="overview-card"><div class="overview-label">Brand Name</div><div class="overview-value">${escapeHtml(brandName)}</div></div>
           <div class="overview-card"><div class="overview-label">Delivery Date</div><div class="overview-value">${formatDeliveryDateForOverview(data['delivery-date'])}</div></div>
           <div class="overview-card"><div class="overview-label">Agreed Delivery Date</div><div class="overview-value">${data['agreed-delivery-date'] ? escapeHtml(formatDeliveryDateForOverview(data['agreed-delivery-date'])) : '<span class="overview-empty-badge">Not set yet</span>'}</div></div>
+          <div class="overview-card"><div class="overview-label">Project Status</div><div class="overview-value">${(function(){ const ps = String(data['project-status'] || '').toLowerCase(); const lbs = {'not-started':'Not Started','in-progress':'In Progress','done':'Done','abandoned':'Abandoned'}; return ps && lbs[ps] ? '<span class="status-badge project-status-badge project-status-' + ps + '">' + lbs[ps] + '</span>' : '<span class="overview-empty-badge">Not set</span>'; })()}</div></div>
+          <div class="overview-card"><div class="overview-label">Submission Status</div><div class="overview-value">${(function(){ const s = String(data['status'] || 'pending').toLowerCase(); if (s === 'approved') return '<span class="status-badge approved">Approved</span>'; if (s === 'rejected') return '<span class="status-badge rejected">Rejected</span>'; return '<span class="status-badge pending">Pending</span>'; })()}</div></div>
         </div>
       </section>
     `;
@@ -1366,8 +1389,10 @@ function renderDetailPanel() {
 
   const historySection = `
     <section class="detail-section">
-      ${sectionHeader('history', 'Submission History')}
-      ${renderHistoryTimeline(history, { isLoading: !Array.isArray(history) })}
+      ${sectionHeader('history', 'Submission History', { collapsible: true, collapsed: true, targetId: 'historyBody' })}
+      <div class="detail-section-body" id="historyBody" hidden>
+        ${renderHistoryTimeline(history, { isLoading: !Array.isArray(history) })}
+      </div>
     </section>
   `;
 
@@ -1458,26 +1483,25 @@ function renderDetailPanel() {
   `;
 
   modalBody.innerHTML = `${overviewSection}${historySection}${questionnaireSection}`;
+
+  // Wire collapsible section toggles
+  modalBody.querySelectorAll('.detail-section-toggle').forEach(toggleBtn => {
+    toggleBtn.addEventListener('click', () => {
+      const targetId = toggleBtn.dataset.collapseTarget;
+      const body = targetId ? document.getElementById(targetId) : null;
+      const isExpanded = toggleBtn.getAttribute('aria-expanded') === 'true';
+      toggleBtn.setAttribute('aria-expanded', isExpanded ? 'false' : 'true');
+      toggleBtn.classList.toggle('collapsed', isExpanded);
+      if (body) body.hidden = isExpanded;
+    });
+  });
+
   setModalActionButtons(isEditingSubmission ? 'edit' : 'view');
 
   const modalEditIconBtn = document.getElementById('modalEditIconBtn');
   const modalDeleteIconBtn = document.getElementById('modalDeleteIconBtn');
   const cancelEditBtn = document.getElementById('cancelEditBtn');
   const saveEditBtn = document.getElementById('saveEditBtn');
-
-  // Approve / Reject buttons (view mode)
-  const approveBtn = document.getElementById('approveBtn');
-  const rejectBtn = document.getElementById('rejectBtn');
-  if (approveBtn) {
-    approveBtn.addEventListener('click', () => {
-      if (currentSubmission) setSubmissionStatus(String(currentSubmission.id), 'approved');
-    });
-  }
-  if (rejectBtn) {
-    rejectBtn.addEventListener('click', () => {
-      if (currentSubmission) setSubmissionStatus(String(currentSubmission.id), 'rejected');
-    });
-  }
 
   // Cancel icon button in header (edit mode)
   const modalCancelIconBtn = document.getElementById('modalCancelIconBtn');
@@ -1566,6 +1590,76 @@ function setupEditModeInteractions() {
   const editDeliveryMenu = document.getElementById('editDeliveryMenu');
   const editDeliveryLabel = document.getElementById('editDeliveryLabel');
   const editDeliveryDropdown = document.getElementById('editDeliveryDropdown');
+
+  // ── Project Status dropdown ──────────────────────────────────────
+  // ── Submission Status dropdown (edit mode) ─────────────────────
+  const editSubmissionStatusBtn = document.getElementById('editSubmissionStatusBtn');
+  const editSubmissionStatusMenu = document.getElementById('editSubmissionStatusMenu');
+  const editSubmissionStatusLabel = document.getElementById('editSubmissionStatusLabel');
+  const editSubmissionStatusDropdown = document.getElementById('editSubmissionStatusDropdown');
+
+  if (editSubmissionStatusBtn && editSubmissionStatusMenu) {
+    editSubmissionStatusBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = editSubmissionStatusMenu.classList.toggle('open');
+      editSubmissionStatusBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+
+    editSubmissionStatusMenu.querySelectorAll('.edit-delivery-option').forEach(opt => {
+      opt.addEventListener('click', () => {
+        const val = opt.dataset.value || 'pending';
+        editSubmissionStatusMenu.querySelectorAll('.edit-delivery-option').forEach(o => o.classList.remove('active'));
+        opt.classList.add('active');
+        const labels = { pending: 'Pending', approved: 'Approved', rejected: 'Rejected' };
+        if (editSubmissionStatusLabel) editSubmissionStatusLabel.textContent = labels[val] || 'Pending';
+        editSubmissionStatusMenu.classList.remove('open');
+        editSubmissionStatusBtn.setAttribute('aria-expanded', 'false');
+        if (editDraftData) editDraftData['status'] = val;
+        markEditDirty();
+      });
+    });
+
+    document.addEventListener('click', (e) => {
+      if (editSubmissionStatusDropdown && !editSubmissionStatusDropdown.contains(e.target)) {
+        editSubmissionStatusMenu.classList.remove('open');
+        editSubmissionStatusBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+
+  const editProjectStatusBtn = document.getElementById('editProjectStatusBtn');
+  const editProjectStatusMenu = document.getElementById('editProjectStatusMenu');
+  const editProjectStatusLabel = document.getElementById('editProjectStatusLabel');
+  const editProjectStatusDropdown = document.getElementById('editProjectStatusDropdown');
+
+  if (editProjectStatusBtn && editProjectStatusMenu) {
+    editProjectStatusBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = editProjectStatusMenu.classList.toggle('open');
+      editProjectStatusBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+
+    editProjectStatusMenu.querySelectorAll('.edit-delivery-option').forEach(opt => {
+      opt.addEventListener('click', () => {
+        const val = opt.dataset.value || '';
+        editProjectStatusMenu.querySelectorAll('.edit-delivery-option').forEach(o => o.classList.remove('active'));
+        opt.classList.add('active');
+        const labels = {'not-started':'Not Started','in-progress':'In Progress','done':'Done','abandoned':'Abandoned'};
+        if (editProjectStatusLabel) editProjectStatusLabel.textContent = val && labels[val] ? labels[val] : '— Not set —';
+        editProjectStatusMenu.classList.remove('open');
+        editProjectStatusBtn.setAttribute('aria-expanded', 'false');
+        if (editDraftData) editDraftData['project-status'] = val;
+        markEditDirty();
+      });
+    });
+
+    document.addEventListener('click', (e) => {
+      if (editProjectStatusDropdown && !editProjectStatusDropdown.contains(e.target)) {
+        editProjectStatusMenu.classList.remove('open');
+        editProjectStatusBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
 
   if (editDeliveryBtn && editDeliveryMenu) {
     editDeliveryBtn.addEventListener('click', (e) => {

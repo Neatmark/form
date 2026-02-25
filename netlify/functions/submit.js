@@ -23,6 +23,7 @@ const ALLOWED_FIELDS = [
   'delivery-date',
   'agreed-delivery-date',
   'status',
+  'project-status',
   'q1-business-description',
   'q2-problem-transformation',
   'q3-ideal-customer',
@@ -194,6 +195,15 @@ exports.handler = async (event) => {
       if (error) {
         return { statusCode: 500, headers: CORS_HEADERS, body: JSON.stringify({ success: false, error: error.message }) };
       }
+    }
+
+    // Only send email for brand-new submissions, NOT for admin overrides (approve/reject/edit)
+    if (submissionAction === 'override') {
+      return {
+        statusCode: 200,
+        headers: CORS_HEADERS,
+        body: JSON.stringify({ success: true })
+      };
     }
 
     const resendApiKey = process.env.RESEND_API_KEY;

@@ -22,6 +22,7 @@ const SUPABASE_FIELDS = new Set([
   'delivery-date',
   'agreed-delivery-date',
   'status',
+  'project-status',
   'q1-business-description',
   'q2-problem-transformation',
   'q3-ideal-customer',

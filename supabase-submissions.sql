@@ -8,6 +8,7 @@ create table if not exists submissions (
   created_at timestamptz not null default now(),
   history jsonb not null default '[]'::jsonb,
   "status" text not null default 'pending',
+  "project-status" text,
   "client-name" text,
   "brand-name" text,
   "email" text,
@@ -46,5 +47,6 @@ create table if not exists submissions (
 -- alter table submissions add column if not exists "brand-logo-ref" text;
 -- alter table submissions add column if not exists "agreed-delivery-date" text;
 -- alter table submissions add column if not exists "status" text not null default 'pending';
+-- alter table submissions add column if not exists "project-status" text;
 -- alter table submissions add column if not exists "q20-inspiration-refs" text[];
 -- alter table submissions rename column "q20-anything-else" to "q21-anything-else";
