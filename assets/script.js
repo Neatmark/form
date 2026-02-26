@@ -279,7 +279,7 @@ function loadDraft(form) {
     const elements = form.elements.namedItem(key);
     if (!elements) continue;
 
-    // Checkbox group (NodeList/RadioNodeList)
+    // Checkbox group (stored as array)
     if (Array.isArray(value)) {
       const checkboxes = form.querySelectorAll(`input[type="checkbox"][name="${CSS.escape(key)}"]`);
       checkboxes.forEach(cb => {
@@ -288,7 +288,13 @@ function loadDraft(form) {
       continue;
     }
 
-    // Single element
+    // Radio group — namedItem returns a RadioNodeList, not an HTMLInputElement
+    if (elements.length !== undefined && elements[0] instanceof HTMLInputElement && elements[0].type === 'radio') {
+      Array.from(elements).forEach(r => { r.checked = r.value === value; });
+      continue;
+    }
+
+    // Single element (text, textarea, select, etc.)
     if (elements instanceof HTMLInputElement || elements instanceof HTMLTextAreaElement || elements instanceof HTMLSelectElement) {
       elements.value = value;
       // Update range badge
