@@ -206,7 +206,8 @@
     "submitting": "Envoi en cours…",
     "alertSuccess": "Succès",
     "alertError": "Une erreur est survenue",
-    "alertClose": "OK"
+    "alertClose": "OK",
+    "turnstileError": "Veuillez attendre la fin de la vérification de sécurité, puis réessayez."
   },
   "dashboard": {
     "title": "Tableau de bord des formulaires",

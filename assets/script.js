@@ -635,6 +635,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     try {
+      // ── Turnstile verification ──────────────────────────────────
+      const turnstileInput = form.querySelector('input[name="cf-turnstile-response"]');
+      const turnstileToken = turnstileInput ? turnstileInput.value.trim() : '';
+      if (!turnstileToken) {
+        await showAlert(
+          window.i18n.t('messages.turnstileError', 'Please wait for the security check to complete, then try again.'),
+          'error'
+        );
+        return;
+      }
+      // ── End Turnstile ───────────────────────────────────────────
+
       const formData = new FormData(form);
       formData.set('__requestOrigin', 'public-form');
 
@@ -664,6 +676,8 @@ document.addEventListener('DOMContentLoaded', () => {
       console.error(error);
       const message = error instanceof Error ? error.message : 'Unknown error';
       await showAlert(window.i18n.t('messages.submitError', {error: message}), 'error');
+      // Reset Turnstile so user gets a fresh token for retry
+      if (window.turnstile) window.turnstile.reset('#cfTurnstile');
     } finally {
       if (submitButton) {
         submitButton.disabled = false;

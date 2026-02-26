@@ -322,6 +322,12 @@
     <div class="footer-top">
       <div class="cta-row">
         <div class="cta-buttons">
+          <!-- Cloudflare Turnstile — replace data-sitekey with your key from dash.cloudflare.com/turnstile -->
+          <div class="cf-turnstile turnstile-widget"
+               id="cfTurnstile"
+               data-sitekey="0x4AAAAAACiutaKJfqQMA9eZ"
+               data-theme="auto"
+               data-size="normal"></div>
           <button class="submit-btn" type="submit" data-i18n="form.cta.submit">Submit Form &nbsp;→</button>
           <button class="clear-btn" type="button" id="clearFormBtn" data-i18n="form.cta.clear">Clear</button>
         </div>
@@ -384,6 +390,7 @@
   </div>
 </div>
 
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="assets/script.js"></script>
 </body>

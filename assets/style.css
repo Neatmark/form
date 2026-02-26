@@ -818,6 +818,14 @@ textarea:focus, input[type="text"]:focus, select:focus { border-color: var(--inp
   justify-content: center;
 }
 
+/* Turnstile widget — full width row above submit button */
+.turnstile-widget {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
 .submit-btn {
   background: var(--btn-bg);
   color: var(--btn-text);

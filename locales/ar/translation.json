@@ -206,7 +206,8 @@
     "submitting": "جارٍ الإرسال…",
     "alertSuccess": "تم بنجاح",
     "alertError": "حدث خطأ",
-    "alertClose": "موافق"
+    "alertClose": "موافق",
+    "turnstileError": "يرجى الانتظار حتى اكتمال التحقق الأمني، ثم المحاولة مرة أخرى."
   },
   "dashboard": {
     "title": "لوحة معلومات النموذج",

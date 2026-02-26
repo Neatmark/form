@@ -206,7 +206,8 @@
     "submitting": "Submitting…",
     "alertSuccess": "Success",
     "alertError": "Something went wrong",
-    "alertClose": "OK"
+    "alertClose": "OK",
+    "turnstileError": "Please wait for the security check to complete, then try again."
   },
   "dashboard": {
     "title": "Form Dashboard",

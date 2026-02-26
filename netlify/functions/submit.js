@@ -118,6 +118,48 @@ exports.handler = async (event) => {
   }
   delete payload.website;
 
+  // ── Cloudflare Turnstile verification ─────────────────────────
+  const turnstileSecret = process.env.TURNSTILE_SECRET_KEY;
+  if (turnstileSecret) {
+    const turnstileToken = String(payload['cf-turnstile-response'] || '').trim();
+    delete payload['cf-turnstile-response'];
+
+    if (!turnstileToken) {
+      return {
+        statusCode: 400,
+        headers: CORS_HEADERS,
+        body: JSON.stringify({ success: false, error: 'Security check token missing. Please reload and try again.' })
+      };
+    }
+
+    try {
+      const verifyRes = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+          secret: turnstileSecret,
+          response: turnstileToken,
+          remoteip: event.headers['x-forwarded-for'] || event.headers['client-ip'] || ''
+        }).toString()
+      });
+      const verifyData = await verifyRes.json();
+      if (!verifyData.success) {
+        return {
+          statusCode: 403,
+          headers: CORS_HEADERS,
+          body: JSON.stringify({ success: false, error: 'Security check failed. Please reload and try again.' })
+        };
+      }
+    } catch (err) {
+      // If Cloudflare is unreachable, log and allow through — don't block real users
+      console.error('[Turnstile] Verification request failed:', err.message);
+    }
+  } else {
+    // No secret configured — skip verification but strip the token field
+    delete payload['cf-turnstile-response'];
+  }
+  // ── End Turnstile ──────────────────────────────────────────────
+
   // ── Server-side field length limits (mirrors client-side maxlength attrs)
   const FIELD_MAXLENGTH = {
     'client-name':               120,
