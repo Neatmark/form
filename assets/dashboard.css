@@ -82,7 +82,7 @@ html[lang="ar"] select {
 }
 
 .lucide-history {
-  color: var(--text-mid);
+color: var(--text-mid);
 }
 
 *,
@@ -2857,3 +2857,115 @@ button.detail-section-toggle[aria-expanded="true"] .detail-section-chevron {
 .edit-delivery-option.submission-status-pending::before  { background: var(--text-mid); }
 .edit-delivery-option.submission-status-approved::before { background: #16a34a; }
 .edit-delivery-option.submission-status-rejected::before { background: var(--red); }
+
+/* ── Edit mode: Q9 / Q11 / Q13 checkboxes & Q14 radio pills ────────── */
+.edit-choice-card {
+  /* same surface as other qa-cards — no override needed */
+}
+
+.edit-choice-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.edit-choice-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--input-bg);
+  border: 1.5px solid var(--input-border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  cursor: pointer;
+  user-select: none;
+  transition: border-color .15s, background .15s;
+}
+
+.edit-choice-pill:hover {
+  border-color: var(--mid);
+  background: var(--surface-2, var(--surface));
+}
+
+.edit-choice-pill.checked {
+  border-color: var(--accent);
+  background: var(--surface-2, var(--surface));
+}
+
+/* Hide the native input visually, keep it accessible */
+.edit-choice-input {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  border: 2px solid var(--input-border);
+  background: var(--input-bg);
+  cursor: pointer;
+  position: relative;
+  transition: background .15s, border-color .15s;
+}
+
+/* Checkbox shape */
+.edit-choice-input[type="checkbox"] {
+  border-radius: 5px;
+}
+
+/* Radio shape */
+.edit-choice-input[type="radio"] {
+  border-radius: 50%;
+}
+
+/* Checked state fill */
+.edit-choice-input:checked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+/* Checkbox tick */
+.edit-choice-input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 5px;
+  width: 5px;
+  height: 8px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* Radio dot */
+.edit-choice-input[type="radio"]:checked::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.edit-choice-input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.edit-choice-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-hi);
+  line-height: 1.35;
+  min-width: 0;
+}
+
+/* Responsive: stack to single column on narrow modal */
+@media (max-width: 520px) {
+  .edit-choice-grid {
+    grid-template-columns: 1fr;
+  }
+}
