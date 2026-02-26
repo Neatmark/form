@@ -1,3 +1,11 @@
+@font-face {
+  font-family: 'Norsal';
+  src: url('Norsal.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --mid:     #006d77;
   --red:     #da3a3a;
@@ -5,7 +13,7 @@
 
 /* Arabic Font */
 html[lang="ar"] {
-  font-family: 'IBM Plex Sans Arabic', sans-serif;
+  font-family: 'Norsal', sans-serif;
 }
 
 html[lang="ar"] body,
@@ -13,7 +21,7 @@ html[lang="ar"] button,
 html[lang="ar"] input,
 html[lang="ar"] textarea,
 html[lang="ar"] select {
-  font-family: 'IBM Plex Sans Arabic', sans-serif;
+  font-family: 'Norsal', sans-serif;
 }
 
 [data-theme="dark"] {
@@ -248,7 +256,7 @@ body{
   min-width: 22px;
 }
 .arabic-lm {
-  font-family: 'IBM Plex Sans Arabic', sans-serif;
+  font-family: 'Norsal', sans-serif;
 }
 /* RTL: flip dropdown alignment */
 html[dir="rtl"] .lang-menu {
