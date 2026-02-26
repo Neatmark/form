@@ -670,6 +670,11 @@ document.addEventListener('DOMContentLoaded', () => {
     return q15UploadedRefs.length;
   }
 
+  /**
+   * Upload one inspiration photo.
+   * Returns a JSON-stringified object: '{"smallRef":"…","originalRef":"…"}'
+   * which is stored as a text entry in the q15-inspiration-refs text[] column.
+   */
   async function uploadImageToStorage(file) {
     const base64 = await new Promise((res, rej) => {
       const reader = new FileReader();
@@ -677,26 +682,54 @@ document.addEventListener('DOMContentLoaded', () => {
       reader.onerror = () => rej(new Error('Read failed'));
       reader.readAsDataURL(file);
     });
-    const response = await fetch('/.netlify/functions/upload-logo', {
+    const response = await fetch('/.netlify/functions/upload-photo', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ filename: file.name, mimeType: file.type, contentBase64: base64 })
     });
-    if (!response.ok) throw new Error('Upload failed');
+    if (!response.ok) {
+      const errText = await response.text().catch(() => 'Upload failed');
+      throw new Error(errText);
+    }
     const result = await response.json();
-    return String(result.logoRef || '');
+    if (!result.smallRef || !result.originalRef) throw new Error('Upload response missing refs.');
+    // Store as JSON string so both refs travel together through the text[] column
+    return JSON.stringify({ smallRef: result.smallRef, originalRef: result.originalRef });
+  }
+
+  /**
+   * Parse a stored ref entry — handles both new JSON format and legacy plain-string format.
+   * Returns { smallRef, originalRef } or null if unparseable.
+   */
+  function parsePhotoRef(entry) {
+    if (!entry) return null;
+    try {
+      const obj = typeof entry === 'string' ? JSON.parse(entry) : entry;
+      if (obj && obj.smallRef) return obj;
+    } catch (_) { /* fall through */ }
+    // Legacy format: plain storage path string
+    return { smallRef: entry, originalRef: entry };
+  }
+
+  function getSmallPhotoUrl(ref) {
+    const parsed = parsePhotoRef(ref);
+    if (!parsed) return '';
+    return `/.netlify/functions/get-photo?bucket=small-photos&ref=${encodeURIComponent(parsed.smallRef)}`;
   }
 
   function renderQ15Preview() {
     if (!q15PreviewGrid) return;
-    q15PreviewGrid.innerHTML = q15UploadedRefs.map((ref, i) => `
-      <div class="q20-thumb-wrap">
-        <img src="/.netlify/functions/get-logo?ref=${encodeURIComponent(ref)}" class="q20-thumb" alt="Inspiration ${i + 1}" />
-        <button type="button" class="q20-remove-btn" data-index="${i}" aria-label="Remove image ${i + 1}">
-          <i data-lucide="x" class="icon"></i>
-        </button>
-      </div>
-    `).join('');
+    q15PreviewGrid.innerHTML = q15UploadedRefs.map((ref, i) => {
+      const smallUrl = getSmallPhotoUrl(ref);
+      return `
+        <div class="q20-thumb-wrap">
+          <img src="${smallUrl}" class="q20-thumb" alt="Inspiration ${i + 1}" />
+          <button type="button" class="q20-remove-btn" data-index="${i}" aria-label="Remove image ${i + 1}">
+            <i data-lucide="x" class="icon"></i>
+          </button>
+        </div>
+      `;
+    }).join('');
 
     q15PreviewGrid.querySelectorAll('.q20-remove-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
@@ -717,6 +750,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('input[name="q15-inspiration-refs"]').forEach(el => el.remove());
     const form = document.querySelector('form[name="brand-intake"]');
     if (!form) return;
+    // Each ref is a JSON string — stored as-is in the text[] column
     q15UploadedRefs.forEach(ref => {
       const input = document.createElement('input');
       input.type = 'hidden';

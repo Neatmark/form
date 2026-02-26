@@ -692,6 +692,33 @@ function getLogoUrlFromRef(logoRef) {
   return `/.netlify/functions/get-logo?ref=${encodeURIComponent(ref)}`;
 }
 
+/**
+ * Parse an inspiration photo ref entry.
+ * Handles both new JSON format {"smallRef":"…","originalRef":"…"}
+ * and legacy plain-string format.
+ */
+function parsePhotoRef(entry) {
+  if (!entry) return null;
+  try {
+    const obj = typeof entry === 'string' ? JSON.parse(entry) : entry;
+    if (obj && obj.smallRef) return obj;
+  } catch (_) { /* fall through */ }
+  // Legacy: plain storage path — treat as the single known ref for both sizes
+  return { smallRef: entry, originalRef: entry };
+}
+
+function getSmallPhotoUrl(ref) {
+  const parsed = parsePhotoRef(ref);
+  if (!parsed) return '';
+  return `/.netlify/functions/get-photo?bucket=small-photos&ref=${encodeURIComponent(parsed.smallRef)}`;
+}
+
+function getOriginalPhotoUrl(ref) {
+  const parsed = parsePhotoRef(ref);
+  if (!parsed) return '';
+  return `/.netlify/functions/get-photo?bucket=original-photos&ref=${encodeURIComponent(parsed.originalRef)}`;
+}
+
 function cloneSubmissionData(data) {
   return Object.entries(data || {}).reduce((accumulator, [key, value]) => {
     if (Array.isArray(value)) {
@@ -1450,13 +1477,17 @@ function renderDetailPanel() {
 
     const displayValue = getDisplayValue(value);
 
-    // Special rendering for q20-inspiration-refs
-    if (key === 'q20-inspiration-refs' && !isEditingSubmission) {
+    // Special rendering for q15-inspiration-refs (also handles legacy q20-inspiration-refs key)
+    if ((key === 'q15-inspiration-refs' || key === 'q20-inspiration-refs') && !isEditingSubmission) {
       const refs = Array.isArray(value) ? value : (value ? [value] : []);
       const imagesHtml = refs.length > 0
-        ? `<div class="q20-dash-preview-grid">${refs.map((ref, i) => `<div class="q20-dash-thumb-wrap"><img src="${escapeHtml(getLogoUrlFromRef(String(ref)))}" class="q20-dash-thumb" alt="Inspiration ${i + 1}" loading="lazy" /></div>`).join('')}</div>`
+        ? `<div class="q20-dash-preview-grid">${refs.map((ref, i) => {
+            const smallUrl    = escapeHtml(getSmallPhotoUrl(String(ref)));
+            const originalUrl = escapeHtml(getOriginalPhotoUrl(String(ref)));
+            return `<div class="q20-dash-thumb-wrap" title="Click to open full resolution" style="cursor:pointer;" onclick="window.open('${originalUrl}','_blank')"><img src="${smallUrl}" class="q20-dash-thumb" alt="Inspiration ${i + 1}" loading="lazy" /><div class="q20-dash-thumb-overlay"><i data-lucide="zoom-in" style="width:16px;height:16px;color:#fff;"></i></div></div>`;
+          }).join('')}</div>`
         : '<div class="qa-value qa-empty">No images uploaded</div>';
-      return `<article class="qa-card"><div class="qa-label-row"><span class="qa-num-badge">20</span><span class="qa-label-text">Inspiration Images</span></div>${imagesHtml}</article>`;
+      return `<article class="qa-card"><div class="qa-label-row"><span class="qa-num-badge">15</span><span class="qa-label-text">Inspiration Images</span></div>${imagesHtml}</article>`;
     }
 
     const valueMarkup = displayValue

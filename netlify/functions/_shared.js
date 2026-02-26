@@ -1,7 +1,7 @@
 const { PDFDocument, StandardFonts } = require('pdf-lib');
 const {
   Document, Packer, Paragraph, TextRun,
-  HeadingLevel, AlignmentType, BorderStyle
+  HeadingLevel, AlignmentType, BorderStyle, ImageRun
 } = require('docx');
 
 /* ─── Constants ─── */
@@ -102,6 +102,34 @@ function sanitizeFilenamePart(value, fallback) {
 
 const SYSTEM_FIELDS = new Set(['created_at', 'history', 'status', 'project-status', 'agreed-delivery-date']);
 
+/**
+ * Parse a stored q15 ref entry.
+ * New format: JSON string '{"smallRef":"small/...","originalRef":"originals/..."}'
+ * Legacy format: plain storage path string
+ */
+function parsePhotoRef(entry) {
+  if (!entry) return null;
+  try {
+    const obj = typeof entry === 'string' ? JSON.parse(entry) : entry;
+    if (obj && typeof obj === 'object' && obj.smallRef) return obj;
+  } catch (_) { /* fall through to legacy */ }
+  return { smallRef: entry, originalRef: entry };
+}
+
+/**
+ * Return a human-readable filename for markdown display.
+ * Strips the folder prefix and the leading timestamp+uid.
+ * e.g. "small/1772066072403_v1g484_my-photo.jpg" → "my-photo.jpg"
+ */
+function getPhotoFilename(entry) {
+  const parsed = parsePhotoRef(entry);
+  if (!parsed) return String(entry || '');
+  const ref = parsed.originalRef || parsed.smallRef || '';
+  const basename = ref.split('/').pop() || ref;
+  // Remove leading timestamp_uid_ prefix (digits_alphanum_)
+  return basename.replace(/^\d+_[a-z0-9]+_/, '');
+}
+
 function formatHumanDate(date) {
   return date.toLocaleString('en-US', {
     year: 'numeric',
@@ -132,18 +160,32 @@ function buildMarkdown(payload) {
 
   for (const [key, rawValue] of sortedEntries(payload)) {
     if (SYSTEM_FIELDS.has(key)) continue;
-    const value = normalizeValue(rawValue) || '_No response_';
     const label = FIELD_LABELS[key] || prettifyKey(key);
     lines.push(`## ${label}`);
     lines.push('');
-    lines.push(value);
+
+    // q15 refs: show clean filenames instead of raw JSON strings
+    if (key === 'q15-inspiration-refs') {
+      const refs = Array.isArray(rawValue) ? rawValue : (rawValue ? [rawValue] : []);
+      if (refs.length > 0) {
+        refs.forEach((ref, i) => {
+          lines.push(`- Inspiration ${i + 1}: ${getPhotoFilename(ref)}`);
+        });
+      } else {
+        lines.push('_No images uploaded_');
+      }
+    } else {
+      const value = normalizeValue(rawValue) || '_No response_';
+      lines.push(value);
+    }
+
     lines.push('');
   }
 
   return lines.join('\n');
 }
 
-async function buildDocxBuffer(payload) {
+async function buildDocxBuffer(payload, imageBuffers = {}) {
   const now = new Date();
   const submittedAtDisplay = formatHumanDate(now);
   const clientName = normalizeValue(payload['client-name']) || 'Unknown Client';
@@ -219,10 +261,47 @@ async function buildDocxBuffer(payload) {
       children: [new TextRun({ text: label, bold: true, color: '1F1F1F' })],
       spacing: { before: 160, after: 70 }
     }));
-    children.push(new Paragraph({
-      children: [new TextRun({ text: value })],
-      spacing: { after: 110 }
-    }));
+
+    // q15 inspiration refs: embed small images instead of printing JSON
+    if (key === 'q15-inspiration-refs') {
+      const refs = Array.isArray(rawValue) ? rawValue : (rawValue ? [rawValue] : []);
+      if (refs.length > 0) {
+        const imgParagraphChildren = [];
+        for (const ref of refs) {
+          const imgBuffer = imageBuffers[ref];
+          if (imgBuffer) {
+            // Embed the image (140×140 px display size)
+            imgParagraphChildren.push(
+              new ImageRun({
+                data: imgBuffer,
+                transformation: { width: 140, height: 140 },
+                type: 'jpg'
+              })
+            );
+            // Small gap between images using a space run
+            imgParagraphChildren.push(new TextRun({ text: '  ' }));
+          } else {
+            // Fallback: show filename if image buffer was not pre-fetched
+            imgParagraphChildren.push(new TextRun({ text: `[${getPhotoFilename(ref)}]  ` }));
+          }
+        }
+        children.push(new Paragraph({
+          children: imgParagraphChildren,
+          spacing: { after: 110 }
+        }));
+      } else {
+        children.push(new Paragraph({
+          children: [new TextRun({ text: 'No images uploaded', italics: true, color: '888888' })],
+          spacing: { after: 110 }
+        }));
+      }
+    } else {
+      children.push(new Paragraph({
+        children: [new TextRun({ text: value })],
+        spacing: { after: 110 }
+      }));
+    }
+
     children.push(new Paragraph({
       border: { bottom: { style: BorderStyle.SINGLE, size: 4, color: 'ECECEC' } },
       spacing: { after: 80 }
@@ -256,7 +335,7 @@ async function buildDocxBuffer(payload) {
   return Packer.toBuffer(document);
 }
 
-async function buildPdfBuffer(payload) {
+async function buildPdfBuffer(payload, imageBuffers = {}) {
   const pdfDoc = await PDFDocument.create();
   const regularFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
   const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
@@ -370,7 +449,57 @@ async function buildPdfBuffer(payload) {
     }
 
     drawWrapped(label, { size: 10, font: boldFont });
-    drawWrapped(value, { size: 10, font: regularFont });
+
+    // q15 inspiration refs: embed small images in a row
+    if (key === 'q15-inspiration-refs') {
+      const refs = Array.isArray(rawValue) ? rawValue : (rawValue ? [rawValue] : []);
+      if (refs.length > 0) {
+        const imgSize    = 110;  // display size in PDF points
+        const imgGap     = 8;
+        const perRow     = Math.max(1, Math.floor(maxWidth / (imgSize + imgGap)));
+        let embeddedAny  = false;
+
+        for (let rowStart = 0; rowStart < refs.length; rowStart += perRow) {
+          const rowRefs = refs.slice(rowStart, rowStart + perRow);
+          // Ensure enough vertical space for a row of images
+          ensureSpace(imgSize + imgGap + 6);
+
+          let xPos = margin;
+          for (const ref of rowRefs) {
+            const imgBuffer = imageBuffers[ref];
+            if (imgBuffer) {
+              try {
+                const embedded = await pdfDoc.embedJpg(imgBuffer);
+                const dims     = embedded.scaleToFit(imgSize, imgSize);
+                page.drawImage(embedded, {
+                  x: xPos,
+                  y: yPosition - dims.height,
+                  width:  dims.width,
+                  height: dims.height
+                });
+                xPos += dims.width + imgGap;
+                embeddedAny = true;
+              } catch (embedErr) {
+                // Fallback: print filename if embed fails
+                drawWrapped(`[${getPhotoFilename(ref)}]`, { size: 9, font: regularFont });
+              }
+            } else {
+              // No buffer — print filename
+              drawWrapped(`[${getPhotoFilename(ref)}]`, { size: 9, font: regularFont });
+            }
+          }
+
+          if (embeddedAny) {
+            yPosition -= imgSize + imgGap;
+          }
+        }
+      } else {
+        drawWrapped('No images uploaded', { size: 10, font: regularFont });
+      }
+    } else {
+      drawWrapped(value, { size: 10, font: regularFont });
+    }
+
     addSpacer(8);
   }
 
@@ -396,11 +525,37 @@ async function sendResendEmail({ apiKey, to, from, subject, html, text, attachme
   }
 }
 
-function buildAdminEmail({ brandName, clientName, email, deliveryDate }) {
-  const safeBrand = escapeHtml(brandName || 'Unknown Brand');
-  const safeClient = escapeHtml(clientName || 'Unknown Client');
-  const safeEmail = escapeHtml(email || 'Not provided');
+/**
+ * buildAdminEmail
+ * @param {object} opts
+ * @param {string} opts.brandName
+ * @param {string} opts.clientName
+ * @param {string} opts.email
+ * @param {string} opts.deliveryDate
+ * @param {Array<{smallBase64: string, mimeType?: string}>} [opts.inspirationImages]
+ *   Optional array of pre-fetched small images to embed inline in the email.
+ */
+function buildAdminEmail({ brandName, clientName, email, deliveryDate, inspirationImages = [] }) {
+  const safeBrand    = escapeHtml(brandName    || 'Unknown Brand');
+  const safeClient   = escapeHtml(clientName   || 'Unknown Client');
+  const safeEmail    = escapeHtml(email        || 'Not provided');
   const safeDelivery = escapeHtml(deliveryDate || 'Not provided');
+
+  let imagesSection = '';
+  if (Array.isArray(inspirationImages) && inspirationImages.length > 0) {
+    const imgTags = inspirationImages
+      .map((img, i) => {
+        const mime = img.mimeType || 'image/jpeg';
+        const src  = `data:${mime};base64,${img.smallBase64}`;
+        return `<img src="${src}" alt="Inspiration ${i + 1}" style="width:100px;height:100px;object-fit:cover;border-radius:6px;margin:4px;" />`;
+      })
+      .join('');
+    imagesSection = `
+      <div style="margin-top:18px;">
+        <p style="font-weight:bold;margin-bottom:8px;color:#444;">Q15 – Inspiration Images:</p>
+        <div style="display:flex;flex-wrap:wrap;gap:4px;">${imgTags}</div>
+      </div>`;
+  }
 
   return {
     subject: `New Intake: ${String(brandName || 'Unknown Brand')} (${String(clientName || 'Unknown Client')})`,
@@ -411,10 +566,11 @@ function buildAdminEmail({ brandName, clientName, email, deliveryDate }) {
         <p><strong>Brand:</strong> ${safeBrand}</p>
         <p><strong>Email:</strong> ${safeEmail}</p>
         <p><strong>Delivery Date:</strong> ${safeDelivery}</p>
+        ${imagesSection}
         <p style="margin-top: 16px; color: #666;">View full details in the dashboard.</p>
       </div>
     `,
-    text: `New Client Intake\nClient: ${String(clientName || 'Unknown Client')}\nBrand: ${String(brandName || 'Unknown Brand')}\nEmail: ${String(email || 'Not provided')}\nDelivery Date: ${String(deliveryDate || 'Not provided')}`
+    text: `New Client Intake\nClient: ${String(clientName || 'Unknown Client')}\nBrand: ${String(brandName || 'Unknown Brand')}\nEmail: ${String(email || 'Not provided')}\nDelivery Date: ${String(deliveryDate || 'Not provided')}${inspirationImages.length ? '\n\n' + inspirationImages.length + ' inspiration image(s) attached.' : ''}`
   };
 }
 

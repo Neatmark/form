@@ -2535,10 +2535,10 @@ button.detail-section-toggle[aria-expanded="true"] .detail-section-chevron {
   transform: scale(1.05);
 }
 
-/* ── Feature 3: Q20 inspiration refs dashboard grid ──── */
+/* ── Feature 3: Q15 inspiration refs dashboard grid ──── */
 .q20-dash-preview-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
   gap: 8px;
   margin-top: 10px;
 }
@@ -2546,12 +2546,37 @@ button.detail-section-toggle[aria-expanded="true"] .detail-section-chevron {
   border-radius: 8px;
   overflow: hidden;
   aspect-ratio: 1/1;
+  position: relative;
+  cursor: pointer;
+  transition: transform .15s, box-shadow .15s;
+}
+.q20-dash-thumb-wrap:hover {
+  transform: scale(1.03);
+  box-shadow: 0 4px 14px rgba(0,0,0,.35);
 }
 .q20-dash-thumb {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
+  transition: filter .15s;
+}
+.q20-dash-thumb-wrap:hover .q20-dash-thumb {
+  filter: brightness(0.7);
+}
+/* Zoom icon overlay — shown on hover */
+.q20-dash-thumb-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity .15s;
+  pointer-events: none;
+}
+.q20-dash-thumb-wrap:hover .q20-dash-thumb-overlay {
+  opacity: 1;
 }
 
 /* Feature 1: Proposed delivery tag */

@@ -194,13 +194,47 @@ exports.handler = async (event) => {
         Object.entries(record).filter(([key]) => !DOCUMENT_SKIP_FIELDS.has(key))
       );
 
+      // ── Fetch small inspiration images once — used for emails AND documents ──
+      const inspirationImages = [];  // [{smallBase64, mimeType}] for email HTML
+      const imageBuffers = {};        // {refJsonString: Buffer} for PDF/DOCX embedding
+
+      const rawRefs = record['q15-inspiration-refs'];
+      const parsedRefs = Array.isArray(rawRefs) ? rawRefs : [];
+      for (const refEntry of parsedRefs) {
+        try {
+          let smallRef = null;
+          try {
+            const parsedRef = typeof refEntry === 'string' ? JSON.parse(refEntry) : refEntry;
+            smallRef = parsedRef && parsedRef.smallRef ? parsedRef.smallRef : null;
+          } catch (_) {
+            smallRef = refEntry;  // legacy plain string
+          }
+          if (!smallRef) continue;
+
+          const { data: imgData, error: imgErr } = await supabase.storage
+            .from('small-photos')
+            .download(smallRef);
+          if (imgErr || !imgData) {
+            console.warn('Could not fetch small photo:', smallRef, imgErr?.message);
+            continue;
+          }
+          const buf = Buffer.from(await imgData.arrayBuffer());
+          // For email embedding
+          inspirationImages.push({ smallBase64: buf.toString('base64'), mimeType: 'image/jpeg' });
+          // For document embedding — keyed by the original ref entry string
+          imageBuffers[refEntry] = buf;
+        } catch (imgFetchErr) {
+          console.warn('Inspiration image fetch error:', imgFetchErr.message);
+        }
+      }
+
       let pdfBuffer;
       let docxBuffer;
       let markdown;
       try {
         markdown = buildMarkdown(docPayload);
-        docxBuffer = await buildDocxBuffer(docPayload);
-        pdfBuffer = await buildPdfBuffer(docPayload);
+        docxBuffer = await buildDocxBuffer(docPayload, imageBuffers);
+        pdfBuffer  = await buildPdfBuffer(docPayload, imageBuffers);
       } catch (err) {
         console.error('Document generation failed', err);
         markdown = null;
@@ -212,7 +246,8 @@ exports.handler = async (event) => {
         brandName: record['brand-name'],
         clientName: record['client-name'],
         email: record.email,
-        deliveryDate: record['delivery-date']
+        deliveryDate: record['delivery-date'],
+        inspirationImages
       });
 
       if (destinationEmail) {
