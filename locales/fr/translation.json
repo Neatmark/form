@@ -189,6 +189,11 @@
       "message": "Êtes-vous sûr? Cela ne peut pas être annulé.",
       "confirm": "Supprimer",
       "cancel": "Annuler"
+    },
+    "draftClear": {
+      "message": "Effacer votre brouillon ? Toutes les réponses non soumises seront supprimées.",
+      "confirm": "Oui, effacer",
+      "cancel": "Garder le brouillon"
     }
   },
   "messages": {
@@ -196,7 +201,8 @@
     "submitSuccessLocal": "Merci! Votre formulaire a été soumis et enregistré localement pour les tests du tableau de bord.",
     "submitError": "La soumission a échoué: {{error}}",
     "clearSuccess": "Formulaire effacé. Votre brouillon a été supprimé de votre navigateur.",
-    "deleteSuccess": "Soumission supprimée avec succès."
+    "deleteSuccess": "Soumission supprimée avec succès.",
+    "submitting": "Envoi en cours…"
   },
   "dashboard": {
     "title": "Tableau de bord des formulaires",

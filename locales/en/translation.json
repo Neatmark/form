@@ -189,6 +189,11 @@
       "message": "Are you sure? This cannot be undone.",
       "confirm": "Delete",
       "cancel": "Cancel"
+    },
+    "draftClear": {
+      "message": "Clear your saved draft? All unsaved answers will be removed.",
+      "confirm": "Yes, clear it",
+      "cancel": "Keep draft"
     }
   },
   "messages": {
@@ -196,7 +201,8 @@
     "submitSuccessLocal": "Thanks! Your form was submitted and saved locally for dashboard testing.",
     "submitError": "Submission failed: {{error}}",
     "clearSuccess": "Form cleared. Your draft has been removed from the browser.",
-    "deleteSuccess": "Submission deleted successfully."
+    "deleteSuccess": "Submission deleted successfully.",
+    "submitting": "Submitting…"
   },
   "dashboard": {
     "title": "Form Dashboard",

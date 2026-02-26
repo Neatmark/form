@@ -10,8 +10,9 @@ const {
   buildClientEmail
 } = require('./_shared');
 
+const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || '*';
 const CORS_HEADERS = {
-  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Origin':  ALLOWED_ORIGIN,
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, Authorization'
 };
@@ -109,6 +110,41 @@ exports.handler = async (event) => {
   }
 
   const payload = parseBody(event);
+
+  // ── Honeypot: bots fill the hidden "website" field, humans leave it empty
+  if (payload.website && String(payload.website).trim().length > 0) {
+    // Silently accept to not tip off the bot
+    return { statusCode: 200, headers: CORS_HEADERS, body: JSON.stringify({ success: true }) };
+  }
+  delete payload.website;
+
+  // ── Server-side field length limits (mirrors client-side maxlength attrs)
+  const FIELD_MAXLENGTH = {
+    'client-name':               120,
+    'brand-name':                120,
+    'email':                     254,
+    'q1-business-description':  2000,
+    'q2-problem-transformation':2000,
+    'q3-ideal-customer':        2000,
+    'q4-competitors':           2000,
+    'q5-brand-personality':     2000,
+    'q6-positioning':            300,
+    'q8-brands-admired':        2000,
+    'q10-colors-to-avoid':       300,
+    'q11-aesthetic-description':1000,
+    'q12-existing-assets':       300,
+    'q16-anything-else':        3000
+  };
+  for (const [field, max] of Object.entries(FIELD_MAXLENGTH)) {
+    const val = payload[field];
+    if (val && typeof val === 'string' && val.length > max) {
+      return {
+        statusCode: 400,
+        headers: CORS_HEADERS,
+        body: JSON.stringify({ success: false, error: `Field "${field}" exceeds maximum length of ${max} characters.` })
+      };
+    }
+  }
 
   const submissionAction = String(payload.__submissionAction || '').trim().toLowerCase();
   const overrideSubmissionId = String(payload.__overrideSubmissionId || '').trim();

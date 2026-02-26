@@ -40,8 +40,26 @@
 </head>
 <body>
 
+<noscript>
+  <div style="position:fixed;inset:0;z-index:9999;background:#e6fcf8;display:flex;align-items:center;justify-content:center;padding:24px;font-family:sans-serif;text-align:center;">
+    <div style="max-width:400px;">
+      <div style="font-size:48px;margin-bottom:16px;">⚠️</div>
+      <h2 style="font-size:20px;font-weight:800;color:#00373c;margin-bottom:12px;">JavaScript is required</h2>
+      <p style="color:#006d77;line-height:1.6;">This form requires JavaScript to work. Please enable JavaScript in your browser settings and reload the page.</p>
+    </div>
+  </div>
+</noscript>
 
 <form name="brand-intake" method="POST">
+
+<!-- Honeypot: hidden field — bots fill it, humans don't -->
+<input type="text" name="website" value="" autocomplete="off" tabindex="-1" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;">
+
+<!-- PROGRESS BAR -->
+<div class="form-progress" id="formProgress" aria-hidden="true">
+  <div class="form-progress-bar" id="formProgressBar"></div>
+  <span class="form-progress-label" id="formProgressLabel"></span>
+</div>
 
 <!-- HEADER -->
 <header class="site-header page">
@@ -111,15 +129,15 @@
   <div class="client-card">
     <div class="client-field">
       <label data-i18n="form.metadata.clientName">Your Name</label>
-      <input type="text" name="client-name" required data-i18n-placeholder="form.metadata.clientNamePlaceholder" placeholder="Full name">
+      <input type="text" name="client-name" required autocomplete="name" maxlength="120" data-i18n-placeholder="form.metadata.clientNamePlaceholder" placeholder="Full name">
     </div>
     <div class="client-field">
       <label data-i18n="form.metadata.brandName">Brand / Business</label>
-      <input type="text" name="brand-name" required data-i18n-placeholder="form.metadata.brandNamePlaceholder" placeholder="Your brand name">
+      <input type="text" name="brand-name" required autocomplete="organization" maxlength="120" data-i18n-placeholder="form.metadata.brandNamePlaceholder" placeholder="Your brand name">
     </div>
     <div class="client-field">
       <label data-i18n="form.metadata.email">Email</label>
-      <input type="email" name="email" required data-i18n-placeholder="form.metadata.emailPlaceholder" placeholder="your@email.com">
+      <input type="email" name="email" required autocomplete="email" maxlength="254" data-i18n-placeholder="form.metadata.emailPlaceholder" placeholder="your@email.com">
     </div>
     <div class="client-field">
       <label data-i18n="form.metadata.deliveryDate">Delivery Date</label>
@@ -150,37 +168,37 @@
     <div class="q-card">
       <div class="q-header"><span class="q-num">01</span><p class="q-label" data-i18n="form.questions.q1.label">Describe your business in 2-3 sentences, as if explaining it to a stranger at dinner.</p></div>
       <p class="q-hint" data-i18n="form.questions.q1.hint">Avoid jargon. Focus on what you do, who you serve, and why it matters.</p>
-      <textarea name="q1-business-description" required data-i18n-placeholder="form.questions.q1.placeholder" placeholder="We help independent therapists build a practice that feels like them..."></textarea>
+      <textarea name="q1-business-description" required maxlength="2000" data-i18n-placeholder="form.questions.q1.placeholder" placeholder="We help independent therapists build a practice that feels like them..."></textarea>
     </div>
 
     <div class="q-card">
       <div class="q-header"><span class="q-num">02</span><p class="q-label" data-i18n="form.questions.q2.label">What problem do you solve, and what does life look like for your customer after working with you?</p></div>
       <p class="q-hint" data-i18n="form.questions.q2.hint">Think transformation: the before and after.</p>
-      <textarea name="q2-problem-transformation" required data-i18n-placeholder="form.questions.q2.placeholder" placeholder="Before: they struggle with... After: they feel..."></textarea>
+      <textarea name="q2-problem-transformation" required maxlength="2000" data-i18n-placeholder="form.questions.q2.placeholder" placeholder="Before: they struggle with... After: they feel..."></textarea>
     </div>
 
     <div class="q-card">
       <div class="q-header"><span class="q-num">03</span><p class="q-label" data-i18n="form.questions.q3.label">Paint a vivid picture of your ideal customer.</p></div>
       <p class="q-hint" data-i18n="form.questions.q3.hint">What do they care about, what do they want to be seen as, and what made them look for you specifically.</p>
-      <textarea name="q3-ideal-customer" required data-i18n-placeholder="form.questions.q3.placeholder" placeholder="She runs a small creative business, values authenticity over trends, and wants her brand to feel as considered as her work..."></textarea>
+      <textarea name="q3-ideal-customer" required maxlength="2000" data-i18n-placeholder="form.questions.q3.placeholder" placeholder="She runs a small creative business, values authenticity over trends, and wants her brand to feel as considered as her work..."></textarea>
     </div>
 
     <div class="q-card">
       <div class="q-header"><span class="q-num">04</span><p class="q-label" data-i18n="form.questions.q4.label">List 2-4 competitors or similar brands. What do they do well, and what does your audience find missing from them?</p></div>
       <p class="q-hint" data-i18n="form.questions.q4.hint">These don't need to be direct competitors. Any brand your audience might also consider.</p>
-      <textarea name="q4-competitors" required data-i18n-placeholder="form.questions.q4.placeholder" placeholder="Brand A is strong at X, but feels too cold. Our audience finds them lacking in..."></textarea>
+      <textarea name="q4-competitors" required maxlength="2000" data-i18n-placeholder="form.questions.q4.placeholder" placeholder="Brand A is strong at X, but feels too cold. Our audience finds them lacking in..."></textarea>
     </div>
 
     <div class="q-card">
       <div class="q-header"><span class="q-num">05</span><p class="q-label" data-i18n="form.questions.q5.label">If your brand were a person, how would they walk into a room?</p></div>
       <p class="q-hint" data-i18n="form.questions.q5.hint">Presence, tone of voice, how they dress, how they make people feel. All personality, no product.</p>
-      <textarea name="q5-brand-personality" required data-i18n-placeholder="form.questions.q5.placeholder" placeholder="Confident but never arrogant. They speak slowly and deliberately..."></textarea>
+      <textarea name="q5-brand-personality" required maxlength="2000" data-i18n-placeholder="form.questions.q5.placeholder" placeholder="Confident but never arrogant. They speak slowly and deliberately..."></textarea>
     </div>
 
     <div class="q-card">
       <div class="q-header"><span class="q-num">06</span><p class="q-label" data-i18n="form.questions.q6.label">Complete this sentence: &quot;We are the only _____ that _____.</p></div>
       <p class="q-hint" data-i18n="form.questions.q6.hint">Your positioning in one line. Rough is fine, just try.</p>
-      <input type="text" name="q6-positioning" required data-i18n-placeholder="form.questions.q6.placeholder" placeholder="We are the only accounting firm that speaks to creative freelancers without making them feel small.">
+      <input type="text" name="q6-positioning" required maxlength="300" data-i18n-placeholder="form.questions.q6.placeholder" placeholder="We are the only accounting firm that speaks to creative freelancers without making them feel small.">
     </div>
 
     <div class="q-card">
@@ -204,7 +222,7 @@
     <div class="q-card">
       <div class="q-header"><span class="q-num">08</span><p class="q-label" data-i18n="form.questions.q8.label">Share 3-5 brands or visual references you admire, inside or outside your industry.</p></div>
       <p class="q-hint" data-i18n="form.questions.q8.hint">Logos, websites, packaging, editorial layouts, even spaces. Links or names both work.</p>
-      <textarea name="q8-brands-admired" required data-i18n-placeholder="form.questions.q8.placeholder" placeholder="Apple (clean, premium), Aesop (earthy, typographic), Dieter Rams (functional beauty)..."></textarea>
+      <textarea name="q8-brands-admired" required maxlength="2000" data-i18n-placeholder="form.questions.q8.placeholder" placeholder="Apple (clean, premium), Aesop (earthy, typographic), Dieter Rams (functional beauty)..."></textarea>
     </div>
 
     <div class="q-card">
@@ -225,7 +243,7 @@
     <div class="q-card">
       <div class="q-header"><span class="q-num">10</span><p class="q-label" data-i18n="form.questions.q10.label">Are there any colors that are completely off-limits?</p></div>
       <p class="q-hint" data-i18n="form.questions.q10.hint">Due to personal preference, industry association, or competitor use.</p>
-      <input type="text" name="q10-colors-to-avoid" data-i18n-placeholder="form.questions.q10.placeholder" placeholder="Please avoid purple, our main competitor uses it...">
+      <input type="text" name="q10-colors-to-avoid" maxlength="300" data-i18n-placeholder="form.questions.q10.placeholder" placeholder="Please avoid purple, our main competitor uses it...">
     </div>
 
     <div class="q-card">
@@ -241,13 +259,13 @@
         <label class="check-label"><input type="checkbox" name="q11-aesthetic" value="Tech-forward"><span data-i18n="form.questions.q11.options.techForward">Tech-forward & innovative</span></label>
         <label class="check-label"><input type="checkbox" name="q11-aesthetic" value="Nostalgic & heritage"><span data-i18n="form.questions.q11.options.nostalgicHeritage">Nostalgic & heritage</span></label>
       </div>
-      <textarea name="q11-aesthetic-description" style="margin-top:10px;min-height:64px" data-i18n-placeholder="form.questions.q11Description.placeholder" placeholder="Or describe your own aesthetic direction..."></textarea>
+      <textarea name="q11-aesthetic-description" style="margin-top:10px;min-height:64px" maxlength="1000" data-i18n-placeholder="form.questions.q11Description.placeholder" placeholder="Or describe your own aesthetic direction..."></textarea>
     </div>
 
     <div class="q-card">
       <div class="q-header"><span class="q-num">12</span><p class="q-label" data-i18n="form.questions.q12.label">Do you have existing brand assets that must carry into the new identity?</p></div>
       <p class="q-hint" data-i18n="form.questions.q12.hint">If starting fresh, write &quot;none.&quot; If keeping elements, explain what and why.</p>
-      <input type="text" name="q12-existing-assets" required data-i18n-placeholder="form.questions.q12.placeholder" placeholder="We want to keep our current logo mark but redesign everything else...">
+      <input type="text" name="q12-existing-assets" required maxlength="300" data-i18n-placeholder="form.questions.q12.placeholder" placeholder="We want to keep our current logo mark but redesign everything else...">
     </div>
 
     <div class="q-card">
@@ -292,7 +310,7 @@
     <div class="q-card">
       <div class="q-header"><span class="q-num">16</span><p class="q-label" data-i18n="form.questions.q16.label">Is there anything about your past branding experience, strong preferences, or fears we should know before we start?</p></div>
       <p class="q-hint" data-i18n="form.questions.q16.hint">The more openly you share, the better we can tailor this to you.</p>
-      <textarea name="q16-anything-else" data-i18n-placeholder="form.questions.q16.placeholder" placeholder="The last agency gave us something too generic. We really want this to feel like us..."></textarea>
+      <textarea name="q16-anything-else" maxlength="3000" data-i18n-placeholder="form.questions.q16.placeholder" placeholder="The last agency gave us something too generic. We really want this to feel like us..."></textarea>
     </div>
   </section>
 
@@ -339,6 +357,16 @@
     <div class="duplicate-modal-actions">
       <button type="button" class="duplicate-action-btn" id="clearConfirmBtn" data-i18n="modal.clearConfirm.confirm">Clear All</button>
       <button type="button" class="duplicate-action-btn" id="clearCancelBtn" data-i18n="modal.clearConfirm.cancel">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="duplicate-modal" id="draftClearModal" aria-hidden="true">
+  <div class="duplicate-modal-card" role="dialog" aria-modal="true" aria-labelledby="draftClearMessage">
+    <p class="duplicate-modal-message" id="draftClearMessage" data-i18n="modal.draftClear.message">Clear your saved draft? All unsaved answers will be removed.</p>
+    <div class="duplicate-modal-actions">
+      <button type="button" class="duplicate-action-btn" id="draftClearConfirmBtn" data-i18n="modal.draftClear.confirm">Yes, clear it</button>
+      <button type="button" class="duplicate-action-btn" id="draftClearCancelBtn" data-i18n="modal.draftClear.cancel">Keep draft</button>
     </div>
   </div>
 </div>

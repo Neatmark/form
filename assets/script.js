@@ -106,63 +106,6 @@ function showAlert(message, type = 'success') {
 
 
 
-// Custom branded confirm popup — replaces native confirm()
-function showConfirm(message) {
-  return new Promise(resolve => {
-    // Reuse the alert overlay with two buttons
-    const overlay = document.getElementById('customAlertOverlay');
-    const msgEl = document.getElementById('customAlertMsg');
-    const titleEl = document.getElementById('customAlertTitle');
-    const iconWrap = document.getElementById('customAlertIconWrap');
-    const icon = document.getElementById('customAlertIcon');
-    const closeBtn = document.getElementById('customAlertCloseBtn');
-    if (!overlay) { resolve(confirm(message)); return; }
-
-    msgEl.textContent = message;
-    titleEl.textContent = 'Are you sure?';
-    iconWrap.className = 'custom-alert-icon-wrap error';
-    icon.setAttribute('data-lucide', 'alert-triangle');
-    if (window.lucide) window.lucide.createIcons();
-
-    // Inject a cancel button temporarily
-    closeBtn.textContent = 'Yes, clear it';
-    closeBtn.className = 'custom-alert-close-btn error-btn';
-    let cancelBtn = document.getElementById('customAlertCancelBtn');
-    if (!cancelBtn) {
-      cancelBtn = document.createElement('button');
-      cancelBtn.id = 'customAlertCancelBtn';
-      cancelBtn.type = 'button';
-      cancelBtn.className = 'custom-alert-cancel-btn';
-      cancelBtn.textContent = 'Keep draft';
-      closeBtn.parentNode.insertBefore(cancelBtn, closeBtn);
-    }
-    cancelBtn.style.display = '';
-
-    overlay.setAttribute('aria-hidden', 'false');
-    overlay.classList.add('active');
-
-    function cleanup(result) {
-      overlay.classList.remove('active');
-      overlay.setAttribute('aria-hidden', 'true');
-      closeBtn.textContent = 'OK';
-      closeBtn.className = 'custom-alert-close-btn';
-      if (cancelBtn) cancelBtn.style.display = 'none';
-      overlay.removeEventListener('click', onOverlayClick);
-      closeBtn.removeEventListener('click', onConfirm);
-      cancelBtn.removeEventListener('click', onCancel);
-      resolve(result);
-    }
-    function onConfirm() { cleanup(true); }
-    function onCancel() { cleanup(false); }
-    function onOverlayClick(e) { if (e.target === overlay) cleanup(false); }
-    closeBtn.addEventListener('click', onConfirm);
-    cancelBtn.addEventListener('click', onCancel);
-    overlay.addEventListener('click', onOverlayClick);
-  });
-}
-
-
-
 function formDataToObject(formData) {
   const payload = {};
 
@@ -507,15 +450,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Listen for language changes
-  if (!window.__languageChangedListenerBound) {
-    window.addEventListener('languageChanged', (event) => {
-      const lang = event?.detail?.language || window.i18n.getLanguage();
-      syncLangUI(lang);
-      updateThemeToggleIcon();
-    });
-    window.__languageChangedListenerBound = true;
-  }
+  // Listen for language changes — bound here, inside DOMContentLoaded where DOM is ready
+  window.addEventListener('languageChanged', (event) => {
+    const lang = event?.detail?.language || window.i18n.getLanguage();
+    syncLangUI(lang);
+    updateThemeToggleIcon();
+  });
 
   syncLangUI(window.i18n.getLanguage());
 
@@ -621,29 +561,45 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Auto-save on every input change
+  // Auto-save: single debounced listener handles both input and change
   let saveTimer = null;
-  form.addEventListener('input', () => {
+  function scheduleSave() {
     clearTimeout(saveTimer);
     saveTimer = setTimeout(() => saveDraft(form), 400);
-  });
-  form.addEventListener('change', () => {
-    clearTimeout(saveTimer);
-    saveTimer = setTimeout(() => saveDraft(form), 400);
-  });
+  }
+  form.addEventListener('input',  scheduleSave);
+  form.addEventListener('change', scheduleSave);
 
-  // Clear draft button
+  // Draft clear button — uses dedicated modal (no DOM mutation)
   const clearDraftBtn = document.getElementById('clearDraftBtn');
-  if (clearDraftBtn) {
-    clearDraftBtn.addEventListener('click', async (e) => {
+  const draftClearModal      = document.getElementById('draftClearModal');
+  const draftClearConfirmBtn = document.getElementById('draftClearConfirmBtn');
+  const draftClearCancelBtn  = document.getElementById('draftClearCancelBtn');
+
+  if (clearDraftBtn && draftClearModal && draftClearConfirmBtn && draftClearCancelBtn) {
+    clearDraftBtn.addEventListener('click', (e) => {
       e.preventDefault();
-      if (await showConfirm('Clear your saved draft? All unsaved answers will be removed.')) {
-        clearDraft();
-        form.reset();
-        // Reset checkbox/radio styling
-        form.querySelectorAll('.check-label').forEach(label => {
-          label.classList.remove('checked');
-        });
+      draftClearModal.setAttribute('aria-hidden', 'false');
+      draftClearModal.style.display = 'flex';
+    });
+
+    draftClearConfirmBtn.addEventListener('click', () => {
+      clearDraft();
+      form.reset();
+      form.querySelectorAll('.check-label').forEach(lbl => lbl.classList.remove('checked'));
+      draftClearModal.setAttribute('aria-hidden', 'true');
+      draftClearModal.style.display = 'none';
+    });
+
+    draftClearCancelBtn.addEventListener('click', () => {
+      draftClearModal.setAttribute('aria-hidden', 'true');
+      draftClearModal.style.display = 'none';
+    });
+
+    draftClearModal.addEventListener('click', (e) => {
+      if (e.target === draftClearModal) {
+        draftClearModal.setAttribute('aria-hidden', 'true');
+        draftClearModal.style.display = 'none';
       }
     });
   }
@@ -672,7 +628,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (submitButton) {
       submitButton.disabled = true;
-      submitButton.textContent = 'Submitting...';
+      submitButton.textContent = window.i18n.t('messages.submitting', 'Submitting…');
+    }
     }
 
     try {
@@ -729,6 +686,8 @@ document.addEventListener('DOMContentLoaded', () => {
     clearConfirmBtn.addEventListener('click', async () => {
       form.reset();
       clearDraft();
+      // Fix: also strip visual "checked" state from radio/checkbox pills
+      form.querySelectorAll('.check-label').forEach(lbl => lbl.classList.remove('checked'));
       clearConfirmModal.setAttribute('aria-hidden', 'true');
       clearConfirmModal.style.display = 'none';
       await showAlert(window.i18n.t('messages.clearSuccess'), 'success');
@@ -866,16 +825,43 @@ document.addEventListener('DOMContentLoaded', () => {
   async function handleQ15Files(files) {
     const remaining = MAX_Q15_IMAGES - getQ15Count();
     const toUpload = Array.from(files).slice(0, remaining);
+
+    // Show loading state on dropzone
+    if (q15Dropzone) {
+      q15Dropzone.classList.add('uploading');
+      q15Dropzone.setAttribute('aria-busy', 'true');
+    }
+
+    let errorCount = 0;
     for (const file of toUpload) {
       const allowedTypes = new Set(['image/png', 'image/jpeg', 'image/webp', 'image/gif']);
-      if (!allowedTypes.has(file.type)) continue;
-      if (file.size > 5 * 1024 * 1024) continue;
+      if (!allowedTypes.has(file.type)) {
+        errorCount++;
+        continue;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        await showAlert(`"${file.name}" is too large. Max size is 5 MB.`, 'error');
+        continue;
+      }
       try {
         const ref = await uploadImageToStorage(file);
         q15UploadedRefs.push(ref);
         renderQ15Preview();
         syncQ15HiddenInputs();
-      } catch (e) { console.error('Q15 upload failed', e); }
+      } catch (e) {
+        console.error('Q15 upload failed', e);
+        await showAlert(`Failed to upload "${file.name}". Please try again.`, 'error');
+      }
+    }
+
+    if (errorCount > 0) {
+      await showAlert(`${errorCount} file(s) skipped — only PNG, JPG, WEBP, and GIF are accepted.`, 'error');
+    }
+
+    // Remove loading state
+    if (q15Dropzone) {
+      q15Dropzone.classList.remove('uploading');
+      q15Dropzone.removeAttribute('aria-busy');
     }
   }
 
@@ -887,5 +873,47 @@ document.addEventListener('DOMContentLoaded', () => {
     q15Dropzone.addEventListener('dragleave', () => q15Dropzone.classList.remove('dragging'));
     q15Dropzone.addEventListener('drop', e => { e.preventDefault(); q15Dropzone.classList.remove('dragging'); if (e.dataTransfer && e.dataTransfer.files) handleQ15Files(e.dataTransfer.files); });
   }
-  // ── End Q15 ──────────────────────────────────────────────────────
+  // ── Progress bar ──────────────────────────────────────────────────────
+  const progressBar   = document.getElementById('formProgressBar');
+  const progressLabel = document.getElementById('formProgressLabel');
+
+  function updateProgress() {
+    if (!progressBar || !progressLabel) return;
+
+    // Count all required fields and how many are filled
+    const required = Array.from(form.querySelectorAll('[required]'));
+    const total    = required.length;
+    if (total === 0) return;
+
+    const filled = required.filter(el => {
+      if (el.type === 'radio') {
+        return !!form.querySelector(`input[type="radio"][name="${CSS.escape(el.name)}"]:checked`);
+      }
+      return el.value.trim().length > 0;
+    }).length;
+
+    const pct = Math.round((filled / total) * 100);
+    progressBar.style.width = pct + '%';
+
+    // Section label: determine which section is most visible
+    const sections = form.querySelectorAll('section.section');
+    let activeLabel = '';
+    sections.forEach((sec, i) => {
+      const rect = sec.getBoundingClientRect();
+      if (rect.top <= window.innerHeight * 0.6) {
+        const badge = sec.querySelector('.section-badge');
+        activeLabel = badge ? badge.textContent : `Section ${i + 1}`;
+      }
+    });
+    progressLabel.textContent = activeLabel ? `${activeLabel} · ${pct}%` : `${pct}%`;
+  }
+
+  // Update on input and scroll
+  form.addEventListener('change', updateProgress);
+  form.addEventListener('input',  updateProgress);
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  window.addEventListener('languageChanged', updateProgress);
+  updateProgress(); // initial render
+  // ── End Progress bar ─────────────────────────────────────────────────
+
 });
