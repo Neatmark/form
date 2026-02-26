@@ -1150,16 +1150,12 @@ function renderSubmissions(submissions) {
   }
 
   // Restore persisted theme and update button state
-  try {
-    const saved = localStorage.getItem('dashboard-theme');
-    if (saved === 'light' || saved === 'dark') {
-      applyTheme(saved);
-    } else {
-      applyTheme(document.documentElement.getAttribute('data-theme') || 'dark');
-    }
-  } catch (_) {
-    applyTheme(document.documentElement.getAttribute('data-theme') || 'dark');
-  }
+  applyTheme(getDashActiveMode());
+
+  // Listen for OS changes when in auto mode
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+    if (getDashActiveMode() === 'auto') applyTheme('auto');
+  });
 }
 
 function updateSelectionToolbar() {
@@ -1315,48 +1311,6 @@ function renderEditableField(label, key, type = 'text') {
       <input id="edit-${escapeHtml(key)}" class="edit-input${error ? ' invalid' : ''}" type="${type}" data-edit-key="${escapeHtml(key)}" value="${escapeHtml(value)}" />
       ${error ? `<div class="edit-error">${escapeHtml(error)}</div>` : ''}
     </div>
-  `;
-}
-
-/**
- * Renders a checkbox (multi-select) or radio (single-select) group
- * for edit mode in the dashboard questionnaire panel.
- *
- * @param {string} key         - Field key, e.g. "q9-color"
- * @param {string} editLabel   - Human-readable label
- * @param {Array<{value,label}>} opts - Option definitions
- * @param {any}    currentVal  - Current field value (array or string)
- * @param {boolean} multi      - true = checkboxes, false = radio buttons
- */
-function renderEditCheckboxGroup(key, editLabel, opts, currentVal, multi) {
-  const selected = multi
-    ? new Set(Array.isArray(currentVal) ? currentVal : (currentVal ? [String(currentVal)] : []))
-    : String(currentVal ?? '');
-
-  const pills = opts.map(opt => {
-    const isChecked = multi ? selected.has(opt.value) : (selected === opt.value);
-    const inputType = multi ? 'checkbox' : 'radio';
-    return `
-      <label class="edit-choice-pill${isChecked ? ' checked' : ''}" data-edit-key="${escapeHtml(key)}" data-edit-value="${escapeHtml(opt.value)}">
-        <input
-          type="${inputType}"
-          name="edit-choice-${escapeHtml(key)}"
-          value="${escapeHtml(opt.value)}"
-          ${isChecked ? 'checked' : ''}
-          class="edit-choice-input"
-          data-edit-key="${escapeHtml(key)}"
-          data-multi="${multi ? 'true' : 'false'}"
-        >
-        <span class="edit-choice-label">${escapeHtml(opt.label)}</span>
-      </label>
-    `;
-  }).join('');
-
-  return `
-    <article class="qa-card edit-choice-card">
-      <div class="qa-label">${escapeHtml(editLabel)}</div>
-      <div class="edit-choice-grid">${pills}</div>
-    </article>
   `;
 }
 
@@ -1518,64 +1472,6 @@ function renderDetailPanel() {
         .replace(/^q(\d+)-/, 'Q$1 - ')
         .replace(/-/g, ' ')
         .replace(/\b\w/g, l => l.toUpperCase());
-
-      // ── Q9: Color direction — multi-select checkboxes ─────────────
-      if (key === 'q9-color') {
-        const opts = [
-          { value: 'Warm neutrals',    label: 'Warm neutrals (cream, sand, terracotta)' },
-          { value: 'Cool neutrals',    label: 'Cool neutrals (slate, stone, mist)' },
-          { value: 'Deep & moody',     label: 'Deep & moody (navy, forest, burgundy)' },
-          { value: 'Bold & saturated', label: 'Bold & saturated (vibrant primaries)' },
-          { value: 'Pastels',          label: 'Pastels & soft tones' },
-          { value: 'Monochrome',       label: 'Black & white / monochrome' },
-          { value: 'Metallic',         label: 'Metallic / luxury tones (gold, bronze)' },
-          { value: 'Nature-inspired',  label: 'Nature-inspired (moss, rust, clay)' },
-        ];
-        return renderEditCheckboxGroup(key, editLabel, opts, value, true);
-      }
-
-      // ── Q11: Aesthetic direction — multi-select checkboxes ────────
-      if (key === 'q11-aesthetic') {
-        const opts = [
-          { value: 'Luxury & refined',      label: 'Luxury & refined' },
-          { value: 'Organic & artisan',     label: 'Organic & artisan' },
-          { value: 'Minimal & functional',  label: 'Minimal & functional' },
-          { value: 'Bold & graphic',        label: 'Bold & graphic' },
-          { value: 'Playful & illustrative',label: 'Playful & illustrative' },
-          { value: 'Editorial & intellectual', label: 'Editorial & intellectual' },
-          { value: 'Tech-forward',          label: 'Tech-forward & innovative' },
-          { value: 'Nostalgic & heritage',  label: 'Nostalgic & heritage' },
-        ];
-        return renderEditCheckboxGroup(key, editLabel, opts, value, true);
-      }
-
-      // ── Q13: Deliverables — multi-select checkboxes ───────────────
-      if (key === 'q13-deliverables') {
-        const opts = [
-          { value: 'Primary logo',      label: 'Primary logo' },
-          { value: 'Logo variations',   label: 'Logo variations & submarks' },
-          { value: 'Color & typography',label: 'Color palette & typography system' },
-          { value: 'Brand guidelines',  label: 'Brand guidelines document' },
-          { value: 'Stationery',        label: 'Business cards & stationery' },
-          { value: 'Social media',      label: 'Social media templates' },
-          { value: 'Website design',    label: 'Website design' },
-          { value: 'Packaging',         label: 'Packaging design' },
-        ];
-        return renderEditCheckboxGroup(key, editLabel, opts, value, true);
-      }
-
-      // ── Q14: Budget — single-select radio buttons ─────────────────
-      if (key === 'q14-budget') {
-        const opts = [
-          { value: 'Low / lowest possible cost',            label: 'Low / lowest possible cost' },
-          { value: 'Mid-range / balanced price–quality',    label: 'Mid-range / balanced price–quality' },
-          { value: 'High / premium',                        label: 'High / premium' },
-          { value: 'Best possible result no matter the cost', label: 'I want the best possible result no matter the cost' },
-        ];
-        return renderEditCheckboxGroup(key, editLabel, opts, value, false);
-      }
-
-      // ── All other questions — plain textarea ──────────────────────
       return `
         <article class="qa-card">
           <label class="qa-label" for="edit-${escapeHtml(key)}">${escapeHtml(editLabel)}</label>
@@ -1844,38 +1740,6 @@ function setupEditModeInteractions() {
       row?.querySelectorAll('.q6-num-btn').forEach(b => {
         b.classList.toggle('active', b === btn);
       });
-    });
-  });
-
-  // ── Q9 / Q11 / Q13 (checkboxes) & Q14 (radio) interactive pills ──
-  modalBody.querySelectorAll('.edit-choice-input').forEach(input => {
-    input.addEventListener('change', () => {
-      const key = input.getAttribute('data-edit-key');
-      const isMulti = input.getAttribute('data-multi') === 'true';
-      if (!key || !editDraftData) return;
-
-      const card = modalBody.querySelector(`.edit-choice-card .edit-choice-grid [data-edit-key="${key}"]`)
-        ?.closest('.edit-choice-grid');
-
-      if (isMulti) {
-        // Collect all checked values for this key
-        const checked = [];
-        modalBody.querySelectorAll(`.edit-choice-input[data-edit-key="${key}"]:checked`).forEach(cb => {
-          checked.push(cb.value);
-        });
-        editDraftData[key] = checked.length > 0 ? checked : null;
-      } else {
-        // Single selection
-        editDraftData[key] = input.checked ? input.value : null;
-      }
-
-      // Sync .checked class on pill labels
-      modalBody.querySelectorAll(`.edit-choice-pill[data-edit-key="${key}"]`).forEach(pill => {
-        const pillInput = pill.querySelector('input');
-        pill.classList.toggle('checked', !!pillInput?.checked);
-      });
-
-      markEditDirty();
     });
   });
 
@@ -2392,24 +2256,43 @@ function handleExport(format, submissionsOverride) {
 
 /* ── End export helpers ────────────────────────────────── */
 
-function applyTheme(theme) {
+const DASH_THEME_COLORS = { dark: '#00373c', light: '#e6fcf8' };
+
+function getDashOsTheme() {
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
+function getDashActiveMode() {
+  const saved = localStorage.getItem('user-theme');
+  return (saved === 'dark' || saved === 'light') ? saved : 'auto';
+}
+
+function applyTheme(mode) {
+  const effectiveTheme = mode === 'auto' ? getDashOsTheme() : mode;
   const html = document.documentElement;
-  html.setAttribute('data-theme', theme);
-  try { localStorage.setItem('dashboard-theme', theme); } catch (_) {}
+  html.setAttribute('data-theme', effectiveTheme);
+  html.setAttribute('data-theme-mode', mode);
 
-  const isDark = theme === 'dark';
-  const darkIcon = document.querySelector('.theme-icon-dark');
-  const lightIcon = document.querySelector('.theme-icon-light');
+  // Sync meta theme-color
+  let metaTheme = document.querySelector('meta[name="theme-color"]');
+  if (!metaTheme) {
+    metaTheme = document.createElement('meta');
+    metaTheme.name = 'theme-color';
+    document.head.appendChild(metaTheme);
+  }
+  metaTheme.content = DASH_THEME_COLORS[effectiveTheme];
+
+  if (mode === 'auto') localStorage.removeItem('user-theme');
+  else                  localStorage.setItem('user-theme', mode);
+
   const label = document.getElementById('themeBtnLabel');
-
-  if (darkIcon) darkIcon.style.display = isDark ? '' : 'none';
-  if (lightIcon) lightIcon.style.display = isDark ? 'none' : '';
-  if (label) label.textContent = isDark ? 'Dark' : 'Light';
+  if (label) label.textContent = mode.charAt(0).toUpperCase() + mode.slice(1);
 }
 
 function toggleTheme() {
-  const current = document.documentElement.getAttribute('data-theme');
-  applyTheme(current === 'dark' ? 'light' : 'dark');
+  const current = getDashActiveMode();
+  // Cycle: auto -> light -> dark -> auto
+  const next = current === 'auto' ? 'light' : current === 'light' ? 'dark' : 'auto';
+  applyTheme(next);
 }
 
 document.addEventListener('DOMContentLoaded', () => {

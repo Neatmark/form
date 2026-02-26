@@ -1,13 +1,71 @@
-function toggleTheme() {
-  const html = document.documentElement;
-  const isDark = html.getAttribute('data-theme') === 'dark';
-  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
-  updateThemeToggleIcon();
+/* ── Theme system ───────────────────────────────────────────
+   Modes: 'light' | 'dark' | 'auto'
+   - 'auto'  → follows OS, never saves to localStorage
+   - 'light' / 'dark' → manual, saved to localStorage forever
+   data-theme-mode on <html> drives the button icon via CSS.
+──────────────────────────────────────────────────────────── */
+
+const THEME_KEY    = 'user-theme';
+const THEME_COLORS = { dark: '#00373c', light: '#e6fcf8' };
+
+function getOsTheme() {
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
-function updateThemeToggleIcon() {
-  // Icons are handled via CSS based on the [data-theme] attribute.
+function getActiveMode() {
+  const saved = localStorage.getItem(THEME_KEY);
+  return (saved === 'dark' || saved === 'light') ? saved : 'auto';
 }
+
+function applyPageTheme(effectiveTheme, mode, save = false) {
+  const html = document.documentElement;
+  html.setAttribute('data-theme', effectiveTheme);
+  html.setAttribute('data-theme-mode', mode);
+  // Sync <meta name="theme-color">
+  let metaTheme = document.querySelector('meta[name="theme-color"]');
+  if (!metaTheme) {
+    metaTheme = document.createElement('meta');
+    metaTheme.name = 'theme-color';
+    document.head.appendChild(metaTheme);
+  }
+  metaTheme.content = THEME_COLORS[effectiveTheme];
+  if (save) {
+    if (mode === 'auto') localStorage.removeItem(THEME_KEY);
+    else                 localStorage.setItem(THEME_KEY, mode);
+  }
+  syncThemeDropdown(mode);
+}
+
+function selectThemeMode(mode) {
+  const effectiveTheme = (mode === 'auto') ? getOsTheme() : mode;
+  applyPageTheme(effectiveTheme, mode, true);
+}
+
+// Sync dropdown checkmarks to the current mode
+function syncThemeDropdown(mode) {
+  const menu = document.getElementById('themeMenu');
+  if (!menu) return;
+  menu.querySelectorAll('li[data-theme-option]').forEach(li => {
+    li.setAttribute('aria-selected', li.getAttribute('data-theme-option') === mode ? 'true' : 'false');
+  });
+}
+
+// On load: apply theme + sync meta tag (data-theme-mode already set by inline script)
+(function () {
+  const mode          = getActiveMode();
+  const effectiveTheme = mode === 'auto' ? getOsTheme() : mode;
+  applyPageTheme(effectiveTheme, mode, false);
+})();
+
+// OS change — only respected when in auto mode
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+  if (getActiveMode() === 'auto') {
+    applyPageTheme(e.matches ? 'dark' : 'light', 'auto', false);
+  }
+});
+
+// Kept for backwards compat (called by updateThemeToggleIcon refs below)
+function updateThemeToggleIcon() { syncThemeDropdown(getActiveMode()); }
 
 // Custom branded alert popup — replaces native alert()
 function showAlert(message, type = 'success') {
@@ -330,12 +388,57 @@ document.addEventListener('DOMContentLoaded', () => {
     window.lucide.createIcons();
   }
 
-  /* ── Theme toggle ─────────────────────────────────── */
+  /* ── Theme dropdown ───────────────────────────────────── */
   const themeToggleButton = document.getElementById('themeToggle');
-  if (themeToggleButton) {
-    themeToggleButton.addEventListener('click', () => toggleTheme());
+  const themeMenu         = document.getElementById('themeMenu');
+
+  function openThemeMenu() {
+    if (!themeToggleButton || !themeMenu) return;
+    themeToggleButton.setAttribute('aria-expanded', 'true');
+    themeMenu.classList.add('open');
   }
-  updateThemeToggleIcon();
+  function closeThemeMenu() {
+    if (!themeToggleButton || !themeMenu) return;
+    themeToggleButton.setAttribute('aria-expanded', 'false');
+    themeMenu.classList.remove('open');
+  }
+
+  if (themeToggleButton && themeMenu) {
+    themeToggleButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = themeToggleButton.getAttribute('aria-expanded') === 'true';
+      isOpen ? closeThemeMenu() : openThemeMenu();
+    });
+
+    themeMenu.addEventListener('click', (e) => { e.stopPropagation(); });
+
+    themeMenu.querySelectorAll('li[data-theme-option]').forEach(li => {
+      li.setAttribute('tabindex', '0');
+      const handleSelect = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        selectThemeMode(li.getAttribute('data-theme-option'));
+        closeThemeMenu();
+        if (window.lucide) window.lucide.createIcons();
+      };
+      li.addEventListener('click', handleSelect);
+      li.addEventListener('touchend', handleSelect);
+      li.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSelect(e); }
+      });
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!themeToggleButton.contains(e.target) && !themeMenu.contains(e.target)) closeThemeMenu();
+    });
+    document.addEventListener('touchstart', (e) => {
+      if (!themeToggleButton.contains(e.target) && !themeMenu.contains(e.target)) closeThemeMenu();
+    }, { passive: true });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeThemeMenu();
+    });
+  }
+  syncThemeDropdown(getActiveMode());
 
   /* ── Language dropdown ────────────────────────────── */
   const langToggle  = document.getElementById('langToggle');

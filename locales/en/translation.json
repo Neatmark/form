@@ -61,7 +61,7 @@
       },
       "q4": {
         "label": "List 2-4 competitors or similar brands. What do they do well, and what does your audience find missing from them?",
-        "hint": "These don't need to be direct competitors — any brand your audience might also consider.",
+        "hint": "These don't need to be direct competitors. Any brand your audience might also consider.",
         "placeholder": "Brand A is strong at X, but feels too cold. Our audience finds them lacking in..."
       },
       "q5": {
@@ -90,7 +90,7 @@
       },
       "q9": {
         "label": "Which color directions feel right for your brand? Select all that apply.",
-        "hint": "Don't overthink — gut instinct only.",
+        "hint": "Don't overthink. Gut instinct only.",
         "options": {
           "warmNeutrals": "Warm neutrals (cream, sand, terracotta)",
           "coolNeutrals": "Cool neutrals (slate, stone, mist)",
@@ -131,7 +131,7 @@
       },
       "q13": {
         "label": "Which deliverables do you need from this project?",
-        "hint": "Select all that apply — we'll confirm scope during our kickoff call.",
+        "hint": "Select all that apply. We'll confirm the scope on our kickoff call.",
         "options": {
           "primaryLogo": "Primary logo",
           "logoVariations": "Logo variations & submarks",
@@ -153,7 +153,7 @@
         }
       },
       "q15": {
-        "label": "Got any logos, photos, or moodboards that inspire your brand's direction? Drop them here — the more I see what moves you, the better I can design for you.",
+        "label": "Got any logos, photos, or moodboards that inspire your brand's direction? Drop them here. The more I see what moves you, the better I can design for you.",
         "hint": "Up to 8 images. PNG, JPG, WEBP, or GIF.",
         "uploadPrompt": "Click or drag images here",
         "uploadLimit": "Up to 8 images · PNG, JPG, WEBP, GIF"
@@ -171,13 +171,13 @@
       "message": "You've already sent a submission for this brand. Would you like to override the previous submission or send a completely new one?",
       "override": "Override",
       "sendNew": "Send as New",
-      "cancel": "✕ Cancel"
+      "cancel": "Cancel"
     },
     "clearConfirm": {
       "title": "Clear Form",
       "message": "Are you sure you want to clear all fields? This cannot be undone.",
       "confirm": "Clear All",
-      "cancel": "✕ Cancel"
+      "cancel": "Cancel"
     },
     "deleteConfirm": {
       "title": "Delete Submission",

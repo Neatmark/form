@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Cookie Policy - Neatmark</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<!-- No-flash theme -->
+<script>
+  (function() {
+    var saved = localStorage.getItem('user-theme');
+    var theme = (saved === 'dark' || saved === 'light')
+      ? saved
+      : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', theme);
+    document.documentElement.setAttribute('data-theme-mode', saved || 'auto');
+  })();
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Mona+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  .legal-page { max-width: 720px; margin: 0 auto; padding: 60px 32px 80px; }
+  .legal-back { display: inline-flex; align-items: center; gap: 6px; color: var(--text-mid); font-size: 14px; font-weight: 600; text-decoration: none; margin-bottom: 48px; transition: color .15s; }
+  .legal-back:hover { color: var(--text-hi); }
+  .legal-eyebrow { font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--text-mid); margin-bottom: 12px; }
+  .legal-title { font-size: clamp(32px, 6vw, 52px); font-weight: 900; letter-spacing: -.03em; line-height: 1.05; color: var(--text-hi); margin-bottom: 12px; }
+  .legal-updated { font-size: 14px; color: var(--text-lo); margin-bottom: 56px; }
+  .legal-section { margin-bottom: 44px; }
+  .legal-section h2 { font-size: 18px; font-weight: 800; color: var(--text-hi); margin-bottom: 12px; letter-spacing: -.01em; }
+  .legal-section p, .legal-section ul { font-size: 16px; line-height: 1.75; color: var(--text-mid); margin-bottom: 16px; }
+  .legal-section ul { padding-left: 20px; }
+  .legal-section ul li { margin-bottom: 8px; }
+  .legal-section a { color: var(--text-hi); }
+  .legal-divider { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
+  .cookie-table { width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 16px; }
+  .cookie-table th { text-align: left; padding: 10px 14px; font-weight: 700; color: var(--text-hi); border-bottom: 1px solid var(--border); }
+  .cookie-table td { padding: 10px 14px; color: var(--text-mid); border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.6; }
+  .cookie-table tr:last-child td { border-bottom: none; }
+  @media (max-width: 620px) { .legal-page { padding: 40px 18px 60px; } .cookie-table { font-size: 13px; } }
+</style>
+</head>
+<body>
+<div class="legal-page">
+
+  <a class="legal-back" href="index.html">&#8592; Back to form</a>
+
+  <p class="legal-eyebrow">Legal</p>
+  <h1 class="legal-title">Cookie Policy</h1>
+  <p class="legal-updated">Last updated: June 2025</p>
+
+  <div class="legal-section">
+    <p>This page explains how the Neatmark client intake form uses cookies and browser storage. We keep this minimal. We are not an advertising platform, we do not track you across the web, and we do not sell or share browsing data with anyone.</p>
+  </div>
+
+  <hr class="legal-divider">
+
+  <div class="legal-section">
+    <h2>What are cookies</h2>
+    <p>Cookies are small pieces of data stored in your browser by a website you visit. Some are essential for a site to function, and some are used to remember your preferences. Our form uses browser local storage rather than traditional cookies for most of its functionality, but the rules are the same and you deserve to know about both.</p>
+  </div>
+
+  <div class="legal-section">
+    <h2>What we store and why</h2>
+    <p>The table below covers everything the Neatmark form stores in your browser.</p>
+    <table class="cookie-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Purpose</th>
+          <th>Expires</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>user-theme</td>
+          <td>Local storage</td>
+          <td>Remembers your preferred color theme (light, dark, or auto) so it is applied on every visit without asking again.</td>
+          <td>Until you clear browser data</td>
+        </tr>
+        <tr>
+          <td>brand-intake-draft</td>
+          <td>Local storage</td>
+          <td>Auto-saves your form answers as you type so you do not lose progress if you close the tab or navigate away. Cleared when you submit or click Clear Draft.</td>
+          <td>Until submission or manual clear</td>
+        </tr>
+        <tr>
+          <td>preferred-language</td>
+          <td>Local storage</td>
+          <td>Saves your language selection so the form loads in the right language on your next visit.</td>
+          <td>Until you clear browser data</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>None of these items are used for tracking, analytics, or advertising. They exist purely to make the form more comfortable to use.</p>
+  </div>
+
+  <div class="legal-section">
+    <h2>Third-party services</h2>
+    <p>Our form uses a small number of external resources to function properly:</p>
+    <ul>
+      <li><strong>Google Fonts</strong> loads the typefaces used in the form design. When your browser requests a font, Google may log your IP address as part of the standard web request. We do not control this. You can read Google's privacy policy at <a href="https://policies.google.com/privacy" target="_blank">policies.google.com</a>.</li>
+      <li><strong>Netlify Identity</strong> handles administrator authentication for the dashboard. It sets its own session cookies to keep admins logged in. This only applies to Neatmark staff, not to clients filling out the form.</li>
+    </ul>
+    <p>We do not use Google Analytics, Facebook Pixel, or any other advertising or behavioral tracking tool. No third-party marketing service receives any data about you or your visit.</p>
+  </div>
+
+  <div class="legal-section">
+    <h2>How to clear or disable storage</h2>
+    <p>You are in full control of what gets stored in your browser. You can clear any of the items listed above at any time by going to your browser's settings and clearing site data for this domain. Most browsers also let you block local storage entirely, though doing so may affect how the form saves your draft progress.</p>
+    <p>The form itself also includes a Clear Draft button that removes the saved draft from your browser without affecting any other stored preferences.</p>
+  </div>
+
+  <div class="legal-section">
+    <h2>We do not use advertising cookies</h2>
+    <p>We want to be clear about this. No advertising network tracks visits to this form. No retargeting pixel fires when you load this page. We do not use your visit to serve you ads elsewhere on the internet. The data you share here stays here, used only to work on your project with you.</p>
+  </div>
+
+  <div class="legal-section">
+    <h2>Changes to this policy</h2>
+    <p>If we ever add new storage items or third-party services, we will update this page and the date at the top. We will not introduce tracking or advertising technologies without being transparent about it here first.</p>
+  </div>
+
+  <div class="legal-section">
+    <h2>Questions</h2>
+    <p>If you have any questions about cookies or how your browser data is handled, you can reach us through our website at <a href="https://neatmark.studio" target="_blank">neatmark.studio</a>.</p>
+  </div>
+
+</div>
+<script src="https://unpkg.com/lucide@latest"></script>
+</body>
+</html>

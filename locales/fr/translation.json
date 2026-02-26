@@ -61,7 +61,7 @@
       },
       "q4": {
         "label": "Énumérez 2-4 concurrents ou marques similaires. Qu'est-ce qu'ils font bien, et qu'est-ce que votre audience trouve manquant chez eux?",
-        "hint": "Ils n'ont pas besoin d'être des concurrents directs — toute marque que votre audience pourrait considérer.",
+        "hint": "Ils n'ont pas besoin d'être des concurrents directs. Toute marque que votre audience pourrait considérer.",
         "placeholder": "La marque A est forte en X, mais semble trop froide. Notre audience trouve chez eux un manque de..."
       },
       "q5": {
@@ -90,7 +90,7 @@
       },
       "q9": {
         "label": "Quelles directions de couleurs semblent justes pour votre marque? Sélectionnez tout ce qui s'applique.",
-        "hint": "Ne réfléchissez pas trop — instinct brut uniquement.",
+        "hint": "Ne réfléchissez pas trop. Instinct brut uniquement.",
         "options": {
           "warmNeutrals": "Neutres chauds (crème, sable, terre cuite)",
           "coolNeutrals": "Neutres froids (ardoise, pierre, brume)",
@@ -131,7 +131,7 @@
       },
       "q13": {
         "label": "Quels livrables avez-vous besoin pour ce projet?",
-        "hint": "Sélectionnez tout ce qui s'applique — nous confirmerons la portée lors de notre appel de lancement.",
+        "hint": "Sélectionnez tout ce qui s'applique. Nous confirmerons la portée lors de notre appel de lancement.",
         "options": {
           "primaryLogo": "Logo principal",
           "logoVariations": "Variantes de logo & sous-marques",
@@ -153,7 +153,7 @@
         }
       },
       "q15": {
-        "label": "Avez-vous des logos, photos ou moodboards qui inspirent la direction de votre marque ? Déposez-les ici — plus je vois ce qui vous touche, mieux je peux concevoir pour vous.",
+        "label": "Avez-vous des logos, photos ou moodboards qui inspirent la direction de votre marque ? Déposez-les ici. Plus je vois ce qui vous touche, mieux je peux concevoir pour vous.",
         "hint": "Jusqu'à 8 images. PNG, JPG, WEBP ou GIF.",
         "uploadPrompt": "Cliquez ou glissez des images ici",
         "uploadLimit": "Jusqu'à 8 images · PNG, JPG, WEBP, GIF"

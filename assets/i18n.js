@@ -22,9 +22,6 @@ async function initI18n() {
   // Apply RTL for Arabic
   applyRTL();
   
-  // Apply theme from localStorage
-  applyTheme();
-  
   return currentLanguage;
 }
 
