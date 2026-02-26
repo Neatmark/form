@@ -634,6 +634,32 @@ function isQuestionnaireKey(key) {
   return /^q\d+-/i.test(key);
 }
 
+/**
+ * The canonical set of questionnaire field keys that exist in the
+ * current form (index.html) and database schema (supabase-submissions.sql).
+ * Any key NOT in this set is legacy/old and will be hidden in the UI.
+ */
+const VALID_QUESTIONNAIRE_FIELDS = new Set([
+  'q1-business-description',
+  'q2-problem-transformation',
+  'q3-ideal-customer',
+  'q4-competitors',
+  'q5-brand-personality',
+  'q6-positioning',
+  'q7-decision-maker',
+  'q7-decision-maker-other',
+  'q8-brands-admired',
+  'q9-color',
+  'q10-colors-to-avoid',
+  'q11-aesthetic',
+  'q11-aesthetic-description',
+  'q12-existing-assets',
+  'q13-deliverables',
+  'q14-budget',
+  'q15-inspiration-refs',
+  'q16-anything-else'
+]);
+
 function hasDeliveryDate(submission) {
   return Boolean(getDisplayValue(submission?.data?.['delivery-date']));
 }
@@ -1424,7 +1450,7 @@ function renderDetailPanel() {
   `;
 
   const questionnaireEntries = Object.entries(data)
-    .filter(([key]) => isQuestionnaireKey(key))
+    .filter(([key]) => isQuestionnaireKey(key) && VALID_QUESTIONNAIRE_FIELDS.has(key))
     .sort(([a], [b]) => {
       const aKey = questionnaireSortKey(a);
       const bKey = questionnaireSortKey(b);
@@ -1434,25 +1460,8 @@ function renderDetailPanel() {
 
   const hasAnyResponse = questionnaireEntries.some(([, value]) => Boolean(getDisplayValue(value)));
 
-  // Extract Q6 entries for grouped rendering
-  const q6Entries = questionnaireEntries.filter(([key]) => key.startsWith('q6-'));
-  const q6Values = {};
-  q6Entries.forEach(([key, value]) => {
-    q6Values[key] = value;
-  });
-
-  let hasRenderedQ6Group = false;
-
-  // Render questionnaire items in sorted order, inserting the Q6 group
+  // Render questionnaire items in sorted order
   const questionnaireItems = questionnaireEntries.map(([key, value]) => {
-    if (key.startsWith('q6-')) {
-      if (hasRenderedQ6Group || q6Entries.length === 0) {
-        return '';
-      }
-      hasRenderedQ6Group = true;
-      return renderQ6SpectrumGroup(q6Values, isEditingSubmission);
-    }
-
     // Extract number badge and text label from key like "q1-business-description"
     const numMatch = key.match(/^q(\d+)-/);
     const qNum = numMatch ? numMatch[1].padStart(2, '0') : null;
@@ -2210,12 +2219,13 @@ function exportAsCSV(submissionsOverride) {
     'client-name', 'brand-name', 'email', 'delivery-date', 'agreed-delivery-date',
     'q1-business-description', 'q2-problem-transformation', 'q3-ideal-customer',
     'q4-competitors', 'q5-brand-personality',
-    'q6-playful-serious', 'q6-minimalist-expressive', 'q6-approachable-authoritative', 'q6-classic-contemporary',
-    'q7-core-values', 'q8-positioning', 'q9-success-vision',
-    'q10-brands-admired', 'q11-brands-disliked',
-    'q12-color', 'q13-colors-to-avoid', 'q14-typography', 'q15-aesthetic', 'q15-aesthetic-description',
-    'q16-brand-space', 'q17-existing-assets', 'q18-deliverables',
-    'q19-first-feeling', 'q20-inspiration-refs', 'q21-anything-else'
+    'q6-positioning',
+    'q7-decision-maker', 'q7-decision-maker-other',
+    'q8-brands-admired',
+    'q9-color', 'q10-colors-to-avoid',
+    'q11-aesthetic', 'q11-aesthetic-description',
+    'q12-existing-assets', 'q13-deliverables', 'q14-budget',
+    'q15-inspiration-refs', 'q16-anything-else'
   ];
 
   function escapeCSVCell(value) {
@@ -2318,7 +2328,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const headers = parseCSVRow(lines[0]);
     const values = parseCSVRow(lines[1]);
     const data = {};
-    const arrayFields = new Set(['q12-color', 'q14-typography', 'q15-aesthetic', 'q18-deliverables', 'q20-inspiration-refs']);
+    const arrayFields = new Set(['q9-color', 'q11-aesthetic', 'q13-deliverables', 'q15-inspiration-refs']);
     headers.forEach((header, i) => {
       const value = values[i] ?? '';
       if (arrayFields.has(header) && value.includes(' | ')) {
@@ -2385,26 +2395,19 @@ document.addEventListener('DOMContentLoaded', () => {
       'Q3 — Ideal Customer': 'q3-ideal-customer',
       'Q4 — Competitors + Market Gap': 'q4-competitors',
       'Q5 — Brand Personality': 'q5-brand-personality',
-      'Q6 — Playful <-> Serious': 'q6-playful-serious',
-      'Q6 — Minimalist <-> Expressive': 'q6-minimalist-expressive',
-      'Q6 — Approachable <-> Authoritative': 'q6-approachable-authoritative',
-      'Q6 — Classic <-> Contemporary': 'q6-classic-contemporary',
-      'Q7 — Core Values': 'q7-core-values',
-      'Q8 — Positioning Statement': 'q8-positioning',
-      'Q9 — 3-Year Success Vision': 'q9-success-vision',
-      'Q10 — Admired Brands': 'q10-brands-admired',
-      'Q11 — Disliked Brands': 'q11-brands-disliked',
-      'Q12 — Color Directions': 'q12-color',
-      'Q13 — Colors To Avoid': 'q13-colors-to-avoid',
-      'Q14 — Typography Directions': 'q14-typography',
-      'Q15 — Aesthetic Direction': 'q15-aesthetic',
-      'Q15 — Additional Aesthetic Notes': 'q15-aesthetic-description',
-      'Q16 — Brand As Physical Space': 'q16-brand-space',
-      'Q17 — Existing Assets To Keep': 'q17-existing-assets',
-      'Q18 — Needed Deliverables': 'q18-deliverables',
-      'Q19 — First Feeling': 'q19-first-feeling',
-      'Q20 — Inspiration Images': 'q20-inspiration-refs',
-      'Q21 — Anything Else': 'q21-anything-else'
+      'Q6 — Positioning Statement': 'q6-positioning',
+      'Q7 — Decision Maker': 'q7-decision-maker',
+      'Q7 — Decision Maker (Other)': 'q7-decision-maker-other',
+      'Q8 — Admired Brands': 'q8-brands-admired',
+      'Q9 — Color Directions': 'q9-color',
+      'Q10 — Colors To Avoid': 'q10-colors-to-avoid',
+      'Q11 — Aesthetic Direction': 'q11-aesthetic',
+      'Q11 — Additional Aesthetic Notes': 'q11-aesthetic-description',
+      'Q12 — Existing Assets': 'q12-existing-assets',
+      'Q13 — Needed Deliverables': 'q13-deliverables',
+      'Q14 — Budget Approach': 'q14-budget',
+      'Q15 — Inspiration Images': 'q15-inspiration-refs',
+      'Q16 — Anything Else': 'q16-anything-else'
     };
     return map[heading] || heading.toLowerCase().replace(/\s+/g, '-');
   }
@@ -2435,21 +2438,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // Convert multi-select fields to arrays
-      const multiSelectFields = ['q12-color', 'q14-typography', 'q15-aesthetic', 'q18-deliverables'];
+      const multiSelectFields = ['q9-color', 'q11-aesthetic', 'q13-deliverables'];
       multiSelectFields.forEach(field => {
         if (parsedData[field]) {
           parsedData[field] = parsedData[field].split(',').map(v => v.trim()).filter(Boolean);
-        }
-      });
-
-      // Convert range fields to numbers
-      const rangeFields = ['q6-playful-serious', 'q6-minimalist-expressive', 'q6-approachable-authoritative', 'q6-classic-contemporary'];
-      rangeFields.forEach(field => {
-        if (parsedData[field]) {
-          const num = parseInt(parsedData[field], 10);
-          if (!isNaN(num)) {
-            parsedData[field] = num;
-          }
         }
       });
 

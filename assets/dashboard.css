@@ -81,6 +81,10 @@ html[lang="ar"] select {
   height: 16px;
 }
 
+.lucide-history {
+  color: var(--text-mid);
+}
+
 *,
 *::before,
 *::after {

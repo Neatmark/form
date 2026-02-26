@@ -984,11 +984,21 @@ html[dir="rtl"] {
   text-align: right;
 }
 
+/* Only set direction on text-based elements.
+   Checkboxes/radios and <button> (custom-select-trigger) must NOT
+   inherit a forced direction — it causes replaced elements to expand
+   beyond their defined width in Blink/WebKit and makes flex buttons
+   double-reverse their layout. */
 html[dir="rtl"] body,
-html[dir="rtl"] input,
-html[dir="rtl"] textarea,
-html[dir="rtl"] button {
+html[dir="rtl"] textarea {
   direction: rtl;
+}
+
+/* Explicitly lock checkbox/radio to ltr so they never grow past their
+   defined 20x20 size regardless of the surrounding writing direction. */
+html[dir="rtl"] input[type="checkbox"],
+html[dir="rtl"] input[type="radio"] {
+  direction: ltr;
 }
 
 html[dir="rtl"] input[type="text"],
@@ -1022,7 +1032,8 @@ html[dir="rtl"] .q-card {
   padding-left: 20px;
 }
 
-html[dir="rtl"] input,
+html[dir="rtl"] input[type="text"],
+html[dir="rtl"] input[type="email"],
 html[dir="rtl"] textarea {
   padding-right: 12px;
   padding-left: 12px;
@@ -1059,6 +1070,84 @@ html[dir="rtl"] .timeline-marker {
   html[dir="rtl"] {
     font-variant-numeric: tabular-nums;
   }
+}
+
+/* ── RTL: check-label & check-grid ────────────────────────────────
+   Reverse flex so the checkbox/radio control appears on the right
+   (trailing side in Arabic) with the label text on the left.
+   width:100% + overflow:hidden lock the pill to its grid cell so
+   it cannot stretch wider than the track.                           */
+html[dir="rtl"] .check-label {
+  flex-direction: row-reverse;
+  text-align: right;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Allow the label span to shrink and wrap so it never forces the
+   check-label wider than its grid cell. */
+html[dir="rtl"] .check-label span {
+  min-width: 0;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+/* Prevent check-grid cells from growing beyond a readable width */
+html[dir="rtl"] .check-grid {
+  direction: rtl;
+}
+
+/* ── RTL: custom select trigger ─────────────────────────────────── */
+html[dir="rtl"] .custom-select-trigger {
+  flex-direction: row-reverse;
+  text-align: right;
+  direction: rtl;       /* explicit — no longer inherited from <button> */
+  width: 100%;
+  box-sizing: border-box;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+/* Keep the caret on the left side in RTL */
+html[dir="rtl"] .custom-select-caret {
+  order: -1;
+}
+
+html[dir="rtl"] .custom-select-label {
+  text-align: right;
+}
+
+html[dir="rtl"] .custom-select-menu {
+  text-align: right;
+}
+
+html[dir="rtl"] .custom-select-menu li {
+  text-align: right;
+}
+
+/* Tick mark on the left side in RTL */
+html[dir="rtl"] .custom-select-menu li[aria-selected="true"]::after {
+  right: auto;
+  left: 14px;
+}
+
+/* ── RTL: inputs & textareas keep contained width ─────────────── */
+html[dir="rtl"] input[type="text"],
+html[dir="rtl"] input[type="email"],
+html[dir="rtl"] textarea {
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+/* ── RTL: q-card header row ──────────────────────────────────────
+   The q-num badge should stay on the left (visual end in Arabic) */
+html[dir="rtl"] .q-header {
+  flex-direction: row-reverse;
+}
+
+html[dir="rtl"] .q-num {
+  margin-left: 0;
+  margin-right: auto;
 }
 
 /* ── Custom Alert / Toast Popup ── */
