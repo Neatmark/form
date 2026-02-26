@@ -1,0 +1,119 @@
+/**
+ * get-submission-by-token.js
+ * ──────────────────────────
+ * Validates a one-time edit token and returns the full submission data
+ * so the client can pre-fill their form for editing.
+ *
+ * Usage: GET /.netlify/functions/get-submission-by-token?token=<uuid>
+ *
+ * Returns 200 + { submission: { id, fields... } }  on success
+ * Returns 404 if token is unknown or expired
+ */
+
+const { createClient } = require('@supabase/supabase-js');
+
+const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || '*';
+
+const CORS_HEADERS = {
+  'Access-Control-Allow-Origin':  ALLOWED_ORIGIN,
+  'Access-Control-Allow-Methods': 'GET, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type'
+};
+
+// Fields to expose for form pre-fill (excludes internal Supabase columns)
+const FORM_FIELDS = [
+  'client-name', 'brand-name', 'email', 'delivery-date',
+  'q1-business-description', 'q2-problem-transformation', 'q3-ideal-customer',
+  'q4-competitors', 'q5-brand-personality', 'q6-positioning',
+  'q7-decision-maker', 'q7-decision-maker-other', 'q8-brands-admired',
+  'q9-color', 'q10-colors-to-avoid', 'q11-aesthetic', 'q11-aesthetic-description',
+  'q12-existing-assets', 'q13-deliverables', 'q14-budget',
+  'q15-inspiration-refs', 'q16-anything-else'
+];
+
+exports.handler = async (event) => {
+  if (event.httpMethod === 'OPTIONS') {
+    return { statusCode: 204, headers: CORS_HEADERS, body: '' };
+  }
+
+  if (event.httpMethod !== 'GET') {
+    return {
+      statusCode: 405,
+      headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ error: 'Method Not Allowed' })
+    };
+  }
+
+  const token = String(event.queryStringParameters?.token || '').trim();
+
+  // Basic token format sanity check (UUID)
+  if (!token || !/^[0-9a-f-]{32,36}$/i.test(token)) {
+    return {
+      statusCode: 400,
+      headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ error: 'Invalid token format.' })
+    };
+  }
+
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_KEY;
+
+  if (!supabaseUrl || !supabaseKey) {
+    return {
+      statusCode: 500,
+      headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ error: 'Server configuration error.' })
+    };
+  }
+
+  try {
+    const supabase = createClient(supabaseUrl, supabaseKey, {
+      auth: { persistSession: false }
+    });
+
+    // Fetch submission matching this token
+    const { data, error } = await supabase
+      .from('submissions')
+      .select('id, edit_token, edit_token_expires_at, ' + FORM_FIELDS.map(f => `"${f}"`).join(', '))
+      .eq('edit_token', token)
+      .limit(1)
+      .single();
+
+    if (error || !data) {
+      return {
+        statusCode: 404,
+        headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ error: 'Edit link not found or already used.' })
+      };
+    }
+
+    // Check expiry
+    if (data.edit_token_expires_at && new Date(data.edit_token_expires_at) < new Date()) {
+      return {
+        statusCode: 410,
+        headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ error: 'This edit link has expired.' })
+      };
+    }
+
+    // Build a clean submission object with only form fields
+    const submission = { id: data.id };
+    for (const field of FORM_FIELDS) {
+      if (data[field] !== undefined) submission[field] = data[field];
+    }
+
+    return {
+      statusCode: 200,
+      headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ submission })
+    };
+
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Unknown error';
+    return {
+      statusCode: 500,
+      headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ error: message })
+    };
+  }
+};

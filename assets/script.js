@@ -551,6 +551,135 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
+  // ── Token-based edit mode ────────────────────────────────────────────────────
+  // Check if URL has ?token= parameter — if so, enter edit mode
+  (async function initEditMode() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const editToken = urlParams.get('token');
+    if (!editToken) return;
+
+    try {
+      const resp = await fetch(`/.netlify/functions/get-submission-by-token?token=${encodeURIComponent(editToken)}`);
+      const data = await resp.json();
+
+      if (!resp.ok || !data.submission) {
+        const errMsg = data.error || 'This edit link is invalid or has expired.';
+        await showAlert(errMsg, 'error');
+        // Clean URL without reloading
+        window.history.replaceState({}, '', window.location.pathname);
+        return;
+      }
+
+      // Store token globally for submission handler
+      window.__editToken = editToken;
+
+      // Pre-fill form with stored data
+      const sub = data.submission;
+
+      // Text / textarea inputs
+      const textFields = [
+        'client-name','brand-name','email','delivery-date',
+        'q1-business-description','q2-problem-transformation','q3-ideal-customer',
+        'q4-competitors','q5-brand-personality','q6-positioning',
+        'q7-decision-maker-other','q8-brands-admired','q10-colors-to-avoid',
+        'q11-aesthetic-description','q12-existing-assets','q16-anything-else'
+      ];
+      textFields.forEach(name => {
+        if (sub[name] == null) return;
+        const el = form.elements.namedItem(name);
+        if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) {
+          el.value = sub[name];
+        }
+      });
+
+      // Single-value radio fields
+      ['q7-decision-maker','q14-budget'].forEach(name => {
+        if (!sub[name]) return;
+        const radios = form.querySelectorAll(`input[type="radio"][name="${CSS.escape(name)}"]`);
+        radios.forEach(r => { r.checked = r.value === sub[name]; });
+      });
+
+      // Multi-value checkbox fields
+      ['q9-color','q11-aesthetic','q13-deliverables'].forEach(name => {
+        const vals = Array.isArray(sub[name]) ? sub[name] : (sub[name] ? [sub[name]] : []);
+        const checkboxes = form.querySelectorAll(`input[type="checkbox"][name="${CSS.escape(name)}"]`);
+        checkboxes.forEach(cb => { cb.checked = vals.includes(cb.value); });
+      });
+
+      // Custom delivery-date dropdown
+      const deliveryHidden = document.getElementById('deliveryDateValue');
+      if (deliveryHidden && sub['delivery-date']) {
+        deliveryHidden.value = sub['delivery-date'];
+        deliveryHidden.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+
+      // Sync checked state visual
+      form.querySelectorAll('.check-label').forEach(lbl => {
+        const inp = lbl.querySelector('input[type="checkbox"], input[type="radio"]');
+        if (inp) lbl.classList.toggle('checked', inp.checked);
+      });
+
+      // Re-sync Q11 limit
+      syncQ11Limit();
+
+      // Show edit mode banner, hide draft banner
+      const editBanner = document.getElementById('editModeBanner');
+      if (editBanner) editBanner.style.display = 'flex';
+
+      // Update submit button label to "Save Changes"
+      const submitBtn = document.getElementById('submitBtn');
+      if (submitBtn) {
+        submitBtn.innerHTML = window.i18n.t('form.cta.saveChanges', 'Save Changes') + ' &nbsp;→';
+      }
+
+      // Clean token from URL (security — don't leave token in history)
+      window.history.replaceState({}, '', window.location.pathname);
+
+    } catch (err) {
+      console.error('Edit mode init failed:', err);
+    }
+  })();
+
+  // ── Q11: limit to max 2 selections ─────────────────────────────────────────
+  function syncQ11Limit() {
+    const checkboxes = form.querySelectorAll('input[type="checkbox"][name="q11-aesthetic"]');
+    const selected   = Array.from(checkboxes).filter(cb => cb.checked).length;
+
+    checkboxes.forEach(cb => {
+      const label = cb.closest('.check-label');
+      if (!label) return;
+      // Disable unchosen ones once 2 are selected
+      if (selected >= 2 && !cb.checked) {
+        label.classList.add('disabled-choice');
+        cb.disabled = true;
+      } else {
+        label.classList.remove('disabled-choice');
+        cb.disabled = false;
+      }
+    });
+  }
+
+  form.querySelectorAll('input[type="checkbox"][name="q11-aesthetic"]').forEach(cb => {
+    cb.addEventListener('change', syncQ11Limit);
+  });
+  syncQ11Limit(); // initial state
+
+  // ── Q9 / Q13: clear validation error on first selection ────────────────────
+  form.querySelectorAll('input[name="q9-color"]').forEach(cb => {
+    cb.addEventListener('change', () => {
+      if (cb.checked) {
+        document.getElementById('q9ValidationError')?.classList.remove('visible');
+      }
+    });
+  });
+  form.querySelectorAll('input[name="q13-deliverables"]').forEach(cb => {
+    cb.addEventListener('change', () => {
+      if (cb.checked) {
+        document.getElementById('q13ValidationError')?.classList.remove('visible');
+      }
+    });
+  });
+
   // Restore saved draft
   const hasDraft = loadDraft(form);
   showDraftBanner(hasDraft);
@@ -632,62 +761,103 @@ document.addEventListener('DOMContentLoaded', () => {
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
 
-    const submitButton = form.querySelector('button[type="submit"]');
-    const originalLabel = submitButton ? submitButton.textContent : '';
+    // ── Custom validation: Q9 and Q13 must have at least one selection ───────
+    const q9Checked  = form.querySelectorAll('input[name="q9-color"]:checked');
+    const q13Checked = form.querySelectorAll('input[name="q13-deliverables"]:checked');
 
+    const q9Error  = document.getElementById('q9ValidationError');
+    const q13Error = document.getElementById('q13ValidationError');
+
+    let validationFailed = false;
+
+    if (q9Checked.length === 0) {
+      if (q9Error) q9Error.classList.add('visible');
+      q9Error?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      validationFailed = true;
+    } else {
+      if (q9Error) q9Error.classList.remove('visible');
+    }
+
+    if (q13Checked.length === 0) {
+      if (q13Error) q13Error.classList.add('visible');
+      if (!validationFailed) q13Error?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      validationFailed = true;
+    } else {
+      if (q13Error) q13Error.classList.remove('visible');
+    }
+
+    if (validationFailed) return;
+
+    const submitButton = document.getElementById('submitBtn') || form.querySelector('button[type="submit"]');
+    const originalHTML = submitButton ? submitButton.innerHTML : '';
+
+    // ── Loading state ─────────────────────────────────────────────────────
     if (submitButton) {
       submitButton.disabled = true;
-      submitButton.textContent = window.i18n.t('messages.submitting', 'Submitting…');
+      submitButton.setAttribute('data-loading', 'true');
+      submitButton.innerHTML = window.i18n.t('messages.submitting', 'Submitting…');
     }
 
     try {
-      // ── Turnstile verification ──────────────────────────────────
-      const turnstileInput = form.querySelector('input[name="cf-turnstile-response"]');
-      const turnstileToken = turnstileInput ? turnstileInput.value.trim() : '';
-      if (!turnstileToken) {
-        await showAlert(
-          window.i18n.t('messages.turnstileError', 'Please wait for the security check to complete, then try again.'),
-          'error'
-        );
-        return;
+      // ── Turnstile verification ────────────────────────────────────────────
+      // Skip turnstile in token-edit mode (already validated on first submit)
+      if (!window.__editToken) {
+        const turnstileInput = form.querySelector('input[name="cf-turnstile-response"]');
+        const turnstileToken = turnstileInput ? turnstileInput.value.trim() : '';
+        if (!turnstileToken) {
+          await showAlert(
+            window.i18n.t('messages.turnstileError', 'Please wait for the security check to complete, then try again.'),
+            'error'
+          );
+          return;
+        }
       }
-      // ── End Turnstile ───────────────────────────────────────────
 
       const formData = new FormData(form);
       formData.set('__requestOrigin', 'public-form');
 
-      const duplicateMatch = await checkDuplicateSubmission(formData);
-      if (duplicateMatch) {
-        const action = await askDuplicateSubmissionAction();
-
-        if (action === 'cancel') {
-          return;
-        }
-
-        formData.append('__submissionAction', action);
-
-        if (action === 'override') {
-          formData.append('__overrideSubmissionId', duplicateMatch.submissionId);
-          formData.append('__editedBy', 'client');
-          formData.append('editedBy', 'client');
+      // ── Token-based edit mode ─────────────────────────────────────────────
+      if (window.__editToken) {
+        formData.set('__editToken', window.__editToken);
+        // Remove turnstile token from token-edit submissions (not needed)
+        formData.delete('cf-turnstile-response');
+      } else {
+        // ── Normal mode: duplicate check ────────────────────────────────────
+        const duplicateMatch = await checkDuplicateSubmission(formData);
+        if (duplicateMatch) {
+          const action = await askDuplicateSubmissionAction();
+          if (action === 'cancel') return;
+          formData.append('__submissionAction', action);
+          if (action === 'override') {
+            formData.append('__overrideSubmissionId', duplicateMatch.submissionId);
+            formData.append('__editedBy', 'client');
+            formData.append('editedBy', 'client');
+          }
         }
       }
 
       await submitToSupabase(formData);
 
       clearDraft();
-      await showAlert(window.i18n.t('messages.submitSuccess'), 'success');
-      // ✓ Form is NOT auto-reset here, user must click "Clear" button for explicit reset
+
+      if (window.__editToken) {
+        // Invalidate token so user can't re-submit it
+        window.__editToken = null;
+        await showAlert(window.i18n.t('messages.editSuccess', 'Your edits have been saved and sent to Neatmark!'), 'success');
+      } else {
+        await showAlert(window.i18n.t('messages.submitSuccess'), 'success');
+      }
+
     } catch (error) {
       console.error(error);
       const message = error instanceof Error ? error.message : 'Unknown error';
       await showAlert(window.i18n.t('messages.submitError', {error: message}), 'error');
-      // Reset Turnstile so user gets a fresh token for retry
       if (window.turnstile) window.turnstile.reset('#cfTurnstile');
     } finally {
       if (submitButton) {
         submitButton.disabled = false;
-        submitButton.textContent = originalLabel;
+        submitButton.removeAttribute('data-loading');
+        submitButton.innerHTML = originalHTML;
       }
     }
   });

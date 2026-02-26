@@ -20,7 +20,8 @@
       "submit": "Submit Form",
       "clear": "Clear",
       "note": "Your answers are auto-saved in your browser so you can return and edit anytime. We'll review your submission and reach out within 2 business days.",
-      "editNote": "Made a mistake? You can edit your responses by sending a second submission with the same email and brand name, then clicking \"Override\" in the pop-up that appears."
+      "editNote": "Need to make changes? Use the secure edit link sent to your email after submitting.",
+      "saveChanges": "Save Changes"
     },
     "metadata": {
       "clientName": "Your Name",
@@ -166,9 +167,16 @@
       }
     },
     "footer": {
-      "copyright": "© 2025 Neatmark. All rights reserved.",
+      "copyright": "Neatmark™ 2026. All rights reserved.",
       "privacy": "Privacy Policy",
       "cookie": "Cookie Policy"
+    },
+    "validation": {
+      "q9Required": "Please select at least one color direction.",
+      "q13Required": "Please select at least one deliverable."
+    },
+    "editMode": {
+      "banner": "You are editing a previous submission. Make your changes and click Save Changes."
     }
   },
   "modal": {
@@ -207,7 +215,8 @@
     "alertSuccess": "Success",
     "alertError": "Something went wrong",
     "alertClose": "OK",
-    "turnstileError": "Please wait for the security check to complete, then try again."
+    "turnstileError": "Please wait for the security check to complete, then try again.",
+    "editSuccess": "Your edits have been saved and sent to Neatmark!"
   },
   "dashboard": {
     "title": "Form Dashboard",

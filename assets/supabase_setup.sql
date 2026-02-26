@@ -60,7 +60,12 @@ CREATE TABLE IF NOT EXISTS submissions (
   "q16-anything-else"             text,
 
   -- Brand / company logo (stored in the 'logos' bucket)
-  "brand-logo-ref"                text
+  "brand-logo-ref"                text,
+
+  -- Secure edit token (UUID) — single use, expires after 30 days
+  -- Generated on new submission, cleared after client edits
+  edit_token                      text        UNIQUE,
+  edit_token_expires_at           timestamptz
 );
 
 
@@ -94,6 +99,8 @@ ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "q13-deliverables"             
 ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "q14-budget"                   text;
 ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "q15-inspiration-refs"         text[];
 ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "q16-anything-else"            text;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS edit_token                   text UNIQUE;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS edit_token_expires_at        timestamptz;
 
 
 -- ── 3. Indexes (optional but recommended for dashboard queries) ────────
@@ -108,6 +115,10 @@ CREATE INDEX IF NOT EXISTS idx_submissions_brand_name
 
 CREATE INDEX IF NOT EXISTS idx_submissions_status
   ON submissions ("status");
+
+CREATE INDEX IF NOT EXISTS idx_submissions_edit_token
+  ON submissions (edit_token)
+  WHERE edit_token IS NOT NULL;
 
 
 -- ── 4. Row Level Security ──────────────────────────────────────────────
@@ -219,6 +230,8 @@ CREATE POLICY "Service role small-photos access"
 --     RESEND_API_KEY        <your Resend.com API key>
 --     RESEND_FROM_EMAIL     noreply@yourdomain.com
 --     RECIPIENT_EMAIL       you@yourdomain.com
---     ADMIN_EMAILS          admin@yourdomain.com   (comma-separated for multiple)
+--     ALLOWED_ORIGIN        https://your-site.netlify.app   (your production URL)
+--     SITE_URL              https://your-site.netlify.app   (base URL for edit links)
+--     TURNSTILE_SECRET_KEY  <your Cloudflare Turnstile secret key>
 --
 -- ======================================================================

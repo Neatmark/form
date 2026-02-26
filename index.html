@@ -42,10 +42,10 @@
 
 <noscript>
   <div style="position:fixed;inset:0;z-index:9999;background:#e6fcf8;display:flex;align-items:center;justify-content:center;padding:24px;font-family:sans-serif;text-align:center;">
-    <div style="max-width:400px;">
+    <div style="max-width:440px;">
       <div style="font-size:48px;margin-bottom:16px;">⚠️</div>
-      <h2 style="font-size:20px;font-weight:800;color:#00373c;margin-bottom:12px;">JavaScript is required</h2>
-      <p style="color:#006d77;line-height:1.6;">This form requires JavaScript to work. Please enable JavaScript in your browser settings and reload the page.</p>
+      <h2 style="font-size:20px;font-weight:800;color:#00373c;margin-bottom:12px;">JavaScript is required &nbsp;·&nbsp; JavaScript est requis &nbsp;·&nbsp; <span dir="rtl">JavaScript مطلوب</span></h2>
+      <p style="color:#006d77;line-height:1.8;font-size:14px;">Please enable JavaScript in your browser and reload.<br><em>Veuillez activer JavaScript et recharger la page.</em><br><em dir="rtl">يرجى تفعيل JavaScript ثم إعادة تحميل الصفحة.</em></p>
     </div>
   </div>
 </noscript>
@@ -108,6 +108,14 @@
 
 <!-- FORM BODY -->
 <div class="page">
+
+  <!-- EDIT MODE BANNER (shown when client opens a ?token= link) -->
+  <div class="edit-mode-banner" id="editModeBanner" style="display:none" role="status" aria-live="polite">
+    <span class="edit-mode-icon" aria-hidden="true">
+      <i data-lucide="edit-3" class="icon icon-edit"></i>
+    </span>
+    <span class="edit-mode-text" data-i18n="form.editMode.banner">You are editing a previous submission. Make your changes and click Submit.</span>
+  </div>
 
   <!-- DRAFT BANNER -->
   <div class="draft-banner" id="draftBanner" style="display:none">
@@ -238,6 +246,7 @@
         <label class="check-label"><input type="checkbox" name="q9-color" value="Metallic"><span data-i18n="form.questions.q9.options.metallic">Metallic / luxury tones (gold, bronze)</span></label>
         <label class="check-label"><input type="checkbox" name="q9-color" value="Nature-inspired"><span data-i18n="form.questions.q9.options.natureInspired">Nature-inspired (moss, rust, clay)</span></label>
       </div>
+      <p class="check-grid-error" id="q9ValidationError" aria-live="polite" data-i18n="form.validation.q9Required">Please select at least one color direction.</p>
     </div>
 
     <div class="q-card">
@@ -281,6 +290,7 @@
         <label class="check-label"><input type="checkbox" name="q13-deliverables" value="Website design"><span data-i18n="form.questions.q13.options.websiteDesign">Website design</span></label>
         <label class="check-label"><input type="checkbox" name="q13-deliverables" value="Packaging"><span data-i18n="form.questions.q13.options.packaging">Packaging design</span></label>
       </div>
+      <p class="check-grid-error" id="q13ValidationError" aria-live="polite" data-i18n="form.validation.q13Required">Please select at least one deliverable.</p>
     </div>
 
     <div class="q-card">
@@ -328,15 +338,17 @@
                data-sitekey="0x4AAAAAACiutaKJfqQMA9eZ"
                data-theme="auto"
                data-size="normal"></div>
-          <button class="submit-btn" type="submit" data-i18n="form.cta.submit">Submit Form &nbsp;→</button>
-          <button class="clear-btn" type="button" id="clearFormBtn" data-i18n="form.cta.clear">Clear</button>
+          <button class="submit-btn" type="submit" id="submitBtn" data-i18n="form.cta.submit">Submit Form &nbsp;→</button>
         </div>
         <p class="cta-note" data-i18n="form.cta.note">Your answers are auto-saved in your browser so you can return and edit anytime. We'll review your submission and reach out within 2 business days.</p>
-        <p class="cta-edit-note" data-i18n="form.cta.editNote">Made a mistake? You can edit your responses by sending a second submission with the same email and brand name, then clicking "Override" in the pop-up that appears.</p>
+        <p class="cta-edit-note" data-i18n="form.cta.editNote">Need to make changes? Use the secure edit link sent to your email after submitting.</p>
+        <div class="cta-secondary">
+          <button class="clear-btn-text" type="button" id="clearFormBtn" data-i18n="form.cta.clear">Clear all fields</button>
+        </div>
       </div>
     </div>
     <div class="footer-legal">
-      <span class="footer-copy" data-i18n="form.footer.copyright">&copy; 2025 Neatmark. All rights reserved.</span>
+      <span class="footer-copy" data-i18n="form.footer.copyright">Neatmark&trade; 2026. All rights reserved.</span>
       <nav class="footer-legal-links" aria-label="Legal">
         <a href="privacy.html" data-i18n="form.footer.privacy">Privacy Policy</a>
         <a href="cookies.html" data-i18n="form.footer.cookie">Cookie Policy</a>

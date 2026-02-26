@@ -20,7 +20,8 @@
       "submit": "Soumettre le formulaire",
       "clear": "Effacer",
       "note": "Vos réponses sont automatiquement enregistrées dans votre navigateur pour que vous puissiez revenir et modifier à tout moment. Nous examinerons votre soumission et vous recontacterons dans les 2 jours ouvrables.",
-      "editNote": "Une erreur ? Vous pouvez modifier vos réponses en envoyant une deuxième soumission avec le même email et nom de marque, puis en cliquant sur « Écraser » dans la fenêtre qui apparaît."
+      "editNote": "Des modifications à apporter ? Utilisez le lien de modification sécurisé envoyé à votre adresse e-mail après la soumission.",
+      "saveChanges": "Enregistrer les modifications"
     },
     "metadata": {
       "clientName": "Votre nom",
@@ -166,9 +167,16 @@
       }
     },
     "footer": {
-      "copyright": "© 2025 Neatmark. Tous droits réservés.",
+      "copyright": "Neatmark™ 2026. Tous droits réservés.",
       "privacy": "Politique de confidentialité",
       "cookie": "Politique des cookies"
+    },
+    "validation": {
+      "q9Required": "Veuillez sélectionner au moins une direction de couleur.",
+      "q13Required": "Veuillez sélectionner au moins un livrable."
+    },
+    "editMode": {
+      "banner": "Vous modifiez une soumission précédente. Effectuez vos modifications et cliquez sur Enregistrer."
     }
   },
   "modal": {
@@ -207,7 +215,8 @@
     "alertSuccess": "Succès",
     "alertError": "Une erreur est survenue",
     "alertClose": "OK",
-    "turnstileError": "Veuillez attendre la fin de la vérification de sécurité, puis réessayez."
+    "turnstileError": "Veuillez attendre la fin de la vérification de sécurité, puis réessayez.",
+    "editSuccess": "Vos modifications ont été enregistrées et envoyées à Neatmark !"
   },
   "dashboard": {
     "title": "Tableau de bord des formulaires",

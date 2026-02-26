@@ -1472,3 +1472,84 @@ html[lang="ar"] .custom-alert-close-btn {
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
+
+/* ── Edit mode banner ──────────────────────────────────── */
+.edit-mode-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(135deg, rgba(98,132,216,.15) 0%, rgba(0,109,119,.12) 100%);
+  border: 1px solid rgba(98,132,216,.35);
+  border-radius: 12px;
+  padding: 12px 18px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-hi);
+}
+.icon-edit {
+  width: 17px;
+  height: 17px;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+/* ── Submit button loading state ───────────────────────── */
+.submit-btn[data-loading="true"] {
+  pointer-events: none;
+  opacity: 0.78;
+  position: relative;
+}
+.submit-btn[data-loading="true"]::after {
+  content: '';
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-left: 10px;
+  border: 2px solid rgba(255,255,255,.45);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  vertical-align: middle;
+}
+
+/* ── Clear button (text-only, secondary) ───────────────── */
+.clear-btn-text {
+  background: none;
+  border: none;
+  color: var(--text-lo);
+  font-family: 'Mona Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 8px 4px;
+  transition: color .15s;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.clear-btn-text:hover {
+  color: var(--red);
+}
+.cta-secondary {
+  margin-top: 6px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+/* ── Q11 checkbox max-2 visual feedback ──────────────────── */
+.check-label.disabled-choice {
+  opacity: 0.42;
+  pointer-events: none;
+}
+
+/* ── Q9 / Q13 validation error hint ────────────────────── */
+.check-grid-error {
+  font-size: 13px;
+  color: var(--red);
+  margin-top: 8px;
+  font-weight: 600;
+  display: none;
+}
+.check-grid-error.visible {
+  display: block;
+}
