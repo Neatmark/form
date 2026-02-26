@@ -79,7 +79,10 @@ function showAlert(message, type = 'success') {
 
   const isError = type === 'error';
   msgEl.textContent = message;
-  titleEl.textContent = isError ? 'Something went wrong' : 'Success';
+  titleEl.textContent = isError
+    ? window.i18n.t('messages.alertError', 'Something went wrong')
+    : window.i18n.t('messages.alertSuccess', 'Success');
+  closeBtn.textContent = window.i18n.t('messages.alertClose', 'OK');
   iconWrap.className = 'custom-alert-icon-wrap' + (isError ? ' error' : '');
   closeBtn.className = 'custom-alert-close-btn' + (isError ? ' error-btn' : '');
 
@@ -629,7 +632,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (submitButton) {
       submitButton.disabled = true;
       submitButton.textContent = window.i18n.t('messages.submitting', 'Submitting…');
-    }
     }
 
     try {

@@ -19,7 +19,8 @@
     "cta": {
       "submit": "Submit Form",
       "clear": "Clear",
-      "note": "Your answers are auto-saved in your browser so you can return and edit anytime. We'll review your submission and reach out within 2 business days."
+      "note": "Your answers are auto-saved in your browser so you can return and edit anytime. We'll review your submission and reach out within 2 business days.",
+      "editNote": "Made a mistake? You can edit your responses by sending a second submission with the same email and brand name, then clicking \"Override\" in the pop-up that appears."
     },
     "metadata": {
       "clientName": "Your Name",
@@ -202,7 +203,10 @@
     "submitError": "Submission failed: {{error}}",
     "clearSuccess": "Form cleared. Your draft has been removed from the browser.",
     "deleteSuccess": "Submission deleted successfully.",
-    "submitting": "Submitting…"
+    "submitting": "Submitting…",
+    "alertSuccess": "Success",
+    "alertError": "Something went wrong",
+    "alertClose": "OK"
   },
   "dashboard": {
     "title": "Form Dashboard",
