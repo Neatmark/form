@@ -1263,14 +1263,16 @@ html[dir="rtl"] textarea {
 }
 
 /* ── RTL: q-card header row ──────────────────────────────────────
-   In Arabic the q-num badge sits on the right (the visual start in RTL) */
+   In RTL the default flex row already places q-num on the right
+   (reading start) since the HTML order is [num][label] and RTL
+   flow reads right-to-left. No direction flip needed. */
 html[dir="rtl"] .q-header {
-  flex-direction: row-reverse;
+  flex-direction: row;
 }
 
 html[dir="rtl"] .q-num {
   margin-right: 0;
-  margin-left: auto;
+  margin-left: 0;
 }
 
 /* ── Custom Alert / Toast Popup ── */

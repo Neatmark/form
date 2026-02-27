@@ -621,10 +621,10 @@ document.addEventListener('DOMContentLoaded', () => {
         checkboxes.forEach(cb => { cb.checked = vals.includes(cb.value); });
       });
 
-      // Delivery-date — now a native <select>, setting .value is sufficient
-      const deliverySelect = document.getElementById('deliveryDateValue');
-      if (deliverySelect && sub['delivery-date']) {
-        deliverySelect.value = sub['delivery-date'];
+      // Delivery-date — now radio buttons, check the matching one
+      if (sub['delivery-date']) {
+        const deliveryRadio = form.querySelector(`input[type="radio"][name="delivery-date"][value="${CSS.escape(sub['delivery-date'])}"]`);
+        if (deliveryRadio) deliveryRadio.checked = true;
       }
 
       // Sync checked state visual

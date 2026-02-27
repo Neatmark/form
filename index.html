@@ -328,13 +328,12 @@
     <div class="q-card">
       <div class="q-header"><span class="q-num">18</span><p class="q-label" data-i18n="form.questions.qdelivery.label">What is your ideal delivery timeframe?</p></div>
       <p class="q-hint" data-i18n="form.questions.qdelivery.hint">This helps us plan your project slot. We'll confirm the exact timeline on the kickoff call.</p>
-      <select name="delivery-date" id="deliveryDateValue" required>
-        <option value="" disabled selected data-i18n="form.metadata.deliveryDateOptions.select">Select a timeframe</option>
-        <option value="ASAP" data-i18n="form.metadata.deliveryDateOptions.asap">ASAP (As Soon As Possible)</option>
-        <option value="2–4 weeks" data-i18n="form.metadata.deliveryDateOptions.weeks2to4">2–4 weeks</option>
-        <option value="1–2 months" data-i18n="form.metadata.deliveryDateOptions.months1to2">1–2 months</option>
-        <option value="3+ months" data-i18n="form.metadata.deliveryDateOptions.months3plus">3+ months</option>
-      </select>
+      <div class="check-grid">
+        <label class="check-label"><input type="radio" name="delivery-date" value="ASAP" required><span data-i18n="form.metadata.deliveryDateOptions.asap">ASAP (As Soon As Possible)</span></label>
+        <label class="check-label"><input type="radio" name="delivery-date" value="2–4 weeks"><span data-i18n="form.metadata.deliveryDateOptions.weeks2to4">2–4 weeks</span></label>
+        <label class="check-label"><input type="radio" name="delivery-date" value="1–2 months"><span data-i18n="form.metadata.deliveryDateOptions.months1to2">1–2 months</span></label>
+        <label class="check-label"><input type="radio" name="delivery-date" value="3+ months"><span data-i18n="form.metadata.deliveryDateOptions.months3plus">3+ months</span></label>
+      </div>
     </div>
 
     <div class="q-card">
