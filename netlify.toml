@@ -1,6 +1,11 @@
 [build]
   functions = "netlify/functions"
 
+# IMPORTANT: Set ALLOWED_ORIGIN=https://form.neatmark.studio in your Netlify
+# environment variables (Site → Environment variables). This locks all
+# Netlify function CORS responses to your domain only.
+# Without it, the functions fall back to '*' (any origin).
+
 [functions]
   node_bundler = "esbuild"
   external_node_modules = ["sharp", "pdf-lib", "@pdf-lib/fontkit", "docx", "puppeteer-core", "@sparticuz/chromium"]

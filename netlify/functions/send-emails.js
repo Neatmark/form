@@ -28,8 +28,9 @@ const {
   buildEditConfirmationEmail
 } = require('./_shared');
 
+const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || '*';
 const CORS_HEADERS = {
-  'Access-Control-Allow-Origin':  '*',
+  'Access-Control-Allow-Origin':  ALLOWED_ORIGIN,
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type'
 };

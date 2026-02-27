@@ -494,16 +494,15 @@ function initWizard() {
   document.querySelectorAll('.step-btn[data-step]').forEach(btn => {
     btn.addEventListener('click', () => {
       const target = parseInt(btn.dataset.step, 10);
-      if (target === currentPage) { btn.blur(); return; }
+      if (target === currentPage) return;
       const back = target < currentPage;
       // If going forward, validate all pages up to current
       if (!back) {
         for (let p = currentPage; p < target; p++) {
-          if (!validatePage(p)) { btn.blur(); return; }
+          if (!validatePage(p)) return;
         }
       }
       showPage(target, back);
-      btn.blur();
     });
   });
 

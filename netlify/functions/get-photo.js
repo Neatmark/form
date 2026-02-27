@@ -19,8 +19,9 @@ const { createClient } = require('@supabase/supabase-js');
 
 const ALLOWED_BUCKETS = new Set(['small-photos', 'original-photos', 'logos']);
 
+const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || '*';
 const CORS_HEADERS = {
-  'Access-Control-Allow-Origin':  '*',
+  'Access-Control-Allow-Origin':  ALLOWED_ORIGIN,
   'Access-Control-Allow-Methods': 'GET, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type'
 };
