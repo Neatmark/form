@@ -344,7 +344,178 @@ function showDraftBanner(visible) {
   }
 }
 
+/* ══════════════════════════════════════════════════════════════
+   MULTI-PAGE WIZARD — Page navigation controller
+══════════════════════════════════════════════════════════════ */
+
+const TOTAL_PAGES = 4;
+let currentPage  = 1;
+let goingBack    = false;
+
+/**
+ * Navigate to a given page number.
+ * @param {number} targetPage  1–4
+ * @param {boolean} [back]     Whether we're going backwards (affects animation)
+ */
+function showPage(targetPage, back = false) {
+  if (targetPage < 1 || targetPage > TOTAL_PAGES) return;
+
+  // Hide current page
+  const current = document.getElementById(`formPage${currentPage}`);
+  if (current) {
+    current.classList.remove('active', 'slide-back');
+    current.style.display = 'none';
+  }
+
+  // Show target page
+  const target = document.getElementById(`formPage${targetPage}`);
+  if (target) {
+    target.style.display = 'block';
+    // Briefly remove active so animation re-triggers
+    target.classList.remove('active', 'slide-back');
+    // Force reflow
+    void target.offsetWidth;
+    if (back) target.classList.add('slide-back');
+    target.classList.add('active');
+  }
+
+  currentPage = targetPage;
+  updateStepper();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // Re-create lucide icons in the newly shown page
+  if (window.lucide) window.lucide.createIcons();
+}
+
+/** Update the stepper bar to reflect currentPage */
+function updateStepper() {
+  const steps = document.querySelectorAll('.step-btn');
+  steps.forEach(btn => {
+    const step = parseInt(btn.dataset.step, 10);
+    btn.classList.remove('active', 'completed');
+    if (step === currentPage)   btn.classList.add('active');
+    if (step < currentPage)     btn.classList.add('completed');
+  });
+
+  // Fill connector lines
+  for (let i = 1; i <= TOTAL_PAGES - 1; i++) {
+    const conn = document.getElementById(`connector${i}`);
+    if (conn) conn.classList.toggle('filled', i < currentPage);
+  }
+}
+
+/**
+ * Validate all required fields within a given page.
+ * Returns true if valid, false (and scrolls to first error) if not.
+ */
+function validatePage(pageNum) {
+  const pageEl = document.getElementById(`formPage${pageNum}`);
+  if (!pageEl) return true;
+
+  const form = document.querySelector('form[name="brand-intake"]');
+  let firstError = null;
+
+  // Check standard required inputs / textareas
+  pageEl.querySelectorAll('[required]').forEach(el => {
+    if (el.type === 'radio') return; // handled separately below
+    if (!el.value.trim()) {
+      el.reportValidity?.();
+      el.style.borderColor = 'var(--red)';
+      if (!firstError) firstError = el;
+      el.addEventListener('input', function fix() {
+        el.style.borderColor = '';
+        el.removeEventListener('input', fix);
+      }, { once: true });
+    } else {
+      el.style.borderColor = '';
+    }
+  });
+
+  // Check required radio groups on this page
+  const radioGroupsDone = new Set();
+  pageEl.querySelectorAll('input[type="radio"][required]').forEach(radio => {
+    if (radioGroupsDone.has(radio.name)) return;
+    radioGroupsDone.add(radio.name);
+    const anyChecked = pageEl.querySelector(`input[type="radio"][name="${CSS.escape(radio.name)}"]:checked`);
+    if (!anyChecked) {
+      const group = pageEl.querySelector(`input[type="radio"][name="${CSS.escape(radio.name)}"]`);
+      if (!firstError) firstError = group;
+    }
+  });
+
+  // Page 3 custom validators: q9-color and q13-deliverables
+  if (pageNum === 3) {
+    const q9Checked  = pageEl.querySelectorAll('input[name="q9-color"]:checked');
+    const q13Checked = pageEl.querySelectorAll('input[name="q13-deliverables"]:checked');
+    const q9Error    = document.getElementById('q9ValidationError');
+    const q13Error   = document.getElementById('q13ValidationError');
+
+    if (q9Checked.length === 0) {
+      if (q9Error) q9Error.classList.add('visible');
+      if (!firstError) firstError = q9Error;
+    } else {
+      if (q9Error) q9Error.classList.remove('visible');
+    }
+
+    if (q13Checked.length === 0) {
+      if (q13Error) q13Error.classList.add('visible');
+      if (!firstError) firstError = q13Error;
+    } else {
+      if (q13Error) q13Error.classList.remove('visible');
+    }
+  }
+
+  if (firstError) {
+    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return false;
+  }
+  return true;
+}
+
+/** Wire up next buttons, back buttons, and stepper buttons */
+function initWizard() {
+  // Next buttons
+  for (let i = 1; i < TOTAL_PAGES; i++) {
+    const btn = document.getElementById(`nextBtn${i}`);
+    if (!btn) continue;
+    btn.addEventListener('click', () => {
+      if (validatePage(currentPage)) showPage(currentPage + 1, false);
+    });
+  }
+
+  // Back buttons (any element with data-back="true")
+  document.querySelectorAll('[data-back="true"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      showPage(currentPage - 1, true);
+    });
+  });
+
+  // Stepper buttons — always allow clicking (free navigation)
+  document.querySelectorAll('.step-btn[data-step]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = parseInt(btn.dataset.step, 10);
+      if (target === currentPage) return;
+      const back = target < currentPage;
+      // If going forward, validate all pages up to current
+      if (!back) {
+        for (let p = currentPage; p < target; p++) {
+          if (!validatePage(p)) return;
+        }
+      }
+      showPage(target, back);
+    });
+  });
+
+  // Initial stepper state
+  updateStepper();
+
+  // On edit-mode (?token=), jump to page 1 (already there) but show all pages reachable
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+  // Init wizard first so pages are shown correctly
+  initWizard();
+
   if (window.lucide && typeof window.lucide.createIcons === 'function') {
     window.lucide.createIcons();
   }
@@ -1118,47 +1289,11 @@ document.addEventListener('DOMContentLoaded', () => {
     q15Dropzone.addEventListener('dragleave', () => q15Dropzone.classList.remove('dragging'));
     q15Dropzone.addEventListener('drop', e => { e.preventDefault(); q15Dropzone.classList.remove('dragging'); if (e.dataTransfer && e.dataTransfer.files) handleQ15Files(e.dataTransfer.files); });
   }
-  // ── Progress bar ──────────────────────────────────────────────────────
-  const progressBar   = document.getElementById('formProgressBar');
-  const progressLabel = document.getElementById('formProgressLabel');
-
-  function updateProgress() {
-    if (!progressBar || !progressLabel) return;
-
-    // Count all required fields and how many are filled
-    const required = Array.from(form.querySelectorAll('[required]'));
-    const total    = required.length;
-    if (total === 0) return;
-
-    const filled = required.filter(el => {
-      if (el.type === 'radio') {
-        return !!form.querySelector(`input[type="radio"][name="${CSS.escape(el.name)}"]:checked`);
-      }
-      return el.value.trim().length > 0;
-    }).length;
-
-    const pct = Math.round((filled / total) * 100);
-    progressBar.style.width = pct + '%';
-
-    // Section label: determine which section is most visible
-    const sections = form.querySelectorAll('section.section');
-    let activeLabel = '';
-    sections.forEach((sec, i) => {
-      const rect = sec.getBoundingClientRect();
-      if (rect.top <= window.innerHeight * 0.6) {
-        const badge = sec.querySelector('.section-badge');
-        activeLabel = badge ? badge.textContent : `Section ${i + 1}`;
-      }
-    });
-    progressLabel.textContent = activeLabel ? `${activeLabel} · ${pct}%` : `${pct}%`;
-  }
-
-  // Update on input and scroll
+  // Progress is handled by the stepper bar — no per-scroll bar needed.
+  function updateProgress() { /* handled by wizard stepper */ }
   form.addEventListener('change', updateProgress);
   form.addEventListener('input',  updateProgress);
-  window.addEventListener('scroll', updateProgress, { passive: true });
   window.addEventListener('languageChanged', updateProgress);
-  updateProgress(); // initial render
-  // ── End Progress bar ─────────────────────────────────────────────────
+  // ── End progress ──────────────────────────────────────────────────────
 
 });
