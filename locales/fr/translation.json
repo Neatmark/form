@@ -30,7 +30,8 @@
       "brandNamePlaceholder": "Nom de votre marque",
       "email": "Email",
       "emailPlaceholder": "votre@email.com",
-      "deliveryDate": "Date de livraison",
+      "website": "Site web",
+      "websitePlaceholder": "https://votresite.com",
       "deliveryDateOptions": {
         "select": "Sélectionnez un délai",
         "asap": "ASAP (dès que possible)",
@@ -43,28 +44,30 @@
       "badge1": "Section 01",
       "badge2": "Section 02",
       "foundation": "Fondation de la marque",
-      "visual": "Direction visuelle"
+      "visual": "Direction visuelle",
+      "badge3": "Section 03",
+      "project": "Projet et Cadrage"
     },
     "questions": {
       "q1": {
-        "label": "Décrivez votre entreprise en 2-3 phrases, comme si vous l'expliquiez à un inconnu au dîner.",
-        "hint": "Évitez le jargon. Concentrez-vous sur ce que vous faites, qui vous servez et pourquoi c'est important.",
-        "placeholder": "Nous aidons les thérapeutes indépendants à construire une pratique qui leur ressemble..."
+        "label": "Décrivez votre entreprise en complétant cette phrase : « J'aide [qui] à [quoi] pour qu'ils puissent [résultat]. »",
+        "hint": "Évitez le jargon. Si vous servez plusieurs publics, écrivez une ligne par public.",
+        "placeholder": "J'aide les thérapeutes indépendants à construire une pratique qui leur ressemble, pour qu'ils attirent les clients qui leur correspondent dès le départ..."
       },
       "q2": {
-        "label": "Quel problème résolvez-vous et à quoi ressemble la vie de votre client après avoir travaillé avec vous?",
-        "hint": "Pensez à la transformation : avant et après.",
+        "label": "Avant : avec quoi votre client lutte-t-il ? Après : à quoi ressemble sa vie une fois qu'il a travaillé avec vous ?",
+        "hint": "Écrivez-le en deux courts paragraphes, un pour l'avant et un pour l'après. Plus c'est clair, mieux votre marque peut en parler.",
         "placeholder": "Avant : ils luttent avec... Après : ils se sentent..."
       },
       "q3": {
-        "label": "Peignez un portrait vivant de votre client idéal.",
-        "hint": "Ce qui les intéresse, comment ils veulent être perçus, et ce qui les a poussés à vous chercher spécifiquement.",
+        "label": "Décrivez votre client idéal comme une vraie personne, pas juste un segment démographique.",
+        "hint": "Comment occupe-t-il son temps ? Qu'est-ce qui lui tient à cœur ? Comment veut-il être perçu ? Quelles marques aime-t-il déjà ?",
         "placeholder": "Elle dirige une petite entreprise créative, valorise l'authenticité sur les tendances, et veut que sa marque reflète le soin qu'elle met dans son travail..."
       },
       "q4": {
-        "label": "Énumérez 2-4 concurrents ou marques similaires. Qu'est-ce qu'ils font bien, et qu'est-ce que votre audience trouve manquant chez eux?",
-        "hint": "Ils n'ont pas besoin d'être des concurrents directs. Toute marque que votre audience pourrait considérer.",
-        "placeholder": "La marque A est forte en X, mais semble trop froide. Notre audience trouve chez eux un manque de..."
+        "label": "Listez 2 à 4 concurrents ou marques similaires. Que pensez-vous qu'ils font mal ou ignorent ?",
+        "hint": "Répondez depuis votre propre conviction, sans avoir besoin de faire des recherches. Qu'est-ce que vous voyez qu'il leur manque ?",
+        "placeholder": "La marque A est soignée mais froide. Elle ne parle jamais vraiment à la personne derrière l'entreprise. La marque B est sympathique mais semble bon marché..."
       },
       "q5": {
         "label": "Si votre marque était une personne, comment entrerait-elle dans une pièce?",
@@ -73,8 +76,8 @@
       },
       "q6": {
         "label": "Complétez cette phrase : « Nous sommes le/la seul(e) _____ qui _____.",
-        "hint": "Votre positionnement en une ligne. Une ébauche, c'est très bien, essayez juste.",
-        "placeholder": "Nous sommes le seul cabinet comptable qui s'adresse aux freelances créatifs sans les faire se sentir diminués."
+        "hint": "Votre positionnement en une ligne. Ne visez pas la perfection. Une ébauche vaut mieux que rien.",
+        "placeholder": "Nous sommes le/la seul(e)... [essayez quelque chose]"
       },
       "q7": {
         "label": "Qui est le principal décideur pour ce projet?",
@@ -83,16 +86,17 @@
           "boss": "Mon patron / le patron",
           "other": "Autre (précisez):"
         },
-        "otherPlaceholder": "Veuillez préciser..."
+        "otherPlaceholder": "Veuillez préciser...",
+        "hint": "Cela nous aide à savoir à qui nous allons présenter et dont la validation est nécessaire."
       },
       "q8": {
-        "label": "Partagez 3-5 marques ou références visuelles que vous admirez, dans votre secteur ou en dehors.",
-        "hint": "Logos, sites web, emballages, mises en page éditoriales, même des espaces. Liens ou noms, les deux fonctionnent.",
-        "placeholder": "Apple (épuré, premium), Aesop (naturel, typographique), Dieter Rams (beauté fonctionnelle)..."
+        "label": "Partagez 3 à 5 marques ou références visuelles que vous admirez, dans votre secteur ou en dehors. Pour chacune, incluez une phrase sur ce qui vous y attire.",
+        "hint": "Logos, sites web, emballages, mises en page éditoriales, même des espaces. La raison compte autant que le nom.",
+        "placeholder": "Apple: la retenue, rien d'inutile. Aesop: naturel et typographique, l'air d'un ami cultivé. Dieter Rams: la fonction comme esthétique..."
       },
       "q9": {
         "label": "Quelles directions de couleurs semblent justes pour votre marque? Sélectionnez tout ce qui s'applique.",
-        "hint": "Ne réfléchissez pas trop. Instinct brut uniquement.",
+        "hint": "Faites confiance à votre instinct. Vous pouvez toujours affiner ça lors de l'appel de lancement.",
         "options": {
           "warmNeutrals": "Neutres chauds (crème, sable, terre cuite)",
           "coolNeutrals": "Neutres froids (ardoise, pierre, brume)",
@@ -101,17 +105,18 @@
           "pastels": "Pastels & tons doux",
           "monochrome": "Noir & blanc / monochrome",
           "metallic": "Métallique / tons luxe (or, bronze)",
-          "natureInspired": "Inspiré de la nature (mousse, rouille, argile)"
+          "natureInspired": "Inspiré de la nature (mousse, rouille, argile)",
+          "noPreference": "Pas de préférence, je fais confiance à votre jugement"
         }
       },
       "q10": {
-        "label": "Y a-t-il des couleurs totalement interdites?",
-        "hint": "En raison de préférences personnelles, d'associations industrielles ou d'utilisation concurrente.",
+        "label": "Y a-t-il des couleurs totalement hors de question ? Pensez aux couleurs de vos concurrents, à vos aversions personnelles, ou à ce qui ne semble tout simplement pas juste.",
+        "hint": "Laissez vide si rien ne vous vient à l'esprit.",
         "placeholder": "Évitez le violet, notre principal concurrent l'utilise..."
       },
       "q11": {
-        "label": "Quelle direction esthétique décrit le mieux comment votre marque devrait paraître et se ressentir? Sélectionnez jusqu'à deux.",
-        "hint": "Pensez texture, attitude, énergie. Concentrez-vous sur le ressenti général, pas seulement les mots-clés.",
+        "label": "Quelles directions esthétiques décrivent le mieux comment votre marque devrait paraître et se ressentir ? Sélectionnez tout ce qui s'applique, par ordre de priorité.",
+        "hint": "Votre premier choix est votre direction principale, le second est secondaire, et ainsi de suite. Sélectionnez autant que vous le souhaitez.",
         "options": {
           "luxuryRefined": "Luxe & raffiné",
           "organicArtisan": "Organique & artisanal",
@@ -128,12 +133,12 @@
       },
       "q12": {
         "label": "Avez-vous des ressources de marque existantes qui doivent être intégrées dans la nouvelle identité?",
-        "hint": "Si vous commencez de zéro, écrivez « aucun ». Si vous conservez des éléments, expliquez quoi et pourquoi.",
+        "hint": "Si vous partez de zéro, laissez vide. Si vous conservez des éléments, dites-nous quoi et pourquoi.",
         "placeholder": "Nous voulons garder notre logo actuel mais tout redesigner d'autre..."
       },
       "q13": {
         "label": "Quels livrables avez-vous besoin pour ce projet?",
-        "hint": "Sélectionnez tout ce qui s'applique. Nous confirmerons la portée lors de notre appel de lancement.",
+        "hint": "Cochez tout ce que vous pensez avoir besoin. On peut toujours ajuster lors de l'appel de lancement.",
         "options": {
           "primaryLogo": "Logo principal",
           "logoVariations": "Variantes de logo & sous-marques",
@@ -151,19 +156,33 @@
           "low": "Faible / coût le plus bas possible",
           "mid": "Moyen / équilibre prix-qualité",
           "high": "Élevé / premium",
-          "best": "Je veux le meilleur résultat possible quel qu'en soit le coût"
+          "best": "Premium / investissement complet en identité de marque (3 000 €+)"
         }
       },
       "q15": {
-        "label": "Avez-vous des logos, photos ou moodboards qui inspirent la direction de votre marque ? Déposez-les ici. Plus je vois ce qui vous touche, mieux je peux concevoir pour vous.",
+        "label": "Vous avez des logos, photos ou moodboards qui inspirent la direction de votre marque ? Déposez-les ici. Plus nous voyons ce qui vous touche, mieux nous pouvons concevoir pour vous.",
         "hint": "Jusqu'à 8 images. PNG, JPG, WEBP ou GIF.",
         "uploadPrompt": "Cliquez ou glissez des images ici",
         "uploadLimit": "Jusqu'à 8 images · PNG, JPG, WEBP, GIF"
       },
       "q16": {
         "label": "Y a-t-il quelque chose concernant vos expériences passées en matière de branding, vos préférences fortes, ou vos craintes que nous devrions savoir avant de commencer?",
-        "hint": "Plus vous partagez ouvertement, mieux nous pouvons adapter cela pour vous.",
+        "hint": "Quelle est la seule chose dont vous vous inquiétez le plus que nous pourrions rater ? Plus vous partagez ouvertement, mieux nous pouvons adapter cela pour vous.",
         "placeholder": "La dernière agence nous a donné quelque chose de trop générique. Nous voulons vraiment que cela nous ressemble..."
+      },
+      "q3b": {
+        "label": "Quelle frustration ou quel désir spécifique a amené ce client vers vous, plutôt que de régler ça lui-même ou d'aller ailleurs ?",
+        "hint": "Pensez au moment où il a décidé de chercher de l'aide. Qu'est-ce qui avait changé ? Qu'était-il enfin prêt à faire ?",
+        "placeholder": "Il avait essayé un logo bon marché une fois et ça n'avait jamais semblé juste. Il est maintenant prêt à investir dans quelque chose qui le représente vraiment..."
+      },
+      "qlaunch": {
+        "label": "Pour quoi cette marque est-elle construite ? Quel est le contexte ?",
+        "hint": "Un lancement de produit dans 6 semaines, un rebranding avant une levée de fonds, un rafraîchissement discret pour des raisons personnelles. Ce contexte oriente tout dans notre façon de concevoir.",
+        "placeholder": "Nous relançons au printemps prochain après un pivot. Nous avons besoin que la marque reflète notre nouvelle direction avant de parler aux investisseurs..."
+      },
+      "qdelivery": {
+        "label": "Quel est votre délai de livraison idéal ?",
+        "hint": "Cela nous aide à planifier votre créneau de projet. Nous confirmerons le calendrier exact lors de l'appel de lancement."
       }
     },
     "footer": {

@@ -558,6 +558,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const editToken = urlParams.get('token');
     if (!editToken) return;
 
+    // Apply the language the client used when they originally submitted.
+    // The edit link includes &lang=xx (added when the link is generated).
+    // We do this early — before pre-filling — so translated placeholder text
+    // and the delivery-date dropdown label both end up in the right language.
+    const langParam = urlParams.get('lang');
+    if (langParam && ['en', 'fr', 'ar'].includes(langParam)) {
+      try { await window.i18n.setLanguage(langParam); } catch (_) { /* safe */ }
+    }
+
     try {
       const resp = await fetch(`/.netlify/functions/get-submission-by-token?token=${encodeURIComponent(editToken)}`);
       const data = await resp.json();
@@ -578,10 +587,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Text / textarea inputs
       const textFields = [
-        'client-name','brand-name','email','delivery-date',
+        'client-name','brand-name','email','client-website',
         'q1-business-description','q2-problem-transformation','q3-ideal-customer',
-        'q4-competitors','q5-brand-personality','q6-positioning',
-        'q7-decision-maker-other','q8-brands-admired','q10-colors-to-avoid',
+        'q3b-customer-desire','q4-competitors','q5-brand-personality','q6-positioning',
+        'q-launch-context','q7-decision-maker-other','q8-brands-admired','q10-colors-to-avoid',
         'q11-aesthetic-description','q12-existing-assets','q16-anything-else'
       ];
       textFields.forEach(name => {
@@ -606,11 +615,10 @@ document.addEventListener('DOMContentLoaded', () => {
         checkboxes.forEach(cb => { cb.checked = vals.includes(cb.value); });
       });
 
-      // Custom delivery-date dropdown
-      const deliveryHidden = document.getElementById('deliveryDateValue');
-      if (deliveryHidden && sub['delivery-date']) {
-        deliveryHidden.value = sub['delivery-date'];
-        deliveryHidden.dispatchEvent(new Event('change', { bubbles: true }));
+      // Delivery-date — now a native <select>, setting .value is sufficient
+      const deliverySelect = document.getElementById('deliveryDateValue');
+      if (deliverySelect && sub['delivery-date']) {
+        deliverySelect.value = sub['delivery-date'];
       }
 
       // Sync checked state visual
@@ -619,8 +627,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (inp) lbl.classList.toggle('checked', inp.checked);
       });
 
-      // Re-sync Q11 limit
-      syncQ11Limit();
+      // Re-sync Q11 ranks
+      syncQ11Ranks();
 
       // Show edit mode banner, hide draft banner
       const editBanner = document.getElementById('editModeBanner');
@@ -640,29 +648,27 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   })();
 
-  // ── Q11: limit to max 2 selections ─────────────────────────────────────────
-  function syncQ11Limit() {
-    const checkboxes = form.querySelectorAll('input[type="checkbox"][name="q11-aesthetic"]');
-    const selected   = Array.from(checkboxes).filter(cb => cb.checked).length;
-
+  // ── Q11: ranked selection (no hard cap — selection order = priority) ────────
+  function syncQ11Ranks() {
+    const checkboxes = Array.from(form.querySelectorAll('input[type="checkbox"][name="q11-aesthetic"]'));
+    let rank = 1;
     checkboxes.forEach(cb => {
-      const label = cb.closest('.check-label');
-      if (!label) return;
-      // Disable unchosen ones once 2 are selected
-      if (selected >= 2 && !cb.checked) {
-        label.classList.add('disabled-choice');
-        cb.disabled = true;
+      const badge = cb.closest('.check-label')?.querySelector('.rank-badge');
+      if (!badge) return;
+      if (cb.checked) {
+        badge.textContent = rank++;
+        badge.classList.add('visible');
       } else {
-        label.classList.remove('disabled-choice');
-        cb.disabled = false;
+        badge.textContent = '';
+        badge.classList.remove('visible');
       }
     });
   }
 
   form.querySelectorAll('input[type="checkbox"][name="q11-aesthetic"]').forEach(cb => {
-    cb.addEventListener('change', syncQ11Limit);
+    cb.addEventListener('change', syncQ11Ranks);
   });
-  syncQ11Limit(); // initial state
+  syncQ11Ranks(); // initial state
 
   // ── Q9 / Q13: clear validation error on first selection ────────────────────
   form.querySelectorAll('input[name="q9-color"]').forEach(cb => {
@@ -815,6 +821,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const formData = new FormData(form);
       formData.set('__requestOrigin', 'public-form');
+      // Send the user's selected language so the server can translate emails and documents
+      formData.set('__lang', window.i18n.getLanguage ? window.i18n.getLanguage() : (localStorage.getItem('preferred-language') || 'en'));
 
       // ── Token-based edit mode ─────────────────────────────────────────────
       if (window.__editToken) {

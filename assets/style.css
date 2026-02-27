@@ -1097,6 +1097,13 @@ textarea:focus, input[type="text"]:focus, select:focus { border-color: var(--inp
 html[dir="rtl"] {
   direction: rtl;
   text-align: right;
+  /* Prevent phantom horizontal scroll-space on the left.
+     In RTL the browser flips the scroll origin to the right side, so
+     overflow-x:hidden on <body> alone is not enough — the <html> root
+     itself can still expose a scrollable region to the left.
+     max-width:100vw ensures no child can push the root wider than the viewport. */
+  overflow-x: hidden;
+  max-width: 100vw;
 }
 
 /* Only set direction on text-based elements.
@@ -1540,6 +1547,44 @@ html[lang="ar"] .custom-alert-close-btn {
 .check-label.disabled-choice {
   opacity: 0.42;
   pointer-events: none;
+}
+
+/* ── Q11 ranked selection badges ────────────────────────── */
+.check-label--ranked {
+  position: relative;
+}
+.rank-badge {
+  display: none;
+  width: 20px;        /* hard width so flex cannot squish it */
+  min-width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 20px;
+  text-align: center;
+  flex-shrink: 0;
+  margin-right: 4px;
+}
+.rank-badge.visible {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* RTL: badge sits between the text and the checkbox (on the left in visual order),
+   so flip the margin and prevent overflow:hidden from clipping it */
+html[dir="rtl"] .rank-badge {
+  margin-right: 0;
+  margin-left: 4px;
+  flex-shrink: 0;     /* re-assert: parent overflow:hidden must not squish it */
+}
+/* Allow the check-label to show the badge without clipping it —
+   use clip instead of overflow:hidden so min-width is still respected */
+html[dir="rtl"] .check-label--ranked {
+  overflow: visible;
 }
 
 /* ── Q9 / Q13 validation error hint ────────────────────── */

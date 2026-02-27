@@ -30,7 +30,8 @@
       "brandNamePlaceholder": "Your brand name",
       "email": "Email",
       "emailPlaceholder": "your@email.com",
-      "deliveryDate": "Delivery Date",
+      "website": "Website",
+      "websitePlaceholder": "https://yourwebsite.com",
       "deliveryDateOptions": {
         "select": "Select a timeframe",
         "asap": "ASAP (As Soon As Possible)",
@@ -43,28 +44,30 @@
       "badge1": "Section 01",
       "badge2": "Section 02",
       "foundation": "Brand Foundation",
-      "visual": "Visual Direction"
+      "visual": "Visual Direction",
+      "badge3": "Section 03",
+      "project": "Project and Scope"
     },
     "questions": {
       "q1": {
-        "label": "Describe your business in 2-3 sentences, as if explaining it to a stranger at dinner.",
-        "hint": "Avoid jargon. Focus on what you do, who you serve, and why it matters.",
-        "placeholder": "We help independent therapists build a practice that feels like them..."
+        "label": "Describe your business by completing this: \"I help [who] do/achieve [what] so they can [outcome].\"",
+        "hint": "Avoid jargon. If you serve more than one audience, write one line per audience.",
+        "placeholder": "I help independent therapists build a practice that feels like them, so they can attract clients who are the right fit from day one..."
       },
       "q2": {
-        "label": "What problem do you solve, and what does life look like for your customer after working with you?",
-        "hint": "Think transformation: the before and after.",
+        "label": "Before: what does your client struggle with? After: what does life look like once they've worked with you?",
+        "hint": "Write it as two short paragraphs, one for the before and one for the after. The clearer this is, the better your brand can speak to it.",
         "placeholder": "Before: they struggle with... After: they feel..."
       },
       "q3": {
-        "label": "Paint a vivid picture of your ideal customer.",
-        "hint": "What do they care about, what do they want to be seen as, and what made them look for you specifically.",
+        "label": "Describe your ideal client as a real person, not just a demographic.",
+        "hint": "How do they spend their time? What do they care about? How do they want to be seen? What kind of brands do they already love?",
         "placeholder": "She runs a small creative business, values authenticity over trends, and wants her brand to feel as considered as her work..."
       },
       "q4": {
-        "label": "List 2-4 competitors or similar brands. What do they do well, and what does your audience find missing from them?",
-        "hint": "These don't need to be direct competitors. Any brand your audience might also consider.",
-        "placeholder": "Brand A is strong at X, but feels too cold. Our audience finds them lacking in..."
+        "label": "List 2–4 competitors or similar brands. What do you believe they get wrong or ignore?",
+        "hint": "Answer from your own conviction, no research needed. What do you see that they're missing?",
+        "placeholder": "Brand A is polished but cold. They never really talk to the person behind the business. Brand B is friendly but looks cheap..."
       },
       "q5": {
         "label": "If your brand were a person, how would they walk into a room?",
@@ -73,8 +76,8 @@
       },
       "q6": {
         "label": "Complete this sentence: \"We are the only _____ that _____.",
-        "hint": "Your positioning in one line. Rough is fine, just try.",
-        "placeholder": "We are the only accounting firm that speaks to creative freelancers without making them feel small."
+        "hint": "Your positioning in one line. Don't aim for perfect. Rough is better than empty.",
+        "placeholder": "We are the only... [just try something]"
       },
       "q7": {
         "label": "Who is the main action taker / decision maker for this project?",
@@ -83,16 +86,17 @@
           "boss": "My boss / the boss",
           "other": "Other (please specify):"
         },
-        "otherPlaceholder": "Please specify..."
+        "otherPlaceholder": "Please specify...",
+        "hint": "This helps us know who we'll be presenting to and whose sign-off matters."
       },
       "q8": {
-        "label": "Share 3-5 brands or visual references you admire, inside or outside your industry.",
-        "hint": "Logos, websites, packaging, editorial layouts, even spaces. Links or names both work.",
-        "placeholder": "Apple (clean, premium), Aesop (earthy, typographic), Dieter Rams (functional beauty)..."
+        "label": "Share 3–5 brands or visual references you admire, inside or outside your industry. For each, include one sentence on what draws you to them.",
+        "hint": "Logos, websites, packaging, editorial layouts, even spaces. The reason matters as much as the name.",
+        "placeholder": "Apple: the restraint, nothing unnecessary. Aesop: earthy and typographic, feels like a friend who reads. Dieter Rams: function is the aesthetic..."
       },
       "q9": {
         "label": "Which color directions feel right for your brand? Select all that apply.",
-        "hint": "Don't overthink. Gut instinct only.",
+        "hint": "Go with your gut. You can always refine this on the kickoff call.",
         "options": {
           "warmNeutrals": "Warm neutrals (cream, sand, terracotta)",
           "coolNeutrals": "Cool neutrals (slate, stone, mist)",
@@ -101,17 +105,18 @@
           "pastels": "Pastels & soft tones",
           "monochrome": "Black & white / monochrome",
           "metallic": "Metallic / luxury tones (gold, bronze)",
-          "natureInspired": "Nature-inspired (moss, rust, clay)"
+          "natureInspired": "Nature-inspired (moss, rust, clay)",
+          "noPreference": "No preference, I trust your judgment"
         }
       },
       "q10": {
-        "label": "Are there any colors that are completely off-limits?",
-        "hint": "Due to personal preference, industry association, or competitor use.",
+        "label": "Are there any colors that are completely off the table? Think competitor colors, personal dislikes, or anything that just feels wrong.",
+        "hint": "Leave it blank if nothing comes to mind.",
         "placeholder": "Please avoid purple, our main competitor uses it..."
       },
       "q11": {
-        "label": "Which aesthetic direction best describes how your brand should look and feel? Select up to two.",
-        "hint": "Think about texture, attitude, and energy. Focus on the overall feel, not just keywords.",
+        "label": "Which aesthetic directions describe how your brand should look and feel? Select all that apply, in order of priority.",
+        "hint": "Your first selection is your primary direction, your second is secondary, and so on. Select as many as feel right.",
         "options": {
           "luxuryRefined": "Luxury & refined",
           "organicArtisan": "Organic & artisan",
@@ -128,12 +133,12 @@
       },
       "q12": {
         "label": "Do you have existing brand assets that must carry into the new identity?",
-        "hint": "If starting fresh, write \"none.\" If keeping elements, explain what and why.",
+        "hint": "If starting fresh, leave blank. If keeping elements, tell us what and why.",
         "placeholder": "We want to keep our current logo mark but redesign everything else..."
       },
       "q13": {
         "label": "Which deliverables do you need from this project?",
-        "hint": "Select all that apply. We'll confirm the scope on our kickoff call.",
+        "hint": "Pick everything you think you'll need. We can always adjust on the kickoff call.",
         "options": {
           "primaryLogo": "Primary logo",
           "logoVariations": "Logo variations & submarks",
@@ -151,19 +156,33 @@
           "low": "Low / lowest possible cost",
           "mid": "Mid-range / balanced price–quality",
           "high": "High / premium",
-          "best": "I want the best possible result no matter the cost"
+          "best": "Premium / full brand investment (€3,000+)"
         }
       },
       "q15": {
-        "label": "Got any logos, photos, or moodboards that inspire your brand's direction? Drop them here. The more I see what moves you, the better I can design for you.",
+        "label": "Got any logos, photos, or moodboards that inspire your brand's direction? Drop them here. The more we see what moves you, the better we can design for you.",
         "hint": "Up to 8 images. PNG, JPG, WEBP, or GIF.",
         "uploadPrompt": "Click or drag images here",
         "uploadLimit": "Up to 8 images · PNG, JPG, WEBP, GIF"
       },
       "q16": {
         "label": "Is there anything about your past branding experience, strong preferences, or fears we should know before we start?",
-        "hint": "The more openly you share, the better we can tailor this to you.",
+        "hint": "What's the one thing you're most worried we might get wrong? The more openly you share, the better we can tailor this to you.",
         "placeholder": "The last agency gave us something too generic. We really want this to feel like us..."
+      },
+      "q3b": {
+        "label": "What specific frustration or desire brought this client to you, rather than figuring it out on their own or going somewhere else?",
+        "hint": "Think about the moment they decided to look for help. What had changed? What were they finally ready to do?",
+        "placeholder": "They tried a cheap logo once and it never felt right. Now they're ready to invest in something that actually represents them..."
+      },
+      "qlaunch": {
+        "label": "What is this brand being built for? What's the context?",
+        "hint": "A product launch in 6 weeks, a rebrand ahead of a funding round, a quiet refresh for personal reasons. This context shapes everything about how we design.",
+        "placeholder": "We're relaunching next spring after a pivot. We need the brand to reflect our new direction before we start talking to investors..."
+      },
+      "qdelivery": {
+        "label": "What is your ideal delivery timeframe?",
+        "hint": "This helps us plan your project slot. We'll confirm the exact timeline on the kickoff call."
       }
     },
     "footer": {

@@ -643,22 +643,100 @@ const VALID_QUESTIONNAIRE_FIELDS = new Set([
   'q1-business-description',
   'q2-problem-transformation',
   'q3-ideal-customer',
+  'q3b-customer-desire',
   'q4-competitors',
   'q5-brand-personality',
   'q6-positioning',
-  'q7-decision-maker',
-  'q7-decision-maker-other',
+  'q-launch-context',
   'q8-brands-admired',
   'q9-color',
   'q10-colors-to-avoid',
   'q11-aesthetic',
   'q11-aesthetic-description',
-  'q12-existing-assets',
   'q13-deliverables',
   'q14-budget',
   'q15-inspiration-refs',
+  'q7-decision-maker',
+  'q7-decision-maker-other',
+  'q12-existing-assets',
+  'delivery-date',
   'q16-anything-else'
 ]);
+
+// Explicit display order matching the form's question numbering (01-19)
+const QUESTIONNAIRE_FIELD_ORDER = {
+  'q1-business-description':  1,
+  'q2-problem-transformation':2,
+  'q3-ideal-customer':        3,
+  'q3b-customer-desire':      4,
+  'q4-competitors':           5,
+  'q5-brand-personality':     6,
+  'q6-positioning':           7,
+  'q-launch-context':         8,
+  'q8-brands-admired':        9,
+  'q9-color':                10,
+  'q10-colors-to-avoid':     11,
+  'q11-aesthetic':           12,
+  'q11-aesthetic-description':12.5,
+  'q13-deliverables':        13,
+  'q14-budget':              14,
+  'q15-inspiration-refs':    15,
+  'q7-decision-maker':       16,
+  'q7-decision-maker-other': 16.5,
+  'q12-existing-assets':     17,
+  'delivery-date':           18,
+  'q16-anything-else':       19,
+};
+
+// Clean display numbers shown in the dashboard badge
+const QUESTIONNAIRE_DISPLAY_NUM = {
+  'q1-business-description':  '01',
+  'q2-problem-transformation':'02',
+  'q3-ideal-customer':        '03',
+  'q3b-customer-desire':      '04',
+  'q4-competitors':           '05',
+  'q5-brand-personality':     '06',
+  'q6-positioning':           '07',
+  'q-launch-context':         '08',
+  'q8-brands-admired':        '09',
+  'q9-color':                 '10',
+  'q10-colors-to-avoid':      '11',
+  'q11-aesthetic':            '12',
+  'q11-aesthetic-description':'12b',
+  'q13-deliverables':         '13',
+  'q14-budget':               '14',
+  'q15-inspiration-refs':     '15',
+  'q7-decision-maker':        '16',
+  'q7-decision-maker-other':  '16b',
+  'q12-existing-assets':      '17',
+  'delivery-date':            '18',
+  'q16-anything-else':        '19',
+};
+
+// Human-readable labels for the dashboard cards
+const QUESTIONNAIRE_FIELD_LABELS = {
+  'q1-business-description':  'Business Description',
+  'q2-problem-transformation':'Before and After',
+  'q3-ideal-customer':        'Ideal Client',
+  'q3b-customer-desire':      'Client Trigger',
+  'q4-competitors':           'Competitors',
+  'q5-brand-personality':     'Brand Personality',
+  'q6-positioning':           'Positioning Statement',
+  'q-launch-context':         'Launch Context',
+  'q8-brands-admired':        'Admired Brands',
+  'q9-color':                 'Color Directions',
+  'q10-colors-to-avoid':      'Colors to Avoid',
+  'q11-aesthetic':            'Aesthetic Direction',
+  'q11-aesthetic-description':'Aesthetic Notes',
+  'q13-deliverables':         'Deliverables',
+  'q14-budget':               'Budget Approach',
+  'q15-inspiration-refs':     'Inspiration Images',
+  'q7-decision-maker':        'Decision Maker',
+  'q7-decision-maker-other':  'Decision Maker (Other)',
+  'q12-existing-assets':      'Existing Assets',
+  'delivery-date':            'Delivery Timeframe',
+  'q16-anything-else':        'Past Experience and Fears',
+};
 
 function hasDeliveryDate(submission) {
   return Boolean(getDisplayValue(submission?.data?.['delivery-date']));
@@ -697,15 +775,11 @@ function updateExportButtonLabel() {
 }
 
 function questionnaireSortKey(key) {
+  const order = QUESTIONNAIRE_FIELD_ORDER[key];
+  if (order != null) return { group: order, key };
+  // Legacy or unknown fields go to the end
   const match = String(key).match(/^q(\d+)-/i);
-  if (!match) {
-    return { group: Number.MAX_SAFE_INTEGER, key };
-  }
-
-  return {
-    group: Number(match[1]),
-    key
-  };
+  return { group: match ? Number(match[1]) + 100 : Number.MAX_SAFE_INTEGER, key };
 }
 
 function getLogoRefFromData(data) {
@@ -1458,20 +1532,20 @@ function renderDetailPanel() {
 
   // Render questionnaire items in sorted order
   const questionnaireItems = questionnaireEntries.map(([key, value]) => {
-    // Extract number badge and text label from key like "q1-business-description"
-    const numMatch = key.match(/^q(\d+)-/);
-    const qNum = numMatch ? numMatch[1].padStart(2, '0') : null;
-    const labelText = key
-      .replace(/^q\d+-/, '')
+    const qNum = QUESTIONNAIRE_DISPLAY_NUM[key] || null;
+    const labelText = QUESTIONNAIRE_FIELD_LABELS[key] || key
+      .replace(/^q[\w]*-/, '')
       .replace(/-/g, ' ')
       .replace(/\b\w/g, l => l.toUpperCase());
     const safeLabel = escapeHtml(labelText);
 
     if (isEditingSubmission) {
-      const editLabel = key
-        .replace(/^q(\d+)-/, 'Q$1 - ')
+      const qNumEdit = QUESTIONNAIRE_DISPLAY_NUM[key];
+      const labelForEdit = QUESTIONNAIRE_FIELD_LABELS[key] || key
+        .replace(/^q[\w]*-/, '')
         .replace(/-/g, ' ')
         .replace(/\b\w/g, l => l.toUpperCase());
+      const editLabel = qNumEdit ? `Q${qNumEdit}: ${labelForEdit}` : labelForEdit;
       return `
         <article class="qa-card">
           <label class="qa-label" for="edit-${escapeHtml(key)}">${escapeHtml(editLabel)}</label>
@@ -2021,15 +2095,30 @@ function resolveExportSubmissions(submissionsOverride) {
 
 function submissionToPlainRows(submission) {
   const data = submission.data || {};
+  const metaKeys = ['client-name', 'brand-name', 'email', 'client-website'];
   const rows = [];
-  for (const [key, value] of Object.entries(data)) {
-    const label = key
-      .replace(/^q(\d+)-/, 'Q$1 - ')
-      .replace(/-/g, ' ')
-      .replace(/\b\w/g, l => l.toUpperCase());
-    const val = Array.isArray(value) ? value.join(', ') : String(value || 'No response');
+
+  // Meta fields first
+  metaKeys.forEach(key => {
+    if (data[key] != null) {
+      const label = { 'client-name': 'Client Name', 'brand-name': 'Brand / Business', email: 'Email', 'client-website': 'Website' }[key] || key;
+      rows.push({ label, value: String(data[key] || '') });
+    }
+  });
+
+  // Questionnaire fields in display order
+  const orderedKeys = Object.keys(QUESTIONNAIRE_FIELD_ORDER)
+    .sort((a, b) => QUESTIONNAIRE_FIELD_ORDER[a] - QUESTIONNAIRE_FIELD_ORDER[b]);
+
+  orderedKeys.forEach(key => {
+    if (data[key] == null) return;
+    const num = QUESTIONNAIRE_DISPLAY_NUM[key];
+    const labelText = QUESTIONNAIRE_FIELD_LABELS[key] || key;
+    const label = num ? `Q${num}: ${labelText}` : labelText;
+    const val = Array.isArray(data[key]) ? data[key].join(', ') : String(data[key] || 'No response');
     rows.push({ label, value: val });
-  }
+  });
+
   return rows;
 }
 
@@ -2212,16 +2301,20 @@ function exportAsCSV(submissionsOverride) {
 
   const columns = [
     'id', 'created_at', 'status',
-    'client-name', 'brand-name', 'email', 'delivery-date', 'agreed-delivery-date',
-    'q1-business-description', 'q2-problem-transformation', 'q3-ideal-customer',
+    'client-name', 'brand-name', 'email', 'client-website',
+    'delivery-date', 'agreed-delivery-date',
+    'q1-business-description', 'q2-problem-transformation',
+    'q3-ideal-customer', 'q3b-customer-desire',
     'q4-competitors', 'q5-brand-personality',
-    'q6-positioning',
-    'q7-decision-maker', 'q7-decision-maker-other',
+    'q6-positioning', 'q-launch-context',
     'q8-brands-admired',
     'q9-color', 'q10-colors-to-avoid',
     'q11-aesthetic', 'q11-aesthetic-description',
-    'q12-existing-assets', 'q13-deliverables', 'q14-budget',
-    'q15-inspiration-refs', 'q16-anything-else'
+    'q13-deliverables', 'q14-budget',
+    'q15-inspiration-refs',
+    'q7-decision-maker', 'q7-decision-maker-other',
+    'q12-existing-assets',
+    'q16-anything-else'
   ];
 
   function escapeCSVCell(value) {
@@ -2404,7 +2497,29 @@ document.addEventListener('DOMContentLoaded', () => {
       'Brand / Business': 'brand-name',
       'Client Name': 'client-name',
       'Client Email': 'email',
-      'Delivery Date': 'delivery-date',
+      'Website': 'client-website',
+      'Delivery Timeframe': 'delivery-date',
+      'Q01: Business Description': 'q1-business-description',
+      'Q02: Before and After': 'q2-problem-transformation',
+      'Q03: Ideal Client': 'q3-ideal-customer',
+      'Q04: Client Trigger': 'q3b-customer-desire',
+      'Q05: Competitors': 'q4-competitors',
+      'Q06: Brand Personality': 'q5-brand-personality',
+      'Q07: Positioning Statement': 'q6-positioning',
+      'Q08: Launch Context': 'q-launch-context',
+      'Q09: Admired Brands': 'q8-brands-admired',
+      'Q10: Color Directions': 'q9-color',
+      'Q11: Colors to Avoid': 'q10-colors-to-avoid',
+      'Q12: Aesthetic Direction': 'q11-aesthetic',
+      'Q12: Aesthetic Notes': 'q11-aesthetic-description',
+      'Q13: Deliverables': 'q13-deliverables',
+      'Q14: Budget Approach': 'q14-budget',
+      'Q15: Inspiration Images': 'q15-inspiration-refs',
+      'Q16: Decision Maker': 'q7-decision-maker',
+      'Q16: Decision Maker (Other)': 'q7-decision-maker-other',
+      'Q17: Existing Assets': 'q12-existing-assets',
+      'Q19: Past Experience and Fears': 'q16-anything-else',
+      // Legacy keys (backwards compat for old exports)
       'Q1 — Business Description': 'q1-business-description',
       'Q2 — Problem + Transformation': 'q2-problem-transformation',
       'Q3 — Ideal Customer': 'q3-ideal-customer',
@@ -2422,7 +2537,7 @@ document.addEventListener('DOMContentLoaded', () => {
       'Q13 — Needed Deliverables': 'q13-deliverables',
       'Q14 — Budget Approach': 'q14-budget',
       'Q15 — Inspiration Images': 'q15-inspiration-refs',
-      'Q16 — Anything Else': 'q16-anything-else'
+      'Q16 — Anything Else': 'q16-anything-else',
     };
     return map[heading] || heading.toLowerCase().replace(/\s+/g, '-');
   }

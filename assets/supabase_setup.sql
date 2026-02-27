@@ -30,25 +30,25 @@ CREATE TABLE IF NOT EXISTS submissions (
   "client-name"                   text,
   "brand-name"                    text,
   "email"                         text,
+  "client-website"                text,
   "delivery-date"                 text,
 
-  -- Section 01 – Brand Foundation (Q1–Q7)
+  -- Section 01: Brand Foundation (Q01-Q08)
   "q1-business-description"       text,
   "q2-problem-transformation"     text,
   "q3-ideal-customer"             text,
+  "q3b-customer-desire"           text,
   "q4-competitors"                text,
   "q5-brand-personality"          text,
   "q6-positioning"                text,
-  "q7-decision-maker"             text,
-  "q7-decision-maker-other"       text,
+  "q-launch-context"              text,
 
-  -- Section 02 – Visual Direction (Q8–Q16)
+  -- Section 02: Visual Direction (Q09-Q15)
   "q8-brands-admired"             text,
   "q9-color"                      text[],   -- multi-select
   "q10-colors-to-avoid"           text,
-  "q11-aesthetic"                 text[],   -- multi-select
+  "q11-aesthetic"                 text[],   -- multi-select (ranked by selection order)
   "q11-aesthetic-description"     text,
-  "q12-existing-assets"           text,
   "q13-deliverables"              text[],   -- multi-select
   "q14-budget"                    text,
 
@@ -57,6 +57,10 @@ CREATE TABLE IF NOT EXISTS submissions (
   -- Legacy entries may be plain storage-path strings.
   "q15-inspiration-refs"          text[],
 
+  -- Section 03: Project and Scope (Q16-Q19)
+  "q7-decision-maker"             text,
+  "q7-decision-maker-other"       text,
+  "q12-existing-assets"           text,
   "q16-anything-else"             text,
 
   -- Brand / company logo (stored in the 'logos' bucket)
@@ -65,13 +69,19 @@ CREATE TABLE IF NOT EXISTS submissions (
   -- Secure edit token (UUID) — single use, expires after 30 days
   -- Generated on new submission, cleared after client edits
   edit_token                      text        UNIQUE,
-  edit_token_expires_at           timestamptz
+  edit_token_expires_at           timestamptz,
+
+  -- Auto-detected from Netlify geo header (x-country) — not user-submitted
+  "client-country"                text
 );
 
 
 -- ── 2. Migrations — add any columns that might be missing ─────────────
 --  Safe no-ops if columns already exist.
 -- ──────────────────────────────────────────────────────────────────────
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "client-website"                text;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "q3b-customer-desire"           text;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "q-launch-context"              text;
 ALTER TABLE submissions ADD COLUMN IF NOT EXISTS history                        jsonb        NOT NULL DEFAULT '[]'::jsonb;
 ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "status"                       text         NOT NULL DEFAULT 'pending';
 ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "project-status"               text;
@@ -83,6 +93,9 @@ ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "delivery-date"                
 ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "brand-logo-ref"               text;
 ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "q1-business-description"      text;
 ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "q2-problem-transformation"    text;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "client-website"                text;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "q3b-customer-desire"           text;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "q-launch-context"              text;
 ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "q3-ideal-customer"            text;
 ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "q4-competitors"               text;
 ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "q5-brand-personality"         text;
@@ -101,6 +114,7 @@ ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "q15-inspiration-refs"         
 ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "q16-anything-else"            text;
 ALTER TABLE submissions ADD COLUMN IF NOT EXISTS edit_token                   text UNIQUE;
 ALTER TABLE submissions ADD COLUMN IF NOT EXISTS edit_token_expires_at        timestamptz;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "client-country"             text;
 
 
 -- ── 3. Indexes (optional but recommended for dashboard queries) ────────

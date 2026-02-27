@@ -56,11 +56,11 @@ function getClientIp(event) {
 
 // ── Field allowlist & array fields ───────────────────────────────────────────
 const ALLOWED_FIELDS = [
-  'client-name', 'brand-name', 'email', 'delivery-date',
+  'client-name', 'brand-name', 'email', 'client-website', 'delivery-date',
   'agreed-delivery-date', 'status', 'project-status',
   'q1-business-description', 'q2-problem-transformation', 'q3-ideal-customer',
-  'q4-competitors', 'q5-brand-personality', 'q6-positioning',
-  'q7-decision-maker', 'q7-decision-maker-other', 'q8-brands-admired',
+  'q3b-customer-desire', 'q4-competitors', 'q5-brand-personality', 'q6-positioning',
+  'q-launch-context', 'q7-decision-maker', 'q7-decision-maker-other', 'q8-brands-admired',
   'q9-color', 'q10-colors-to-avoid', 'q11-aesthetic', 'q11-aesthetic-description',
   'q12-existing-assets', 'q13-deliverables', 'q14-budget',
   'q15-inspiration-refs', 'q16-anything-else', 'brand-logo-ref'
@@ -69,7 +69,8 @@ const ALLOWED_FIELDS = [
 const ARRAY_FIELDS = new Set(['q9-color', 'q11-aesthetic', 'q13-deliverables', 'q15-inspiration-refs']);
 
 const DOCUMENT_SKIP_FIELDS = new Set([
-  'created_at', 'history', 'status', 'project-status', 'agreed-delivery-date'
+  'created_at', 'history', 'status', 'project-status', 'agreed-delivery-date',
+  'edit_token', 'edit_token_expires_at'
 ]);
 
 // ── Field length limits (mirrors client-side maxlength) ───────────────────────
@@ -77,12 +78,15 @@ const FIELD_MAXLENGTH = {
   'client-name':               120,
   'brand-name':                120,
   'email':                     254,
+  'client-website':            300,
   'q1-business-description':  2000,
   'q2-problem-transformation':2000,
   'q3-ideal-customer':        2000,
+  'q3b-customer-desire':      2000,
   'q4-competitors':           2000,
   'q5-brand-personality':     2000,
   'q6-positioning':            300,
+  'q-launch-context':         2000,
   'q8-brands-admired':        2000,
   'q10-colors-to-avoid':       300,
   'q11-aesthetic-description':1000,
@@ -142,6 +146,40 @@ exports.handler = async (event) => {
   const fromEmail    = process.env.RESEND_FROM_EMAIL || 'noreply@neatmark.studio';
   const adminEmail   = process.env.RECIPIENT_EMAIL   || 'khaledxbz@outlook.com';
   const siteUrl      = process.env.SITE_URL          || 'https://form.neatmark.studio';
+
+  // Netlify injects x-country (ISO 3166-1 alpha-2) automatically at the CDN edge.
+  // No API call needed — it's just a request header.
+  const countryCode = (
+    event.headers['x-country'] ||
+    event.headers['x-nf-country'] ||
+    event.headers['cf-ipcountry'] ||
+    ''
+  ).toUpperCase().trim().slice(0, 2);
+
+  const COUNTRY_NAMES = {
+    AF:'Afghanistan',DZ:'Algeria',AO:'Angola',AR:'Argentina',AU:'Australia',AT:'Austria',
+    AZ:'Azerbaijan',BD:'Bangladesh',BY:'Belarus',BE:'Belgium',BO:'Bolivia',BR:'Brazil',
+    BG:'Bulgaria',KH:'Cambodia',CM:'Cameroon',CA:'Canada',CL:'Chile',CN:'China',
+    CO:'Colombia',CD:'DR Congo',HR:'Croatia',CZ:'Czech Republic',DK:'Denmark',
+    DO:'Dominican Republic',EC:'Ecuador',EG:'Egypt',ET:'Ethiopia',FI:'Finland',
+    FR:'France',GH:'Ghana',DE:'Germany',GR:'Greece',GT:'Guatemala',HN:'Honduras',
+    HK:'Hong Kong',HU:'Hungary',IN:'India',ID:'Indonesia',IQ:'Iraq',IE:'Ireland',
+    IL:'Israel',IT:'Italy',CI:"Cote d'Ivoire",JP:'Japan',JO:'Jordan',KZ:'Kazakhstan',
+    KE:'Kenya',KW:'Kuwait',LB:'Lebanon',LY:'Libya',MY:'Malaysia',MX:'Mexico',
+    MA:'Morocco',MZ:'Mozambique',NP:'Nepal',NL:'Netherlands',NZ:'New Zealand',
+    NG:'Nigeria',NO:'Norway',OM:'Oman',PK:'Pakistan',PE:'Peru',PH:'Philippines',
+    PL:'Poland',PT:'Portugal',QA:'Qatar',RO:'Romania',RU:'Russia',SA:'Saudi Arabia',
+    SN:'Senegal',RS:'Serbia',SG:'Singapore',ZA:'South Africa',KR:'South Korea',
+    ES:'Spain',LK:'Sri Lanka',SD:'Sudan',SE:'Sweden',CH:'Switzerland',SY:'Syria',
+    TW:'Taiwan',TZ:'Tanzania',TH:'Thailand',TN:'Tunisia',TR:'Turkey',UG:'Uganda',
+    UA:'Ukraine',AE:'United Arab Emirates',GB:'United Kingdom',US:'United States',
+    UY:'Uruguay',UZ:'Uzbekistan',VE:'Venezuela',VN:'Vietnam',YE:'Yemen',ZM:'Zambia',
+    ZW:'Zimbabwe',PS:'Palestine',LY:'Libya'
+  };
+
+  const clientCountry = countryCode
+    ? (COUNTRY_NAMES[countryCode] ? `${COUNTRY_NAMES[countryCode]} (${countryCode})` : countryCode)
+    : '';
 
   if (!supabaseUrl || !supabaseKey) {
     return {
@@ -216,6 +254,9 @@ exports.handler = async (event) => {
   const submissionAction     = String(payload.__submissionAction || '').trim().toLowerCase();
   const overrideSubmissionId = String(payload.__overrideSubmissionId || '').trim();
   const editedBy             = String(payload.__editedBy || payload.editedBy || 'client').trim().toLowerCase();
+  const lang                 = ['en', 'fr', 'ar'].includes(String(payload.__lang || '').trim())
+                                 ? String(payload.__lang).trim()
+                                 : 'en';
 
   delete payload.__editToken;
   delete payload.__submissionAction;
@@ -223,6 +264,7 @@ exports.handler = async (event) => {
   delete payload.__requestOrigin;
   delete payload.__editedBy;
   delete payload.editedBy;
+  delete payload.__lang;
 
   // ── Build clean record ──────────────────────────────────────────────────────
   const record = { created_at: new Date().toISOString() };
@@ -231,6 +273,9 @@ exports.handler = async (event) => {
       record[field] = normalizeFieldValue(field, payload[field]);
     }
   });
+
+  // Store detected country (from Netlify geo header) — not a user-submitted field
+  if (clientCountry) record['client-country'] = clientCountry;
 
   try {
     const supabase = createClient(supabaseUrl, supabaseKey, { auth: { persistSession: false } });
@@ -300,7 +345,7 @@ exports.handler = async (event) => {
             const confirmMsg = buildEditConfirmationEmail({
               brandName:  record['brand-name'],
               clientName: record['client-name']
-            });
+            }, lang);
             await sendResendEmail({
               apiKey:   resendApiKey,
               to:       clientEmailAddr,
@@ -375,7 +420,7 @@ exports.handler = async (event) => {
     }
 
     // Build edit link for the client email
-    const editLink = `${siteUrl}/?token=${encodeURIComponent(newEditToken)}`;
+    const editLink = `${siteUrl}/?token=${encodeURIComponent(newEditToken)}&lang=${lang}`;
 
     // ── Generate documents & send emails ────────────────────────────────────
     if (resendApiKey) {
@@ -421,9 +466,9 @@ exports.handler = async (event) => {
 
       let pdfBuffer, docxBuffer, markdown;
       try {
-        markdown   = buildMarkdown(docPayload);
-        docxBuffer = await buildDocxBuffer(docPayload, imageBuffers);
-        pdfBuffer  = await buildPdfBuffer(docPayload, imageBuffers);
+        markdown   = buildMarkdown(docPayload, lang);
+        docxBuffer = await buildDocxBuffer(docPayload, imageBuffers, lang);
+        pdfBuffer  = await buildPdfBuffer(docPayload, imageBuffers, lang);
       } catch (err) {
         console.error('Document generation failed', err);
       }
@@ -433,7 +478,8 @@ exports.handler = async (event) => {
         brandName:    record['brand-name'],
         clientName:   record['client-name'],
         email:        record.email,
-        deliveryDate: record['delivery-date']
+        deliveryDate: record['delivery-date'],
+        country:      record['client-country']
       });
 
       if (adminEmail) {
@@ -460,7 +506,7 @@ exports.handler = async (event) => {
           brandName:  record['brand-name'],
           clientName: record['client-name'],
           editLink
-        });
+        }, lang);
         try {
           await sendResendEmail({
             apiKey: resendApiKey, to: clientEmailAddr, from: fromEmail,
