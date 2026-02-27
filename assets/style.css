@@ -784,6 +784,36 @@ textarea:focus, input[type="text"]:focus, select:focus { border-color: var(--inp
   width: max-content;
 }
 
+/* Mobile: compact single-row toast */
+@media (max-width: 540px) {
+  .draft-banner {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px 9px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 999px;
+    white-space: nowrap;
+    max-width: calc(100% - 24px);
+    width: auto;
+  }
+  .draft-banner .draft-banner-icon {
+    flex-shrink: 0;
+  }
+  .draft-banner .draft-banner-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 160px;
+  }
+  .draft-banner .clear-draft-btn {
+    font-size: 11px;
+    padding: 4px 11px;
+  }
+}
+
 .draft-banner.hiding {
   animation: toastOut .3s ease both;
 }
@@ -1631,15 +1661,27 @@ html[dir="rtl"] .check-label--ranked {
   min-width: 60px;
   color: var(--text-lo);
   font-family: 'Mona Sans', 'Norsal', sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
 }
 
-.step-btn:hover {
-  background: rgba(131,197,190,.12);
+/* Hover only on real pointer devices — never on touch */
+@media (hover: hover) and (pointer: fine) {
+  .step-btn:hover {
+    background: rgba(131,197,190,.12);
+  }
+}
+
+/* No background on click, tap, or focus */
+.step-btn:active,
+.step-btn:focus {
+  background: none;
 }
 
 .step-btn:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
+  background: none;
 }
 
 .step-num {
@@ -1698,7 +1740,8 @@ html[dir="rtl"] .check-label--ranked {
   background: var(--border);
   border-radius: 999px;
   margin: 0 4px;
-  margin-bottom: 18px; /* align with circle center */
+  align-self: flex-start;
+  margin-top: 19px; /* (4px padding-top + 16px = half of 32px circle) - 1px = sits on circle center */
   transition: background .35s;
   position: relative;
   overflow: hidden;
@@ -1875,8 +1918,12 @@ html[dir="rtl"] .wizard-btn--back:hover {
 /* ── Arabic RTL adjustments ──────────────────────────────── */
 html[dir="rtl"] .page-stepper { direction: rtl; }
 html[dir="rtl"] .step-connector::after { transform-origin: right; }
-html[dir="rtl"] .wizard-btn--next { flex-direction: row-reverse; }
-html[dir="rtl"] .wizard-btn--back { flex-direction: row-reverse; }
+
+/* Swap button order: Next → RIGHT side, Back → LEFT side */
+html[dir="rtl"] .page-nav-buttons { flex-direction: row-reverse; }
+
+/* Flip arrow direction: → becomes ←, ← becomes → */
+html[dir="rtl"] .nav-icon { transform: scaleX(-1); }
 
 /* ── Responsive ──────────────────────────────────────────── */
 @media (max-width: 540px) {
