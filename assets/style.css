@@ -1,25 +1,3 @@
-@media (max-width: 620px) {
-  .form-progress,
-  html[dir="rtl"] .form-progress {
-    left: 0;
-    right: 0;
-    max-width: 100vw;
-    width: 100vw;
-  }
-  .form-progress-bar,
-  html[dir="rtl"] .form-progress-bar {
-    max-width: 100vw;
-    width: 100vw;
-  }
-  html[dir="rtl"] .form-progress-bar {
-    right: 0;
-    left: auto;
-    border-radius: 2px 0 0 2px;
-  }
-}
-html, body {
-  overflow-x: hidden;
-}
 @font-face {
   font-family: 'Norsal';
   src: url('Norsal.ttf') format('truetype');
@@ -172,6 +150,7 @@ html[dir="rtl"] .theme-menu {
 }
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{overflow-x:hidden;max-width:100vw;}
 body{
   background: var(--bg);
   background-position: center top;
@@ -1183,8 +1162,8 @@ html[dir="rtl"] textarea {
   padding-left: 12px;
 }
 
-/* RTL icon flipping */
-html[dir="rtl"] .submit-btn::after,
+/* RTL icon flipping — only flip the arrow icon, NOT the loading spinner */
+html[dir="rtl"] .submit-btn:not([data-loading="true"])::after,
 html[dir="rtl"] .clear-btn::after {
   transform: scaleX(-1);
 }
@@ -1455,26 +1434,36 @@ html[lang="ar"] .custom-alert-close-btn {
   top: 0;
   left: 0;
   right: 0;
-  width: 100vw;
   z-index: 9999;
   height: 3px;
   background: transparent;
   pointer-events: none;
+  /* Always LTR so the bar grows left→right in both LTR and RTL layouts.
+     The container is already pinned with left:0 + right:0 (100 vw), so
+     direction has no effect on its position — only on child flow. */
+  direction: ltr;
+  overflow: hidden; /* hard clip: nothing can bleed outside the viewport strip */
 }
 .form-progress-bar {
-  left: 0;
-  top: 0;
   height: 100%;
   width: 0%;
   background: var(--mid);
   transition: width 0.4s ease;
   border-radius: 0 2px 2px 0;
-  width: 100vw;
+}
+/* In RTL the bar should grow from the right edge instead of the left */
+html[dir="rtl"] .form-progress {
+  direction: rtl;
+}
+html[dir="rtl"] .form-progress-bar {
+  border-radius: 2px 0 0 2px;
+  margin-left: auto; /* push bar to the right so it grows inward from the right */
 }
 .form-progress-label {
   position: fixed;
   top: 8px;
   right: 16px;
+  left: auto;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: .06em;
@@ -1482,20 +1471,13 @@ html[lang="ar"] .custom-alert-close-btn {
   color: var(--text-mid);
   pointer-events: none;
   opacity: 0.7;
-}
-
-  /* RTL fix: prevent progress bar overflow */
-html[dir="rtl"] .form-progress {
+  /* Keep label anchored to the physical right edge regardless of text direction */
   direction: ltr;
-  left: 0;
-  right: 0;
-  width: 100vw;
 }
-html[dir="rtl"] .form-progress-bar {
-  right: 0;
-  left: auto;
-  width: 100vw;
-  border-radius: 2px 0 0 2px;
+html[dir="rtl"] .form-progress-label {
+  right: auto;
+  left: 16px;
+  direction: rtl;
 }
 
 /* ── Upload Loading State ────────────────────────────── */

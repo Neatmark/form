@@ -79,6 +79,13 @@ function applyRTL() {
   html.setAttribute('lang', currentLanguage);
   html.classList.toggle('rtl-mode',  isArabic);
   html.classList.toggle('ltr-mode', !isArabic);
+  // After a direction switch the browser may reposition the scroll origin.
+  // Force scroll back to the logical start so the viewport is never offset.
+  requestAnimationFrame(() => {
+    window.scrollTo(0, window.scrollY);
+    document.documentElement.scrollLeft = 0;
+    document.body.scrollLeft = 0;
+  });
 }
 
 function updatePageTranslations() {

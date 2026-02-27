@@ -1094,9 +1094,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const pct = Math.round((filled / total) * 100);
     progressBar.style.width = pct + '%';
-    // RTL: flip progress bar direction
-    const isRTL = document.documentElement.dir === 'rtl';
-    progressBar.style.transform = isRTL ? 'scaleX(-1)' : 'none';
 
     // Section label: determine which section is most visible
     const sections = form.querySelectorAll('section.section');
