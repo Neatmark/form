@@ -109,17 +109,12 @@ const FIELD_LABELS_AR = {
 
 function getFieldLabels(lang) {
   if (lang === 'fr') return FIELD_LABELS_FR;
-  // Arabic labels used only in Markdown; PDF/DOCX fall back to English
   if (lang === 'ar') return FIELD_LABELS_AR;
   return FIELD_LABELS;
 }
 
-// PDF and DOCX now both support Arabic via embedded Norsal font + reshaper
-function getFieldLabelsForDoc(lang) {
-  if (lang === 'fr') return FIELD_LABELS_FR;
-  if (lang === 'ar') return FIELD_LABELS_AR;
-  return FIELD_LABELS;
-}
+// Alias — PDF, DOCX, and Markdown all use the same labels now (Arabic supported everywhere).
+const getFieldLabelsForDoc = getFieldLabels;
 
 // Section headers per language
 const SECTION_LABELS = {
@@ -140,24 +135,9 @@ const SECTION_LABELS = {
   }
 };
 
-// Section headers used only in Markdown (Arabic is fine there)
-const SECTION_LABELS_MARKDOWN = {
-  en: {
-    1: 'Section 01: Brand Foundation',
-    2: 'Section 02: Visual Direction',
-    3: 'Section 03: Project and Scope'
-  },
-  fr: {
-    1: 'Section 01: Fondation de la marque',
-    2: 'Section 02: Direction visuelle',
-    3: 'Section 03: Projet et Cadrage'
-  },
-  ar: {
-    1: 'القسم 01: أساس البراند',
-    2: 'القسم 02: الاتجاه البصري',
-    3: 'القسم 03: المشروع والنطاق'
-  }
-};
+// Section headers used only in Markdown — identical to SECTION_LABELS (both support Arabic)
+const SECTION_LABELS_MARKDOWN = SECTION_LABELS;
+
 
 // UI strings for generated documents per language
 const DOC_STRINGS = {
@@ -774,26 +754,6 @@ async function buildDocxBuffer(payload, imageBuffers = {}, lang = 'en') {
   const s            = DOC_STRINGS[lang] || DOC_STRINGS.en;
   const fieldLabels  = getFieldLabelsForDoc(lang);
   const isRtl        = (lang === 'ar');
-
-  // Helper: create a paragraph that is RTL-aware when needed
-  function makePara(options) {
-    if (isRtl) {
-      return new Paragraph({ ...options, bidirectional: true, alignment: options.alignment ?? AlignmentType.RIGHT });
-    }
-    return new Paragraph(options);
-  }
-
-  // Helper: wrap plain text in a paragraph with correct direction
-  function textPara(text, options = {}) {
-    if (isRtl) {
-      return new Paragraph({
-        children: [new TextRun({ text, ...options })],
-        bidirectional: true,
-        alignment: AlignmentType.RIGHT
-      });
-    }
-    return new Paragraph({ children: [new TextRun({ text, ...options })], ...options });
-  }
 
   const children = [
     new Paragraph({
@@ -1482,16 +1442,10 @@ async function sendResendEmail({ apiKey, to, from, subject, html, text, attachme
 ───────────────────────────────────────────────────────────────────────────── */
 
 module.exports = {
-  FIELD_LABELS,
-  FIELD_LABELS_FR,
-  FIELD_LABELS_AR,
-  EMAIL_COPY,
-  DOC_STRINGS,
   MAX_FIELD_VALUE_LENGTH,
   normalizeValue,
   normalizeValueForDoc,
   getOptionLabel,
-  OPTION_TRANSLATIONS,
   escapeHtml,
   prettifyKey,
   sortedEntries,

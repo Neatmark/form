@@ -22,10 +22,10 @@ const CORS_HEADERS = {
 
 // Fields to expose for form pre-fill (excludes internal Supabase columns)
 const FORM_FIELDS = [
-  'client-name', 'brand-name', 'email', 'delivery-date',
+  'client-name', 'brand-name', 'email', 'client-website', 'delivery-date',
   'q1-business-description', 'q2-problem-transformation', 'q3-ideal-customer',
-  'q4-competitors', 'q5-brand-personality', 'q6-positioning',
-  'q7-decision-maker', 'q7-decision-maker-other', 'q8-brands-admired',
+  'q3b-customer-desire', 'q4-competitors', 'q5-brand-personality', 'q6-positioning',
+  'q-launch-context', 'q7-decision-maker', 'q7-decision-maker-other', 'q8-brands-admired',
   'q9-color', 'q10-colors-to-avoid', 'q11-aesthetic', 'q11-aesthetic-description',
   'q12-existing-assets', 'q13-deliverables', 'q14-budget',
   'q15-inspiration-refs', 'q16-anything-else'

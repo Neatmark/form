@@ -1,12 +1,9 @@
-const processForm = require('./process-form');
+/**
+ * submit-form.js
+ * ──────────────
+ * Legacy endpoint kept for backward compatibility.
+ * All logic now lives in submit.js — this is a thin pass-through.
+ */
 
-exports.handler = async (event, context) => {
-  if (event.httpMethod !== 'POST') {
-    return {
-      statusCode: 405,
-      body: 'Method Not Allowed'
-    };
-  }
-
-  return processForm.handler(event, context);
-};
+const { handler } = require('./submit');
+exports.handler = handler;

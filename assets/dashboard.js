@@ -1987,7 +1987,7 @@ async function saveEditedSubmission() {
     payload.__editedBy = payload.__editedBy || newHistoryEntry.editedBy;
     payload.editedBy = payload.__editedBy;
 
-    const response = await fetch('/.netlify/functions/submit-form', {
+    const response = await fetch('/.netlify/functions/submit', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
