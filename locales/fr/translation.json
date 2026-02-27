@@ -200,6 +200,16 @@
     },
     "editMode": {
       "banner": "Vous modifiez une soumission précédente. Effectuez vos modifications et cliquez sur Enregistrer."
+    },
+    "nav": {
+      "back": "Retour",
+      "next": "Suivant"
+    },
+    "steps": {
+      "step1": "Vos infos",
+      "step2": "Fondation",
+      "step3": "Visuel",
+      "step4": "Projet"
     }
   },
   "modal": {
