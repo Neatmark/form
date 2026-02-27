@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" media="(prefers-color-scheme: dark)"  content="#005560">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#e6fcf8">
 <meta name="robots" content="noindex, nofollow">
 <title>Neatmark Client Form</title>
 
@@ -19,19 +22,13 @@
 <meta property="twitter:image" content="/assets/preview.png">
 
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
-<!-- No-flash theme: runs before CSS paint to set the correct theme immediately -->
 <script>
   (function() {
     var saved = localStorage.getItem('user-theme');
-    var theme, mode;
-    if (saved === 'dark' || saved === 'light') {
-      theme = saved; mode = saved;
-    } else {
-      theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-      mode = 'auto';
-    }
+    var theme = (saved === 'dark' || saved === 'light') ? saved
+      : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
     document.documentElement.setAttribute('data-theme', theme);
-    document.documentElement.setAttribute('data-theme-mode', mode);
+    document.documentElement.setAttribute('data-theme-mode', saved ? saved : 'auto');
   })();
 </script>
 <link href="https://fonts.googleapis.com/css2?family=Mona+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">

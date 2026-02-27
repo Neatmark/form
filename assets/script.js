@@ -1,71 +1,77 @@
-/* ── Theme system ───────────────────────────────────────────
-   Modes: 'light' | 'dark' | 'auto'
-   - 'auto'  → follows OS, never saves to localStorage
-   - 'light' / 'dark' → manual, saved to localStorage forever
-   data-theme-mode on <html> drives the button icon via CSS.
-──────────────────────────────────────────────────────────── */
+/* ── Theme ───────────────────────────────────────────────────────────────────
+   'auto'  → follows OS, never persisted
+   'dark'  → manual, persisted
+   'light' → manual, persisted
+────────────────────────────────────────────────────────────────────────── */
 
-const THEME_KEY    = 'user-theme';
-const THEME_COLORS = { dark: '#00373c', light: '#e6fcf8' };
+const THEME_STORAGE_KEY = 'user-theme';
+const THEME_COLORS = { dark: '#005560', light: '#e6fcf8' };
 
 function getOsTheme() {
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
-function getActiveMode() {
-  const saved = localStorage.getItem(THEME_KEY);
-  return (saved === 'dark' || saved === 'light') ? saved : 'auto';
+function getSavedMode() {
+  const s = localStorage.getItem(THEME_STORAGE_KEY);
+  return (s === 'dark' || s === 'light') ? s : 'auto';
 }
 
-function applyPageTheme(effectiveTheme, mode, save = false) {
-  const html = document.documentElement;
-  html.setAttribute('data-theme', effectiveTheme);
-  html.setAttribute('data-theme-mode', mode);
-  // Sync <meta name="theme-color">
-  let metaTheme = document.querySelector('meta[name="theme-color"]');
-  if (!metaTheme) {
-    metaTheme = document.createElement('meta');
-    metaTheme.name = 'theme-color';
-    document.head.appendChild(metaTheme);
+function resolveTheme(mode) {
+  return mode === 'auto' ? getOsTheme() : mode;
+}
+
+// Auto mode: media-query <meta> tags in <head> handle theme-color natively.
+// Manual mode: inject a plain (no media) tag — it takes precedence per spec.
+function applyThemeColor(mode) {
+  const id = 'theme-color-manual';
+  let manual = document.getElementById(id);
+  if (mode === 'auto') {
+    if (manual) manual.remove();
+  } else {
+    if (!manual) {
+      manual = document.createElement('meta');
+      manual.name = 'theme-color';
+      manual.id = id;
+      const ref = document.querySelector('meta[name="theme-color"][media]');
+      ref ? ref.after(manual) : document.head.appendChild(manual);
+    }
+    manual.content = THEME_COLORS[resolveTheme(mode)];
   }
-  metaTheme.content = THEME_COLORS[effectiveTheme];
+}
+
+function applyTheme(mode, save) {
+  const theme = resolveTheme(mode);
+  document.documentElement.setAttribute('data-theme', theme);
+  document.documentElement.setAttribute('data-theme-mode', mode);
+  applyThemeColor(mode);
   if (save) {
-    if (mode === 'auto') localStorage.removeItem(THEME_KEY);
-    else                 localStorage.setItem(THEME_KEY, mode);
+    if (mode === 'auto') localStorage.removeItem(THEME_STORAGE_KEY);
+    else localStorage.setItem(THEME_STORAGE_KEY, mode);
   }
-  syncThemeDropdown(mode);
-}
-
-function selectThemeMode(mode) {
-  const effectiveTheme = (mode === 'auto') ? getOsTheme() : mode;
-  applyPageTheme(effectiveTheme, mode, true);
-}
-
-// Sync dropdown checkmarks to the current mode
-function syncThemeDropdown(mode) {
   const menu = document.getElementById('themeMenu');
-  if (!menu) return;
-  menu.querySelectorAll('li[data-theme-option]').forEach(li => {
-    li.setAttribute('aria-selected', li.getAttribute('data-theme-option') === mode ? 'true' : 'false');
-  });
+  if (menu) {
+    menu.querySelectorAll('li[data-theme-option]').forEach(li => {
+      li.setAttribute('aria-selected', li.dataset.themeOption === mode ? 'true' : 'false');
+    });
+  }
 }
 
-// On load: apply theme + sync meta tag (data-theme-mode already set by inline script)
-(function () {
-  const mode          = getActiveMode();
-  const effectiveTheme = mode === 'auto' ? getOsTheme() : mode;
-  applyPageTheme(effectiveTheme, mode, false);
-})();
+function selectThemeMode(mode) { applyTheme(mode, true); }
 
-// OS change — only respected when in auto mode
-window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-  if (getActiveMode() === 'auto') {
-    applyPageTheme(e.matches ? 'dark' : 'light', 'auto', false);
-  }
+// Init
+applyTheme(getSavedMode(), false);
+
+// Follow OS changes in auto mode
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+  if (getSavedMode() === 'auto') applyTheme('auto', false);
 });
 
-// Kept for backwards compat (called by updateThemeToggleIcon refs below)
-function updateThemeToggleIcon() { syncThemeDropdown(getActiveMode()); }
+function updateThemeToggleIcon() {
+  const mode = getSavedMode();
+  document.getElementById('themeMenu')?.querySelectorAll('li[data-theme-option]').forEach(li => {
+    li.setAttribute('aria-selected', li.dataset.themeOption === mode ? 'true' : 'false');
+  });
+}
 
 // Custom branded alert popup — replaces native alert()
 function showAlert(message, type = 'success') {
@@ -390,7 +396,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (e.key === 'Escape') closeThemeMenu();
     });
   }
-  syncThemeDropdown(getActiveMode());
+  updateThemeToggleIcon();
 
   /* ── Language dropdown ────────────────────────────── */
   const langToggle  = document.getElementById('langToggle');
