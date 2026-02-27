@@ -34,7 +34,7 @@ html[lang="ar"] select {
   --text-lo:hsl(174, 36%, 50%);
   --pill-bg:#006d77;
   --pill-text:#e6fcf8;
-  --btn-bg:#617a7c;
+  --btn-bg:#40969c;
   --btn-text:#e6fcf8;
   --input-bg:rgba(0,69,78,0.8);
   --input-border:rgba(131,197,190,0.22);
@@ -829,7 +829,7 @@ textarea:focus, input[type="text"]:focus, select:focus { border-color: var(--inp
 
 .submit-btn {
   background: var(--btn-bg);
-  color: var(--btn-text);
+  color: hsl(175.59deg 5% 95%);
   border: none;
   border-radius: 999px;
   font-family: 'Mona Sans', sans-serif;
@@ -1263,14 +1263,14 @@ html[dir="rtl"] textarea {
 }
 
 /* ── RTL: q-card header row ──────────────────────────────────────
-   The q-num badge should stay on the left (visual end in Arabic) */
+   In Arabic the q-num badge sits on the right (the visual start in RTL) */
 html[dir="rtl"] .q-header {
   flex-direction: row-reverse;
 }
 
 html[dir="rtl"] .q-num {
-  margin-left: 0;
-  margin-right: auto;
+  margin-right: 0;
+  margin-left: auto;
 }
 
 /* ── Custom Alert / Toast Popup ── */

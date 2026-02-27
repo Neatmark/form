@@ -31,7 +31,7 @@
       "email": "البريد الإلكتروني",
       "emailPlaceholder": "your@email.com",
       "website": "الموقع الإلكتروني",
-      "websitePlaceholder": "https://موقعك.com",
+      "websitePlaceholder": "https://yourwebsite.com",
       "deliveryDateOptions": {
         "select": "اختر إطارًا زمنيًا",
         "asap": "في أسرع وقت ممكن",
