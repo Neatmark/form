@@ -8,16 +8,16 @@
 
 [functions]
   node_bundler = "esbuild"
-  external_node_modules = ["sharp", "pdf-lib", "@pdf-lib/fontkit", "docx", "puppeteer-core", "@sparticuz/chromium"]
+  external_node_modules = ["sharp", "pdf-lib", "@pdf-lib/fontkit", "docx"]
   included_files = ["assets/Norsal.ttf", "assets/Amiri-Regular.ttf"]
 
-# Arabic PDF generation via Puppeteer needs more than the default 10s
+# PDF/DOCX generation via pdf-lib is fast — 10s is plenty
 [functions."submit"]
-  timeout = 26
+  timeout = 10
 
-# PDF/DOCX generation + two email API calls — needs the same headroom
+# PDF/DOCX generation + two email API calls
 [functions."send-emails"]
-  timeout = 26
+  timeout = 20
 
 # Netlify Identity configuration
 [identity]

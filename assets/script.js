@@ -251,6 +251,11 @@ async function submitToSupabase(formData) {
 
 const DRAFT_KEY = 'brand-intake-draft';
 
+// Set synchronously (before any await) the moment a ?token= is detected.
+// Checked by loadDraft, showDraftBanner, and the autosave handler so none
+// of them fire while the client is in token-based edit mode.
+let isEditMode = false;
+
 function saveDraft(form) {
   const data = {};
   const formData = new FormData(form);
@@ -733,6 +738,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const editToken = urlParams.get('token');
     if (!editToken) return;
 
+    // ── Set edit mode flag synchronously ────────────────────────────────────
+    // This must happen before any await so that the draft banner / autosave
+    // code below (which runs synchronously while this async function awaits)
+    // already sees isEditMode = true and skips showing the draft popup.
+    isEditMode = true;
+
     // ── Security: strip token from URL immediately ──────────────────────────
     // Do this synchronously before any async operation so the token is never
     // sitting in the browser history entry during network calls, CDN logs, or
@@ -883,8 +894,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Restore saved draft
-  const hasDraft = loadDraft(form);
+  // Restore saved draft — skipped entirely in token-based edit mode.
+  // In edit mode the form is pre-filled from Supabase, not localStorage,
+  // and the draft banner must never appear while the client is editing.
+  const hasDraft = !isEditMode && loadDraft(form);
   showDraftBanner(hasDraft);
 
   // Sync custom selects after draft restoration
@@ -905,6 +918,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // Auto-save: single debounced listener handles both input and change
   let saveTimer = null;
   function scheduleSave() {
+    // Never autosave to localStorage during token-based edit mode —
+    // the client's changes go directly to Supabase on submit.
+    if (isEditMode) return;
     clearTimeout(saveTimer);
     saveTimer = setTimeout(() => saveDraft(form), 400);
   }
