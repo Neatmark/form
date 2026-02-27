@@ -1,3 +1,15 @@
+/**
+ * Dashboard translation helper.
+ * Falls back to the English default when i18n is not loaded or key is missing.
+ * Usage: dt('dashboard.loading', 'Loading…')
+ *        dt('dashboard.showing', 'Showing {{count}} submissions', { count: 5 })
+ */
+function dt(key, fallback, vars) {
+  if (!window.i18n) return fallback || '';
+  const result = window.i18n.t(key, vars !== undefined ? vars : (fallback || ''));
+  return result || fallback || '';
+}
+
 let allSubmissions = [];
 let sortAscending = false;
 let sortMode = 'date-desc'; // date-desc | date-asc | name-asc | name-desc | delivery-asc | delivery-desc
@@ -78,7 +90,7 @@ function parseHistoryDate(entry, contextLabel) {
 
 function toFriendlyDate(dateValue) {
   if (!(dateValue instanceof Date) || Number.isNaN(dateValue.getTime())) {
-    return 'Unknown date';
+    return dt('detail.history.unknownDate', 'Unknown date');
   }
 
   if (dayjsLib) {
@@ -99,7 +111,7 @@ function toFriendlyDate(dateValue) {
 
 function toRelativeDate(dateValue) {
   if (!(dateValue instanceof Date) || Number.isNaN(dateValue.getTime())) {
-    return 'Unknown time';
+    return dt('detail.history.unknownTime', 'Unknown time');
   }
 
   if (dayjsLib && dayjsLib().isValid()) {
@@ -114,7 +126,7 @@ function toRelativeDate(dateValue) {
   const absSeconds = Math.abs(diffSeconds);
 
   if (absSeconds < 10) {
-    return 'just now';
+    return dt('detail.history.justNow', 'just now');
   }
 
   const steps = [
@@ -175,7 +187,7 @@ function renderHistoryTimeline(historyEntries, options = {}) {
   if (isLoading) {
     return `
       <div class="response-item history-item">
-        <div class="response-label">History</div>
+        <div class="response-label">${dt('detail.history.label', 'History')}</div>
         <div class="history-skeleton" aria-hidden="true">
           <div class="history-skeleton-line"></div>
           <div class="history-skeleton-line short"></div>
@@ -189,8 +201,8 @@ function renderHistoryTimeline(historyEntries, options = {}) {
   if (timeline.length === 0) {
     return `
       <div class="response-item history-item">
-        <div class="response-label">History</div>
-        <div class="history-empty">No history data available.</div>
+        <div class="response-label">${dt('detail.history.label', 'History')}</div>
+        <div class="history-empty">${dt('detail.history.noData', 'No history data available.')}</div>
       </div>
     `;
   }
@@ -199,12 +211,12 @@ function renderHistoryTimeline(historyEntries, options = {}) {
   const itemsMarkup = timeline.map((entry, index) => {
     const isOriginal = entry.label === 'original';
     const isLatest = index === latestIndex;
-    const badgeText = isOriginal ? 'Original Submission' : 'Edited';
+    const badgeText = isOriginal ? dt('history.originalSubmission', 'Original Submission') : dt('history.edited', 'Edited');
     const editedByText = entry.editedBy === 'admin'
-      ? 'By Admin'
+      ? dt('history.byAdmin', 'By Admin')
       : entry.editedBy === 'client'
-        ? 'By Client'
-        : 'Unknown';
+        ? dt('history.byClient', 'By Client')
+        : dt('detail.history.unknown', 'Unknown');
     const editedByIconName = entry.editedBy === 'admin'
       ? 'shield'
       : entry.editedBy === 'client'
@@ -221,7 +233,7 @@ function renderHistoryTimeline(historyEntries, options = {}) {
               <span aria-hidden="true"><i data-lucide="${editedByIconName}" class="icon icon-btn"></i></span>
               <span>${editedByText}</span>
             </span>
-            ${isLatest ? '<span class="history-latest-tag">Latest</span>' : ''}
+            ${isLatest ? `<span class="history-latest-tag">${dt('detail.history.latestTag', 'Latest')}</span>` : ''}
           </div>
           <div class="history-date">${escapeHtml(toFriendlyDate(entry.parsedDate))}</div>
           <div class="history-relative">${escapeHtml(toRelativeDate(entry.parsedDate))}</div>
@@ -236,7 +248,7 @@ function renderHistoryTimeline(historyEntries, options = {}) {
 
   return `
     <div class="response-item history-item">
-      <div class="response-label">History</div>
+      <div class="response-label">${dt('detail.history.label', 'History')}</div>
       <div class="history-timeline-wrap">
         <ol class="history-timeline">${itemsMarkup}</ol>
         ${singleEntryNote}
@@ -406,7 +418,7 @@ function showDashboard() {
 
 async function loadSubmissions() {
   const container = document.getElementById('submissionsContainer');
-  container.innerHTML = '<div class="loading">Loading submissions...</div>';
+  container.innerHTML = `<div class="loading">${dt('dashboard.loading', 'Loading submissions...')}</div>`;
 
   try {
     let token = null;
@@ -446,14 +458,14 @@ async function loadSubmissions() {
     console.error('Error loading submissions:', error);
     const message = error instanceof Error ? error.message : 'Failed to load submissions';
     if (message === 'Forbidden') {
-      container.innerHTML = '<div class="empty"><strong>Access denied.</strong> Ask the site admin to add your email to ADMIN_EMAILS.</div>';
+      container.innerHTML = `<div class="empty"><strong>${dt('dashboard.error.accessDenied', 'Access denied. Ask the site admin to add your email to ADMIN_EMAILS.')}</strong></div>`;
       return;
     }
     if (message === 'Unauthorized') {
-      container.innerHTML = '<div class="empty"><strong>Your session expired.</strong> Please log in again.</div>';
+      container.innerHTML = `<div class="empty"><strong>${dt('dashboard.error.sessionExpired', 'Your session expired. Please log in again.')}</strong></div>`;
       return;
     }
-    container.innerHTML = '<div class="empty"><strong>Failed to load submissions.</strong> Please try again.</div>';
+    container.innerHTML = `<div class="empty"><strong>${dt('dashboard.error.failedToLoad', 'Failed to load submissions. Please try again.')}</strong></div>`;
   }
 }
 
@@ -505,10 +517,10 @@ function updateStats() {
  */
 function renderQ6SpectrumGroup(q6Values, isEditMode = false) {
   const spectrumDefs = [
-    { key: 'q6-playful-serious', leftLabel: 'Playful', rightLabel: 'Serious' },
-    { key: 'q6-minimalist-expressive', leftLabel: 'Minimalist', rightLabel: 'Expressive' },
-    { key: 'q6-approachable-authoritative', leftLabel: 'Approachable', rightLabel: 'Authoritative' },
-    { key: 'q6-classic-contemporary', leftLabel: 'Classic', rightLabel: 'Contemporary' }
+    { key: 'q6-playful-serious', leftLabel: dt('detail.q6.playful', 'Playful'), rightLabel: dt('detail.q6.serious', 'Serious') },
+    { key: 'q6-minimalist-expressive', leftLabel: dt('detail.q6.minimalist', 'Minimalist'), rightLabel: dt('detail.q6.expressive', 'Expressive') },
+    { key: 'q6-approachable-authoritative', leftLabel: dt('detail.q6.approachable', 'Approachable'), rightLabel: dt('detail.q6.authoritative', 'Authoritative') },
+    { key: 'q6-classic-contemporary', leftLabel: dt('detail.q6.classic', 'Classic'), rightLabel: dt('detail.q6.contemporary', 'Contemporary') }
   ];
 
   if (isEditMode) {
@@ -532,8 +544,8 @@ function renderQ6SpectrumGroup(q6Values, isEditMode = false) {
 
     return `
       <article class="qa-card q6-spectrum-card">
-        <div class="qa-label-row"><span class="qa-num-badge">06</span><span class="qa-label-text">Personality Spectrums</span></div>
-        <div class="q6-hint">1 = far left, 5 = far right</div>
+        <div class="qa-label-row"><span class="qa-num-badge">06</span><span class="qa-label-text">${dt('detail.q6.title', 'Personality Spectrums')}</span></div>
+        <div class="q6-hint">${dt('detail.q6.hint', '1 = far left, 5 = far right')}</div>
         <div class="q6-spectrums q6-edit-spectrums">${editRows}</div>
       </article>
     `;
@@ -561,8 +573,8 @@ function renderQ6SpectrumGroup(q6Values, isEditMode = false) {
 
   return `
     <article class="qa-card q6-spectrum-card">
-      <div class="qa-label-row"><span class="qa-num-badge">06</span><span class="qa-label-text">Personality Spectrums</span></div>
-      <div class="q6-hint">1 = far left, 5 = far right</div>
+      <div class="qa-label-row"><span class="qa-num-badge">06</span><span class="qa-label-text">${dt('detail.q6.title', 'Personality Spectrums')}</span></div>
+      <div class="q6-hint">${dt('detail.q6.hint', '1 = far left, 5 = far right')}</div>
       <div class="q6-spectrums">
         ${spectrumRowsHtml}
       </div>
@@ -583,7 +595,7 @@ function getDisplayValue(rawValue) {
 function formatDeliveryDateForOverview(rawValue) {
   const value = getDisplayValue(rawValue);
   if (!value) {
-    return '<span class="overview-empty-badge">Not specified</span>';
+    return `<span class="overview-empty-badge">${dt('detail.overview.notSpecified', 'Not specified')}</span>`;
   }
 
   const parsed = new Date(value);
@@ -714,6 +726,56 @@ const QUESTIONNAIRE_DISPLAY_NUM = {
 };
 
 // Human-readable labels for the dashboard cards
+function getFieldLabel(key) {
+  const fallbacks = {
+    'q1-business-description':  'Business Description',
+    'q2-problem-transformation':'Before and After',
+    'q3-ideal-customer':        'Ideal Client',
+    'q3b-customer-desire':      'Client Trigger',
+    'q4-competitors':           'Competitors',
+    'q5-brand-personality':     'Brand Personality',
+    'q6-positioning':           'Positioning Statement',
+    'q-launch-context':         'Launch Context',
+    'q8-brands-admired':        'Admired Brands',
+    'q9-color':                 'Color Directions',
+    'q10-colors-to-avoid':      'Colors to Avoid',
+    'q11-aesthetic':            'Aesthetic Direction',
+    'q11-aesthetic-description':'Aesthetic Notes',
+    'q13-deliverables':         'Deliverables',
+    'q14-budget':               'Budget Approach',
+    'q15-inspiration-refs':     'Inspiration Images',
+    'q7-decision-maker':        'Decision Maker',
+    'q7-decision-maker-other':  'Decision Maker (Other)',
+    'q12-existing-assets':      'Existing Assets',
+    'delivery-date':            'Delivery Timeframe',
+    'q16-anything-else':        'Past Experience and Fears',
+  };
+  const i18nKeys = {
+    'q1-business-description':  'detail.questionnaire.labels.q1',
+    'q2-problem-transformation':'detail.questionnaire.labels.q2',
+    'q3-ideal-customer':        'detail.questionnaire.labels.q3',
+    'q3b-customer-desire':      'detail.questionnaire.labels.q3b',
+    'q4-competitors':           'detail.questionnaire.labels.q4',
+    'q5-brand-personality':     'detail.questionnaire.labels.q5',
+    'q6-positioning':           'detail.questionnaire.labels.q6',
+    'q-launch-context':         'detail.questionnaire.labels.qlaunch',
+    'q8-brands-admired':        'detail.questionnaire.labels.q8',
+    'q9-color':                 'detail.questionnaire.labels.q9',
+    'q10-colors-to-avoid':      'detail.questionnaire.labels.q10',
+    'q11-aesthetic':            'detail.questionnaire.labels.q11',
+    'q11-aesthetic-description':'detail.questionnaire.labels.q11b',
+    'q13-deliverables':         'detail.questionnaire.labels.q13',
+    'q14-budget':               'detail.questionnaire.labels.q14',
+    'q15-inspiration-refs':     'detail.questionnaire.labels.q15',
+    'q7-decision-maker':        'detail.questionnaire.labels.q7',
+    'q7-decision-maker-other':  'detail.questionnaire.labels.q7b',
+    'q12-existing-assets':      'detail.questionnaire.labels.q12',
+    'delivery-date':            'detail.questionnaire.labels.delivery',
+    'q16-anything-else':        'detail.questionnaire.labels.q16',
+  };
+  return dt(i18nKeys[key] || '', fallbacks[key] || key);
+}
+// Legacy compatibility shim — used only for export functions which do their own label logic
 const QUESTIONNAIRE_FIELD_LABELS = {
   'q1-business-description':  'Business Description',
   'q2-problem-transformation':'Before and After',
@@ -765,12 +827,12 @@ function updateExportButtonLabel() {
 
   const visibleCount = currentRenderedSubmissions.length;
   if (hasActiveFilters()) {
-    labelEl.textContent = `Export filtered (${visibleCount}) ▾`;
+    labelEl.textContent = dt('dashboard.export.filtered', 'Export filtered ({{count}}) ▾', { count: visibleCount });
     if (countEl) countEl.textContent = `(${visibleCount}) ▾`;
     return;
   }
 
-  labelEl.textContent = `Export visible (${visibleCount}) ▾`;
+  labelEl.textContent = dt('dashboard.export.visible', 'Export visible ({{count}}) ▾', { count: visibleCount });
   if (countEl) countEl.textContent = `(${visibleCount}) ▾`;
 }
 
@@ -856,16 +918,16 @@ function isValidEmail(value) {
 function validateEditData(data) {
   const errors = {};
   if (!getDisplayValue(data['client-name'])) {
-    errors['client-name'] = 'Client name is required.';
+    errors['client-name'] = dt('detail.edit.validation.clientName', 'Client name is required.');
   }
   if (!getDisplayValue(data['brand-name'])) {
-    errors['brand-name'] = 'Brand name is required.';
+    errors['brand-name'] = dt('detail.edit.validation.brandName', 'Brand name is required.');
   }
   const email = getDisplayValue(data.email);
   if (!email) {
-    errors.email = 'Email is required.';
+    errors.email = dt('detail.edit.validation.email', 'Email is required.');
   } else if (!isValidEmail(email)) {
-    errors.email = 'Please enter a valid email address.';
+    errors.email = dt('detail.edit.validation.emailInvalid', 'Please enter a valid email address.');
   }
   return errors;
 }
@@ -945,7 +1007,7 @@ async function setSubmissionStatus(submissionId, status) {
   } catch (error) {
     console.error('setSubmissionStatus failed:', error);
     const msg = error instanceof Error ? error.message : String(error);
-    alert('Failed to update status: ' + msg + '\n\nMake sure you have run the SQL migration to add the \"status\" column.');
+    alert(dt('dashboard.alert.statusFailed', 'Failed to update status: {{error}}\n\nMake sure you have run the SQL migration to add the "status" column.', { error: msg }));
   }
 }
 
@@ -960,8 +1022,8 @@ function setModalActionButtons(mode) {
     if (modalEditIconBtn) modalEditIconBtn.style.display = 'none';
     if (modalDeleteIconBtn) modalDeleteIconBtn.style.display = 'none';
     modalActions.innerHTML = `
-      <button class="btn" id="cancelEditBtn">Cancel</button>
-      <button class="btn btn-primary" id="saveEditBtn">Save Changes</button>
+      <button class="btn" id="cancelEditBtn">${dt('detail.edit.cancel', 'Cancel')}</button>
+      <button class="btn btn-primary" id="saveEditBtn">${dt('detail.edit.save', 'Save Changes')}</button>
     `;
 
     // Add cancel icon button to header
@@ -971,7 +1033,7 @@ function setModalActionButtons(mode) {
       cancelIconBtn = document.createElement('button');
       cancelIconBtn.id = 'modalCancelIconBtn';
       cancelIconBtn.className = 'modal-icon-btn modal-cancel-icon-btn';
-      cancelIconBtn.setAttribute('aria-label', 'Cancel editing');
+      cancelIconBtn.setAttribute('aria-label', dt('detail.cancelEdit', 'Cancel editing'));
       cancelIconBtn.innerHTML = '<i data-lucide="rotate-ccw" class="icon icon-btn"></i>';
       const closeBtn = document.getElementById('modalCloseBtn');
       closeBtn?.parentNode?.insertBefore(cancelIconBtn, closeBtn);
@@ -1017,9 +1079,9 @@ function renderSubmissions(submissions) {
         <div class="empty-state-icon" aria-hidden="true">
           <i data-lucide="inbox" class="icon icon-stat"></i>
         </div>
-        <div class="empty-state-title">No submissions found</div>
-        <div class="empty-state-copy">Try adjusting your search or date filter.</div>
-        <button class="btn empty-state-action" id="clearFiltersBtn">Clear filters</button>
+        <div class="empty-state-title">${dt('dashboard.noSubmissions.title', 'No submissions found')}</div>
+        <div class="empty-state-copy">${dt('dashboard.noSubmissions.message', 'Try adjusting your search or date filter.')}</div>
+        <button class="btn empty-state-action" id="clearFiltersBtn">${dt('dashboard.clearFilters', 'Clear filters')}</button>
       </div>
     `;
     const clearFiltersBtn = document.getElementById('clearFiltersBtn');
@@ -1038,7 +1100,7 @@ function renderSubmissions(submissions) {
         });
         const allOpt = dfMenu.querySelector('[data-value="all"]');
         if (allOpt) { allOpt.classList.add('active'); allOpt.setAttribute('aria-selected', 'true'); }
-        if (dfLabel) dfLabel.textContent = 'All dates';
+        if (dfLabel) dfLabel.textContent = dt('dashboard.toolbar.dateOptions.all', 'All dates');
       }
       applyCurrentFiltersAndRender();
     });
@@ -1057,11 +1119,11 @@ function renderSubmissions(submissions) {
     const clientName = escapeHtml(data['client-name'] || 'Unknown Client');
     const email = escapeHtml(data['email'] || 'N/A');
     const submissionStatus = String(data['status'] || 'pending').toLowerCase();
-    const statusLabel = submissionStatus === 'approved' ? 'Approved' : submissionStatus === 'rejected' ? 'Rejected' : 'Pending';
+    const statusLabel = submissionStatus === 'approved' ? dt('dashboard.status.approved', 'Approved') : submissionStatus === 'rejected' ? dt('dashboard.status.rejected', 'Rejected') : dt('dashboard.status.pending', 'Pending');
     const statusBadge = `<span class="status-badge ${submissionStatus}">${statusLabel}</span>`;
 
     const projectStatusRaw = String(data['project-status'] || '').toLowerCase();
-    const projectStatusLabels = { 'not-started': 'Not Started', 'in-progress': 'In Progress', 'done': 'Done', 'abandoned': 'Abandoned' };
+    const projectStatusLabels = { 'not-started': dt('dashboard.status.notStarted', 'Not Started'), 'in-progress': dt('dashboard.status.inProgress', 'In Progress'), 'done': dt('dashboard.status.done', 'Done'), 'abandoned': dt('dashboard.status.abandoned', 'Abandoned') };
     const projectStatusBadge = projectStatusRaw && projectStatusLabels[projectStatusRaw]
       ? `<span class="status-badge project-status-badge project-status-${projectStatusRaw}">${projectStatusLabels[projectStatusRaw]}</span>`
       : '';
@@ -1072,13 +1134,13 @@ function renderSubmissions(submissions) {
     let deliveryLabel;
     if (agreedDeliveryRaw) {
       deliveryDisplay = escapeHtml(agreedDeliveryRaw);
-      deliveryLabel = 'Agreed';
+      deliveryLabel = dt('dashboard.card.agreed', 'Agreed');
     } else if (deliveryRaw) {
-      deliveryDisplay = `${escapeHtml(deliveryRaw)} <span class="delivery-proposed-tag">Proposed</span>`;
-      deliveryLabel = 'Delivery';
+      deliveryDisplay = `${escapeHtml(deliveryRaw)} <span class="delivery-proposed-tag">${dt('dashboard.card.proposed', 'Proposed')}</span>`;
+      deliveryLabel = dt('dashboard.card.delivery', 'Delivery');
     } else {
-      deliveryDisplay = '<span class="delivery-badge-not-set">Not set</span>';
-      deliveryLabel = 'Delivery';
+      deliveryDisplay = `<span class="delivery-badge-not-set">${dt('dashboard.card.notSet', 'Not set')}</span>`;
+      deliveryLabel = dt('dashboard.card.delivery', 'Delivery');
     }
     const avatarInitials = escapeHtml(buildBrandInitials(data['brand-name'] || 'Unknown Brand'));
     const logoRef = getLogoRefFromData(data);
@@ -1124,12 +1186,12 @@ function renderSubmissions(submissions) {
           <div class="submission-date" title="${relativeTime}">${dateStr} · ${timeStr}</div>
           <button class="card-edit-btn" aria-label="Edit submission ${brandName}">
             <i data-lucide="pen" class="icon icon-btn"></i>
-            <span class="card-btn-label">Edit</span>
+            <span class="card-btn-label">${dt('dashboard.card.edit', 'Edit')}</span>
           </button>
           <div class="card-export">
             <button class="card-export-btn" aria-haspopup="menu" aria-expanded="${exportMenuOpen ? 'true' : 'false'}" aria-label="Export submission ${brandName}">
               <i data-lucide="download" class="icon icon-btn"></i>
-              <span class="card-btn-label">Export</span>
+              <span class="card-btn-label">${dt('dashboard.card.export', 'Export')}</span>
             </button>
             <div class="card-export-menu${exportMenuOpen ? ' open' : ''}" role="menu">
               <button class="card-export-option" data-format="md" role="menuitem">Markdown (.md)</button>
@@ -1142,7 +1204,7 @@ function renderSubmissions(submissions) {
       </div>
       <div class="submission-details">
         <div class="detail-item">
-          <div class="detail-label">Email</div>
+          <div class="detail-label">${dt('dashboard.card.email', 'Email')}</div>
           <div class="detail-value">${email}</div>
         </div>
         <div class="detail-item">
@@ -1244,8 +1306,8 @@ function updateSelectionToolbar() {
 
   if (selectionInfo) {
     selectionInfo.textContent = selectedCount > 0
-      ? `${selectedCount} selected`
-      : `Showing ${currentRenderedSubmissions.length} submissions`;
+      ? dt('dashboard.selected', '{{count}} selected', { count: selectedCount })
+      : dt('dashboard.showing', 'Showing {{count}} submissions', { count: currentRenderedSubmissions.length });
   }
 
   if (clearSelectionBtn) {
@@ -1257,7 +1319,7 @@ function updateSelectionToolbar() {
   }
 
   if (selectVisibleBtn) {
-    selectVisibleBtn.title = allVisibleSelected ? 'Deselect Visible' : 'Select Visible';
+    selectVisibleBtn.title = allVisibleSelected ? dt('dashboard.select.deselect', 'Deselect Visible') : dt('dashboard.select.visible', 'Select Visible');
     selectVisibleBtn.disabled = visibleIds.length === 0;
   }
 }
@@ -1288,7 +1350,7 @@ async function deleteSelectedSubmissions() {
     return;
   }
 
-  if (!confirm(`Delete ${selectedIds.length} selected submission(s)? This action cannot be undone.`)) {
+  if (!confirm(dt('dashboard.confirm.deleteSelected', 'Delete {{count}} selected submission(s)? This action cannot be undone.', { count: selectedIds.length }))) {
     return;
   }
 
@@ -1309,7 +1371,7 @@ async function deleteSelectedSubmissions() {
 
     if (deleteBtn) {
       deleteBtn.disabled = true;
-      deleteBtn.textContent = 'Deleting...';
+      deleteBtn.textContent = dt('dashboard.alert.deleting', 'Deleting...');
     }
 
     let deletedCount = 0;
@@ -1322,7 +1384,7 @@ async function deleteSelectedSubmissions() {
     }
 
     if (deletedCount === 0) {
-      alert('Failed to delete selected submissions. Please try again.');
+      alert(dt('dashboard.alert.failedDeleteSelected', 'Failed to delete selected submissions. Please try again.'));
       return;
     }
 
@@ -1331,13 +1393,13 @@ async function deleteSelectedSubmissions() {
     await loadSubmissions();
 
     if (failedCount > 0) {
-      alert(`Deleted ${deletedCount} submission(s). ${failedCount} failed.`);
+      alert(dt('dashboard.alert.deletedWithFails', 'Deleted {{count}} submission(s). {{failed}} failed.', { count: deletedCount, failed: failedCount }));
     } else {
-      alert(`Deleted ${deletedCount} submission(s) successfully.`);
+      alert(dt('dashboard.alert.deletedSuccess', 'Deleted {{count}} submission(s) successfully.', { count: deletedCount }));
     }
   } catch (error) {
     console.error('Error deleting selected submissions:', error);
-    alert('Failed to delete selected submissions. Please try again.');
+    alert(dt('dashboard.alert.failedDeleteSelected', 'Failed to delete selected submissions. Please try again.'));
   } finally {
     if (deleteBtn) {
       deleteBtn.textContent = originalBtnText;
@@ -1421,14 +1483,14 @@ function renderDetailPanel() {
   if (isEditingSubmission) {
     overviewSection = `
       <section class="detail-section">
-        <div class="edit-banner">Editing submission, changes are not saved yet</div>
-        ${sectionHeader('list', 'Overview')}
+        <div class="edit-banner">${dt('detail.editBanner', 'Editing submission, changes are not saved yet')}</div>
+        ${sectionHeader('list', dt('detail.sections.overview', 'Overview'))}
         <div class="logo-upload-wrap">
           <div class="logo-upload-row">
             <label class="logo-dropzone" id="logoDropzone" tabindex="0" aria-label="Upload brand logo">
               <input id="logoFileInput" type="file" accept=".png,.jpg,.jpeg,.svg,.webp,image/png,image/jpeg,image/svg+xml,image/webp" hidden />
               <i data-lucide="upload" class="icon" style="width:15px;height:15px;margin-right:6px;"></i>
-              <span>Drop logo or click to upload</span>
+              <span>${dt('detail.edit.logoUpload', 'Drop logo or click to upload')}</span>
             </label>
             <button class="modal-icon-btn logo-remove-btn" id="removeLogoBtn" type="button" aria-label="Remove logo" title="Remove logo">
               <i data-lucide="trash" class="icon icon-btn"></i>
@@ -1437,19 +1499,19 @@ function renderDetailPanel() {
           <div class="edit-error" id="logoUploadError"></div>
         </div>
         <div class="overview-grid">
-          ${renderEditableField('Client Name', 'client-name', 'text')}
-          ${renderEditableField('Email', 'email', 'email')}
-          ${renderEditableField('Brand Name', 'brand-name', 'text')}
+          ${renderEditableField(dt('detail.overview.clientName', 'Client Name'), 'client-name', 'text')}
+          ${renderEditableField(dt('detail.overview.email', 'Email'), 'email', 'email')}
+          ${renderEditableField(dt('detail.overview.brandName', 'Brand Name'), 'brand-name', 'text')}
           <div class="overview-card edit-field">
-            <label class="overview-label" for="edit-delivery-date">Form Delivery Date</label>
+            <label class="overview-label" for="edit-delivery-date">${dt('detail.overview.formDelivery', 'Form Delivery Date')}</label>
             <div class="custom-delivery-select" id="editDeliveryDropdown">
               <button type="button" class="edit-input edit-delivery-btn" id="editDeliveryBtn" aria-haspopup="listbox" aria-expanded="false">
-                <span class="edit-delivery-label" id="editDeliveryLabel">${escapeHtml(data['delivery-date'] || 'Select a timeframe')}</span>
+                <span class="edit-delivery-label" id="editDeliveryLabel">${escapeHtml(data['delivery-date'] || dt('detail.edit.selectTimeframe', 'Select a timeframe'))}</span>
                 <i data-lucide="chevron-down" class="icon edit-delivery-caret"></i>
               </button>
               <div class="edit-delivery-menu" id="editDeliveryMenu" role="listbox">
-                <button class="edit-delivery-option${!data['delivery-date'] ? ' active' : ''}" data-value="" role="option">— Not set —</button>
-                <button class="edit-delivery-option${data['delivery-date'] === 'ASAP' ? ' active' : ''}" data-value="ASAP" role="option">ASAP (As Soon As Possible)</button>
+                <button class="edit-delivery-option${!data['delivery-date'] ? ' active' : ''}" data-value="" role="option">${dt('detail.edit.notSet', '— Not set —')}</button>
+                <button class="edit-delivery-option${data['delivery-date'] === 'ASAP' ? ' active' : ''}" data-value="ASAP" role="option">${dt('detail.edit.asap', 'ASAP (As Soon As Possible)')}</button>
                 <button class="edit-delivery-option${data['delivery-date'] === '2–4 weeks' ? ' active' : ''}" data-value="2–4 weeks" role="option">2–4 weeks</button>
                 <button class="edit-delivery-option${data['delivery-date'] === '1–2 months' ? ' active' : ''}" data-value="1–2 months" role="option">1–2 months</button>
                 <button class="edit-delivery-option${data['delivery-date'] === '3+ months' ? ' active' : ''}" data-value="3+ months" role="option">3+ months</button>
@@ -1457,36 +1519,36 @@ function renderDetailPanel() {
             </div>
           </div>
           <div class="overview-card edit-field">
-            <label class="overview-label" for="edit-agreed-delivery-date">Agreed Delivery Date</label>
+            <label class="overview-label" for="edit-agreed-delivery-date">${dt('detail.overview.agreedDelivery', 'Agreed Delivery Date')}</label>
             <input id="edit-agreed-delivery-date" class="edit-input" type="date" data-edit-key="agreed-delivery-date" value="${escapeHtml(normalizeDateInputValue(data['agreed-delivery-date']))}" />
           </div>
           <div class="overview-card edit-field">
-            <label class="overview-label">Submission Status</label>
+            <label class="overview-label">${dt('detail.overview.submissionStatus', 'Submission Status')}</label>
             <div class="custom-delivery-select" id="editSubmissionStatusDropdown">
               <button type="button" class="edit-input edit-delivery-btn" id="editSubmissionStatusBtn" aria-haspopup="listbox" aria-expanded="false">
-                <span class="edit-delivery-label" id="editSubmissionStatusLabel">${(function(){ const s = String(data['status'] || 'pending').toLowerCase(); return s === 'approved' ? 'Approved' : s === 'rejected' ? 'Rejected' : 'Pending'; })()}</span>
+                <span class="edit-delivery-label" id="editSubmissionStatusLabel">${(function(){ const s = String(data['status'] || 'pending').toLowerCase(); return s === 'approved' ? dt('dashboard.status.approved','Approved') : s === 'rejected' ? dt('dashboard.status.rejected','Rejected') : dt('dashboard.status.pending','Pending'); })()}</span>
                 <i data-lucide="chevron-down" class="icon edit-delivery-caret"></i>
               </button>
               <div class="edit-delivery-menu" id="editSubmissionStatusMenu" role="listbox">
-                <button class="edit-delivery-option submission-status-option submission-status-pending${(!data['status'] || data['status'] === 'pending') ? ' active' : ''}" data-value="pending" role="option">Pending</button>
-                <button class="edit-delivery-option submission-status-option submission-status-approved${data['status'] === 'approved' ? ' active' : ''}" data-value="approved" role="option">Approved</button>
-                <button class="edit-delivery-option submission-status-option submission-status-rejected${data['status'] === 'rejected' ? ' active' : ''}" data-value="rejected" role="option">Rejected</button>
+                <button class="edit-delivery-option submission-status-option submission-status-pending${(!data['status'] || data['status'] === 'pending') ? ' active' : ''}" data-value="pending" role="option">${dt('dashboard.status.pending','Pending')}</button>
+                <button class="edit-delivery-option submission-status-option submission-status-approved${data['status'] === 'approved' ? ' active' : ''}" data-value="approved" role="option">${dt('dashboard.status.approved','Approved')}</button>
+                <button class="edit-delivery-option submission-status-option submission-status-rejected${data['status'] === 'rejected' ? ' active' : ''}" data-value="rejected" role="option">${dt('dashboard.status.rejected','Rejected')}</button>
               </div>
             </div>
           </div>
           <div class="overview-card edit-field">
-            <label class="overview-label">Project Status</label>
+            <label class="overview-label">${dt('detail.overview.projectStatus', 'Project Status')}</label>
             <div class="custom-delivery-select" id="editProjectStatusDropdown">
               <button type="button" class="edit-input edit-delivery-btn" id="editProjectStatusBtn" aria-haspopup="listbox" aria-expanded="false">
-                <span class="edit-delivery-label" id="editProjectStatusLabel">${(function(){ const ps = String(data['project-status'] || ''); const lbs = {'not-started':'Not Started','in-progress':'In Progress','done':'Done','abandoned':'Abandoned'}; return ps && lbs[ps] ? lbs[ps] : '— Not set —'; })()}</span>
+                <span class="edit-delivery-label" id="editProjectStatusLabel">${(function(){ const ps = String(data['project-status'] || ''); const lbs = {'not-started': dt('dashboard.status.notStarted','Not Started'),'in-progress': dt('dashboard.status.inProgress','In Progress'),'done': dt('dashboard.status.done','Done'),'abandoned': dt('dashboard.status.abandoned','Abandoned')}; return ps && lbs[ps] ? lbs[ps] : dt('detail.edit.notSet','— Not set —'); })()}</span>
                 <i data-lucide="chevron-down" class="icon edit-delivery-caret"></i>
               </button>
               <div class="edit-delivery-menu" id="editProjectStatusMenu" role="listbox">
-                <button class="edit-delivery-option${!data['project-status'] ? ' active' : ''}" data-value="" role="option">— Not set —</button>
-                <button class="edit-delivery-option project-status-option project-status-not-started${data['project-status'] === 'not-started' ? ' active' : ''}" data-value="not-started" role="option">Not Started</button>
-                <button class="edit-delivery-option project-status-option project-status-in-progress${data['project-status'] === 'in-progress' ? ' active' : ''}" data-value="in-progress" role="option">In Progress</button>
-                <button class="edit-delivery-option project-status-option project-status-done${data['project-status'] === 'done' ? ' active' : ''}" data-value="done" role="option">Done</button>
-                <button class="edit-delivery-option project-status-option project-status-abandoned${data['project-status'] === 'abandoned' ? ' active' : ''}" data-value="abandoned" role="option">Abandoned</button>
+                <button class="edit-delivery-option${!data['project-status'] ? ' active' : ''}" data-value="" role="option">${dt('detail.edit.notSet','— Not set —')}</button>
+                <button class="edit-delivery-option project-status-option project-status-not-started${data['project-status'] === 'not-started' ? ' active' : ''}" data-value="not-started" role="option">${dt('dashboard.status.notStarted','Not Started')}</button>
+                <button class="edit-delivery-option project-status-option project-status-in-progress${data['project-status'] === 'in-progress' ? ' active' : ''}" data-value="in-progress" role="option">${dt('dashboard.status.inProgress','In Progress')}</button>
+                <button class="edit-delivery-option project-status-option project-status-done${data['project-status'] === 'done' ? ' active' : ''}" data-value="done" role="option">${dt('dashboard.status.done','Done')}</button>
+                <button class="edit-delivery-option project-status-option project-status-abandoned${data['project-status'] === 'abandoned' ? ' active' : ''}" data-value="abandoned" role="option">${dt('dashboard.status.abandoned','Abandoned')}</button>
               </div>
             </div>
           </div>
@@ -1496,15 +1558,15 @@ function renderDetailPanel() {
   } else {
     overviewSection = `
       <section class="detail-section">
-        ${sectionHeader('list', 'Overview')}
+        ${sectionHeader('list', dt('detail.sections.overview', 'Overview'))}
         <div class="overview-grid">
-          <div class="overview-card"><div class="overview-label">Client Name</div><div class="overview-value">${escapeHtml(clientName)}</div></div>
-          <div class="overview-card"><div class="overview-label">Email</div><div class="overview-value">${escapeHtml(email)}</div></div>
-          <div class="overview-card"><div class="overview-label">Brand Name</div><div class="overview-value">${escapeHtml(brandName)}</div></div>
-          <div class="overview-card"><div class="overview-label">Delivery Date</div><div class="overview-value">${formatDeliveryDateForOverview(data['delivery-date'])}</div></div>
-          <div class="overview-card"><div class="overview-label">Agreed Delivery Date</div><div class="overview-value">${data['agreed-delivery-date'] ? escapeHtml(formatDeliveryDateForOverview(data['agreed-delivery-date'])) : '<span class="overview-empty-badge">Not set yet</span>'}</div></div>
-          <div class="overview-card"><div class="overview-label">Project Status</div><div class="overview-value">${(function(){ const ps = String(data['project-status'] || '').toLowerCase(); const lbs = {'not-started':'Not Started','in-progress':'In Progress','done':'Done','abandoned':'Abandoned'}; return ps && lbs[ps] ? '<span class="status-badge project-status-badge project-status-' + ps + '">' + lbs[ps] + '</span>' : '<span class="overview-empty-badge">Not set</span>'; })()}</div></div>
-          <div class="overview-card"><div class="overview-label">Submission Status</div><div class="overview-value">${(function(){ const s = String(data['status'] || 'pending').toLowerCase(); if (s === 'approved') return '<span class="status-badge approved">Approved</span>'; if (s === 'rejected') return '<span class="status-badge rejected">Rejected</span>'; return '<span class="status-badge pending">Pending</span>'; })()}</div></div>
+          <div class="overview-card"><div class="overview-label">${dt('detail.overview.clientName', 'Client Name')}</div><div class="overview-value">${escapeHtml(clientName)}</div></div>
+          <div class="overview-card"><div class="overview-label">${dt('detail.overview.email', 'Email')}</div><div class="overview-value">${escapeHtml(email)}</div></div>
+          <div class="overview-card"><div class="overview-label">${dt('detail.overview.brandName', 'Brand Name')}</div><div class="overview-value">${escapeHtml(brandName)}</div></div>
+          <div class="overview-card"><div class="overview-label">${dt('detail.overview.deliveryDate', 'Delivery Date')}</div><div class="overview-value">${formatDeliveryDateForOverview(data['delivery-date'])}</div></div>
+          <div class="overview-card"><div class="overview-label">${dt('detail.overview.agreedDelivery', 'Agreed Delivery Date')}</div><div class="overview-value">${data['agreed-delivery-date'] ? escapeHtml(formatDeliveryDateForOverview(data['agreed-delivery-date'])) : `<span class="overview-empty-badge">${dt('detail.overview.notSetYet', 'Not set yet')}</span>`}</div></div>
+          <div class="overview-card"><div class="overview-label">${dt('detail.overview.projectStatus', 'Project Status')}</div><div class="overview-value">${(function(){ const ps = String(data['project-status'] || '').toLowerCase(); const lbs = {'not-started': dt('dashboard.status.notStarted','Not Started'),'in-progress': dt('dashboard.status.inProgress','In Progress'),'done': dt('dashboard.status.done','Done'),'abandoned': dt('dashboard.status.abandoned','Abandoned')}; return ps && lbs[ps] ? '<span class="status-badge project-status-badge project-status-' + ps + '">' + lbs[ps] + '</span>' : `<span class="overview-empty-badge">${dt('detail.overview.notSet','Not set')}</span>`; })()}</div></div>
+          <div class="overview-card"><div class="overview-label">${dt('detail.overview.submissionStatus', 'Submission Status')}</div><div class="overview-value">${(function(){ const s = String(data['status'] || 'pending').toLowerCase(); if (s === 'approved') return `<span class="status-badge approved">${dt('dashboard.status.approved','Approved')}</span>`; if (s === 'rejected') return `<span class="status-badge rejected">${dt('dashboard.status.rejected','Rejected')}</span>`; return `<span class="status-badge pending">${dt('dashboard.status.pending','Pending')}</span>`; })()}</div></div>
         </div>
       </section>
     `;
@@ -1512,7 +1574,7 @@ function renderDetailPanel() {
 
   const historySection = `
     <section class="detail-section">
-      ${sectionHeader('history', 'Submission History', { collapsible: true, collapsed: true, targetId: 'historyBody' })}
+      ${sectionHeader('history', dt('detail.sections.history', 'Submission History'), { collapsible: true, collapsed: true, targetId: 'historyBody' })}
       <div class="detail-section-body" id="historyBody" hidden>
         ${renderHistoryTimeline(history, { isLoading: !Array.isArray(history) })}
       </div>
@@ -1533,7 +1595,7 @@ function renderDetailPanel() {
   // Render questionnaire items in sorted order
   const questionnaireItems = questionnaireEntries.map(([key, value]) => {
     const qNum = QUESTIONNAIRE_DISPLAY_NUM[key] || null;
-    const labelText = QUESTIONNAIRE_FIELD_LABELS[key] || key
+    const labelText = getFieldLabel(key) || key
       .replace(/^q[\w]*-/, '')
       .replace(/-/g, ' ')
       .replace(/\b\w/g, l => l.toUpperCase());
@@ -1541,7 +1603,7 @@ function renderDetailPanel() {
 
     if (isEditingSubmission) {
       const qNumEdit = QUESTIONNAIRE_DISPLAY_NUM[key];
-      const labelForEdit = QUESTIONNAIRE_FIELD_LABELS[key] || key
+      const labelForEdit = getFieldLabel(key) || key
         .replace(/^q[\w]*-/, '')
         .replace(/-/g, ' ')
         .replace(/\b\w/g, l => l.toUpperCase());
@@ -1565,13 +1627,13 @@ function renderDetailPanel() {
             const originalUrl = escapeHtml(getOriginalPhotoUrl(String(ref)));
             return `<div class="q20-dash-thumb-wrap" title="Click to open full resolution" style="cursor:pointer;" onclick="window.open('${originalUrl}','_blank')"><img src="${smallUrl}" class="q20-dash-thumb" alt="Inspiration ${i + 1}" loading="lazy" /><div class="q20-dash-thumb-overlay"><i data-lucide="zoom-in" style="width:16px;height:16px;color:#fff;"></i></div></div>`;
           }).join('')}</div>`
-        : '<div class="qa-value qa-empty">No images uploaded</div>';
+        : `<div class="qa-value qa-empty">${dt('detail.questionnaire.noImages', 'No images uploaded')}</div>`;
       return `<article class="qa-card"><div class="qa-label-row"><span class="qa-num-badge">15</span><span class="qa-label-text">Inspiration Images</span></div>${imagesHtml}</article>`;
     }
 
     const valueMarkup = displayValue
       ? `<div class="qa-value">${escapeHtml(displayValue)}</div>`
-      : '<div class="qa-value qa-empty">No response</div>';
+      : `<div class="qa-value qa-empty">${dt('detail.questionnaire.noResponse', 'No response')}</div>`;
 
     const labelHtml = qNum
       ? `<div class="qa-label-row"><span class="qa-num-badge">${qNum}</span><span class="qa-label-text">${safeLabel}</span></div>`
@@ -1582,11 +1644,11 @@ function renderDetailPanel() {
 
   const questionnaireCallout = hasAnyResponse
     ? ''
-    : '<div class="questionnaire-callout">This submission has no questionnaire responses yet.</div>';
+    : `<div class="questionnaire-callout">${dt('detail.questionnaire.noResponses', 'This submission has no questionnaire responses yet.')}</div>`;
 
   const questionnaireSection = `
     <section class="detail-section">
-      ${sectionHeader('puzzle', 'Brand Questionnaire')}
+      ${sectionHeader('puzzle', dt('detail.sections.questionnaire', 'Brand Questionnaire'))}
       ${questionnaireCallout}
       <div class="qa-grid">${questionnaireItems}</div>
     </section>
@@ -1720,7 +1782,7 @@ function setupEditModeInteractions() {
         const val = opt.dataset.value || 'pending';
         editSubmissionStatusMenu.querySelectorAll('.edit-delivery-option').forEach(o => o.classList.remove('active'));
         opt.classList.add('active');
-        const labels = { pending: 'Pending', approved: 'Approved', rejected: 'Rejected' };
+        const labels = { pending: dt('dashboard.status.pending','Pending'), approved: dt('dashboard.status.approved','Approved'), rejected: dt('dashboard.status.rejected','Rejected') };
         if (editSubmissionStatusLabel) editSubmissionStatusLabel.textContent = labels[val] || 'Pending';
         editSubmissionStatusMenu.classList.remove('open');
         editSubmissionStatusBtn.setAttribute('aria-expanded', 'false');
@@ -1754,8 +1816,8 @@ function setupEditModeInteractions() {
         const val = opt.dataset.value || '';
         editProjectStatusMenu.querySelectorAll('.edit-delivery-option').forEach(o => o.classList.remove('active'));
         opt.classList.add('active');
-        const labels = {'not-started':'Not Started','in-progress':'In Progress','done':'Done','abandoned':'Abandoned'};
-        if (editProjectStatusLabel) editProjectStatusLabel.textContent = val && labels[val] ? labels[val] : '— Not set —';
+        const labels = {'not-started': dt('dashboard.status.notStarted','Not Started'),'in-progress': dt('dashboard.status.inProgress','In Progress'),'done': dt('dashboard.status.done','Done'),'abandoned': dt('dashboard.status.abandoned','Abandoned')};
+        if (editProjectStatusLabel) editProjectStatusLabel.textContent = val && labels[val] ? labels[val] : dt('detail.edit.notSet','— Not set —');
         editProjectStatusMenu.classList.remove('open');
         editProjectStatusBtn.setAttribute('aria-expanded', 'false');
         if (editDraftData) editDraftData['project-status'] = val;
@@ -1783,7 +1845,7 @@ function setupEditModeInteractions() {
         const val = opt.dataset.value || '';
         editDeliveryMenu.querySelectorAll('.edit-delivery-option').forEach(o => o.classList.remove('active'));
         opt.classList.add('active');
-        if (editDeliveryLabel) editDeliveryLabel.textContent = val || '— Not set —';
+        if (editDeliveryLabel) editDeliveryLabel.textContent = val || dt('detail.edit.notSet','— Not set —');
         editDeliveryMenu.classList.remove('open');
         editDeliveryBtn.setAttribute('aria-expanded', 'false');
         if (editDraftData) editDraftData['delivery-date'] = val;
@@ -1827,12 +1889,12 @@ function setupEditModeInteractions() {
     const allowedTypes = new Set(['image/png', 'image/jpeg', 'image/svg+xml', 'image/webp']);
 
     if (!allowedTypes.has(file.type)) {
-      if (logoUploadError) logoUploadError.textContent = 'Unsupported file type. Use PNG, JPG, SVG, or WEBP.';
+      if (logoUploadError) logoUploadError.textContent = dt('detail.edit.logoErrorType', 'Unsupported file type. Use PNG, JPG, SVG, or WEBP.');
       return;
     }
 
     if (file.size > 2 * 1024 * 1024) {
-      if (logoUploadError) logoUploadError.textContent = 'File is too large. Maximum size is 2MB.';
+      if (logoUploadError) logoUploadError.textContent = dt('detail.edit.logoErrorSize', 'File is too large. Maximum size is 2MB.');
       return;
     }
 
@@ -1971,7 +2033,7 @@ async function saveEditedSubmission() {
 
     if (!newHistoryEntry.editedBy || !['admin', 'client'].includes(newHistoryEntry.editedBy)) {
       console.error('History entry is missing a valid editedBy value:', newHistoryEntry);
-      alert('Unable to save changes due to missing editor attribution.');
+      alert(dt('dashboard.alert.saveError', 'Unable to save changes due to missing editor attribution.'));
       return;
     }
 
@@ -2029,7 +2091,7 @@ async function deleteCurrentSubmission() {
 
   const brandName = currentSubmission.data?.['brand-name'] || 'this submission';
 
-  if (!confirm(`Are you sure you want to delete "${brandName}"? This action cannot be undone.`)) {
+  if (!confirm(dt('dashboard.confirm.deleteSubmission', 'Are you sure you want to delete "{{name}}"? This action cannot be undone.', { name: brandName }))) {
     return;
   }
 
@@ -2052,11 +2114,11 @@ async function deleteCurrentSubmission() {
 
     selectedSubmissionIds.delete(String(currentSubmission.id));
     closeModal();
-    alert('Submission deleted successfully');
+    alert(dt('dashboard.alert.deleteSuccess', 'Submission deleted successfully'));
     loadSubmissions();
   } catch (error) {
     console.error('Error deleting submission:', error);
-    alert('Failed to delete submission. Please try again.');
+    alert(dt('dashboard.alert.deleteFailed', 'Failed to delete submission. Please try again.'));
   }
 }
 
@@ -2070,9 +2132,9 @@ function sortSubmissions(mode) {
   });
   // Update sort button label
   const labels = {
-    'date-desc': 'Newest', 'date-asc': 'Oldest',
-    'name-asc': 'A→Z', 'name-desc': 'Z→A',
-    'delivery-asc': 'Soonest', 'delivery-desc': 'Latest'
+    'date-desc': dt('dashboard.sort.newest', 'Newest'), 'date-asc': dt('dashboard.sort.oldest', 'Oldest'),
+    'name-asc': dt('dashboard.sort.az', 'A→Z'), 'name-desc': dt('dashboard.sort.za', 'Z→A'),
+    'delivery-asc': dt('dashboard.sort.soonest', 'Soonest'), 'delivery-desc': dt('dashboard.sort.latest', 'Latest')
   };
   const labelEl = document.querySelector('.sort-btn-label');
   if (labelEl) labelEl.textContent = labels[mode] || 'Sort';
@@ -2137,7 +2199,7 @@ function downloadBlob(blob, filename) {
 
 function exportAsMarkdown(submissionsOverride) {
   const submissions = resolveExportSubmissions(submissionsOverride);
-  if (submissions.length === 0) { alert('No submissions to export.'); return; }
+  if (submissions.length === 0) { alert(dt('dashboard.export.noData', 'No submissions to export.')); return; }
 
   const parts = submissions.map((sub, idx) => {
     const data = sub.data || {};
@@ -2156,7 +2218,7 @@ function exportAsMarkdown(submissionsOverride) {
 
 function exportAsPDF(submissionsOverride) {
   const submissions = resolveExportSubmissions(submissionsOverride);
-  if (submissions.length === 0) { alert('No submissions to export.'); return; }
+  if (submissions.length === 0) { alert(dt('dashboard.export.noData', 'No submissions to export.')); return; }
 
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ unit: 'mm', format: 'a4' });
@@ -2229,7 +2291,7 @@ function exportAsPDF(submissionsOverride) {
 
 async function exportAsDOCX(submissionsOverride) {
   const submissions = resolveExportSubmissions(submissionsOverride);
-  if (submissions.length === 0) { alert('No submissions to export.'); return; }
+  if (submissions.length === 0) { alert(dt('dashboard.export.noData', 'No submissions to export.')); return; }
 
   const { Document, Packer, Paragraph, TextRun, HeadingLevel, BorderStyle } = window.docx;
 
@@ -2297,7 +2359,7 @@ async function exportAsDOCX(submissionsOverride) {
 
 function exportAsCSV(submissionsOverride) {
   const submissions = resolveExportSubmissions(submissionsOverride);
-  if (submissions.length === 0) { alert('No submissions to export.'); return; }
+  if (submissions.length === 0) { alert(dt('dashboard.export.noData', 'No submissions to export.')); return; }
 
   const columns = [
     'id', 'created_at', 'status',
@@ -2378,7 +2440,8 @@ function applyTheme(mode) {
   else                  localStorage.setItem('user-theme', mode);
 
   const label = document.getElementById('themeBtnLabel');
-  if (label) label.textContent = mode.charAt(0).toUpperCase() + mode.slice(1);
+  const themeLabels = { auto: dt('dashboard.theme.auto', 'Auto'), light: dt('dashboard.theme.light', 'Light'), dark: dt('dashboard.theme.dark', 'Dark') };
+  if (label) label.textContent = themeLabels[mode] || (mode.charAt(0).toUpperCase() + mode.slice(1));
 }
 
 function toggleTheme() {
@@ -2547,7 +2610,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const isMarkdown = file.name.endsWith('.md') || file.name.endsWith('.markdown');
 
     if (!isCSV && !isMarkdown) {
-      alert('Unsupported file type. Please use .md or .csv');
+      alert(dt('dashboard.alert.importUnsupported', 'Unsupported file type. Please use .md or .csv'));
       return;
     }
 
@@ -2563,7 +2626,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
       // Validate required fields
       if (!parsedData['brand-name'] || !parsedData['client-name'] || !parsedData['email']) {
-        alert('Import failed: Missing required fields (Brand Name, Client Name, or Email)');
+        alert(dt('dashboard.alert.importMissing', 'Import failed: Missing required fields (Brand Name, Client Name, or Email)'));
         return;
       }
 
@@ -2590,7 +2653,7 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error(`Import failed: ${response.statusText}`);
       }
 
-      alert(`Successfully imported: ${parsedData['brand-name']}`);
+      alert(dt('dashboard.alert.importSuccess', 'Successfully imported: {{name}}', { name: parsedData['brand-name'] }));
       loadSubmissions();
     } catch (error) {
       console.error('Import error:', error);
@@ -2645,7 +2708,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       opt.classList.add('active');
       opt.setAttribute('aria-selected', 'true');
-      if (dateFilterLabel) dateFilterLabel.textContent = opt.textContent;
+      if (dateFilterLabel) dateFilterLabel.textContent = opt.textContent; // data-i18n already applied
       dateFilterMenu.classList.remove('open');
       dateFilterBtn?.setAttribute('aria-expanded', 'false');
       openCardExportSubmissionId = null;
@@ -2732,4 +2795,99 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' && document.getElementById('detailModal').classList.contains('active')) {
     closeModal();
   }
+});
+/* ── Language switcher ─────────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', () => {
+  const dashLangToggle  = document.getElementById('dashLangToggle');
+  const dashLangMenu    = document.getElementById('dashLangMenu');
+  const dashLangDropdown = document.getElementById('dashLangDropdownWrap');
+
+  function syncDashLangUI(lang) {
+    if (dashLangToggle) {
+      const codeEl = dashLangToggle.querySelector('.dash-lang-code');
+      if (codeEl) codeEl.textContent = lang.toUpperCase();
+    }
+    if (dashLangMenu) {
+      dashLangMenu.querySelectorAll('li[data-lang]').forEach(li => {
+        li.setAttribute('aria-selected', li.getAttribute('data-lang') === lang ? 'true' : 'false');
+      });
+    }
+  }
+
+  if (dashLangToggle && dashLangMenu) {
+    dashLangToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = dashLangToggle.getAttribute('aria-expanded') === 'true';
+      dashLangToggle.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+      dashLangMenu.classList.toggle('open', !isOpen);
+    });
+
+    dashLangMenu.querySelectorAll('li[data-lang]').forEach(li => {
+      const handleSelect = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const lang = li.getAttribute('data-lang');
+        dashLangMenu.classList.remove('open');
+        dashLangToggle.setAttribute('aria-expanded', 'false');
+        if (lang && window.i18n) {
+          window.i18n.setLanguage(lang);
+        }
+      };
+      li.addEventListener('click', handleSelect);
+      li.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSelect(e); }
+      });
+    });
+
+    document.addEventListener('click', (e) => {
+      if (dashLangDropdown && !dashLangDropdown.contains(e.target)) {
+        dashLangMenu.classList.remove('open');
+        dashLangToggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        dashLangMenu.classList.remove('open');
+        dashLangToggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+
+  // Sync the lang badge to the active language on load
+  syncDashLangUI(window.i18n?.getLanguage() || 'en');
+
+  // Re-render everything whenever language changes
+  window.addEventListener('languageChanged', (e) => {
+    const lang = e.detail?.language || window.i18n?.getLanguage() || 'en';
+    syncDashLangUI(lang);
+
+    // Re-render dynamic content with new language
+    applyCurrentFiltersAndRender();
+    if (currentSubmission) renderDetailPanel();
+
+    // Re-apply theme label (it uses dt())
+    const themeMode = getDashActiveMode();
+    const themeLabel = document.getElementById('themeBtnLabel');
+    const themeLabels = {
+      auto: dt('dashboard.theme.auto', 'Auto'),
+      light: dt('dashboard.theme.light', 'Light'),
+      dark: dt('dashboard.theme.dark', 'Dark')
+    };
+    if (themeLabel) themeLabel.textContent = themeLabels[themeMode] || themeMode;
+
+    // Re-apply translated date filter label for active option
+    const activeOpt = document.querySelector('.date-filter-option[aria-selected="true"]');
+    const dfLabel = document.getElementById('dateFilterLabel');
+    if (activeOpt && dfLabel) dfLabel.textContent = activeOpt.textContent;
+
+    // Re-apply translated sort label for active option
+    const activeSortOpt = document.querySelector('.sort-option.active');
+    const sortBtnLabelEl = document.querySelector('.sort-btn-label');
+    if (!activeSortOpt && sortBtnLabelEl) {
+      sortBtnLabelEl.textContent = dt('dashboard.sort.label', 'Sort by');
+    }
+
+    updateExportButtonLabel();
+    updateSelectionToolbar();
+  });
 });

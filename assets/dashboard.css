@@ -2862,3 +2862,80 @@ button.detail-section-toggle[aria-expanded="true"] .detail-section-chevron {
 .edit-delivery-option.submission-status-pending::before  { background: var(--text-mid); }
 .edit-delivery-option.submission-status-approved::before { background: #16a34a; }
 .edit-delivery-option.submission-status-rejected::before { background: var(--red); }
+
+/* ── Dashboard Language Switcher ─────────────────────────── */
+.dash-lang-dropdown {
+  position: relative;
+}
+
+.dash-lang-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  padding: 0 10px;
+  height: 34px;
+  min-width: 0;
+}
+
+.dash-lang-code {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  pointer-events: none;
+}
+
+.dash-lang-menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.12);
+  padding: 6px;
+  list-style: none;
+  margin: 0;
+  z-index: 1000;
+  min-width: 130px;
+  white-space: nowrap;
+}
+
+.dash-lang-menu.open { display: block; }
+
+.dash-lang-menu li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text-hi);
+  font-weight: 500;
+  transition: background .12s;
+}
+
+.dash-lang-menu li:hover { background: var(--surface-hi); }
+
+.dash-lang-menu li[aria-selected="true"] {
+  background: var(--surface-hi);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.dlm-code {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  color: var(--text-mid);
+  min-width: 22px;
+}
+
+html[dir="rtl"] .dash-lang-menu {
+  right: auto;
+  left: 0;
+}

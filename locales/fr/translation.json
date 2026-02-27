@@ -188,7 +188,11 @@
     "footer": {
       "copyright": "Neatmark™ 2026. Tous droits réservés.",
       "privacy": "Politique de confidentialité",
-      "cookie": "Politique des cookies"
+      "cookie": "Politique des cookies",
+      "tagline": "Façonnez votre vision, renforcez votre voix,\net faites respirer votre marque.",
+      "contactTitle": "Coordonnées",
+      "linksTitle": "Liens",
+      "website": "Site web"
     },
     "validation": {
       "q9Required": "Veuillez sélectionner au moins une direction de couleur.",
@@ -241,7 +245,11 @@
     "title": "Tableau de bord des formulaires",
     "header": {
       "title": "Soumissions des clients",
-      "subtitle": "Gérer et examiner toutes les soumissions d'admission"
+      "subtitle": "Gérer et examiner toutes les soumissions d'admission",
+      "dashTitle": "TABLEAU DE BORD",
+      "import": "Importer",
+      "exportAs": "Exporter comme",
+      "account": "Compte"
     },
     "toolbar": {
       "search": "Rechercher par marque, client ou email...",
@@ -277,7 +285,9 @@
       "totalSubmissions": "Total des soumissions",
       "thisMonth": "Ce mois-ci",
       "thisWeek": "Cette semaine",
-      "today": "Aujourd'hui"
+      "today": "Aujourd'hui",
+      "withDelivery": "Avec date de livraison",
+      "latestSubmission": "Dernière soumission"
     },
     "empty": {
       "title": "Aucune soumission pour le moment",
@@ -292,6 +302,101 @@
       "edit": "Modifier",
       "delete": "Supprimer",
       "download": "Télécharger"
+    },
+    "login": {
+      "title": "Accès au tableau de bord",
+      "subtitle": "Veuillez vous connecter pour voir les soumissions",
+      "btn": "Se connecter"
+    },
+    "theme": {
+      "auto": "Auto",
+      "light": "Clair",
+      "dark": "Sombre"
+    },
+    "sort": {
+      "label": "Trier par",
+      "newestFirst": "Plus récent d'abord",
+      "oldestFirst": "Plus ancien d'abord",
+      "nameAZ": "Nom A→Z",
+      "nameZA": "Nom Z→A",
+      "deliverySoonest": "Livraison la plus proche",
+      "deliveryLatest": "Livraison la plus tardive",
+      "newest": "Récent",
+      "oldest": "Ancien",
+      "az": "A→Z",
+      "za": "Z→A",
+      "soonest": "Proche",
+      "latest": "Tardif"
+    },
+    "select": {
+      "visible": "Sélectionner les visibles",
+      "deselect": "Désélectionner les visibles"
+    },
+    "loading": "Chargement des soumissions...",
+    "showing": "Affichage de {{count}} soumissions",
+    "selected": "{{count}} sélectionné(s)",
+    "clearFilters": "Effacer les filtres",
+    "noSubmissions": {
+      "title": "Aucune soumission trouvée",
+      "message": "Essayez d'ajuster votre recherche ou filtre de date."
+    },
+    "export": {
+      "filtered": "Exporter les filtrés ({{count}}) ▾",
+      "visible": "Exporter les visibles ({{count}}) ▾",
+      "noData": "Aucune soumission à exporter.",
+      "md": "Markdown (.md)",
+      "pdf": "PDF (.pdf)",
+      "docx": "Word (.docx)",
+      "csv": "CSV (.csv)"
+    },
+    "card": {
+      "email": "Email",
+      "delivery": "Livraison",
+      "agreed": "Convenu",
+      "proposed": "Proposé",
+      "notSet": "Non défini",
+      "edit": "Modifier",
+      "export": "Exporter"
+    },
+    "status": {
+      "approved": "Approuvé",
+      "rejected": "Rejeté",
+      "pending": "En attente",
+      "notStarted": "Non commencé",
+      "inProgress": "En cours",
+      "done": "Terminé",
+      "abandoned": "Abandonné",
+      "notSet": "Non défini"
+    },
+    "error": {
+      "accessDenied": "Accès refusé. Demandez à l'administrateur d'ajouter votre email à ADMIN_EMAILS.",
+      "sessionExpired": "Votre session a expiré. Veuillez vous reconnecter.",
+      "failedToLoad": "Échec du chargement des soumissions. Veuillez réessayer."
+    },
+    "confirm": {
+      "deleteSelected": "Supprimer {{count}} soumission(s) ? Cette action ne peut pas être annulée.",
+      "deleteSubmission": "Êtes-vous sûr de vouloir supprimer \"{{name}}\" ? Cette action ne peut pas être annulée.",
+      "discardChanges": "Abandonner les modifications non enregistrées ?"
+    },
+    "alert": {
+      "deletedSuccess": "{{count}} soumission(s) supprimée(s) avec succès.",
+      "deletedWithFails": "{{count}} soumission(s) supprimée(s). {{failed}} ont échoué.",
+      "failedDeleteSelected": "Échec de la suppression. Veuillez réessayer.",
+      "deleteSuccess": "Soumission supprimée avec succès",
+      "deleteFailed": "Échec de la suppression. Veuillez réessayer.",
+      "deleting": "Suppression...",
+      "notAuthenticated": "Non authentifié",
+      "statusFailed": "Échec de la mise à jour du statut : {{error}}\n\nAssurez-vous d'avoir exécuté la migration SQL pour ajouter la colonne \"status\".",
+      "saveError": "Impossible d'enregistrer les modifications : attribution d'éditeur manquante.",
+      "importUnsupported": "Type de fichier non pris en charge. Utilisez .md ou .csv",
+      "importMissing": "Importation échouée : champs obligatoires manquants (Marque, Client ou Email)",
+      "importSuccess": "Importé avec succès : {{name}}"
+    },
+    "discard": {
+      "title": "Modifications non enregistrées",
+      "message": "Vous avez des modifications non enregistrées. Les abandonner ?",
+      "keepEditing": "Continuer la modification",
+      "discard": "Abandonner"
     }
   },
   "detailPanel": {
@@ -413,6 +518,96 @@
       "s6_p1": "Si nous ajoutons de nouveaux éléments de stockage ou services tiers, nous mettrons cette page à jour ainsi que la date en haut. Nous n'introduirons pas de technologies de suivi ou publicitaires sans en être transparents ici au préalable.",
       "s7_title": "Questions",
       "s7_p1": "Si vous avez des questions sur les cookies ou la gestion de vos données navigateur, contactez-nous via notre site neatmark.studio."
+    }
+  },
+  "detail": {
+    "title": "Détails de la soumission",
+    "unknownClient": "Client inconnu",
+    "cancelEdit": "Annuler la modification",
+    "editBanner": "Modification en cours, les changements ne sont pas encore enregistrés",
+    "sections": {
+      "overview": "Aperçu",
+      "history": "Historique de la soumission",
+      "questionnaire": "Questionnaire de marque"
+    },
+    "overview": {
+      "clientName": "Nom du client",
+      "email": "Email",
+      "brandName": "Nom de la marque",
+      "deliveryDate": "Date de livraison",
+      "formDelivery": "Délai (formulaire)",
+      "agreedDelivery": "Date de livraison convenue",
+      "projectStatus": "Statut du projet",
+      "submissionStatus": "Statut de la soumission",
+      "notSet": "Non défini",
+      "notSetYet": "Pas encore défini",
+      "notSpecified": "Non spécifié"
+    },
+    "edit": {
+      "logoUpload": "Déposez un logo ou cliquez pour télécharger",
+      "selectTimeframe": "Sélectionnez un délai",
+      "notSet": "— Non défini —",
+      "asap": "ASAP (dès que possible)",
+      "logoErrorType": "Type non pris en charge. Utilisez PNG, JPG, SVG ou WEBP.",
+      "logoErrorSize": "Fichier trop volumineux. Maximum 2 Mo.",
+      "validation": {
+        "clientName": "Le nom du client est requis.",
+        "brandName": "Le nom de la marque est requis.",
+        "email": "L'email est requis.",
+        "emailInvalid": "Veuillez entrer une adresse email valide."
+      },
+      "cancel": "Annuler",
+      "save": "Enregistrer les modifications"
+    },
+    "questionnaire": {
+      "noResponses": "Cette soumission n'a pas encore de réponses au questionnaire.",
+      "noImages": "Aucune image téléchargée",
+      "noResponse": "Pas de réponse",
+      "labels": {
+        "q1": "Description de l'entreprise",
+        "q2": "Avant et Après",
+        "q3": "Client idéal",
+        "q3b": "Déclencheur client",
+        "q4": "Concurrents",
+        "q5": "Personnalité de la marque",
+        "q6": "Déclaration de positionnement",
+        "qlaunch": "Contexte de lancement",
+        "q8": "Marques admirées",
+        "q9": "Directions de couleurs",
+        "q10": "Couleurs à éviter",
+        "q11": "Direction esthétique",
+        "q11b": "Notes esthétiques",
+        "q13": "Livrables",
+        "q14": "Approche budgétaire",
+        "q15": "Images d'inspiration",
+        "q7": "Décideur",
+        "q7b": "Décideur (Autre)",
+        "q12": "Actifs existants",
+        "delivery": "Délai de livraison",
+        "q16": "Expériences passées et craintes"
+      }
+    },
+    "history": {
+      "label": "Historique",
+      "noData": "Aucune donnée d'historique disponible.",
+      "noEditsYet": "Aucune modification pour le moment, c'est la soumission originale.",
+      "unknownDate": "Date inconnue",
+      "unknownTime": "Heure inconnue",
+      "unknown": "Inconnu",
+      "latestTag": "Dernier",
+      "justNow": "à l'instant"
+    },
+    "q6": {
+      "title": "Spectres de personnalité",
+      "hint": "1 = extrême gauche, 5 = extrême droite",
+      "playful": "Ludique",
+      "serious": "Sérieux",
+      "minimalist": "Minimaliste",
+      "expressive": "Expressif",
+      "approachable": "Accessible",
+      "authoritative": "Autoritaire",
+      "classic": "Classique",
+      "contemporary": "Contemporain"
     }
   }
 }

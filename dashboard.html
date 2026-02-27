@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<title>Form Dashboard</title>
+<title data-i18n="dashboard.title">Form Dashboard</title>
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 <!-- No-flash theme -->
 <script>
@@ -24,37 +24,38 @@
 <link href="https://fonts.googleapis.com/css2?family=Mona+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <link rel="stylesheet" href="assets/dashboard.css">
+<script src="assets/i18n.js"></script>
 </head>
 <body>
 
 <div id="loginScreen" class="login-screen">
   <div class="login-card">
-    <h2>Dashboard Access</h2>
-    <p>Please log in to view submissions</p>
-    <button class="btn btn-primary" id="loginBtn">Log In</button>
+    <h2 data-i18n="dashboard.login.title">Dashboard Access</h2>
+    <p data-i18n="dashboard.login.subtitle">Please log in to view submissions</p>
+    <button class="btn btn-primary" id="loginBtn" data-i18n="dashboard.login.btn">Log In</button>
   </div>
 </div>
 
 <div id="dashboardScreen" style="display: none;">
   <div class="page">
     <header class="site-header">
-      <h1 class="header-title">DASHBOARD</h1>
+      <h1 class="header-title" data-i18n="dashboard.header.dashTitle">DASHBOARD</h1>
       <div class="header-actions">
         <button class="btn" id="importBtn">
           <span aria-hidden="true"><i data-lucide="upload" class="icon icon-btn"></i></span>
-          <span class="header-btn-label">Import</span>
+          <span class="header-btn-label" data-i18n="dashboard.header.import">Import</span>
         </button>
         <div class="export-dropdown">
           <button class="btn" id="exportBtn">
             <span aria-hidden="true"><i data-lucide="download" class="icon icon-btn"></i></span>
-            <span class="btn-label">Export As ▾</span>
+            <span class="btn-label"><span data-i18n="dashboard.header.exportAs">Export As</span> ▾</span>
             <span class="btn-count" aria-hidden="true"></span>
           </button>
           <div class="export-menu" id="exportMenu">
-            <button class="export-option" data-format="md">Markdown (.md)</button>
-            <button class="export-option" data-format="pdf">PDF (.pdf)</button>
-            <button class="export-option" data-format="docx">Word (.docx)</button>
-            <button class="export-option" data-format="csv">CSV (.csv)</button>
+            <button class="export-option" data-format="md"   data-i18n="dashboard.export.md">Markdown (.md)</button>
+            <button class="export-option" data-format="pdf"  data-i18n="dashboard.export.pdf">PDF (.pdf)</button>
+            <button class="export-option" data-format="docx" data-i18n="dashboard.export.docx">Word (.docx)</button>
+            <button class="export-option" data-format="csv"  data-i18n="dashboard.export.csv">CSV (.csv)</button>
           </div>
         </div>
         <button class="btn" id="themeBtn">
@@ -63,64 +64,73 @@
             <i data-lucide="moon"    class="icon icon-btn theme-icon-dark"></i>
             <i data-lucide="monitor" class="icon icon-btn theme-icon-auto"></i>
           </span>
-          <span class="header-btn-label" id="themeBtnLabel">Auto</span>
+          <span class="header-btn-label" id="themeBtnLabel" data-i18n="dashboard.theme.auto">Auto</span>
         </button>
         <button class="btn" id="refreshBtn">
           <span aria-hidden="true"><i data-lucide="refresh-cw" class="icon icon-btn"></i></span>
-          <span class="header-btn-label">Refresh</span>
+          <span class="header-btn-label" data-i18n="dashboard.header.refresh">Refresh</span>
         </button>
         <button class="btn" id="accountBtn">
           <span aria-hidden="true"><i data-lucide="user-round" class="icon icon-btn"></i></span>
-          <span class="header-btn-label">Account</span>
+          <span class="header-btn-label" data-i18n="dashboard.header.account">Account</span>
         </button>
+
+        <!-- Language switcher -->
+        <div class="dash-lang-dropdown" id="dashLangDropdownWrap">
+          <button class="btn dash-lang-btn" id="dashLangToggle" type="button"
+                  aria-haspopup="listbox" aria-expanded="false"
+                  aria-label="Language selection" title="Language">
+            <span class="dash-lang-code">EN</span>
+            <svg width="10" height="6" viewBox="0 0 10 6" fill="none" style="opacity:.6;margin-left:2px;flex-shrink:0;"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <ul class="dash-lang-menu" id="dashLangMenu" role="listbox" aria-label="Choose language">
+            <li role="option" data-lang="en" aria-selected="true" tabindex="0"><span class="dlm-code">EN</span> English</li>
+            <li role="option" data-lang="fr" aria-selected="false" tabindex="0"><span class="dlm-code">FR</span> Français</li>
+            <li role="option" data-lang="ar" aria-selected="false" tabindex="0"><span class="dlm-code">AR</span> العربية</li>
+          </ul>
+        </div>
       </div>
     </header>
 
     <div class="stats">
       <div class="stat-card">
-        <div class="stat-icon" aria-hidden="true">
-          <i data-lucide="file-text" class="icon icon-stat"></i>
-        </div>
+        <div class="stat-icon" aria-hidden="true"><i data-lucide="file-text" class="icon icon-stat"></i></div>
         <div class="stat-value" id="totalCount">-</div>
-        <div class="stat-label">Total Submissions</div>
+        <div class="stat-label" data-i18n="dashboard.stats.totalSubmissions">Total Submissions</div>
       </div>
       <div class="stat-card">
-        <div class="stat-icon" aria-hidden="true">
-          <i data-lucide="calendar" class="icon icon-stat"></i>
-        </div>
+        <div class="stat-icon" aria-hidden="true"><i data-lucide="calendar" class="icon icon-stat"></i></div>
         <div class="stat-value" id="withDeliveryCount">-</div>
-        <div class="stat-label">With Delivery Date</div>
+        <div class="stat-label" data-i18n="dashboard.stats.withDelivery">With Delivery Date</div>
       </div>
       <div class="stat-card">
-        <div class="stat-icon" aria-hidden="true">
-          <i data-lucide="clock" class="icon icon-stat"></i>
-        </div>
+        <div class="stat-icon" aria-hidden="true"><i data-lucide="clock" class="icon icon-stat"></i></div>
         <div class="stat-value stat-value--small" id="latestSubmissionDate">-</div>
         <div class="stat-value stat-value--small stat-value-short" id="latestSubmissionDateShort" aria-hidden="true">-</div>
-        <div class="stat-label">Latest Submission</div>
+        <div class="stat-label" data-i18n="dashboard.stats.latestSubmission">Latest Submission</div>
       </div>
     </div>
 
     <div class="filters">
       <div class="search-filter-row">
         <div class="search-box-wrap">
-          <span class="search-icon" aria-hidden="true">
-            <i data-lucide="search" class="icon"></i>
-          </span>
-          <input type="text" class="search-box" id="searchBox" placeholder="Search by brand, client, or email...">
+          <span class="search-icon" aria-hidden="true"><i data-lucide="search" class="icon"></i></span>
+          <input type="text" class="search-box" id="searchBox"
+                 data-i18n-placeholder="dashboard.toolbar.search"
+                 placeholder="Search by brand, client, or email...">
         </div>
         <div class="custom-dropdown date-filter-dropdown" id="dateFilterDropdown">
           <button type="button" class="btn date-filter-btn" id="dateFilterBtn" aria-haspopup="listbox" aria-expanded="false">
-            <span class="date-filter-label" id="dateFilterLabel">All dates</span>
+            <span class="date-filter-label" id="dateFilterLabel" data-i18n="dashboard.toolbar.dateOptions.all">All dates</span>
             <i data-lucide="chevron-down" class="icon date-filter-caret"></i>
           </button>
           <div class="date-filter-menu" id="dateFilterMenu" role="listbox" aria-label="Filter by date">
-            <button class="date-filter-option active" data-value="all" role="option" aria-selected="true">All dates</button>
-            <button class="date-filter-option" data-value="today" role="option" aria-selected="false">Today</button>
-            <button class="date-filter-option" data-value="last7" role="option" aria-selected="false">Last 7 days</button>
-            <button class="date-filter-option" data-value="last30" role="option" aria-selected="false">Last 30 days</button>
-            <button class="date-filter-option" data-value="thisMonth" role="option" aria-selected="false">This month</button>
-            <button class="date-filter-option" data-value="lastMonth" role="option" aria-selected="false">Last month</button>
+            <button class="date-filter-option active" data-value="all"       role="option" aria-selected="true"  data-i18n="dashboard.toolbar.dateOptions.all">All dates</button>
+            <button class="date-filter-option"        data-value="today"     role="option" aria-selected="false" data-i18n="dashboard.toolbar.dateOptions.today">Today</button>
+            <button class="date-filter-option"        data-value="last7"     role="option" aria-selected="false" data-i18n="dashboard.toolbar.dateOptions.last7">Last 7 days</button>
+            <button class="date-filter-option"        data-value="last30"    role="option" aria-selected="false" data-i18n="dashboard.toolbar.dateOptions.last30">Last 30 days</button>
+            <button class="date-filter-option"        data-value="thisMonth" role="option" aria-selected="false" data-i18n="dashboard.toolbar.dateOptions.thisMonth">This month</button>
+            <button class="date-filter-option"        data-value="lastMonth" role="option" aria-selected="false" data-i18n="dashboard.toolbar.dateOptions.lastMonth">Last month</button>
           </div>
         </div>
       </div>
@@ -129,19 +139,20 @@
           <div class="sort-dropdown" id="sortDropdown">
             <button class="btn sort-btn" id="sortBtn" aria-haspopup="menu" aria-expanded="false">
               <i data-lucide="arrow-up-down" class="icon icon-btn"></i>
-              <span class="sort-btn-label">Sort by</span>
+              <span class="sort-btn-label" data-i18n="dashboard.sort.label">Sort by</span>
               <i data-lucide="chevron-down" class="icon sort-chevron"></i>
             </button>
             <div class="sort-menu" id="sortMenu" role="menu">
-              <button class="sort-option" data-sort="date-desc" role="menuitem">Newest first</button>
-              <button class="sort-option" data-sort="date-asc" role="menuitem">Oldest first</button>
-              <button class="sort-option" data-sort="name-asc" role="menuitem">Name A→Z</button>
-              <button class="sort-option" data-sort="name-desc" role="menuitem">Name Z→A</button>
-              <button class="sort-option" data-sort="delivery-asc" role="menuitem">Delivery soonest</button>
-              <button class="sort-option" data-sort="delivery-desc" role="menuitem">Delivery latest</button>
+              <button class="sort-option" data-sort="date-desc"     role="menuitem" data-i18n="dashboard.sort.newestFirst">Newest first</button>
+              <button class="sort-option" data-sort="date-asc"      role="menuitem" data-i18n="dashboard.sort.oldestFirst">Oldest first</button>
+              <button class="sort-option" data-sort="name-asc"      role="menuitem" data-i18n="dashboard.sort.nameAZ">Name A→Z</button>
+              <button class="sort-option" data-sort="name-desc"     role="menuitem" data-i18n="dashboard.sort.nameZA">Name Z→A</button>
+              <button class="sort-option" data-sort="delivery-asc"  role="menuitem" data-i18n="dashboard.sort.deliverySoonest">Delivery soonest</button>
+              <button class="sort-option" data-sort="delivery-desc" role="menuitem" data-i18n="dashboard.sort.deliveryLatest">Delivery latest</button>
             </div>
           </div>
-          <button class="btn action-icon-btn" id="selectVisibleBtn" title="Select Visible" disabled>
+          <button class="btn action-icon-btn" id="selectVisibleBtn"
+                  data-i18n-title="dashboard.select.visible" title="Select Visible" disabled>
             <i data-lucide="check-square" class="icon"></i>
           </button>
           <button class="btn action-icon-btn" id="clearSelectionBtn" title="Clear Selection" disabled>
@@ -156,7 +167,7 @@
     </div>
 
     <div id="submissionsContainer">
-      <div class="loading">Loading submissions...</div>
+      <div class="loading" data-i18n="dashboard.loading">Loading submissions...</div>
     </div>
   </div>
 </div>
@@ -167,59 +178,57 @@
       <div class="detail-hero-main">
         <div class="detail-avatar" id="detailAvatar">N</div>
         <div class="detail-hero-text">
-          <h2 id="modalTitle">Submission Details</h2>
+          <h2 id="modalTitle" data-i18n="detail.title">Submission Details</h2>
           <div class="detail-subhead">
             <div class="detail-chip" id="detailClientChip">
-              <span class="detail-chip-icon" aria-hidden="true">
-                <i data-lucide="user" class="icon icon-btn"></i>
-              </span>
-              <span class="detail-chip-text">Unknown Client</span>
+              <span class="detail-chip-icon" aria-hidden="true"><i data-lucide="user" class="icon icon-btn"></i></span>
+              <span class="detail-chip-text" data-i18n="detail.unknownClient">Unknown Client</span>
             </div>
             <div class="detail-chip" id="detailEmailChip">
-              <span class="detail-chip-icon" aria-hidden="true">
-                <i data-lucide="mail" class="icon icon-btn"></i>
-              </span>
+              <span class="detail-chip-icon" aria-hidden="true"><i data-lucide="mail" class="icon icon-btn"></i></span>
               <span class="detail-chip-text">N/A</span>
             </div>
           </div>
         </div>
       </div>
       <div class="modal-header-actions" id="modalHeaderActions">
-        <button class="modal-icon-btn modal-edit-icon-btn" id="modalEditIconBtn" aria-label="Edit submission">
+        <button class="modal-icon-btn modal-edit-icon-btn" id="modalEditIconBtn"
+                data-i18n-aria="dashboard.actions.edit" aria-label="Edit submission">
           <i data-lucide="pen" class="icon icon-btn"></i>
         </button>
-        <button class="modal-icon-btn modal-delete-icon-btn" id="modalDeleteIconBtn" aria-label="Delete submission">
+        <button class="modal-icon-btn modal-delete-icon-btn" id="modalDeleteIconBtn"
+                data-i18n-aria="dashboard.actions.delete" aria-label="Delete submission">
           <i data-lucide="trash" class="icon icon-btn"></i>
         </button>
         <button class="modal-close" id="modalCloseBtn">×</button>
       </div>
     </div>
     <div id="modalBody" class="detail-scroll"></div>
-    <div class="modal-actions" id="modalActions">
-    </div>
+    <div class="modal-actions" id="modalActions"></div>
   </div>
 </div>
 
 <div id="discardChangesModal" class="modal discard-modal" aria-hidden="true">
   <div class="modal-content discard-modal-content">
     <div class="modal-header">
-      <h2>Unsaved Changes</h2>
+      <h2 data-i18n="dashboard.discard.title">Unsaved Changes</h2>
     </div>
     <div class="detail-scroll">
-      <p class="response-value">You have unsaved changes. Are you sure you want to discard them?</p>
+      <p class="response-value" data-i18n="dashboard.discard.message">You have unsaved changes. Are you sure you want to discard them?</p>
     </div>
     <div class="modal-actions">
-      <button class="btn" id="keepEditingBtn">Keep Editing</button>
-      <button class="btn btn-danger" id="discardChangesBtn">Discard</button>
+      <button class="btn" id="keepEditingBtn" data-i18n="dashboard.discard.keepEditing">Keep Editing</button>
+      <button class="btn btn-danger" id="discardChangesBtn" data-i18n="dashboard.discard.discard">Discard</button>
     </div>
   </div>
 </div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
 <script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
 <script src="https://unpkg.com/dayjs@1.11.13/dayjs.min.js"></script>
 <script src="https://unpkg.com/dayjs@1.11.13/plugin/relativeTime.js"></script>
 <script src="https://unpkg.com/lucide@latest"></script>
-<script src="assets/dashboard.js?v=20260223"></script>
+<script src="assets/dashboard.js?v=20260227"></script>
 
 </body>
 </html>
