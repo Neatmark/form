@@ -1,16 +1,7 @@
 const { createClient } = require('@supabase/supabase-js');
 const { randomUUID }   = require('crypto');
-const {
-  normalizeValue,
-  sanitizeFilenamePart,
-  buildMarkdown,
-  buildDocxBuffer,
-  buildPdfBuffer,
-  sendResendEmail,
-  buildAdminEmail,
-  buildClientEmail,
-  buildEditConfirmationEmail
-} = require('./_shared');
+// Email / document generation is handled by the separate send-emails function.
+// Nothing from _shared is needed here anymore.
 
 // ── CORS ──────────────────────────────────────────────────────────────────────
 const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || '*';
@@ -67,11 +58,6 @@ const ALLOWED_FIELDS = [
 ];
 
 const ARRAY_FIELDS = new Set(['q9-color', 'q11-aesthetic', 'q13-deliverables', 'q15-inspiration-refs']);
-
-const DOCUMENT_SKIP_FIELDS = new Set([
-  'created_at', 'history', 'status', 'project-status', 'agreed-delivery-date',
-  'edit_token', 'edit_token_expires_at'
-]);
 
 // ── Field length limits (mirrors client-side maxlength) ───────────────────────
 const FIELD_MAXLENGTH = {
@@ -142,9 +128,6 @@ exports.handler = async (event) => {
   // ── Env vars ────────────────────────────────────────────────────────────────
   const supabaseUrl  = process.env.SUPABASE_URL;
   const supabaseKey  = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_KEY;
-  const resendApiKey = process.env.RESEND_API_KEY;
-  const fromEmail    = process.env.RESEND_FROM_EMAIL || 'noreply@neatmark.studio';
-  const adminEmail   = process.env.RECIPIENT_EMAIL   || 'khaledxbz@outlook.com';
   const siteUrl      = process.env.SITE_URL          || 'https://form.neatmark.studio';
 
   // Netlify injects x-country (ISO 3166-1 alpha-2) automatically at the CDN edge.
@@ -337,33 +320,14 @@ exports.handler = async (event) => {
         };
       }
 
-      // Send edit confirmation email to client
-      if (resendApiKey) {
-        const clientEmailAddr = String(record.email || '').trim();
-        if (clientEmailAddr.includes('@')) {
-          try {
-            const confirmMsg = buildEditConfirmationEmail({
-              brandName:  record['brand-name'],
-              clientName: record['client-name']
-            }, lang);
-            await sendResendEmail({
-              apiKey:   resendApiKey,
-              to:       clientEmailAddr,
-              from:     fromEmail,
-              subject:  confirmMsg.subject,
-              html:     confirmMsg.html,
-              text:     confirmMsg.text
-            });
-          } catch (err) {
-            console.error('Edit confirmation email failed:', err.message);
-          }
-        }
-      }
-
+      // Return immediately — edit confirmation email is sent by the client
+      // via a fire-and-forget call to /.netlify/functions/send-emails.
+      // Strip internal DB fields before sending record to client.
+      const { edit_token: _t, edit_token_expires_at: _e, history: _h, ...publicRecord } = record;
       return {
         statusCode: 200,
         headers: CORS_HEADERS,
-        body: JSON.stringify({ success: true })
+        body: JSON.stringify({ success: true, isEdit: true, lang, record: publicRecord })
       };
     }
 
@@ -419,114 +383,17 @@ exports.handler = async (event) => {
       return { statusCode: 500, headers: CORS_HEADERS, body: JSON.stringify({ success: false, error: insertError.message }) };
     }
 
-    // Build edit link for the client email
+    // Build edit link to include in the client email (sent by send-emails function)
     const editLink = `${siteUrl}/?token=${encodeURIComponent(newEditToken)}&lang=${lang}`;
 
-    // ── Generate documents & send emails ────────────────────────────────────
-    if (resendApiKey) {
-      const now      = new Date();
-      const dateStr  = now.toISOString().split('T')[0];
-      const timeStr  = now.toTimeString().split(' ')[0].replace(/:/g, '-');
-      const brandPart  = sanitizeFilenamePart(record['brand-name'],   'brand');
-      const clientPart = sanitizeFilenamePart(record['client-name'],  'client');
-      const baseFilename = `${brandPart}_${clientPart}_${dateStr}_${timeStr}`;
-
-      // Exclude internal fields from documents
-      const docPayload = Object.fromEntries(
-        Object.entries(record).filter(([key]) => !DOCUMENT_SKIP_FIELDS.has(key))
-      );
-
-      // Fetch inspiration images for PDF/DOCX only (NOT for email)
-      const imageBuffers = {};
-      const rawRefs = record['q15-inspiration-refs'];
-      const parsedRefs = Array.isArray(rawRefs) ? rawRefs : [];
-      for (const refEntry of parsedRefs) {
-        try {
-          let smallRef = null;
-          try {
-            const parsedRef = typeof refEntry === 'string' ? JSON.parse(refEntry) : refEntry;
-            smallRef = parsedRef?.smallRef ?? null;
-          } catch (_) {
-            smallRef = refEntry;
-          }
-          if (!smallRef) continue;
-
-          const { data: imgData, error: imgErr } = await supabase.storage
-            .from('small-photos')
-            .download(smallRef);
-          if (imgErr || !imgData) {
-            console.warn('Could not fetch small photo:', smallRef, imgErr?.message);
-            continue;
-          }
-          imageBuffers[refEntry] = Buffer.from(await imgData.arrayBuffer());
-        } catch (imgFetchErr) {
-          console.warn('Inspiration image fetch error:', imgFetchErr.message);
-        }
-      }
-
-      let pdfBuffer, docxBuffer, markdown;
-      try {
-        markdown   = buildMarkdown(docPayload, lang);
-        docxBuffer = await buildDocxBuffer(docPayload, imageBuffers, lang);
-        pdfBuffer  = await buildPdfBuffer(docPayload, imageBuffers, lang);
-      } catch (err) {
-        console.error('Document generation failed', err);
-      }
-
-      // Admin notification — no inline images, just attachments
-      const adminMsg = buildAdminEmail({
-        brandName:    record['brand-name'],
-        clientName:   record['client-name'],
-        email:        record.email,
-        deliveryDate: record['delivery-date'],
-        country:      record['client-country']
-      });
-
-      if (adminEmail) {
-        const attachments = [];
-        if (markdown)   attachments.push({ filename: `${baseFilename}.md`,   content: Buffer.from(markdown, 'utf8').toString('base64') });
-        if (docxBuffer) attachments.push({ filename: `${baseFilename}.docx`, content: docxBuffer.toString('base64') });
-        if (pdfBuffer)  attachments.push({ filename: `${baseFilename}.pdf`,  content: pdfBuffer.toString('base64') });
-
-        try {
-          await sendResendEmail({
-            apiKey: resendApiKey, to: adminEmail, from: fromEmail,
-            subject: adminMsg.subject, html: adminMsg.html, text: adminMsg.text,
-            attachments
-          });
-        } catch (err) {
-          console.error('Admin email failed:', err.message);
-        }
-      }
-
-      // Client confirmation — includes edit link + PDF copy
-      const clientEmailAddr = String(record.email || '').trim();
-      if (clientEmailAddr.includes('@')) {
-        const clientMsg = buildClientEmail({
-          brandName:  record['brand-name'],
-          clientName: record['client-name'],
-          editLink
-        }, lang);
-        try {
-          await sendResendEmail({
-            apiKey: resendApiKey, to: clientEmailAddr, from: fromEmail,
-            subject: clientMsg.subject, html: clientMsg.html, text: clientMsg.text,
-            attachments: pdfBuffer
-              ? [{ filename: `${baseFilename}.pdf`, content: pdfBuffer.toString('base64') }]
-              : []
-          });
-        } catch (err) {
-          console.error('Client email failed:', err.message);
-        }
-      }
-    } else {
-      console.error('RESEND_API_KEY is missing; emails were not sent.');
-    }
-
+    // Return success immediately — PDF generation and email sending are handled
+    // by a fire-and-forget call to /.netlify/functions/send-emails from the client.
+    // Strip internal DB fields before exposing the record.
+    const { edit_token: _t, edit_token_expires_at: _e, history: _h, ...publicRecord } = record;
     return {
       statusCode: 200,
       headers: CORS_HEADERS,
-      body: JSON.stringify({ success: true })
+      body: JSON.stringify({ success: true, isEdit: false, editLink, lang, record: publicRecord })
     };
 
   } catch (err) {

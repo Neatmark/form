@@ -245,6 +245,9 @@ async function submitToSupabase(formData) {
 
     throw new Error(errorText || 'Submission failed.');
   }
+
+  // Return parsed JSON so caller can fire the send-emails background task
+  return response.json();
 }
 
 /* ── Draft persistence (localStorage) ──────────────────── */
@@ -636,6 +639,26 @@ document.addEventListener('DOMContentLoaded', () => {
       // Re-sync Q11 ranks
       syncQ11Ranks();
 
+      // ── Pre-fill Q15 inspiration images ─────────────────────────────────
+      // Restore previously uploaded images so the client can view, add, or
+      // remove them. q15UploadedRefs / renderQ15Preview / syncQ15HiddenInputs
+      // are all declared later in the same DOMContentLoaded scope; because
+      // initEditMode is async and has already awaited the fetch above, those
+      // declarations have already executed by the time we reach this point.
+      const existingRefs = Array.isArray(sub['q15-inspiration-refs'])
+        ? sub['q15-inspiration-refs']
+        : (sub['q15-inspiration-refs'] ? [sub['q15-inspiration-refs']] : []);
+
+      if (existingRefs.length > 0) {
+        // Populate the module-level ref array used by upload/remove handlers
+        q15UploadedRefs = existingRefs;
+        // Render thumbnails with individual remove buttons
+        renderQ15Preview();
+        // Inject hidden inputs so existing refs survive a save with no changes
+        syncQ15HiddenInputs();
+      }
+      // ── End Q15 pre-fill ─────────────────────────────────────────────────
+
       // Show edit mode banner, hide draft banner
       const editBanner = document.getElementById('editModeBanner');
       if (editBanner) editBanner.style.display = 'flex';
@@ -850,22 +873,38 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
 
-      await submitToSupabase(formData);
+      const submitResult = await submitToSupabase(formData);
 
       clearDraft();
 
+      // ── Show success to the user immediately — DB write is done ──────────
       if (window.__editToken) {
-        // Invalidate token so user can't re-submit it
         window.__editToken = null;
         await showAlert(window.i18n.t('messages.editSuccess', 'Your edits have been saved and sent to Neatmark!'), 'success');
       } else {
-        await showAlert(window.i18n.t('messages.submitSuccess'), 'success');
+        await showAlert(window.i18n.t('messages.submitSuccess', 'Thank you! Your form has been submitted and the files were emailed successfully.'), 'success');
+      }
+
+      // ── Fire email / PDF generation in the background (no await) ─────────
+      // The send-emails function runs inside its own Netlify Lambda execution.
+      // The client never waits for it — emails and documents arrive shortly after.
+      if (submitResult && submitResult.record) {
+        fetch('/.netlify/functions/send-emails', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            record:   submitResult.record,
+            isEdit:   submitResult.isEdit   ?? false,
+            editLink: submitResult.editLink ?? '',
+            lang:     submitResult.lang     ?? (window.i18n.getLanguage ? window.i18n.getLanguage() : 'en')
+          })
+        }).catch(err => console.warn('[send-emails] Background call failed:', err));
       }
 
     } catch (error) {
       console.error(error);
       const message = error instanceof Error ? error.message : 'Unknown error';
-      await showAlert(window.i18n.t('messages.submitError', {error: message}), 'error');
+      await showAlert(window.i18n.t('messages.submitError', {error: message}) || `Submission failed: ${message}`, 'error');
       if (window.turnstile) window.turnstile.reset('#cfTurnstile');
     } finally {
       if (submitButton) {
@@ -896,7 +935,7 @@ document.addEventListener('DOMContentLoaded', () => {
       form.querySelectorAll('.check-label').forEach(lbl => lbl.classList.remove('checked'));
       clearConfirmModal.setAttribute('aria-hidden', 'true');
       clearConfirmModal.style.display = 'none';
-      await showAlert(window.i18n.t('messages.clearSuccess'), 'success');
+      await showAlert(window.i18n.t('messages.clearSuccess', 'Form cleared. Your draft has been removed from your browser.'), 'success');
     });
 
     clearCancelBtn.addEventListener('click', () => {
