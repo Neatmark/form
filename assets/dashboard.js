@@ -435,7 +435,7 @@ async function loadSubmissions() {
   try {
     let token = null;
 
-    if (!isLocalDashboardMode && window.netlifyIdentity) {
+    if (window.netlifyIdentity) {
       const user = netlifyIdentity.currentUser();
       if (!user) {
         throw new Error('Not authenticated');
@@ -1392,7 +1392,7 @@ async function deleteSelectedSubmissions() {
   try {
     let token = null;
 
-    if (!isLocalDashboardMode && window.netlifyIdentity) {
+    if (window.netlifyIdentity) {
       const user = netlifyIdentity.currentUser();
       if (!user) {
         alert('Not authenticated');
@@ -2458,7 +2458,7 @@ async function saveEditedSubmission() {
   try {
     // ── Get admin JWT token ──────────────────────────────────────────────────
     let token = null;
-    if (!isLocalDashboardMode && window.netlifyIdentity) {
+    if (window.netlifyIdentity) {
       const user = netlifyIdentity.currentUser();
       if (!user) {
         alert('Not authenticated. Please log in again.');
@@ -2535,7 +2535,7 @@ async function deleteCurrentSubmission() {
   try {
     let token = null;
 
-    if (!isLocalDashboardMode && window.netlifyIdentity) {
+    if (window.netlifyIdentity) {
       const user = netlifyIdentity.currentUser();
       if (!user) {
         alert('Not authenticated');

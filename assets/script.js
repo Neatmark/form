@@ -516,6 +516,56 @@ document.addEventListener('DOMContentLoaded', () => {
   // Init wizard first so pages are shown correctly
   initWizard();
 
+  let turnstileWidgetId = null;
+
+  async function waitForTurnstile(maxAttempts = 60, intervalMs = 100) {
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+      if (window.turnstile && typeof window.turnstile.render === 'function') {
+        return true;
+      }
+      await new Promise(resolve => setTimeout(resolve, intervalMs));
+    }
+    return false;
+  }
+
+  async function initTurnstileWidget() {
+    const container = document.getElementById('cfTurnstile');
+    if (!container) return;
+
+    try {
+      const cfgResp = await fetch('/.netlify/functions/get-public-config', { cache: 'no-store' });
+      const cfg = await cfgResp.json();
+      const siteKey = String(cfg?.turnstileSiteKey || '').trim() || '1x00000000000000000000AA';
+
+      const ready = await waitForTurnstile();
+      if (!ready) {
+        console.warn('[Turnstile] API did not load in time.');
+        return;
+      }
+
+      turnstileWidgetId = window.turnstile.render('#cfTurnstile', {
+        sitekey: siteKey,
+        theme: container.getAttribute('data-theme') || 'auto',
+        size: container.getAttribute('data-size') || 'normal'
+      });
+      window.__turnstileWidgetId = turnstileWidgetId;
+    } catch (err) {
+      console.warn('[Turnstile] Failed to initialize widget from public config:', err);
+    }
+  }
+
+  function getTurnstileToken(form) {
+    const apiToken = (window.turnstile && turnstileWidgetId !== null)
+      ? String(window.turnstile.getResponse(turnstileWidgetId) || '').trim()
+      : '';
+    if (apiToken) return apiToken;
+
+    const turnstileInput = form.querySelector('input[name="cf-turnstile-response"]');
+    return turnstileInput ? String(turnstileInput.value || '').trim() : '';
+  }
+
+  initTurnstileWidget();
+
   if (window.lucide && typeof window.lucide.createIcons === 'function') {
     window.lucide.createIcons();
   }
@@ -1018,20 +1068,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     try {
-      // ── Turnstile verification ────────────────────────────────────────────
-      // Skip turnstile in token-edit mode (already validated on first submit)
-      if (!window.__editToken) {
-        const turnstileInput = form.querySelector('input[name="cf-turnstile-response"]');
-        const turnstileToken = turnstileInput ? turnstileInput.value.trim() : '';
-        if (!turnstileToken) {
-          await showAlert(
-            window.i18n.t('messages.turnstileError', 'Please wait for the security check to complete, then try again.'),
-            'error'
-          );
-          return;
-        }
-      }
-
       const formData = new FormData(form);
       formData.set('__requestOrigin', 'public-form');
       // Send the user's selected language so the server can translate emails and documents
@@ -1050,6 +1086,17 @@ document.addEventListener('DOMContentLoaded', () => {
           if (action === 'cancel') return;
           // action is always 'send-as-new' — no override path exists
         }
+
+        // ── Turnstile verification (capture as late as possible) ───────────
+        const turnstileToken = getTurnstileToken(form);
+        if (!turnstileToken) {
+          await showAlert(
+            window.i18n.t('messages.turnstileError', 'Please wait for the security check to complete, then try again.'),
+            'error'
+          );
+          return;
+        }
+        formData.set('cf-turnstile-response', turnstileToken);
       }
 
       const submitResult = await submitToSupabase(formData);
@@ -1085,8 +1132,19 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (error) {
       console.error(error);
       const message = error instanceof Error ? error.message : 'Unknown error';
-      await showAlert(window.i18n.t('messages.submitError', {error: message}) || `Submission failed: ${message}`, 'error');
-      if (window.turnstile) window.turnstile.reset('#cfTurnstile');
+      const isInvalidTurnstile = /invalid-input-response/i.test(message);
+      if (isInvalidTurnstile) {
+        await showAlert(
+          window.i18n.t('messages.turnstileExpired', 'Security check expired. Please complete it again, then resubmit.'),
+          'error'
+        );
+      } else {
+        await showAlert(window.i18n.t('messages.submitError', {error: message}) || `Submission failed: ${message}`, 'error');
+      }
+      if (window.turnstile) {
+        if (turnstileWidgetId !== null) window.turnstile.reset(turnstileWidgetId);
+        else window.turnstile.reset('#cfTurnstile');
+      }
     } finally {
       if (submitButton) {
         submitButton.disabled = false;

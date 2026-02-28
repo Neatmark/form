@@ -213,9 +213,23 @@ exports.handler = async (event) => {
   delete payload.website;
 
   // ── Cloudflare Turnstile ────────────────────────────────────────────────────
-  const turnstileSecret = process.env.TURNSTILE_SECRET_KEY;
+  const turnstileSecret = String(process.env.TURNSTILE_SECRET_KEY || '').trim();
+  const isTurnstileTestingSecret = turnstileSecret === '1x0000000000000000000000000000000AA';
+  const requestHost = String(event.headers['host'] || event.headers['x-forwarded-host'] || '');
+  const requestOrigin = String(event.headers['origin'] || event.headers['referer'] || '');
+  const isLocalRequest = /localhost|127\.0\.0\.1/i.test(requestHost) || /localhost|127\.0\.0\.1/i.test(requestOrigin);
+  const isNetlifyDevRuntime = String(process.env.NETLIFY_DEV || '').trim().toLowerCase() === 'true';
+  const isLocalEnv =
+    isLocalRequest ||
+    isNetlifyDevRuntime ||
+    /localhost|127\.0\.0\.1/i.test(String(ALLOWED_ORIGIN)) ||
+    /localhost|127\.0\.0\.1/i.test(String(siteUrl));
+  const localTurnstileBypass = String(process.env.TURNSTILE_LOCAL_BYPASS || '').trim().toLowerCase() === 'true';
   if (turnstileSecret) {
-    const turnstileToken = String(payload['cf-turnstile-response'] || '').trim();
+    const rawTurnstileToken = payload['cf-turnstile-response'];
+    const turnstileToken = Array.isArray(rawTurnstileToken)
+      ? rawTurnstileToken.map(item => String(item || '').trim()).find(Boolean) || ''
+      : String(rawTurnstileToken || '').trim();
     delete payload['cf-turnstile-response'];
 
     if (!turnstileToken) {
@@ -226,33 +240,45 @@ exports.handler = async (event) => {
       };
     }
 
-    try {
-      const verifyRes = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({
-          secret:   turnstileSecret,
-          response: turnstileToken,
-          remoteip: event.headers['x-forwarded-for'] || event.headers['client-ip'] || ''
-        }).toString()
-      });
-      const verifyData = await verifyRes.json();
-      if (!verifyData.success) {
+    if (isLocalEnv && (isTurnstileTestingSecret || localTurnstileBypass || isNetlifyDevRuntime)) {
+      console.info('[Turnstile] Local dev bypass active; skipping remote verification.');
+    } else {
+      try {
+        const verifyRes = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({
+            secret:   turnstileSecret,
+            response: turnstileToken,
+            remoteip: event.headers['x-forwarded-for'] || event.headers['client-ip'] || ''
+          }).toString()
+        });
+        const verifyData = await verifyRes.json();
+        if (!verifyData.success) {
+          const errorCodes = Array.isArray(verifyData['error-codes'])
+            ? verifyData['error-codes'].join(', ')
+            : 'unknown';
+          console.warn(`[Turnstile] Verification failed: ${errorCodes}`);
+          return {
+            statusCode: 403,
+            headers: CORS_HEADERS,
+            body: JSON.stringify({
+              success: false,
+              error: 'Security check failed. Please reload and try again.',
+              details: errorCodes !== 'unknown' ? `Code: ${errorCodes}.` : undefined
+            })
+          };
+        }
+      } catch (err) {
+        console.error('[Turnstile] Verification request failed:', err.message);
+        // Fail closed — if we cannot reach Cloudflare, reject the submission.
+        // This prevents Turnstile from being silently bypassed via a network error.
         return {
-          statusCode: 403,
+          statusCode: 503,
           headers: CORS_HEADERS,
-          body: JSON.stringify({ success: false, error: 'Security check failed. Please reload and try again.' })
+          body: JSON.stringify({ success: false, error: 'Security check could not be completed. Please try again in a moment.' })
         };
       }
-    } catch (err) {
-      console.error('[Turnstile] Verification request failed:', err.message);
-      // Fail closed — if we cannot reach Cloudflare, reject the submission.
-      // This prevents Turnstile from being silently bypassed via a network error.
-      return {
-        statusCode: 503,
-        headers: CORS_HEADERS,
-        body: JSON.stringify({ success: false, error: 'Security check could not be completed. Please try again in a moment.' })
-      };
     }
   } else {
     delete payload['cf-turnstile-response'];

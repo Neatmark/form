@@ -8,7 +8,7 @@
 
 [functions]
   node_bundler = "esbuild"
-  external_node_modules = ["sharp", "pdf-lib", "@pdf-lib/fontkit", "docx"]
+  external_node_modules = ["sharp", "pdf-lib", "@pdf-lib/fontkit", "docx", "puppeteer-core"]
   included_files = ["assets/Norsal.ttf"]
 
 # PDF/DOCX generation via pdf-lib is fast — 10s is plenty
@@ -47,3 +47,4 @@
   to = "/dashboard.html"
   status = 200
   force = true
+
