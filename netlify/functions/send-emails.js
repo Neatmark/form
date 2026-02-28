@@ -51,8 +51,8 @@ function verifySendToken(sendToken, sendTimestamp, record, editLink = '') {
   const ts  = Number(sendTimestamp);
   const age = Date.now() - ts;
 
-  // Reject tokens older than 5 minutes or from the future
-  if (age > 5 * 60 * 1000 || age < 0) return false;
+  // Reject tokens older than 2 minutes or from the future
+  if (age > 2 * 60 * 1000 || age < 0) return false;
 
   // Reproduce the record hash exactly as submit.js computed it
   const recordHash = crypto.createHash('sha256')

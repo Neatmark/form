@@ -32,7 +32,10 @@ let pendingLogoObjectUrl = '';
 let removeExistingLogo = false;
 let editDirty = false;
 const host = String(window.location.hostname || '').toLowerCase();
-const isLocalDashboardMode = host === 'localhost' || host === '127.0.0.1' || String(window.location.port || '') === '8888';
+// Auth bypass is restricted STRICTLY to loopback addresses.
+// The previous `port === '8888'` fallback could bypass auth if the dev server
+// was accessed from a LAN IP (e.g. 192.168.x.x:8888). Removing it.
+const isLocalDashboardMode = host === 'localhost' || host === '127.0.0.1';
 
 if (isLocalDashboardMode) {
   console.warn(

@@ -52,7 +52,7 @@ exports.handler = async (event) => {
   const supabaseUrl = process.env.SUPABASE_URL;
   const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_KEY;
   const clientIp = getClientIp(event);
-  if (await isRateLimited(supabaseUrl, supabaseKey, clientIp, 'get-upload-token', 20, 60 * 1000)) {
+  if (await isRateLimited(supabaseUrl, supabaseKey, clientIp, 'get-upload-token', 5, 60 * 1000)) {
     return {
       statusCode: 429,
       headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },

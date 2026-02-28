@@ -21,6 +21,15 @@ const { htmlToPdfBuffer, buildArabicHtml } = require('./_arabicPdfFromHtml');
 
 const MAX_FIELD_VALUE_LENGTH = 6000;
 
+/**
+ * Strip control characters from email subjects to prevent header injection.
+ * Newlines (\r, \n) and tabs in a subject header can trick some mail parsers
+ * into interpreting extra headers in folded lines.
+ */
+function sanitizeSubject(str) {
+  return String(str || '').replace(/[\r\n\t]/g, ' ').trim();
+}
+
 const FIELD_LABELS = {
   'client-name':               'Client Name',
   'brand-name':                'Brand / Business',
@@ -1347,7 +1356,7 @@ function buildAdminEmail({ brandName, clientName, email, deliveryDate, country }
     </p>`;
 
   return {
-    subject: `New Intake: ${String(brandName || 'Unknown Brand')} · ${String(clientName || 'Unknown Client')}`,
+    subject: sanitizeSubject(`New Intake: ${String(brandName || 'Unknown Brand')} · ${String(clientName || 'Unknown Client')}`),    
     html: emailWrapper(bodyHtml),
     text: `New Client Intake\n\nClient: ${String(clientName)}\nBrand: ${String(brandName)}\nEmail: ${String(email)}\nDelivery: ${String(deliveryDate)}${country ? `\nCountry: ${country}` : ''}\n\nFull submission attached.`
   };
@@ -1396,7 +1405,7 @@ function buildClientEmail({ brandName, clientName, editLink }, lang = 'en') {
     </div>`;
 
   return {
-    subject: copy.clientSubject(String(brandName || 'your brand')),
+    subject: sanitizeSubject(copy.clientSubject(String(brandName || 'your brand'))),
     html: emailWrapper(bodyHtml, lang),
     text: copy.clientPlainText(String(clientName), String(brandName), editLink)
   };
@@ -1429,7 +1438,7 @@ function buildEditConfirmationEmail({ brandName, clientName }, lang = 'en') {
     </div>`;
 
   return {
-    subject: copy.editSubject(String(brandName || 'your brand')),
+    subject: sanitizeSubject(copy.editSubject(String(brandName || 'your brand'))),
     html: emailWrapper(bodyHtml, lang),
     text: copy.editPlainText(String(clientName), String(brandName), editedAt)
   };

@@ -239,6 +239,26 @@ exports.handler = async (event, context) => {
       }
     }
 
+    // Website URL validation
+    if (key === 'client-website' && normalized) {
+      try {
+        const u = new URL(String(normalized));
+        if (u.protocol !== 'http:' && u.protocol !== 'https:') {
+          return {
+            statusCode: 400,
+            headers: CORS_HEADERS,
+            body: JSON.stringify({ error: 'Website must use http or https.' })
+          };
+        }
+      } catch {
+        return {
+          statusCode: 400,
+          headers: CORS_HEADERS,
+          body: JSON.stringify({ error: 'Invalid website URL format.' })
+        };
+      }
+    }
+
     // q15-inspiration-refs path safety
     if (key === 'q15-inspiration-refs') {
       const refs = Array.isArray(normalized) ? normalized : [];

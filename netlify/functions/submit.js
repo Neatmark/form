@@ -306,6 +306,27 @@ exports.handler = async (event) => {
     };
   }
 
+  // ── Website URL validation ──────────────────────────────────────────────────
+  const websiteVal = String(payload['client-website'] || '').trim();
+  if (websiteVal) {
+    try {
+      const u = new URL(websiteVal);
+      if (u.protocol !== 'http:' && u.protocol !== 'https:') {
+        return {
+          statusCode: 400,
+          headers: CORS_HEADERS,
+          body: JSON.stringify({ success: false, error: 'Website must use http or https.' })
+        };
+      }
+    } catch {
+      return {
+        statusCode: 400,
+        headers: CORS_HEADERS,
+        body: JSON.stringify({ success: false, error: 'Invalid website URL format.' })
+      };
+    }
+  }
+
   // ── Enum field validation (single-value radio fields) ───────────────────────
   for (const [field, allowed] of Object.entries(ENUM_ALLOWLISTS)) {
     const val = payload[field];

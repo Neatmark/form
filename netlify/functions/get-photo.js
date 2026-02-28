@@ -157,7 +157,7 @@ exports.handler = async (event, context) => {
       headers: {
         ...CORS_HEADERS,
         'Content-Type':        contentTypeFromPath(ref),
-        'Content-Disposition': `inline; filename="${path.basename(ref)}"`,
+        'Content-Disposition': `inline; filename="${path.basename(ref).replace(/["\r\n]/g, '_')}"`,            
         'Cache-Control':       'private, max-age=3600'
       },
       body: buffer.toString('base64'),

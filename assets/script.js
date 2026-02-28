@@ -1030,32 +1030,16 @@ document.addEventListener('DOMContentLoaded', () => {
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
 
-    // ── Custom validation: Q9 and Q13 must have at least one selection ───────
-    const q9Checked  = form.querySelectorAll('input[name="q9-color"]:checked');
-    const q13Checked = form.querySelectorAll('input[name="q13-deliverables"]:checked');
-
-    const q9Error  = document.getElementById('q9ValidationError');
-    const q13Error = document.getElementById('q13ValidationError');
-
-    let validationFailed = false;
-
-    if (q9Checked.length === 0) {
-      if (q9Error) q9Error.classList.add('visible');
-      q9Error?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      validationFailed = true;
-    } else {
-      if (q9Error) q9Error.classList.remove('visible');
+    // ── Validate ALL wizard pages before submitting ──────────────────────────
+    // The form uses novalidate so browser native validation is off.
+    // validatePage() handles required fields, radio groups, and Q9/Q13 checkboxes.
+    for (let p = 1; p <= TOTAL_PAGES; p++) {
+      if (!validatePage(p)) {
+        // Jump to the first failing page so the user sees the error
+        if (p !== currentPage) showPage(p, p < currentPage);
+        return;
+      }
     }
-
-    if (q13Checked.length === 0) {
-      if (q13Error) q13Error.classList.add('visible');
-      if (!validationFailed) q13Error?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      validationFailed = true;
-    } else {
-      if (q13Error) q13Error.classList.remove('visible');
-    }
-
-    if (validationFailed) return;
 
     const submitButton = document.getElementById('submitBtn') || form.querySelector('button[type="submit"]');
     const originalHTML = submitButton ? submitButton.innerHTML : '';
