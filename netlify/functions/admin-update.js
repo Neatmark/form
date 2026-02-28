@@ -56,7 +56,7 @@ const ADMIN_UPDATABLE_FIELDS = new Set([
   'q1-business-description', 'q2-problem-transformation', 'q3-ideal-customer',
   'q3b-customer-desire', 'q4-competitors', 'q5-brand-personality', 'q6-positioning',
   'q-launch-context', 'q7-decision-maker', 'q7-decision-maker-other', 'q8-brands-admired',
-  'q9-color', 'q10-colors-to-avoid', 'q11-aesthetic', 'q11-aesthetic-description',
+  'q9-color', 'q9-color-feelings', 'q10-colors-to-avoid', 'q11-aesthetic', 'q11-aesthetic-description',
   'q12-existing-assets', 'q13-deliverables', 'q14-budget',
   'q15-inspiration-refs', 'q16-anything-else', 'brand-logo-ref'
 ]);
@@ -78,6 +78,7 @@ const FIELD_MAXLENGTH = {
   'q6-positioning':            300,
   'q-launch-context':         2000,
   'q8-brands-admired':        2000,
+  'q9-color-feelings':         300,
   'q10-colors-to-avoid':       300,
   'q11-aesthetic-description':1000,
   'q12-existing-assets':       300,
