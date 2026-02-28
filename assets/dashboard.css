@@ -2977,3 +2977,19 @@ html[dir="rtl"] .dash-lang-menu {
 
 /* Login screen hidden state (show by default, hide when dashboard is active) */
 .login-screen.hidden { display: none !important; }
+
+/* ── Inline-style replacements (CSP compliance) ────────────────────────────── */
+/* Logo dropzone upload icon */
+.icon-upload-sm {
+  width: 15px;
+  height: 15px;
+  margin-right: 6px;
+  flex-shrink: 0;
+}
+
+/* Inspiration image zoom icon inside thumbnail overlay */
+.q20-zoom-icon {
+  width: 16px;
+  height: 16px;
+  color: #fff;
+}

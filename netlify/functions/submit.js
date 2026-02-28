@@ -4,6 +4,9 @@ const crypto           = require('crypto');
 
 // ── CORS ──────────────────────────────────────────────────────────────────────
 const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || '*';
+if (ALLOWED_ORIGIN === '*') {
+  console.warn('[security] ALLOWED_ORIGIN is not set — CORS is open to all origins. Set ALLOWED_ORIGIN in Netlify environment variables.');
+}
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin':  ALLOWED_ORIGIN,
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
@@ -71,6 +74,36 @@ const ALLOWED_FIELDS = [
 ];
 
 const ARRAY_FIELDS = new Set(['q9-color', 'q11-aesthetic', 'q13-deliverables', 'q15-inspiration-refs']);
+
+// ── Enum allowlists (mirrors form HTML values) ────────────────────────────────
+const ENUM_ALLOWLISTS = {
+  'delivery-date':     new Set(['ASAP', '2\u20134 weeks', '1\u20132 months', '3+ months']),
+  'q7-decision-maker': new Set(['Me / myself', 'My boss / the boss', 'Other']),
+  'q14-budget':        new Set([
+    'Low / lowest possible cost',
+    'Mid-range / balanced price\u2013quality',
+    'High / premium',
+    'Premium / full brand investment'
+  ])
+};
+
+const ARRAY_ENUM_ALLOWLISTS = {
+  'q9-color': new Set([
+    'Warm neutrals', 'Cool neutrals', 'Deep & moody', 'Bold & saturated',
+    'Pastels', 'Monochrome', 'Metallic', 'Nature-inspired', 'No preference'
+  ]),
+  'q11-aesthetic': new Set([
+    'Luxury & refined', 'Organic & artisan', 'Minimal & functional', 'Bold & graphic',
+    'Playful & illustrative', 'Editorial & intellectual', 'Tech-forward', 'Nostalgic & heritage'
+  ]),
+  'q13-deliverables': new Set([
+    'Primary logo', 'Logo variations', 'Color & typography', 'Brand guidelines',
+    'Stationery', 'Social media', 'Website design', 'Packaging'
+  ])
+};
+
+const EMAIL_RE     = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const SAFE_PATH_RE = /^[a-zA-Z0-9._/()-]+$/;
 
 // ── Field length limits (mirrors client-side maxlength) ───────────────────────
 const FIELD_MAXLENGTH = {
@@ -239,6 +272,86 @@ exports.handler = async (event) => {
         headers: CORS_HEADERS,
         body: JSON.stringify({ success: false, error: `Field "${field}" exceeds maximum length of ${max} characters.` })
       };
+    }
+  }
+
+  // ── Email format validation ─────────────────────────────────────────────────
+  const emailVal = String(payload['email'] || '').trim();
+  if (emailVal && !EMAIL_RE.test(emailVal)) {
+    return {
+      statusCode: 400,
+      headers: CORS_HEADERS,
+      body: JSON.stringify({ success: false, error: 'Invalid email address format.' })
+    };
+  }
+
+  // ── Enum field validation (single-value radio fields) ───────────────────────
+  for (const [field, allowed] of Object.entries(ENUM_ALLOWLISTS)) {
+    const val = payload[field];
+    if (val !== undefined && val !== null && val !== '' && !allowed.has(String(val))) {
+      return {
+        statusCode: 400,
+        headers: CORS_HEADERS,
+        body: JSON.stringify({ success: false, error: `Invalid value for field "${field}".` })
+      };
+    }
+  }
+
+  // ── Array enum field validation + item count cap ────────────────────────────
+  for (const [field, allowed] of Object.entries(ARRAY_ENUM_ALLOWLISTS)) {
+    const val = payload[field];
+    const arr = Array.isArray(val) ? val : (val ? [val] : []);
+    if (arr.length > 20) {
+      return {
+        statusCode: 400,
+        headers: CORS_HEADERS,
+        body: JSON.stringify({ success: false, error: `Too many values for field "${field}" (max 20).` })
+      };
+    }
+    for (const item of arr) {
+      if (!allowed.has(String(item))) {
+        return {
+          statusCode: 400,
+          headers: CORS_HEADERS,
+          body: JSON.stringify({ success: false, error: `Invalid value "${item}" for field "${field}".` })
+        };
+      }
+    }
+  }
+
+  // ── q15-inspiration-refs: cap count and validate storage paths ──────────────
+  const q15Raw = payload['q15-inspiration-refs'];
+  const q15Arr = Array.isArray(q15Raw) ? q15Raw : (q15Raw ? [q15Raw] : []);
+  if (q15Arr.length > 10) {
+    return {
+      statusCode: 400,
+      headers: CORS_HEADERS,
+      body: JSON.stringify({ success: false, error: 'Too many inspiration images (max 10).' })
+    };
+  }
+  for (const refEntry of q15Arr) {
+    try {
+      const parsed = typeof refEntry === 'string' ? JSON.parse(refEntry) : refEntry;
+      for (const pathKey of ['smallRef', 'originalRef']) {
+        const p = String(parsed?.[pathKey] || '');
+        if (p && (!SAFE_PATH_RE.test(p) || p.includes('..'))) {
+          return {
+            statusCode: 400,
+            headers: CORS_HEADERS,
+            body: JSON.stringify({ success: false, error: 'Invalid inspiration image path.' })
+          };
+        }
+      }
+    } catch {
+      // Legacy plain-string ref
+      const refStr = String(refEntry);
+      if (refStr && (!SAFE_PATH_RE.test(refStr) || refStr.includes('..'))) {
+        return {
+          statusCode: 400,
+          headers: CORS_HEADERS,
+          body: JSON.stringify({ success: false, error: 'Invalid inspiration image path.' })
+        };
+      }
     }
   }
 

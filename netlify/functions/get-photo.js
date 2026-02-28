@@ -20,12 +20,43 @@ const { createClient } = require('@supabase/supabase-js');
 
 const ALLOWED_BUCKETS = new Set(['small-photos', 'original-photos', 'logos']);
 
+// Buckets that contain admin-only assets.
+// original-photos and logos are never accessed by the public form.
+// small-photos IS accessed by the public form for Q15 upload previews, so it stays open.
+const ADMIN_ONLY_BUCKETS = new Set(['original-photos', 'logos']);
+
 const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || '*';
+if (ALLOWED_ORIGIN === '*') {
+  console.warn('[security] ALLOWED_ORIGIN is not set — CORS is open to all origins. Set ALLOWED_ORIGIN in Netlify environment variables.');
+}
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin':  ALLOWED_ORIGIN,
   'Access-Control-Allow-Methods': 'GET, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type'
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization'
 };
+
+// ── Admin auth (mirrors get-submissions.js) ───────────────────────────────────
+function requireAdmin(context) {
+  const user = context?.clientContext?.user;
+  if (!user) return { ok: false, status: 401, error: 'Unauthorized' };
+
+  const adminEmails = String(process.env.ADMIN_EMAILS || '')
+    .split(',')
+    .map(e => e.trim().toLowerCase())
+    .filter(Boolean);
+  const userEmail = String(user.email || '').toLowerCase();
+  const userRoles = Array.isArray(user?.app_metadata?.roles)
+    ? user.app_metadata.roles.map(r => String(r).toLowerCase())
+    : [];
+
+  if (!userRoles.includes('admin') && !adminEmails.includes(userEmail)) {
+    if (adminEmails.length === 0) {
+      console.error('[get-photo] ADMIN_EMAILS is not configured — denying access to restricted bucket.');
+    }
+    return { ok: false, status: 403, error: 'Forbidden' };
+  }
+  return { ok: true };
+}
 
 function contentTypeFromPath(ref) {
   const lower = String(ref).toLowerCase();
@@ -37,7 +68,7 @@ function contentTypeFromPath(ref) {
   return 'application/octet-stream';
 }
 
-exports.handler = async (event) => {
+exports.handler = async (event, context) => {
   if (event.httpMethod === 'OPTIONS') {
     return { statusCode: 204, headers: CORS_HEADERS, body: '' };
   }
@@ -66,6 +97,20 @@ exports.handler = async (event) => {
       headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
       body: JSON.stringify({ error: 'Invalid or disallowed bucket.' })
     };
+  }
+
+  // ── Auth guard for admin-only buckets ───────────────────────────────────────
+  // small-photos is used by the public form for upload previews — keep it open.
+  // logos and original-photos are dashboard-only and require admin login.
+  if (ADMIN_ONLY_BUCKETS.has(bucket)) {
+    const auth = requireAdmin(context);
+    if (!auth.ok) {
+      return {
+        statusCode: auth.status,
+        headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ error: auth.error })
+      };
+    }
   }
 
   // Validate ref — allow alphanumeric, hyphens, underscores, dots, forward slashes only

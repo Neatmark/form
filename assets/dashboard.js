@@ -30,6 +30,14 @@ let editDirty = false;
 const host = String(window.location.hostname || '').toLowerCase();
 const isLocalDashboardMode = host === 'localhost' || host === '127.0.0.1' || String(window.location.port || '') === '8888';
 
+if (isLocalDashboardMode) {
+  console.warn(
+    '%c[SECURITY] Dashboard is running in local dev mode — all authentication checks are BYPASSED. ' +
+    'Never expose this to a network or run `netlify dev` on a shared machine.',
+    'color: #ff6b35; font-weight: bold; font-size: 13px;'
+  );
+}
+
 function escapeHtml(value) {
   return String(value ?? '')
     .replace(/&/g, '&amp;')
@@ -932,7 +940,7 @@ function validateEditData(data) {
   return errors;
 }
 
-async function uploadLogoFile(file) {
+async function uploadLogoFile(file, token) {
   const contentBase64 = await new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => {
@@ -944,11 +952,12 @@ async function uploadLogoFile(file) {
     reader.readAsDataURL(file);
   });
 
+  const headers = { 'Content-Type': 'application/json' };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+
   const response = await fetch('/.netlify/functions/upload-logo', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
+    headers,
     body: JSON.stringify({
       filename: file.name,
       mimeType: file.type,
@@ -1284,8 +1293,6 @@ function renderSubmissions(submissions) {
   if (window.lucide && typeof window.lucide.createIcons === 'function') {
     window.lucide.createIcons();
   }
-
-  // Restore persisted theme and update button state
   applyTheme(getDashActiveMode());
 
   // Listen for OS changes when in auto mode
@@ -1489,7 +1496,7 @@ function renderDetailPanel() {
           <div class="logo-upload-row">
             <label class="logo-dropzone" id="logoDropzone" tabindex="0" aria-label="Upload brand logo">
               <input id="logoFileInput" type="file" accept=".png,.jpg,.jpeg,.svg,.webp,image/png,image/jpeg,image/svg+xml,image/webp" hidden />
-              <i data-lucide="upload" class="icon" style="width:15px;height:15px;margin-right:6px;"></i>
+              <i data-lucide="upload" class="icon icon-upload-sm"></i>
               <span>${dt('detail.edit.logoUpload', 'Drop logo or click to upload')}</span>
             </label>
             <button class="modal-icon-btn logo-remove-btn" id="removeLogoBtn" type="button" aria-label="Remove logo" title="Remove logo">
@@ -1625,7 +1632,7 @@ function renderDetailPanel() {
         ? `<div class="q20-dash-preview-grid">${refs.map((ref, i) => {
             const smallUrl    = escapeHtml(getSmallPhotoUrl(String(ref)));
             const originalUrl = escapeHtml(getOriginalPhotoUrl(String(ref)));
-            return `<div class="q20-dash-thumb-wrap" title="Click to open full resolution" style="cursor:pointer;" data-original-url="${originalUrl}"><img src="${smallUrl}" class="q20-dash-thumb" alt="Inspiration ${i + 1}" loading="lazy" /><div class="q20-dash-thumb-overlay"><i data-lucide="zoom-in" style="width:16px;height:16px;color:#fff;"></i></div></div>`;
+            return `<div class="q20-dash-thumb-wrap" title="Click to open full resolution" data-original-url="${originalUrl}"><img src="${smallUrl}" class="q20-dash-thumb" alt="Inspiration ${i + 1}" loading="lazy" /><div class="q20-dash-thumb-overlay"><i data-lucide="zoom-in" class="icon q20-zoom-icon"></i></div></div>`;
           }).join('')}</div>`
         : `<div class="qa-value qa-empty">${dt('detail.questionnaire.noImages', 'No images uploaded')}</div>`;
       return `<article class="qa-card"><div class="qa-label-row"><span class="qa-num-badge">15</span><span class="qa-label-text">Inspiration Images</span></div>${imagesHtml}</article>`;
@@ -2027,55 +2034,56 @@ async function saveEditedSubmission() {
   }
 
   try {
-    const payload = cloneSubmissionData(editDraftData || {});
-
-    payload.__editedBy = 'admin';
-    payload.editedBy = 'admin';
-
-    const newHistoryEntry = {
-      label: 'edited',
-      date: new Date().toISOString(),
-      editedBy: 'admin'
-    };
-
-    if (!newHistoryEntry.editedBy || !['admin', 'client'].includes(newHistoryEntry.editedBy)) {
-      console.error('History entry is missing a valid editedBy value:', newHistoryEntry);
-      alert(dt('dashboard.alert.saveError', 'Unable to save changes due to missing editor attribution.'));
-      return;
+    // ── Get admin JWT token ──────────────────────────────────────────────────
+    let token = null;
+    if (!isLocalDashboardMode && window.netlifyIdentity) {
+      const user = netlifyIdentity.currentUser();
+      if (!user) {
+        alert('Not authenticated. Please log in again.');
+        return;
+      }
+      token = await user.jwt();
     }
 
+    const payload = cloneSubmissionData(editDraftData || {});
+
+    // Upload logo if a new one was staged
     if (pendingLogoFile) {
-      const logoRef = await uploadLogoFile(pendingLogoFile);
+      const logoRef = await uploadLogoFile(pendingLogoFile, token);
       payload['brand-logo-ref'] = logoRef;
     } else if (removeExistingLogo) {
       payload['brand-logo-ref'] = '';
     }
 
-    payload.__submissionAction = 'override';
-    payload.__overrideSubmissionId = String(currentSubmission.id);
-    payload.__editedBy = payload.__editedBy || newHistoryEntry.editedBy;
-    payload.editedBy = payload.__editedBy;
+    // ── Call admin-update (authenticated, dedicated endpoint) ───────────────
+    // Previously this incorrectly called /submit with __overrideSubmissionId,
+    // which was silently stripped and created duplicate submissions instead.
+    const headers = { 'Content-Type': 'application/json' };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
 
-    const response = await fetch('/.netlify/functions/submit', {
+    const response = await fetch('/.netlify/functions/admin-update', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(payload)
+      headers,
+      body: JSON.stringify({
+        submissionId: currentSubmission.id,
+        fields: payload,
+        historyEntry: { editedBy: 'admin' }
+      })
     });
 
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(errorText || 'Failed to save changes.');
+      let errorMsg = 'Failed to save changes.';
+      try { errorMsg = (await response.json()).error || errorMsg; } catch (_) {}
+      throw new Error(errorMsg);
     }
 
-    const result = await response.json();
-    const updatedSubmission = result.submission || {
-      ...currentSubmission,
-      data: payload
-    };
+    // Update local state
+    const updatedData = { ...((currentSubmission.data) || {}), ...payload };
+    const updatedSubmission = { ...currentSubmission, data: updatedData };
 
-    allSubmissions = allSubmissions.map(item => String(item.id) === String(updatedSubmission.id) ? updatedSubmission : item);
+    allSubmissions = allSubmissions.map(item =>
+      String(item.id) === String(updatedSubmission.id) ? updatedSubmission : item
+    );
     currentSubmission = updatedSubmission;
     isEditingSubmission = false;
     editDirty = false;

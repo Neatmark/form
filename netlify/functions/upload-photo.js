@@ -30,6 +30,9 @@ const ALLOWED_MIME = new Set([
 ]);
 
 const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || '*';
+if (ALLOWED_ORIGIN === '*') {
+  console.warn('[security] ALLOWED_ORIGIN is not set — CORS is open to all origins. Set ALLOWED_ORIGIN in Netlify environment variables.');
+}
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin':  ALLOWED_ORIGIN,
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
@@ -154,10 +157,18 @@ exports.handler = async (event) => {
   // Verify the actual file signature matches the declared MIME type.
   // Prevents clients from disguising non-image files as images.
   function detectMimeFromBuffer(buf) {
-    if (buf[0] === 0xFF && buf[1] === 0xD8 && buf[2] === 0xFF)                            return 'image/jpeg';
-    if (buf[0] === 0x89 && buf[1] === 0x50 && buf[2] === 0x4E && buf[3] === 0x47)         return 'image/png';
-    if (buf[0] === 0x52 && buf[1] === 0x49 && buf[2] === 0x46 && buf[3] === 0x46)         return 'image/webp'; // RIFF container (WebP)
-    if (buf[0] === 0x47 && buf[1] === 0x49 && buf[2] === 0x46)                            return 'image/gif';
+    if (buf[0] === 0xFF && buf[1] === 0xD8 && buf[2] === 0xFF)
+      return 'image/jpeg';
+    if (buf[0] === 0x89 && buf[1] === 0x50 && buf[2] === 0x4E && buf[3] === 0x47)
+      return 'image/png';
+    // WebP: RIFF container (bytes 0-3) + "WEBP" signature (bytes 8-11).
+    // Checking only RIFF would falsely match WAV audio files.
+    if (buf[0] === 0x52 && buf[1] === 0x49 && buf[2] === 0x46 && buf[3] === 0x46 &&
+        buf.length > 11 &&
+        buf[8] === 0x57 && buf[9] === 0x45 && buf[10] === 0x42 && buf[11] === 0x50)
+      return 'image/webp';
+    if (buf[0] === 0x47 && buf[1] === 0x49 && buf[2] === 0x46)
+      return 'image/gif';
     return null;
   }
   const detectedMime = detectMimeFromBuffer(originalBuffer);

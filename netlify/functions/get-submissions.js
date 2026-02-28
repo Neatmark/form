@@ -1,6 +1,9 @@
 const { createClient } = require('@supabase/supabase-js');
 
 const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || '*';
+if (ALLOWED_ORIGIN === '*') {
+  console.warn('[security] ALLOWED_ORIGIN is not set — CORS is open to all origins. Set ALLOWED_ORIGIN in Netlify environment variables.');
+}
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': ALLOWED_ORIGIN,
   'Access-Control-Allow-Methods': 'GET, OPTIONS',
@@ -81,7 +84,10 @@ exports.handler = async (event, context) => {
 
     const submissions = Array.isArray(data)
       ? data.map((row) => {
-          const { id, created_at, history, ...rest } = row || {};
+          // Strip edit_token and edit_token_expires_at — these are single-use
+          // client secrets that must never be exposed to admin sessions.
+          // eslint-disable-next-line no-unused-vars
+          const { id, created_at, history, edit_token, edit_token_expires_at, ...rest } = row || {};
           return {
             id: String(id || ''),
             created_at,

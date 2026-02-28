@@ -210,11 +210,17 @@
   </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
-<script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
-<script src="https://unpkg.com/dayjs@1.11.13/dayjs.min.js"></script>
-<script src="https://unpkg.com/dayjs@1.11.13/plugin/relativeTime.js"></script>
-<script src="https://unpkg.com/lucide@latest"></script>
+<!-- ── Self-hosted third-party scripts ──────────────────────────────────────
+     Previously loaded from cdnjs.cloudflare.com and unpkg.com.
+     Now served locally from /assets/ to eliminate CDN supply-chain risk.
+     Files are pinned copies of the exact npm versions:
+       jspdf@2.5.2, docx@8.5.0, dayjs@1.11.13
+  ─────────────────────────────────────────────────────────────────────── -->
+<script src="/assets/jspdf.umd.min.js"></script>
+<script src="/assets/docx.umd.js"></script>
+<script src="/assets/dayjs.min.js"></script>
+<script src="/assets/dayjs-relativeTime.js"></script>
+<script src="/assets/lucide.local.js"></script>
 <script src="assets/dashboard.js?v=20260227"></script>
 
 </body>

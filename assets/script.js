@@ -92,9 +92,10 @@ function showAlert(message, type = 'success') {
   iconWrap.className = 'custom-alert-icon-wrap' + (isError ? ' error' : '');
   closeBtn.className = 'custom-alert-close-btn' + (isError ? ' error-btn' : '');
 
-  // Swap icon via lucide
+  // Swap icon via lucide — scope to the overlay only so we don't re-scan
+  // the whole document (icons already converted to SVG would be double-processed).
   icon.setAttribute('data-lucide', isError ? 'x-circle' : 'check-circle');
-  if (window.lucide) window.lucide.createIcons();
+  if (window.lucide) window.lucide.createIcons({ context: overlay });
 
   overlay.setAttribute('aria-hidden', 'false');
   overlay.classList.add('active');
@@ -732,6 +733,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const editToken = urlParams.get('token');
     if (!editToken) return;
 
+    // ── Security: strip token from URL immediately ──────────────────────────
+    // Do this synchronously before any async operation so the token is never
+    // sitting in the browser history entry during network calls, CDN logs, or
+    // in case the tab is shared/screen-recorded mid-load.
+    window.history.replaceState({}, '', window.location.pathname);
+    // ── End token cleanup ───────────────────────────────────────────────────
+
     // Apply the language the client used when they originally submitted.
     // The edit link includes &lang=xx (added when the link is generated).
     // We do this early — before pre-filling — so translated placeholder text
@@ -748,8 +756,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!resp.ok || !data.submission) {
         const errMsg = data.error || 'This edit link is invalid or has expired.';
         await showAlert(errMsg, 'error');
-        // Clean URL without reloading
-        window.history.replaceState({}, '', window.location.pathname);
         return;
       }
 
@@ -833,9 +839,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (submitBtn) {
         submitBtn.innerHTML = window.i18n.t('form.cta.saveChanges', 'Save Changes') + ' &nbsp;→';
       }
-
-      // Clean token from URL (security — don't leave token in history)
-      window.history.replaceState({}, '', window.location.pathname);
 
     } catch (err) {
       console.error('Edit mode init failed:', err);

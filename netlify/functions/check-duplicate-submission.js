@@ -4,6 +4,9 @@ const { createClient } = require('@supabase/supabase-js');
 // Read from env so the value is locked to your production domain.
 // Set ALLOWED_ORIGIN=https://your-site.netlify.app in Netlify env variables.
 const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || '*';
+if (ALLOWED_ORIGIN === '*') {
+  console.warn('[security] ALLOWED_ORIGIN is not set — CORS is open to all origins. Set ALLOWED_ORIGIN in Netlify environment variables.');
+}
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin':  ALLOWED_ORIGIN,
@@ -88,6 +91,13 @@ exports.handler = async (event) => {
   const email     = normalizeComparable(body.email);
   const brandName = normalizeComparable(body.brandName);
 
+  // Note: We intentionally do NOT verify a Turnstile token here.
+  // The Turnstile token is single-use and is consumed by the main /submit call.
+  // If we verified it here (pre-submission duplicate check), the token would be
+  // spent and the actual form submission would fail with "Security check failed".
+  // Protection against enumeration is provided by the in-process rate limiter above
+  // (20 requests/minute per IP). A full Turnstile solve protects /submit itself.
+
   if (!email || !brandName) {
     return {
       statusCode: 200,
@@ -134,8 +144,10 @@ exports.handler = async (event) => {
       statusCode: 200,
       headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
       body: JSON.stringify(
+        // Return only duplicate status — never expose the submission UUID to
+        // unauthenticated callers (avoids enumeration via known email + brand name).
         match
-          ? { duplicate: true, submissionId: String(match.id || '') }
+          ? { duplicate: true }
           : { duplicate: false }
       )
     };

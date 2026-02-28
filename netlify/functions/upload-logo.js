@@ -10,11 +10,37 @@ const ALLOWED_MIME = new Map([
 ]);
 
 const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || '*';
+if (ALLOWED_ORIGIN === '*') {
+  console.warn('[security] ALLOWED_ORIGIN is not set — CORS is open to all origins. Set ALLOWED_ORIGIN in Netlify environment variables.');
+}
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': ALLOWED_ORIGIN,
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type'
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization'
 };
+
+// ── Admin auth (mirrors get-submissions.js / admin-update.js) ─────────────────
+function requireAdmin(context) {
+  const user = context?.clientContext?.user;
+  if (!user) return { ok: false, status: 401, error: 'Unauthorized' };
+
+  const adminEmails = String(process.env.ADMIN_EMAILS || '')
+    .split(',')
+    .map(e => e.trim().toLowerCase())
+    .filter(Boolean);
+  const userEmail = String(user.email || '').toLowerCase();
+  const userRoles = Array.isArray(user?.app_metadata?.roles)
+    ? user.app_metadata.roles.map(r => String(r).toLowerCase())
+    : [];
+
+  if (!userRoles.includes('admin') && !adminEmails.includes(userEmail)) {
+    if (adminEmails.length === 0) {
+      console.error('[upload-logo] ADMIN_EMAILS is not configured — denying access.');
+    }
+    return { ok: false, status: 403, error: 'Forbidden' };
+  }
+  return { ok: true };
+}
 
 // ── In-process rate limiter ───────────────────────────────────────────────────
 // 10 logo uploads per 10 minutes per IP.
@@ -54,13 +80,24 @@ function sanitizeFilename(value) {
     .slice(0, 60) || 'logo';
 }
 
-exports.handler = async (event) => {
+exports.handler = async (event, context) => {
   if (event.httpMethod === 'OPTIONS') {
     return { statusCode: 204, headers: CORS_HEADERS, body: '' };
   }
 
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, headers: CORS_HEADERS, body: 'Method Not Allowed' };
+  }
+
+  // ── Admin auth ──────────────────────────────────────────────────────────────
+  // Logo uploads come exclusively from the dashboard — they require admin access.
+  const auth = requireAdmin(context);
+  if (!auth.ok) {
+    return {
+      statusCode: auth.status,
+      headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ error: auth.error })
+    };
   }
 
   // ── Rate limit ────────────────────────────────────────────────────────────
@@ -126,9 +163,16 @@ exports.handler = async (event) => {
     // ── Magic byte validation ─────────────────────────────────────────
     // Reject files whose actual content doesn't match the declared MIME type.
     function detectMimeFromBuffer(buf) {
-      if (buf[0] === 0xFF && buf[1] === 0xD8 && buf[2] === 0xFF)                    return 'image/jpeg';
-      if (buf[0] === 0x89 && buf[1] === 0x50 && buf[2] === 0x4E && buf[3] === 0x47) return 'image/png';
-      if (buf[0] === 0x52 && buf[1] === 0x49 && buf[2] === 0x46 && buf[3] === 0x46) return 'image/webp';
+      if (buf[0] === 0xFF && buf[1] === 0xD8 && buf[2] === 0xFF)
+        return 'image/jpeg';
+      if (buf[0] === 0x89 && buf[1] === 0x50 && buf[2] === 0x4E && buf[3] === 0x47)
+        return 'image/png';
+      // WebP: RIFF container (bytes 0-3) + "WEBP" signature (bytes 8-11).
+      // Checking only RIFF would falsely match WAV audio files.
+      if (buf[0] === 0x52 && buf[1] === 0x49 && buf[2] === 0x46 && buf[3] === 0x46 &&
+          buf.length > 11 &&
+          buf[8] === 0x57 && buf[9] === 0x45 && buf[10] === 0x42 && buf[11] === 0x50)
+        return 'image/webp';
       return null;
     }
     const detectedMime = detectMimeFromBuffer(buffer);

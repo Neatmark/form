@@ -1,6 +1,9 @@
 const { createClient } = require('@supabase/supabase-js');
 
 const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || '*';
+if (ALLOWED_ORIGIN === '*') {
+  console.warn('[security] ALLOWED_ORIGIN is not set — CORS is open to all origins. Set ALLOWED_ORIGIN in Netlify environment variables.');
+}
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': ALLOWED_ORIGIN,
   'Access-Control-Allow-Methods': 'DELETE, OPTIONS',
@@ -49,6 +52,9 @@ exports.handler = async (event, context) => {
     };
   }
 
+  // Record which admin performed the deletion for audit purposes
+  console.info(`[delete-submission] Deletion authorised for admin: ${userEmail}`);
+
   try {
     const { submissionId } = JSON.parse(event.body || '{}');
 
@@ -57,6 +63,16 @@ exports.handler = async (event, context) => {
         statusCode: 400,
         headers: CORS_HEADERS,
         body: JSON.stringify({ error: 'Missing submissionId' })
+      };
+    }
+
+    // Validate UUID format — same guard as admin-update.js
+    const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!UUID_RE.test(String(submissionId))) {
+      return {
+        statusCode: 400,
+        headers: CORS_HEADERS,
+        body: JSON.stringify({ error: 'Invalid submissionId format.' })
       };
     }
 

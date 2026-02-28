@@ -23,6 +23,9 @@ const {
 } = require('./_shared');
 
 const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || '*';
+if (ALLOWED_ORIGIN === '*') {
+  console.warn('[security] ALLOWED_ORIGIN is not set — CORS is open to all origins. Set ALLOWED_ORIGIN in Netlify environment variables.');
+}
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin':  ALLOWED_ORIGIN,
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
@@ -210,6 +213,14 @@ exports.handler = async (event) => {
           smallRef = refEntry;
         }
         if (!smallRef) continue;
+
+        // ── Validate storage path before downloading ────────────────────────
+        // Prevents path traversal or unexpected bucket access from crafted refs.
+        const SAFE_PATH_RE = /^[a-zA-Z0-9._/()-]+$/;
+        if (!SAFE_PATH_RE.test(smallRef) || smallRef.includes('..')) {
+          console.warn('[send-emails] Skipping ref with invalid path:', smallRef);
+          continue;
+        }
 
         const { data: imgData, error: imgErr } = await supabase.storage
           .from('small-photos')
