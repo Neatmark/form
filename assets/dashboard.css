@@ -163,6 +163,7 @@ body {
   gap: 6px;
 }
 
+
 .btn-count {
   display: none;
 }
@@ -466,7 +467,7 @@ body {
 }
 
 .date-filter-option.active {
-  background: var(--accent);
+  background: var(--pill-bg);
   color: #fff;
 }
 
@@ -508,7 +509,7 @@ body {
 }
 
 .stats .stat-card:last-child .stat-value--small {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 800;
 }
 
@@ -1388,6 +1389,7 @@ button.detail-section-toggle[aria-expanded="true"] .detail-section-chevron {
 .detail-section-icon {
   font-size: 16px;
   line-height: 1;
+  color: var(--text-hi);
 }
 
 .detail-section-title {

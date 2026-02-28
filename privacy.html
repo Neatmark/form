@@ -48,34 +48,48 @@
       <li data-i18n="legal.privacy.s1_li1">Your full name</li>
       <li data-i18n="legal.privacy.s1_li2">Your email address</li>
       <li data-i18n="legal.privacy.s1_li3">Your brand or business name</li>
-      <li data-i18n="legal.privacy.s1_li4">Your preferred delivery timeframe</li>
-      <li data-i18n="legal.privacy.s1_li5">Your answers to the brand questionnaire, including any written descriptions, preferences, and uploaded inspiration images</li>
+      <li data-i18n="legal.privacy.s1_li4">Your website URL, if you choose to share it</li>
+      <li data-i18n="legal.privacy.s1_li5">Your preferred delivery timeframe</li>
+      <li data-i18n="legal.privacy.s1_li6">Your answers to the brand questionnaire, including any written descriptions, preferences, and uploaded inspiration images</li>
+      <li data-i18n="legal.privacy.s1_li7">Your country, inferred automatically from your network connection at the time of submission</li>
+      <li data-i18n="legal.privacy.s1_li8">A secure edit link sent to your email address right after submission, which lets you review and update your answers. The token behind this link is temporary and stops working after 30 days or after its first use.</li>
     </ul>
     <p data-i18n="legal.privacy.s1_p2">We do not collect any payment information, identification documents, or sensitive personal data through this form.</p>
   </div>
 
   <div class="legal-section">
     <h2 data-i18n="legal.privacy.s2_title">How we use your information</h2>
-    <p data-i18n="legal.privacy.s2_p1">The information you share with us is used for one purpose only: to understand your brand needs so we can do our best work for you.</p>
-    <p data-i18n="legal.privacy.s2_p2">We do not use your information for marketing campaigns, analytics profiling, or any automated decision-making.</p>
+    <p data-i18n="legal.privacy.s2_p1">The information you share with us is used for one purpose only: to understand your brand needs so we can do our best work for you. Specifically, your submission helps us prepare for your project kickoff, adapt our creative approach to your vision, and keep a record of your brief throughout the collaboration.</p>
+    <p data-i18n="legal.privacy.s2_p2">We do not use your information for marketing campaigns, analytics profiling, or any automated decision-making. We do not send you unsolicited emails based on your submission, beyond what is directly related to your project with us.</p>
   </div>
 
   <div class="legal-section">
     <h2 data-i18n="legal.privacy.s3_title">We do not sell or share your data</h2>
-    <p data-i18n="legal.privacy.s3_p1">Your information is never sold to third parties. We do not work with advertising networks, data brokers, or third-party marketing services of any kind.</p>
-    <p data-i18n="legal.privacy.s3_p2">The only time we would share information is if we were legally required to do so by a court order or applicable law.</p>
+    <p data-i18n="legal.privacy.s3_p1">Your information is never sold to third parties. We do not work with advertising networks, data brokers, or third-party marketing services of any kind. Your submission is not used to build advertising profiles, and it is not shared with anyone outside the Neatmark team.</p>
+    <p data-i18n="legal.privacy.s3_p2">The only time we would share information is if we were legally required to do so by a court order or applicable law, and only to the extent necessary.</p>
   </div>
 
   <div class="legal-section">
     <h2 data-i18n="legal.privacy.s4_title">Who can access your data</h2>
-    <p data-i18n="legal.privacy.s4_p1">Your submission is stored securely in a private database. Only authorized Neatmark administrators can access the dashboard where submissions are stored.</p>
-    <p data-i18n="legal.privacy.s4_p2">Your inspiration images and any uploaded files are stored in a private, access-controlled storage system.</p>
+    <p data-i18n="legal.privacy.s4_p1">Your submission is stored securely in a private database. Only authorized Neatmark administrators can access the dashboard where submissions are stored. No client can see another client's submission. Access is protected by authentication and limited to team members who need it to manage your project.</p>
+    <p data-i18n="legal.privacy.s4_p2">Your inspiration images and any uploaded files are stored in a private, access-controlled storage system. Direct links to your files are not publicly guessable or indexable.</p>
   </div>
 
   <div class="legal-section">
     <h2 data-i18n="legal.privacy.s5_title">How we protect your data</h2>
     <p data-i18n="legal.privacy.s5_p1">We take reasonable technical and organizational steps to keep your information safe. Our database and file storage are hosted on platforms that use industry-standard encryption at rest and in transit.</p>
     <p data-i18n="legal.privacy.s5_p2">While no system on the internet can be guaranteed 100% secure, we do our best to make sure your data is handled responsibly.</p>
+  </div>
+
+  <div class="legal-section">
+    <h2 data-i18n="legal.privacy.s_infra_title">Services we rely on</h2>
+    <p data-i18n="legal.privacy.s_infra_p1">To run this form, store your data, and send confirmation emails, we work with a small number of trusted service providers. Each of them handles your data directly:</p>
+    <ul>
+      <li data-i18n="legal.privacy.s_infra_li1"><strong>Netlify</strong> hosts the site and runs the serverless functions that receive and process your submission. Every request goes through Netlify's infrastructure.</li>
+      <li data-i18n="legal.privacy.s_infra_li2"><strong>Supabase</strong> is the database engine that stores your answers and project data. Data is encrypted at rest and in transit.</li>
+      <li data-i18n="legal.privacy.s_infra_li3"><strong>Resend</strong> is the email delivery service used to send you a confirmation email and your secure edit link after submission. Resend processes your email address and a summary of your submission to carry out the delivery.</li>
+    </ul>
+    <p data-i18n="legal.privacy.s_infra_p2">These services do not use your data for their own commercial purposes. They are infrastructure tools only.</p>
   </div>
 
   <div class="legal-section">
@@ -107,8 +121,7 @@
 
   <div class="legal-section">
     <h2 data-i18n="legal.privacy.s_country_title">Country detection</h2>
-    <p data-i18n="legal.privacy.s_country_p1">When you submit the form, we automatically detect your country of origin from network headers provided by our hosting infrastructure (Netlify) or Cloudflare. This results in a two-letter country code (e.g. "GB" for United Kingdom) that is converted into a human-readable country name and stored alongside your submission.</p>
-    <p data-i18n="legal.privacy.s_country_p2">This information is used solely to provide context for incoming requests. It is not used for advertising, geo-restriction, or any automated decision-making. We do not know your city, region, or precise IP address — only the country as inferred by our network infrastructure.</p>
+    <p data-i18n="legal.privacy.s_country_p1">When you submit the form, we automatically detect your country from network headers provided by our hosting infrastructure. Only the country name is stored — not your IP address, city, or region. It is used solely to give us context on incoming requests and has no effect on how your project is handled.</p>
   </div>
 
   <div class="legal-section">
@@ -122,7 +135,7 @@
   </div>
 </div>
 
-<script src="https://unpkg.com/lucide@latest"></script>
+<script src="assets/lucide.local.js"></script>
 <script src="assets/legal-lang.js"></script>
 </body>
 </html>

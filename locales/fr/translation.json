@@ -183,6 +183,9 @@
       "qdelivery": {
         "label": "Quel est votre délai de livraison idéal ?",
         "hint": "Cela nous aide à planifier votre créneau de projet. Nous confirmerons le calendrier exact lors de l'appel de lancement."
+      },
+      "q9Notes": {
+        "placeholder": "D'autres couleurs en tête ? Indiquez les teintes précises qui vous attirent et la sensation que vous voulez qu'elles dégagent."
       }
     },
     "footer": {
@@ -463,8 +466,8 @@
       "s1_li1": "Votre nom complet",
       "s1_li2": "Votre adresse email",
       "s1_li3": "Votre nom de marque ou d'entreprise",
-      "s1_li4": "Votre délai de livraison préféré",
-      "s1_li5": "Vos réponses au questionnaire de marque, y compris les descriptions écrites, les préférences et les images d'inspiration téléchargées",
+      "s1_li4": "Votre URL de site web, si vous choisissez de la partager",
+      "s1_li5": "Votre délai de livraison préféré",
       "s1_p2": "Nous ne collectons aucune information de paiement, document d'identité ou donnée personnelle sensible via ce formulaire.",
       "s2_title": "Comment nous utilisons vos informations",
       "s2_p1": "Les informations que vous partagez avec nous sont utilisées dans un seul but : comprendre vos besoins en matière de marque pour vous offrir le meilleur travail possible. Concrètement, votre soumission nous aide à préparer le lancement de votre projet, à adapter notre approche créative à votre vision et à garder une trace de votre brief tout au long de la collaboration.",
@@ -497,7 +500,16 @@
       "s_security_p2": "Ces mesures ont pour unique but d'assurer l'intégrité du formulaire. Elles ne servent pas à vous identifier, à vous profiler ni à collecter des données à votre insu au-delà de ce qui est décrit dans cette politique.",
       "s_country_title": "Détection du pays",
       "s_country_p1": "Lorsque vous soumettez le formulaire, nous détectons automatiquement votre pays d'origine à partir d'en-têtes réseau fournis par notre infrastructure d'hébergement (Netlify) ou par Cloudflare. Cela se traduit par un code pays à deux lettres (par exemple « FR » pour France) qui est converti en nom de pays lisible et enregistré avec votre soumission.",
-      "s_country_p2": "Cette information nous aide uniquement à contextualiser les demandes entrantes. Elle n'est pas utilisée à des fins publicitaires, de géo-restriction ni d'aucune autre prise de décision automatisée. Nous ne connaissons pas votre ville, région ou adresse IP précise — uniquement le pays tel que déduit par notre infrastructure réseau."
+      "s_country_p2": "Cette information nous aide uniquement à contextualiser les demandes entrantes. Elle n'est pas utilisée à des fins publicitaires, de géo-restriction ni d'aucune autre prise de décision automatisée. Nous ne connaissons pas votre ville, région ou adresse IP précise — uniquement le pays tel que déduit par notre infrastructure réseau.",
+      "s1_li6": "Vos réponses au questionnaire de marque, y compris les descriptions écrites, les préférences et les images d'inspiration téléchargées",
+      "s1_li7": "Votre pays, déduit automatiquement de votre connexion réseau au moment de la soumission",
+      "s1_li8": "Un lien de modification sécurisé envoyé à votre adresse email juste après la soumission, qui vous permet de revoir et mettre à jour vos réponses. Le jeton associé à ce lien est temporaire et expire après 30 jours ou après sa première utilisation.",
+      "s_infra_title": "Les services sur lesquels nous nous appuyons",
+      "s_infra_p1": "Pour faire fonctionner ce formulaire, stocker vos données et envoyer les emails de confirmation, nous travaillons avec un nombre limité de prestataires de confiance. Chacun d'eux traite vos données directement :",
+      "s_infra_li1": "Netlify héberge le site et exécute les fonctions serveur qui reçoivent et traitent votre soumission. Chaque requête transite par l'infrastructure de Netlify.",
+      "s_infra_li2": "Supabase est le moteur de base de données qui stocke vos réponses et les données de votre projet. Les données sont chiffrées au repos et en transit.",
+      "s_infra_li3": "Resend est le service d'envoi d'emails utilisé pour vous envoyer un email de confirmation et votre lien de modification sécurisé. Resend traite votre adresse email et un résumé de votre soumission pour effectuer l'envoi.",
+      "s_infra_p2": "Ces services n'utilisent pas vos données à leurs propres fins commerciales. Ce sont uniquement des outils d'infrastructure."
     },
     "cookies": {
       "title": "Politique de cookies",
@@ -526,7 +538,6 @@
       "s3_title": "Services tiers",
       "s3_p1": "Notre formulaire utilise un petit nombre de ressources externes pour fonctionner correctement :",
       "s3_li1": "Google Fonts charge les polices utilisées dans le design du formulaire. Lorsque votre navigateur demande une police, Google peut enregistrer votre adresse IP dans le cadre d'une requête web standard. Nous ne contrôlons pas cela.",
-      "s3_li2": "Netlify Identity gère l'authentification des administrateurs du tableau de bord. Il pose ses propres cookies de session pour maintenir les admins connectés. Cela ne concerne que les équipes Neatmark, pas les clients remplissant le formulaire.",
       "s3_li3": "Cloudflare Turnstile est un service de vérification de sécurité qui s'exécute lorsque vous soumettez le formulaire. Il peut envoyer votre adresse IP à Cloudflare afin de confirmer que vous n'êtes pas un robot. Consultez la politique de confidentialité de Cloudflare pour plus d'informations sur leur traitement des données.",
       "s3_p2": "Nous n'utilisons pas Google Analytics, Facebook Pixel, ni aucun autre outil de suivi publicitaire ou comportemental. Aucun service marketing tiers ne reçoit de données vous concernant.",
       "s_ip_title": "Traitement de l'adresse IP lors de la soumission",
@@ -539,7 +550,9 @@
       "s6_title": "Modifications de cette politique",
       "s6_p1": "Si nous ajoutons de nouveaux éléments de stockage ou services tiers, nous mettrons cette page à jour ainsi que la date en haut. Nous n'introduirons pas de technologies de suivi ou publicitaires sans en être transparents ici au préalable.",
       "s7_title": "Questions",
-      "s7_p1": "Si vous avez des questions sur les cookies ou la gestion de vos données navigateur, contactez-nous via notre site neatmark.studio."
+      "s7_p1": "Si vous avez des questions sur les cookies ou la gestion de vos données navigateur, contactez-nous via notre site neatmark.studio.",
+      "s3_li2": "Netlify héberge le site et traite toutes les requêtes du formulaire côté serveur. Netlify ne dépose pas de cookies dans votre navigateur, mais il gère vos requêtes et votre adresse IP dans le cadre normal du routage Internet.",
+      "s3_li4": "Resend est utilisé pour envoyer les emails de confirmation et le lien de modification sécurisé. Il traite votre adresse email uniquement pour l'envoi et ne dépose aucun cookie dans votre navigateur."
     }
   },
   "detail": {

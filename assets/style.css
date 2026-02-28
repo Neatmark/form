@@ -12,18 +12,6 @@
   --red:     #da3a3a;
 }
 
-/* Arabic Font */
-html[lang="ar"] {
-  font-family: 'Norsal', sans-serif;
-}
-
-html[lang="ar"] body,
-html[lang="ar"] button,
-html[lang="ar"] input,
-html[lang="ar"] textarea,
-html[lang="ar"] select {
-  font-family: 'Norsal', sans-serif;
-}
 
 [data-theme="dark"] {
   --bg:#00373c;
@@ -1204,7 +1192,7 @@ html[dir="rtl"] .timeline-marker {
    width:100% + overflow:hidden lock the pill to its grid cell so
    it cannot stretch wider than the track.                           */
 html[dir="rtl"] .check-label {
-  flex-direction: row-reverse;
+  flex-direction: row;
   text-align: right;
   width: 100%;
   overflow: hidden;
@@ -1601,8 +1589,9 @@ html[dir="rtl"] .form-progress-label {
   justify-content: center;
 }
 
-/* RTL: badge sits between the text and the checkbox (on the left in visual order),
-   so flip the margin and prevent overflow:hidden from clipping it */
+/* RTL: flex-direction:row with direction:rtl places checkbox on the right,
+   rank-badge in the middle, text on the left. Flip margin so space is
+   between badge and text (to the left), not between badge and checkbox. */
 html[dir="rtl"] .rank-badge {
   margin-right: 0;
   margin-left: 4px;

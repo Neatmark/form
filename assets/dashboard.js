@@ -7,7 +7,11 @@
 function dt(key, fallback, vars) {
   if (!window.i18n) return fallback || '';
   const result = window.i18n.t(key, vars !== undefined ? vars : (fallback || ''));
-  return result || fallback || '';
+  if (result) return result;
+  // When the key has no translation (English uses DOM fallbacks), interpolate
+  // vars into the fallback string so {{count}} etc. are still replaced.
+  if (vars && fallback) return fallback.replace(/\{\{(\w+)\}\}/g, (_, k) => vars[k] ?? '');
+  return fallback || '';
 }
 
 let allSubmissions = [];

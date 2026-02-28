@@ -87,8 +87,9 @@
     <p data-i18n="legal.cookies.s3_p1">Our form uses a small number of external resources to function properly:</p>
     <ul>
       <li data-i18n="legal.cookies.s3_li1">Google Fonts loads the typefaces used in the form design. When your browser requests a font, Google may log your IP address as part of the standard web request. We do not control this.</li>
-      <li data-i18n="legal.cookies.s3_li2">Netlify Identity handles administrator authentication for the dashboard. It sets its own session cookies to keep admins logged in. This only applies to Neatmark staff, not to clients filling out the form.</li>
+      <li data-i18n="legal.cookies.s3_li2"><strong>Netlify</strong> hosts the site and handles all form requests at the server level. Netlify does not place cookies in your browser, but it processes your requests and IP address as a normal part of internet routing.</li>
       <li data-i18n="legal.cookies.s3_li3"><strong>Cloudflare Turnstile</strong> is a security verification service that runs when you submit the form. It may send your IP address to Cloudflare to confirm you are not a bot. See Cloudflare's privacy policy for details on how they handle that data.</li>
+      <li data-i18n="legal.cookies.s3_li4"><strong>Resend</strong> is used to send the confirmation email and secure edit link after you submit. It processes your email address for delivery only and does not place any cookies in your browser.</li>
     </ul>
     <p data-i18n="legal.cookies.s3_p2">We do not use Google Analytics, Facebook Pixel, or any other advertising or behavioral tracking tool.</p>
   </div>
@@ -122,7 +123,7 @@
   </div>
 </div>
 
-<script src="https://unpkg.com/lucide@latest"></script>
+<script src="assets/lucide.local.js"></script>
 <script src="assets/legal-lang.js"></script>
 </body>
 </html>
