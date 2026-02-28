@@ -1163,6 +1163,36 @@ document.addEventListener('DOMContentLoaded', () => {
    * Returns a JSON-stringified object: '{"smallRef":"…","originalRef":"…"}'
    * which is stored as a text entry in the q15-inspiration-refs text[] column.
    */
+
+  // ── Upload session token ──────────────────────────────────────────────────
+  // Fetched once at form-init time; re-fetched on expiry (2 h window).
+  // upload-photo.js rejects any request that doesn't carry a valid token,
+  // preventing unauthenticated storage exhaustion by anonymous attackers.
+  let _uploadToken     = null;
+  let _uploadTimestamp = null;
+  const UPLOAD_TOKEN_TTL_MS = 90 * 60 * 1000; // refresh after 90 min (token lasts 2 h)
+
+  async function getUploadToken() {
+    const now = Date.now();
+    if (_uploadToken && _uploadTimestamp && (now - _uploadTimestamp) < UPLOAD_TOKEN_TTL_MS) {
+      return { token: _uploadToken, timestamp: _uploadTimestamp };
+    }
+    try {
+      const res  = await fetch('/.netlify/functions/get-upload-token');
+      if (!res.ok) throw new Error(`Token fetch failed: ${res.status}`);
+      const data = await res.json();
+      _uploadToken     = data.token;
+      _uploadTimestamp = data.timestamp;
+      return { token: _uploadToken, timestamp: _uploadTimestamp };
+    } catch (err) {
+      console.error('[upload] Could not fetch upload token:', err.message);
+      throw new Error('Could not prepare upload. Please reload and try again.');
+    }
+  }
+
+  // Pre-fetch upload token immediately so the first upload is instant
+  getUploadToken().catch(() => { /* will retry on actual upload */ });
+
   async function uploadImageToStorage(file) {
     const base64 = await new Promise((res, rej) => {
       const reader = new FileReader();
@@ -1170,10 +1200,11 @@ document.addEventListener('DOMContentLoaded', () => {
       reader.onerror = () => rej(new Error('Read failed'));
       reader.readAsDataURL(file);
     });
+    const { token: uploadToken, timestamp: uploadTimestamp } = await getUploadToken();
     const response = await fetch('/.netlify/functions/upload-photo', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ filename: file.name, mimeType: file.type, contentBase64: base64 })
+      body: JSON.stringify({ filename: file.name, mimeType: file.type, contentBase64: base64, uploadToken, uploadTimestamp })
     });
     if (!response.ok) {
       const errText = await response.text().catch(() => 'Upload failed');

@@ -1,4 +1,5 @@
 const { createClient } = require('@supabase/supabase-js');
+const { isRateLimited } = require('./_ratelimit');
 
 // ── CORS ─────────────────────────────────────────────────────────────────────
 // Read from env so the value is locked to your production domain.
@@ -14,34 +15,6 @@ const CORS_HEADERS = {
   'Access-Control-Allow-Headers': 'Content-Type'
 };
 
-// ── In-process rate limiter ───────────────────────────────────────────────────
-// Works across warm Lambda invocations. Provides meaningful protection against
-// casual enumeration. For global rate limiting across all instances, replace
-// with Upstash Redis or a Supabase rate_limits table.
-const rateLimitStore = new Map();
-const RATE_LIMIT_WINDOW_MS    = 60 * 1000; // 1-minute window
-const RATE_LIMIT_MAX_REQUESTS = 20;         // max duplicate checks per minute per IP
-
-function isRateLimited(ip) {
-  const now   = Date.now();
-  let   entry = rateLimitStore.get(ip);
-
-  if (!entry || now > entry.resetAt) {
-    rateLimitStore.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
-    return false;
-  }
-
-  entry.count++;
-
-  // Periodically prune stale entries to prevent unbounded memory growth
-  if (rateLimitStore.size > 2000) {
-    for (const [key, val] of rateLimitStore) {
-      if (now > val.resetAt) rateLimitStore.delete(key);
-    }
-  }
-
-  return entry.count > RATE_LIMIT_MAX_REQUESTS;
-}
 
 function normalizeComparable(value) {
   return String(value ?? '').trim().toLowerCase();
@@ -57,11 +30,12 @@ function parseRequestBody(body) {
 }
 
 function getClientIp(event) {
-  return (
-    event.headers['x-forwarded-for']?.split(',')[0]?.trim() ||
-    event.headers['client-ip'] ||
-    'unknown'
-  );
+  const xff = event.headers['x-forwarded-for'];
+  if (xff) {
+    const parts = xff.split(',');
+    return parts[parts.length - 1].trim();
+  }
+  return event.headers['client-ip'] || 'unknown';
 }
 
 exports.handler = async (event) => {
@@ -77,9 +51,11 @@ exports.handler = async (event) => {
     };
   }
 
-  // ── Rate limit ──────────────────────────────────────────────────────────────
+  // ── Rate limit (cross-instance via Supabase) ────────────────────────────────
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_KEY;
   const clientIp = getClientIp(event);
-  if (isRateLimited(clientIp)) {
+  if (await isRateLimited(supabaseUrl, supabaseKey, clientIp, 'check-duplicate', 20, 60 * 1000)) {
     return {
       statusCode: 429,
       headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
@@ -105,9 +81,6 @@ exports.handler = async (event) => {
       body: JSON.stringify({ duplicate: false })
     };
   }
-
-  const supabaseUrl = process.env.SUPABASE_URL;
-  const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_KEY;
 
   if (!supabaseUrl || !supabaseKey) {
     return {

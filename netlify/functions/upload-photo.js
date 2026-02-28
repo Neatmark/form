@@ -13,7 +13,9 @@
  */
 
 const { createClient } = require('@supabase/supabase-js');
+const { isRateLimited } = require('./_ratelimit');
 const sharp = require('sharp');
+const crypto = require('crypto');
 
 const BUCKET_ORIGINAL = 'original-photos';
 const BUCKET_SMALL    = 'small-photos';
@@ -39,35 +41,36 @@ const CORS_HEADERS = {
   'Access-Control-Allow-Headers': 'Content-Type'
 };
 
-// ── In-process rate limiter ───────────────────────────────────────────────────
-// 20 uploads per 10 minutes per IP — prevents storage exhaustion attacks.
-const rateLimitStore = new Map();
-const RATE_LIMIT_WINDOW_MS    = 10 * 60 * 1000;
-const RATE_LIMIT_MAX_REQUESTS = 20;
+// ── Upload session token verification ────────────────────────────────────────
+// The browser must first call /.netlify/functions/get-upload-token to obtain a
+// short-lived HMAC token.  Without this guard, upload-photo is an open,
+// unauthenticated storage endpoint that any attacker could abuse.
+const UPLOAD_TOKEN_VALID_MS = 2 * 60 * 60 * 1000; // must match get-upload-token.js
 
-function getClientIp(event) {
-  return (
-    event.headers['x-forwarded-for']?.split(',')[0]?.trim() ||
-    event.headers['client-ip'] ||
-    'unknown'
-  );
-}
-
-function isRateLimited(ip) {
-  const now   = Date.now();
-  let   entry = rateLimitStore.get(ip);
-  if (!entry || now > entry.resetAt) {
-    rateLimitStore.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
+function verifyUploadToken(token, timestamp) {
+  const secret = process.env.INTERNAL_SECRET;
+  if (!secret) {
+    console.error('[upload-photo] INTERNAL_SECRET not set — rejecting upload. Set this env var in Netlify.');
     return false;
   }
-  entry.count++;
-  if (rateLimitStore.size > 2000) {
-    for (const [key, val] of rateLimitStore) {
-      if (now > val.resetAt) rateLimitStore.delete(key);
-    }
+  if (!token || !timestamp) return false;
+
+  const ts  = Number(timestamp);
+  const age = Date.now() - ts;
+  if (age > UPLOAD_TOKEN_VALID_MS || age < 0) return false;
+
+  const expected = crypto
+    .createHmac('sha256', secret)
+    .update(`upload:${ts}`)
+    .digest('hex');
+
+  try {
+    return crypto.timingSafeEqual(Buffer.from(token, 'hex'), Buffer.from(expected, 'hex'));
+  } catch {
+    return false;
   }
-  return entry.count > RATE_LIMIT_MAX_REQUESTS;
 }
+
 
 function sanitizeFilename(value) {
   return String(value || 'photo')
@@ -78,6 +81,15 @@ function sanitizeFilename(value) {
     .slice(0, 50) || 'photo';
 }
 
+
+function getClientIp(event) {
+  const xff = event.headers['x-forwarded-for'];
+  if (xff) {
+    const parts = xff.split(',');
+    return parts[parts.length - 1].trim();
+  }
+  return event.headers['client-ip'] || 'unknown';
+}
 exports.handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') {
     return { statusCode: 204, headers: CORS_HEADERS, body: '' };
@@ -86,9 +98,11 @@ exports.handler = async (event) => {
     return { statusCode: 405, headers: CORS_HEADERS, body: 'Method Not Allowed' };
   }
 
-  // ── Rate limit ────────────────────────────────────────────────────────────
+  // ── Rate limit (cross-instance via Supabase) ────────────────────────────────
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_KEY;
   const clientIp = getClientIp(event);
-  if (isRateLimited(clientIp)) {
+  if (await isRateLimited(supabaseUrl, supabaseKey, clientIp, 'upload-photo', 20, 10 * 60 * 1000)) {
     return {
       statusCode: 429,
       headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
@@ -96,8 +110,31 @@ exports.handler = async (event) => {
     };
   }
 
-  const supabaseUrl = process.env.SUPABASE_URL;
-  const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_KEY;
+  // ── Upload session token ──────────────────────────────────────────────────
+  // The browser obtains this token from /.netlify/functions/get-upload-token
+  // before the first upload.  Reject any request that lacks a valid token.
+  let rawBody;
+  try {
+    rawBody = JSON.parse(event.body || '{}');
+  } catch {
+    return {
+      statusCode: 400,
+      headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ error: 'Invalid JSON body.' })
+    };
+  }
+
+  const uploadToken     = String(rawBody.uploadToken     || '').trim();
+  const uploadTimestamp = String(rawBody.uploadTimestamp || '').trim();
+
+  if (!verifyUploadToken(uploadToken, uploadTimestamp)) {
+    return {
+      statusCode: 403,
+      headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ error: 'Invalid or expired upload token. Please reload and try again.' })
+    };
+  }
+
   if (!supabaseUrl || !supabaseKey) {
     return {
       statusCode: 500,
@@ -106,16 +143,7 @@ exports.handler = async (event) => {
     };
   }
 
-  let payload;
-  try {
-    payload = JSON.parse(event.body || '{}');
-  } catch {
-    return {
-      statusCode: 400,
-      headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ error: 'Invalid JSON body.' })
-    };
-  }
+  const payload = rawBody;
 
   const mimeType        = String(payload.mimeType       || '').trim().toLowerCase();
   const contentBase64   = String(payload.contentBase64  || '');
@@ -190,7 +218,9 @@ exports.handler = async (event) => {
   const originalExt = extMap[mimeType] || 'jpg';
 
   // ── Unique path prefix ────────────────────────────────────────────
-  const uid = `${Date.now()}_${Math.random().toString(36).slice(2, 8)}_${originalName}`;
+  // crypto.randomBytes produces an unguessable suffix — Math.random() is not
+  // cryptographically secure and could allow storage path enumeration.
+  const uid = `${Date.now()}_${crypto.randomBytes(6).toString('hex')}_${originalName}`;
 
   const originalRef = `originals/${uid}.${originalExt}`;
   const smallRef    = `small/${uid}.jpg`;  // always JPEG for small version

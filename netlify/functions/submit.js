@@ -1,6 +1,7 @@
 const { createClient } = require('@supabase/supabase-js');
 const { randomUUID }   = require('crypto');
 const crypto           = require('crypto');
+const { isRateLimited } = require('./_ratelimit');
 
 // ── CORS ──────────────────────────────────────────────────────────────────────
 const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || '*';
@@ -13,52 +14,38 @@ const CORS_HEADERS = {
   'Access-Control-Allow-Headers': 'Content-Type, Authorization'
 };
 
-// ── In-process rate limiter ───────────────────────────────────────────────────
-const rateLimitStore = new Map();
-const RATE_LIMIT_WINDOW_MS    = 10 * 60 * 1000; // 10-minute window
-const RATE_LIMIT_MAX_REQUESTS = 5;               // 5 submissions per 10 min per IP
-
-function isRateLimited(ip) {
-  const now   = Date.now();
-  let   entry = rateLimitStore.get(ip);
-
-  if (!entry || now > entry.resetAt) {
-    rateLimitStore.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
-    return false;
-  }
-
-  entry.count++;
-
-  if (rateLimitStore.size > 2000) {
-    for (const [key, val] of rateLimitStore) {
-      if (now > val.resetAt) rateLimitStore.delete(key);
-    }
-  }
-
-  return entry.count > RATE_LIMIT_MAX_REQUESTS;
-}
-
 function getClientIp(event) {
-  return (
-    event.headers['x-forwarded-for']?.split(',')[0]?.trim() ||
-    event.headers['client-ip'] ||
-    'unknown'
-  );
+  // On Netlify, the real client IP is appended at the END of X-Forwarded-For
+  // by the Netlify edge node. Taking the first value is spoofable — an attacker
+  // can prepend a fake IP. Taking the last value gives us the one Netlify set.
+  const xff = event.headers['x-forwarded-for'];
+  if (xff) {
+    const parts = xff.split(',');
+    return parts[parts.length - 1].trim();
+  }
+  return event.headers['client-ip'] || 'unknown';
 }
 
 // ── HMAC send-token ───────────────────────────────────────────────────────────
 // Authorises the browser to call send-emails after a confirmed DB write.
+// The HMAC now covers: timestamp + SHA-256(record) + editLink
+// This prevents the browser from swapping out the record payload before calling
+// send-emails — the signature will not verify if any of the three components change.
 // Set INTERNAL_SECRET in Netlify environment variables (any long random string).
-// Without it, send-emails falls back to rate-limiting only (logs a warning).
-function makeSendToken(timestamp) {
+function makeSendToken(timestamp, publicRecord, editLink = '') {
   const secret = process.env.INTERNAL_SECRET;
   if (!secret) {
     console.warn('[submit] INTERNAL_SECRET not set — send-emails HMAC protection inactive. Set this env var.');
     return null;
   }
+  // JSON.stringify key order is stable here because publicRecord is built from
+  // an explicit ALLOWED_FIELDS loop in a deterministic order.
+  const recordHash = crypto.createHash('sha256')
+    .update(JSON.stringify(publicRecord))
+    .digest('hex');
   return crypto
     .createHmac('sha256', secret)
-    .update(String(timestamp))
+    .update(`${String(timestamp)}:${recordHash}:${editLink}`)
     .digest('hex');
 }
 
@@ -123,7 +110,10 @@ const FIELD_MAXLENGTH = {
   'q10-colors-to-avoid':       300,
   'q11-aesthetic-description':1000,
   'q12-existing-assets':       300,
-  'q16-anything-else':        3000
+  'q16-anything-else':        3000,
+  // Fields previously missing length limits
+  'q7-decision-maker-other':   300,
+  'brand-logo-ref':            200
 };
 
 function normalizeFieldValue(field, value) {
@@ -161,19 +151,17 @@ exports.handler = async (event) => {
     };
   }
 
-  // ── Rate limit ──────────────────────────────────────────────────────────────
+  // ── Rate limit (cross-instance via Supabase) ────────────────────────────────
+  const supabaseUrl  = process.env.SUPABASE_URL;
+  const supabaseKey  = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_KEY;
   const clientIp = getClientIp(event);
-  if (isRateLimited(clientIp)) {
+  if (await isRateLimited(supabaseUrl, supabaseKey, clientIp, 'submit', 5, 10 * 60 * 1000)) {
     return {
       statusCode: 429,
       headers: CORS_HEADERS,
       body: JSON.stringify({ success: false, error: 'Too many submissions. Please wait a few minutes before trying again.' })
     };
   }
-
-  // ── Env vars ────────────────────────────────────────────────────────────────
-  const supabaseUrl  = process.env.SUPABASE_URL;
-  const supabaseKey  = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_KEY;
   const siteUrl      = process.env.SITE_URL || 'https://form.neatmark.studio';
 
   const countryCode = (
@@ -440,17 +428,17 @@ exports.handler = async (event) => {
         .eq('id', tokenRow.id);
 
       if (updateErr) {
+        console.error('[submit] Token-edit DB update error:', updateErr.message);
         return {
           statusCode: 500,
           headers: CORS_HEADERS,
-          body: JSON.stringify({ success: false, error: updateErr.message })
+          body: JSON.stringify({ success: false, error: 'Could not save your changes. Please try again.' })
         };
       }
 
-      const sendTimestamp = Date.now();
-      const sendToken     = makeSendToken(sendTimestamp);
-
       const { edit_token: _t, edit_token_expires_at: _e, history: _h, ...publicRecord } = record;
+      const sendTimestamp = Date.now();
+      const sendToken     = makeSendToken(sendTimestamp, publicRecord, '');
       return {
         statusCode: 200,
         headers: CORS_HEADERS,
@@ -470,15 +458,15 @@ exports.handler = async (event) => {
 
     const { error: insertError } = await supabase.from('submissions').insert([record]);
     if (insertError) {
-      return { statusCode: 500, headers: CORS_HEADERS, body: JSON.stringify({ success: false, error: insertError.message }) };
+      console.error('[submit] DB insert error:', insertError.message);
+      return { statusCode: 500, headers: CORS_HEADERS, body: JSON.stringify({ success: false, error: 'Submission could not be saved. Please try again.' }) };
     }
 
     const editLink = `${siteUrl}/?token=${encodeURIComponent(newEditToken)}&lang=${lang}`;
 
-    const sendTimestamp = Date.now();
-    const sendToken     = makeSendToken(sendTimestamp);
-
     const { edit_token: _t, edit_token_expires_at: _e, history: _h, ...publicRecord } = record;
+    const sendTimestamp = Date.now();
+    const sendToken     = makeSendToken(sendTimestamp, publicRecord, editLink);
     return {
       statusCode: 200,
       headers: CORS_HEADERS,
@@ -486,11 +474,11 @@ exports.handler = async (event) => {
     };
 
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'Unknown error';
+    console.error('[submit] Unexpected error:', err instanceof Error ? err.message : String(err));
     return {
       statusCode: 500,
       headers: CORS_HEADERS,
-      body: JSON.stringify({ success: false, error: message })
+      body: JSON.stringify({ success: false, error: 'An unexpected error occurred. Please try again.' })
     };
   }
 };

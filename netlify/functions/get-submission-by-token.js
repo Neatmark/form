@@ -11,6 +11,7 @@
  */
 
 const { createClient } = require('@supabase/supabase-js');
+const { isRateLimited } = require('./_ratelimit');
 
 const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || '*';
 if (ALLOWED_ORIGIN === '*') {
@@ -23,39 +24,6 @@ const CORS_HEADERS = {
   'Access-Control-Allow-Headers': 'Content-Type'
 };
 
-// ── In-process rate limiter ───────────────────────────────────────────────────
-// Prevents high-volume token-lookup loops from hammering the database.
-const rateLimitStore = new Map();
-const RATE_LIMIT_WINDOW_MS    = 60 * 1000; // 1-minute window
-const RATE_LIMIT_MAX_REQUESTS = 30;        // 30 lookups per minute per IP
-
-function getClientIp(event) {
-  return (
-    event.headers['x-forwarded-for']?.split(',')[0]?.trim() ||
-    event.headers['client-ip'] ||
-    'unknown'
-  );
-}
-
-function isRateLimited(ip) {
-  const now   = Date.now();
-  let   entry = rateLimitStore.get(ip);
-
-  if (!entry || now > entry.resetAt) {
-    rateLimitStore.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
-    return false;
-  }
-
-  entry.count++;
-
-  if (rateLimitStore.size > 2000) {
-    for (const [key, val] of rateLimitStore) {
-      if (now > val.resetAt) rateLimitStore.delete(key);
-    }
-  }
-
-  return entry.count > RATE_LIMIT_MAX_REQUESTS;
-}
 
 // Fields to expose for form pre-fill (excludes internal Supabase columns)
 const FORM_FIELDS = [
@@ -68,6 +36,15 @@ const FORM_FIELDS = [
   'q15-inspiration-refs', 'q16-anything-else'
 ];
 
+
+function getClientIp(event) {
+  const xff = event.headers['x-forwarded-for'];
+  if (xff) {
+    const parts = xff.split(',');
+    return parts[parts.length - 1].trim();
+  }
+  return event.headers['client-ip'] || 'unknown';
+}
 exports.handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') {
     return { statusCode: 204, headers: CORS_HEADERS, body: '' };
@@ -81,9 +58,11 @@ exports.handler = async (event) => {
     };
   }
 
-  // ── Rate limit ──────────────────────────────────────────────────────────────
+  // ── Rate limit (cross-instance via Supabase) ────────────────────────────────
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_KEY;
   const clientIp = getClientIp(event);
-  if (isRateLimited(clientIp)) {
+  if (await isRateLimited(supabaseUrl, supabaseKey, clientIp, 'get-submission-by-token', 30, 60 * 1000)) {
     return {
       statusCode: 429,
       headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
@@ -93,17 +72,14 @@ exports.handler = async (event) => {
 
   const token = String(event.queryStringParameters?.token || '').trim();
 
-  // Basic token format sanity check (UUID)
-  if (!token || !/^[0-9a-f-]{32,36}$/i.test(token)) {
+  // Strict UUID format check — same regex used by submit.js and admin-update.js
+  if (!token || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(token)) {
     return {
       statusCode: 400,
       headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
       body: JSON.stringify({ error: 'Invalid token format.' })
     };
   }
-
-  const supabaseUrl = process.env.SUPABASE_URL;
-  const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_KEY;
 
   if (!supabaseUrl || !supabaseKey) {
     return {

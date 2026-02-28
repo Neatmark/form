@@ -1,4 +1,5 @@
 const { createClient } = require('@supabase/supabase-js');
+const { isRateLimited } = require('./_ratelimit');
 
 const BUCKET = 'logos';
 const MAX_BYTES = 2 * 1024 * 1024;
@@ -42,34 +43,13 @@ function requireAdmin(context) {
   return { ok: true };
 }
 
-// ── In-process rate limiter ───────────────────────────────────────────────────
-// 10 logo uploads per 10 minutes per IP.
-const rateLimitStore = new Map();
-const RATE_LIMIT_WINDOW_MS    = 10 * 60 * 1000;
-const RATE_LIMIT_MAX_REQUESTS = 10;
-
 function getClientIp(event) {
-  return (
-    event.headers['x-forwarded-for']?.split(',')[0]?.trim() ||
-    event.headers['client-ip'] ||
-    'unknown'
-  );
-}
-
-function isRateLimited(ip) {
-  const now   = Date.now();
-  let   entry = rateLimitStore.get(ip);
-  if (!entry || now > entry.resetAt) {
-    rateLimitStore.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
-    return false;
+  const xff = event.headers['x-forwarded-for'];
+  if (xff) {
+    const parts = xff.split(',');
+    return parts[parts.length - 1].trim();
   }
-  entry.count++;
-  if (rateLimitStore.size > 2000) {
-    for (const [key, val] of rateLimitStore) {
-      if (now > val.resetAt) rateLimitStore.delete(key);
-    }
-  }
-  return entry.count > RATE_LIMIT_MAX_REQUESTS;
+  return event.headers['client-ip'] || 'unknown';
 }
 
 function sanitizeFilename(value) {
@@ -100,18 +80,18 @@ exports.handler = async (event, context) => {
     };
   }
 
-  // ── Rate limit ────────────────────────────────────────────────────────────
+  // ── Rate limit (cross-instance via Supabase) ────────────────────────────────
+  // 10 logo uploads per 10 minutes per IP — shared across all Lambda instances.
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_KEY;
   const clientIp = getClientIp(event);
-  if (isRateLimited(clientIp)) {
+  if (await isRateLimited(supabaseUrl, supabaseKey, clientIp, 'upload-logo', 10, 10 * 60 * 1000)) {
     return {
       statusCode: 429,
       headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
       body: JSON.stringify({ error: 'Too many uploads. Please slow down.' })
     };
   }
-
-  const supabaseUrl = process.env.SUPABASE_URL;
-  const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_KEY;
 
   if (!supabaseUrl || !supabaseKey) {
     return {
@@ -184,8 +164,9 @@ exports.handler = async (event, context) => {
       };
     }
 
+    const crypto = require('crypto');
     const extension = ALLOWED_MIME.get(mimeType);
-    const ref = `${Date.now()}_${Math.random().toString(36).slice(2, 8)}_${originalName}.${extension}`;
+    const ref = `${Date.now()}_${crypto.randomBytes(6).toString('hex')}_${originalName}.${extension}`;
 
     const supabase = createClient(supabaseUrl, supabaseKey, {
       auth: { persistSession: false }

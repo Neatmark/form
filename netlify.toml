@@ -9,7 +9,7 @@
 [functions]
   node_bundler = "esbuild"
   external_node_modules = ["sharp", "pdf-lib", "@pdf-lib/fontkit", "docx"]
-  included_files = ["assets/Norsal.ttf", "assets/Amiri-Regular.ttf"]
+  included_files = ["assets/Norsal.ttf"]
 
 # PDF/DOCX generation via pdf-lib is fast — 10s is plenty
 [functions."submit"]
@@ -39,7 +39,7 @@
     # style-src includes identity.netlify.com so the Identity widget renders styled (not naked).
     # unsafe-inline is required by the Netlify Identity widget's inline styles.
     # frame-src includes identity.netlify.com so the login modal iframe can open.
-    Content-Security-Policy = "default-src 'self'; script-src 'self' https://identity.netlify.com https://challenges.cloudflare.com; style-src 'self' https://fonts.googleapis.com https://identity.netlify.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https:; connect-src 'self' https://form.neatmark.studio https://api.netlify.com https://identity.netlify.com https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com https://identity.netlify.com; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' https://identity.netlify.com https://challenges.cloudflare.com; style-src 'self' https://fonts.googleapis.com https://identity.netlify.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https://form.neatmark.studio; connect-src 'self' https://form.neatmark.studio https://api.netlify.com https://identity.netlify.com https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com https://identity.netlify.com; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'"
 
 # Redirect rules
 [[redirects]]

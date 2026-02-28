@@ -80,7 +80,10 @@ const FIELD_MAXLENGTH = {
   'q10-colors-to-avoid':       300,
   'q11-aesthetic-description':1000,
   'q12-existing-assets':       300,
-  'q16-anything-else':        3000
+  'q16-anything-else':        3000,
+  // Fields previously missing length limits
+  'q7-decision-maker-other':   300,
+  'brand-logo-ref':            200
 };
 
 // ── Enum allowlists (mirrors form HTML values) ────────────────────────────────
