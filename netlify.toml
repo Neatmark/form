@@ -36,7 +36,10 @@
     # lucide is now self-hosted (/assets/lucide.local.js) — no CDN dependency.
     # Third-party dashboard scripts (jspdf, docx, dayjs) are now self-hosted in /assets/
     # so unpkg.com and cdnjs.cloudflare.com are no longer needed in script-src.
-    Content-Security-Policy = "default-src 'self'; script-src 'self' https://identity.netlify.com https://challenges.cloudflare.com; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https:; connect-src 'self' https://form.neatmark.studio https://api.netlify.com https://api.resend.com https://identity.netlify.com https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'"
+    # style-src includes identity.netlify.com so the Identity widget renders styled (not naked).
+    # unsafe-inline is required by the Netlify Identity widget's inline styles.
+    # frame-src includes identity.netlify.com so the login modal iframe can open.
+    Content-Security-Policy = "default-src 'self'; script-src 'self' https://identity.netlify.com https://challenges.cloudflare.com; style-src 'self' https://fonts.googleapis.com https://identity.netlify.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https:; connect-src 'self' https://form.neatmark.studio https://api.netlify.com https://identity.netlify.com https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com https://identity.netlify.com; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'"
 
 # Redirect rules
 [[redirects]]

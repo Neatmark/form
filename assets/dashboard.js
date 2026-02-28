@@ -699,12 +699,12 @@ const QUESTIONNAIRE_FIELD_ORDER = {
   'q11-aesthetic':           12,
   'q11-aesthetic-description':12.5,
   'q13-deliverables':        13,
-  'q14-budget':              14,
-  'q15-inspiration-refs':    15,
-  'q7-decision-maker':       16,
-  'q7-decision-maker-other': 16.5,
-  'q12-existing-assets':     17,
-  'delivery-date':           18,
+  'q15-inspiration-refs':    14,   // moved: was 15, now 14 (budget moved to section 3)
+  'q7-decision-maker':       15,   // was 16
+  'q7-decision-maker-other': 15.5, // was 16.5
+  'delivery-date':           16,   // was 18
+  'q14-budget':              17,   // was 14, moved to section 3
+  'q12-existing-assets':     18,   // was 17
   'q16-anything-else':       19,
 };
 
@@ -724,12 +724,12 @@ const QUESTIONNAIRE_DISPLAY_NUM = {
   'q11-aesthetic':            '12',
   'q11-aesthetic-description':'12b',
   'q13-deliverables':         '13',
-  'q14-budget':               '14',
-  'q15-inspiration-refs':     '15',
-  'q7-decision-maker':        '16',
-  'q7-decision-maker-other':  '16b',
-  'q12-existing-assets':      '17',
-  'delivery-date':            '18',
+  'q15-inspiration-refs':     '14',
+  'q7-decision-maker':        '15',
+  'q7-decision-maker-other':  '15b',
+  'delivery-date':            '16',
+  'q14-budget':               '17',
+  'q12-existing-assets':      '18',
   'q16-anything-else':        '19',
 };
 
@@ -750,12 +750,12 @@ function getFieldLabel(key) {
     'q11-aesthetic':            'Aesthetic Direction',
     'q11-aesthetic-description':'Aesthetic Notes',
     'q13-deliverables':         'Deliverables',
-    'q14-budget':               'Budget Approach',
     'q15-inspiration-refs':     'Inspiration Images',
-    'q7-decision-maker':        'Decision Maker',
-    'q7-decision-maker-other':  'Decision Maker (Other)',
-    'q12-existing-assets':      'Existing Assets',
+    'q7-decision-maker':        'Action Taker',
+    'q7-decision-maker-other':  'Action Taker (Other)',
     'delivery-date':            'Delivery Timeframe',
+    'q14-budget':               'Budget Approach',
+    'q12-existing-assets':      'Brand Assets',
     'q16-anything-else':        'Past Experience and Fears',
   };
   const i18nKeys = {
@@ -799,12 +799,12 @@ const QUESTIONNAIRE_FIELD_LABELS = {
   'q11-aesthetic':            'Aesthetic Direction',
   'q11-aesthetic-description':'Aesthetic Notes',
   'q13-deliverables':         'Deliverables',
-  'q14-budget':               'Budget Approach',
   'q15-inspiration-refs':     'Inspiration Images',
-  'q7-decision-maker':        'Decision Maker',
-  'q7-decision-maker-other':  'Decision Maker (Other)',
-  'q12-existing-assets':      'Existing Assets',
+  'q7-decision-maker':        'Action Taker',
+  'q7-decision-maker-other':  'Action Taker (Other)',
   'delivery-date':            'Delivery Timeframe',
+  'q14-budget':               'Budget Approach',
+  'q12-existing-assets':      'Brand Assets',
   'q16-anything-else':        'Past Experience and Fears',
 };
 
@@ -1067,12 +1067,33 @@ function syncDraftFromInputs() {
   const modalBody = document.getElementById('modalBody');
   if (!modalBody) return;
 
-  const inputElements = modalBody.querySelectorAll('[data-edit-key]');
-  inputElements.forEach(element => {
+  // Text / email / date inputs and textareas (not checkbox or radio)
+  modalBody.querySelectorAll('[data-edit-key]').forEach(element => {
     if (!(element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement)) return;
+    const type = element.getAttribute('type') || '';
+    if (type === 'checkbox' || type === 'radio') return;
     const key = String(element.getAttribute('data-edit-key') || '');
     if (!key) return;
     editDraftData[key] = element.value;
+  });
+
+  // Checkbox groups → collect all checked values into an array keyed by data-edit-group
+  const checkboxGroups = {};
+  modalBody.querySelectorAll('input[type="checkbox"][data-edit-group]').forEach(cb => {
+    const group = cb.getAttribute('data-edit-group') || '';
+    if (!group) return;
+    if (!checkboxGroups[group]) checkboxGroups[group] = [];
+    if (cb.checked) checkboxGroups[group].push(cb.value);
+  });
+  Object.assign(editDraftData, checkboxGroups);
+
+  // Radio groups → single selected value per key
+  const radioSeen = new Set();
+  modalBody.querySelectorAll('input[type="radio"][data-edit-key]').forEach(radio => {
+    const key = radio.getAttribute('data-edit-key') || '';
+    if (!key) return;
+    if (!radioSeen.has(key)) { radioSeen.add(key); editDraftData[key] = ''; }
+    if (radio.checked) editDraftData[key] = radio.value;
   });
 }
 
@@ -1457,6 +1478,376 @@ function renderEditableField(label, key, type = 'text') {
   `;
 }
 
+// ── Edit-mode: field-aware questionnaire renderer ──────────────────────────
+// Returns proper HTML (checkboxes, radios, text inputs, textareas) matching
+// the exact input types used in index.html — so editing feels like filling
+// the form, not typing free text.
+// i18n-aware: labels resolved at render time via dt()
+const EDIT_CHECKBOX_DEFS = {
+  'q9-color': [
+    { value: 'Warm neutrals',    i18n: 'form.questions.q9.options.warmNeutrals',       en: 'Warm neutrals (cream, sand, terracotta)' },
+    { value: 'Cool neutrals',    i18n: 'form.questions.q9.options.coolNeutrals',       en: 'Cool neutrals (slate, stone, mist)' },
+    { value: 'Deep & moody',     i18n: 'form.questions.q9.options.deepMoody',          en: 'Deep & moody (navy, forest, burgundy)' },
+    { value: 'Bold & saturated', i18n: 'form.questions.q9.options.boldSaturated',      en: 'Bold & saturated (vibrant primaries)' },
+    { value: 'Pastels',          i18n: 'form.questions.q9.options.pastels',            en: 'Pastels & soft tones' },
+    { value: 'Monochrome',       i18n: 'form.questions.q9.options.monochrome',         en: 'Black & white / monochrome' },
+    { value: 'Metallic',         i18n: 'form.questions.q9.options.metallic',           en: 'Metallic / luxury tones (gold, bronze)' },
+    { value: 'Nature-inspired',  i18n: 'form.questions.q9.options.natureInspired',     en: 'Nature-inspired (moss, rust, clay)' },
+    { value: 'No preference',    i18n: 'form.questions.q9.options.noPreference',       en: 'No preference, I trust your judgment' },
+  ],
+  'q11-aesthetic': [
+    { value: 'Luxury & refined',         i18n: 'form.questions.q11.options.luxuryRefined',         en: 'Luxury & refined' },
+    { value: 'Organic & artisan',         i18n: 'form.questions.q11.options.organicArtisan',        en: 'Organic & artisan' },
+    { value: 'Minimal & functional',      i18n: 'form.questions.q11.options.minimalFunctional',     en: 'Minimal & functional' },
+    { value: 'Bold & graphic',            i18n: 'form.questions.q11.options.boldGraphic',           en: 'Bold & graphic' },
+    { value: 'Playful & illustrative',    i18n: 'form.questions.q11.options.playfulIllustrative',   en: 'Playful & illustrative' },
+    { value: 'Editorial & intellectual',  i18n: 'form.questions.q11.options.editorialIntellectual', en: 'Editorial & intellectual' },
+    { value: 'Tech-forward',              i18n: 'form.questions.q11.options.techForward',           en: 'Tech-forward & innovative' },
+    { value: 'Nostalgic & heritage',      i18n: 'form.questions.q11.options.nostalgicHeritage',     en: 'Nostalgic & heritage' },
+  ],
+  'q13-deliverables': [
+    { value: 'Primary logo',       i18n: 'form.questions.q13.options.primaryLogo',       en: 'Primary logo' },
+    { value: 'Logo variations',    i18n: 'form.questions.q13.options.logoVariations',    en: 'Logo variations & submarks' },
+    { value: 'Color & typography', i18n: 'form.questions.q13.options.colorTypography',   en: 'Color palette & typography system' },
+    { value: 'Brand guidelines',   i18n: 'form.questions.q13.options.brandGuidelines',   en: 'Brand guidelines document' },
+    { value: 'Stationery',         i18n: 'form.questions.q13.options.stationery',        en: 'Business cards & stationery' },
+    { value: 'Social media',       i18n: 'form.questions.q13.options.socialMedia',       en: 'Social media templates' },
+    { value: 'Website design',     i18n: 'form.questions.q13.options.websiteDesign',     en: 'Website design' },
+    { value: 'Packaging',          i18n: 'form.questions.q13.options.packaging',         en: 'Packaging design' },
+  ],
+};
+function getEditCheckboxOptions(key) {
+  const defs = EDIT_CHECKBOX_DEFS[key];
+  if (!defs) return null;
+  return defs.map(d => ({ value: d.value, label: dt(d.i18n, d.en) }));
+}
+
+// i18n-aware: labels resolved at render time via dt()
+const EDIT_RADIO_DEFS = {
+  'q14-budget': [
+    { value: 'Low / lowest possible cost',         i18n: 'form.questions.q14.options.low',  en: 'Low / lowest possible cost' },
+    { value: 'Mid-range / balanced price–1quality', i18n: 'form.questions.q14.options.mid',  en: 'Mid-range / balanced price–quality' },
+    { value: 'High / premium',                      i18n: 'form.questions.q14.options.high', en: 'High / premium' },
+    { value: 'Premium / full brand investment',     i18n: 'form.questions.q14.options.best', en: 'Premium / full brand investment (€3,000+)' },
+  ],
+  'q7-decision-maker': [
+    { value: 'Me / myself',        i18n: 'form.questions.q7.options.me',    en: 'Me / myself' },
+    { value: 'My boss / the boss', i18n: 'form.questions.q7.options.boss',  en: 'My boss / the boss' },
+    { value: 'Other',              i18n: 'form.questions.q7.options.other', en: 'Other (please specify)' },
+  ],
+  'delivery-date': [
+    { value: 'ASAP',         i18n: 'form.metadata.deliveryDateOptions.asap',       en: 'ASAP (As Soon As Possible)' },
+    { value: '2–4 weeks', i18n: 'form.metadata.deliveryDateOptions.weeks2to4', en: '2–4 weeks' },
+    { value: '1–2 months', i18n: 'form.metadata.deliveryDateOptions.months1to2', en: '1–2 months' },
+    { value: '3+ months',    i18n: 'form.metadata.deliveryDateOptions.months3plus', en: '3+ months' },
+  ],
+};
+function getEditRadioOptions(key) {
+  const defs = EDIT_RADIO_DEFS[key];
+  if (!defs) return null;
+  return defs.map(d => ({ value: d.value, label: dt(d.i18n, d.en) }));
+}
+
+// Single-line text fields (use <input type="text"> instead of <textarea>)
+const EDIT_TEXT_INPUT_FIELDS = new Set([
+  'q6-positioning', 'q10-colors-to-avoid', 'q12-existing-assets', 'q7-decision-maker-other'
+]);
+
+// These fields are rendered inline as part of another field; skip standalone rendering
+const EDIT_INLINE_FIELDS = new Set(['q11-aesthetic-description', 'q7-decision-maker-other']);
+
+function renderEditInspirationUpload(rawValue, qNum, labelText) {
+  const refs = Array.isArray(rawValue) ? rawValue : (rawValue ? [rawValue] : []);
+  const safeKey = 'q15-inspiration-refs';
+  const editLabel = qNum ? `${qNum}: ${escapeHtml(labelText)}` : escapeHtml(labelText);
+  const uploadLabel   = dt('form.questions.q15.uploadPrompt', 'Click or drag images here');
+  const uploadSublabel = dt('form.questions.q15.uploadLimit', 'Up to 8 images · PNG, JPG, WEBP, GIF');
+
+  const thumbsHtml = refs.map((ref, i) => {
+    const smallUrl = escapeHtml(getSmallPhotoUrl(String(ref)));
+    const refJson  = escapeHtml(JSON.stringify(ref));
+    return `<div class="edit-insp-thumb" data-ref-index="${i}">
+      <img src="${smallUrl}" alt="Inspiration ${i + 1}" loading="lazy">
+      <button type="button" class="edit-insp-remove" data-ref-index="${i}" aria-label="Remove image ${i + 1}">×</button>
+    </div>`;
+  }).join('');
+
+  const atLimit = refs.length >= 8;
+  const dropzoneHtml = atLimit ? '' : `
+    <label class="edit-insp-dropzone" id="editInspDropzone" tabindex="0" role="button"
+           aria-label="${uploadLabel}">
+      <input type="file" id="editInspFileInput"
+             accept=".png,.jpg,.jpeg,.webp,.gif,image/png,image/jpeg,image/webp,image/gif"
+             multiple hidden>
+      <i data-lucide="upload-cloud" class="icon edit-insp-upload-icon"></i>
+      <span class="edit-insp-upload-label">${escapeHtml(uploadLabel)}</span>
+      <span class="edit-insp-upload-sub">${escapeHtml(uploadSublabel)}</span>
+    </label>`;
+
+  return `
+    <article class="qa-card" id="editInspCard">
+      <div class="qa-label-row edit-qa-label-row">
+        ${qNum ? `<span class="qa-num-badge">${qNum}</span>` : ''}
+        <span class="qa-label-text">${editLabel}</span>
+      </div>
+      <div class="edit-insp-grid" id="editInspGrid">${thumbsHtml}</div>
+      ${dropzoneHtml}
+      <div class="edit-insp-status" id="editInspStatus" aria-live="polite"></div>
+    </article>`;
+}
+
+function renderEditableQuestionnaireField(key, rawValue, qNum, labelText) {
+  // Skip inline fields — they're rendered inside their parent field
+  if (EDIT_INLINE_FIELDS.has(key)) return '';
+
+  // ── Inspiration image upload zone (Q14 / q15-inspiration-refs) ─────────────
+  if (key === 'q15-inspiration-refs') {
+    return renderEditInspirationUpload(rawValue, qNum, labelText);
+  }
+
+  const safeKey = escapeHtml(key);
+  const displayNum = qNum ? `Q${qNum}` : '';
+  const editLabel = displayNum ? `${displayNum}: ${escapeHtml(labelText)}` : escapeHtml(labelText);
+
+  function wrap(inner) {
+    return `
+      <article class="qa-card">
+        <div class="qa-label-row edit-qa-label-row">
+          ${qNum ? `<span class="qa-num-badge">${qNum}</span>` : ''}
+          <label class="qa-label-text">${editLabel}</label>
+        </div>
+        ${inner}
+      </article>`;
+  }
+
+  // ── CHECKBOX groups ─────────────────────────────────────────────────────────
+  const checkboxOpts = getEditCheckboxOptions(key);
+  if (checkboxOpts) {
+    const checked = Array.isArray(rawValue) ? rawValue : (rawValue ? [rawValue] : []);
+    const optionsHtml = checkboxOpts.map(opt => {
+      const isChecked = checked.includes(opt.value);
+      return `<label class="edit-check-label${isChecked ? ' edit-check-label--checked' : ''}">
+        <input type="checkbox"
+               data-edit-key="${safeKey}"
+               data-edit-group="${safeKey}"
+               value="${escapeHtml(opt.value)}"
+               ${isChecked ? 'checked' : ''}>
+        <span>${escapeHtml(opt.label)}</span>
+      </label>`;
+    }).join('');
+
+    // q11-aesthetic gets an extra "describe your own" textarea below
+    let extra = '';
+    if (key === 'q11-aesthetic') {
+      const descVal = escapeHtml(String(editDraftData?.['q11-aesthetic-description'] ?? ''));
+      extra = `<textarea class="edit-textarea edit-aesthetic-desc"
+                         data-edit-key="q11-aesthetic-description"
+                         maxlength="1000"
+                         placeholder="${dt('form.questions.q11Description.placeholder', 'Or describe your own aesthetic direction...')}">${descVal}</textarea>`;
+    }
+
+    return wrap(`<div class="edit-check-grid">${optionsHtml}</div>${extra}`);
+  }
+
+  // ── RADIO groups ────────────────────────────────────────────────────────────
+  const radioOpts = getEditRadioOptions(key);
+  if (radioOpts) {
+    const currentVal = String(rawValue ?? '');
+    const optionsHtml = radioOpts.map(opt => {
+      const isChecked = currentVal === opt.value;
+      return `<label class="edit-check-label${isChecked ? ' edit-check-label--checked' : ''}">
+        <input type="radio"
+               name="edit-radio-${safeKey}"
+               data-edit-key="${safeKey}"
+               value="${escapeHtml(opt.value)}"
+               ${isChecked ? 'checked' : ''}>
+        <span>${escapeHtml(opt.label)}</span>
+      </label>`;
+    }).join('');
+
+    // q7-decision-maker gets an "Other" text input below
+    let extra = '';
+    if (key === 'q7-decision-maker') {
+      const otherVal = escapeHtml(String(editDraftData?.['q7-decision-maker-other'] ?? ''));
+      const otherPh  = dt('form.questions.q7.otherPlaceholder', 'Please specify...');
+      extra = `<input type="text"
+                      class="edit-input edit-other-input"
+                      data-edit-key="q7-decision-maker-other"
+                      value="${otherVal}"
+                      placeholder="${escapeHtml(otherPh)}"
+                      maxlength="300">`;
+    }
+
+    return wrap(`<div class="edit-check-grid edit-radio-grid">${optionsHtml}</div>${extra}`);
+  }
+
+  // ── Single-line text input ──────────────────────────────────────────────────
+  if (EDIT_TEXT_INPUT_FIELDS.has(key)) {
+    const val = escapeHtml(String(rawValue ?? ''));
+    return wrap(`<input type="text" class="edit-input" data-edit-key="${safeKey}" value="${val}" maxlength="300">`);
+  }
+
+  // ── Default: textarea ───────────────────────────────────────────────────────
+  const val = escapeHtml(String(rawValue ?? ''));
+  return wrap(`<textarea class="edit-textarea" data-edit-key="${safeKey}">${val}</textarea>`);
+}
+
+// ── Inspiration image upload in edit mode ────────────────────────────────────
+async function uploadInspirationFile(file) {
+  const contentBase64 = await new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = String(reader.result || '');
+      resolve(result.includes(',') ? result.split(',')[1] : result);
+    };
+    reader.onerror = () => reject(new Error('Failed to read file.'));
+    reader.readAsDataURL(file);
+  });
+
+  const response = await fetch('/.netlify/functions/upload-photo', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ filename: file.name, mimeType: file.type, contentBase64 })
+  });
+
+  if (!response.ok) {
+    let msg = 'Upload failed.';
+    try { const j = await response.json(); msg = j.error || msg; } catch (_) {}
+    throw new Error(msg);
+  }
+  const json = await response.json();
+  // Return the compact JSON string that the DB stores
+  return JSON.stringify({ smallRef: json.smallRef, originalRef: json.originalRef });
+}
+
+function refreshEditInspGrid() {
+  const grid   = document.getElementById('editInspGrid');
+  const card   = document.getElementById('editInspCard');
+  if (!grid || !card || !editDraftData) return;
+
+  const refs = Array.isArray(editDraftData['q15-inspiration-refs'])
+    ? editDraftData['q15-inspiration-refs']
+    : (editDraftData['q15-inspiration-refs'] ? [editDraftData['q15-inspiration-refs']] : []);
+
+  grid.innerHTML = refs.map((ref, i) => {
+    const smallUrl = escapeHtml(getSmallPhotoUrl(String(ref)));
+    return `<div class="edit-insp-thumb">
+      <img src="${smallUrl}" alt="Inspiration ${i + 1}" loading="lazy">
+      <button type="button" class="edit-insp-remove" data-ref-index="${i}" aria-label="Remove image">×</button>
+    </div>`;
+  }).join('');
+
+  // Show/hide the dropzone depending on whether we're at the 8-image limit
+  const atLimit = refs.length >= 8;
+  let dropzone = card.querySelector('.edit-insp-dropzone');
+  if (atLimit && dropzone) {
+    dropzone.remove();
+  } else if (!atLimit && !dropzone) {
+    const uploadLabel    = dt('form.questions.q15.uploadPrompt', 'Click or drag images here');
+    const uploadSublabel = dt('form.questions.q15.uploadLimit', 'Up to 8 images · PNG, JPG, WEBP, GIF');
+    const dzEl = document.createElement('label');
+    dzEl.className = 'edit-insp-dropzone';
+    dzEl.id = 'editInspDropzone';
+    dzEl.setAttribute('tabindex', '0');
+    dzEl.setAttribute('role', 'button');
+    dzEl.setAttribute('aria-label', uploadLabel);
+    dzEl.innerHTML = `<input type="file" id="editInspFileInput"
+             accept=".png,.jpg,.jpeg,.webp,.gif,image/png,image/jpeg,image/webp,image/gif"
+             multiple hidden>
+      <i data-lucide="upload-cloud" class="icon edit-insp-upload-icon"></i>
+      <span class="edit-insp-upload-label">${escapeHtml(uploadLabel)}</span>
+      <span class="edit-insp-upload-sub">${escapeHtml(uploadSublabel)}</span>`;
+    card.insertBefore(dzEl, card.querySelector('.edit-insp-status'));
+    setupInspirationDropzone(dzEl);
+  } else if (!atLimit && dropzone) {
+    // ensure the file input listener is alive (re-attach after innerHTML refresh)
+    setupInspirationDropzone(dropzone);
+  }
+
+  // Wire remove buttons
+  grid.querySelectorAll('.edit-insp-remove[data-ref-index]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.getAttribute('data-ref-index'), 10);
+      const current = Array.isArray(editDraftData['q15-inspiration-refs'])
+        ? editDraftData['q15-inspiration-refs']
+        : [];
+      editDraftData['q15-inspiration-refs'] = current.filter((_, i) => i !== idx);
+      markEditDirty();
+      refreshEditInspGrid();
+      if (window.lucide) window.lucide.createIcons();
+    });
+  });
+}
+
+function setupInspirationDropzone(dropzone) {
+  if (!dropzone) return;
+  const fileInput = dropzone.querySelector('input[type="file"]') || document.getElementById('editInspFileInput');
+  if (!fileInput) return;
+
+  async function handleFiles(files) {
+    const statusEl = document.getElementById('editInspStatus');
+    const current  = Array.isArray(editDraftData?.['q15-inspiration-refs'])
+      ? [...editDraftData['q15-inspiration-refs']]
+      : [];
+    const slots = 8 - current.length;
+    const toUpload = Array.from(files).slice(0, slots);
+    if (!toUpload.length) return;
+
+    if (statusEl) statusEl.textContent = dt('form.questions.q15.uploadPrompt', 'Uploading…');
+
+    let uploaded = 0, failed = 0;
+    for (const file of toUpload) {
+      try {
+        const ref = await uploadInspirationFile(file);
+        current.push(ref);
+        uploaded++;
+      } catch (err) {
+        failed++;
+        console.error('[editInsp] Upload error:', err);
+      }
+    }
+
+    editDraftData['q15-inspiration-refs'] = current;
+    markEditDirty();
+
+    if (statusEl) {
+      statusEl.textContent = failed
+        ? `${uploaded} uploaded, ${failed} failed.`
+        : '';
+    }
+    refreshEditInspGrid();
+    if (window.lucide) window.lucide.createIcons();
+  }
+
+  // Click-to-browse
+  dropzone.addEventListener('click', e => {
+    if (e.target !== fileInput) fileInput.click();
+  });
+  dropzone.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); }
+  });
+  fileInput.addEventListener('change', () => {
+    if (fileInput.files?.length) handleFiles(fileInput.files);
+    fileInput.value = '';
+  });
+
+  // Drag & drop
+  dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('edit-insp-dragover'); });
+  dropzone.addEventListener('dragleave', () => dropzone.classList.remove('edit-insp-dragover'));
+  dropzone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropzone.classList.remove('edit-insp-dragover');
+    if (e.dataTransfer?.files?.length) handleFiles(e.dataTransfer.files);
+  });
+}
+
+function setupEditInspirationUpload() {
+  const dropzone = document.getElementById('editInspDropzone');
+  setupInspirationDropzone(dropzone);
+  // Wire existing remove buttons
+  refreshEditInspGrid();
+}
+
 function renderDetailPanel() {
   if (!currentSubmission) return;
 
@@ -1609,18 +2000,12 @@ function renderDetailPanel() {
     const safeLabel = escapeHtml(labelText);
 
     if (isEditingSubmission) {
-      const qNumEdit = QUESTIONNAIRE_DISPLAY_NUM[key];
+      const qNumEdit = QUESTIONNAIRE_DISPLAY_NUM[key] || null;
       const labelForEdit = getFieldLabel(key) || key
         .replace(/^q[\w]*-/, '')
         .replace(/-/g, ' ')
         .replace(/\b\w/g, l => l.toUpperCase());
-      const editLabel = qNumEdit ? `Q${qNumEdit}: ${labelForEdit}` : labelForEdit;
-      return `
-        <article class="qa-card">
-          <label class="qa-label" for="edit-${escapeHtml(key)}">${escapeHtml(editLabel)}</label>
-          <textarea id="edit-${escapeHtml(key)}" class="edit-textarea" data-edit-key="${escapeHtml(key)}">${escapeHtml(String(value ?? ''))}</textarea>
-        </article>
-      `;
+      return renderEditableQuestionnaireField(key, value, qNumEdit, labelForEdit);
     }
 
     const displayValue = getDisplayValue(value);
@@ -1763,13 +2148,46 @@ function setupEditModeInteractions() {
   const modalBody = document.getElementById('modalBody');
   if (!modalBody) return;
 
+  // Text inputs and textareas
   modalBody.querySelectorAll('[data-edit-key]').forEach(element => {
     if (!(element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement)) return;
+    const type = element.getAttribute('type') || '';
+    if (type === 'checkbox' || type === 'radio') return;
     element.addEventListener('input', () => {
       markEditDirty();
       syncDraftFromInputs();
     });
   });
+
+  // Checkboxes
+  modalBody.querySelectorAll('input[type="checkbox"][data-edit-group]').forEach(cb => {
+    cb.addEventListener('change', () => {
+      // Update checked styling on the parent label
+      const label = cb.closest('.edit-check-label');
+      if (label) label.classList.toggle('edit-check-label--checked', cb.checked);
+      markEditDirty();
+      syncDraftFromInputs();
+    });
+  });
+
+  // Radios
+  modalBody.querySelectorAll('input[type="radio"][data-edit-key]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      // Update checked styling for all radios in the same group
+      const groupName = radio.getAttribute('name') || '';
+      if (groupName) {
+        modalBody.querySelectorAll(`input[name="${groupName}"]`).forEach(r => {
+          const lbl = r.closest('.edit-check-label');
+          if (lbl) lbl.classList.toggle('edit-check-label--checked', r.checked);
+        });
+      }
+      markEditDirty();
+      syncDraftFromInputs();
+    });
+  });
+
+  // Inspiration image upload zone
+  setupEditInspirationUpload();
 
   // ── Delivery date custom dropdown ──────────────────────────────────
   const editDeliveryBtn = document.getElementById('editDeliveryBtn');
@@ -2379,7 +2797,8 @@ function exportAsCSV(submissionsOverride) {
   const columns = [
     'id', 'created_at', 'status',
     'client-name', 'brand-name', 'email', 'client-website',
-    'delivery-date', 'agreed-delivery-date',
+    'agreed-delivery-date',
+    // Questions in display order (matching new numbering Q01–Q19)
     'q1-business-description', 'q2-problem-transformation',
     'q3-ideal-customer', 'q3b-customer-desire',
     'q4-competitors', 'q5-brand-personality',
@@ -2387,11 +2806,14 @@ function exportAsCSV(submissionsOverride) {
     'q8-brands-admired',
     'q9-color', 'q10-colors-to-avoid',
     'q11-aesthetic', 'q11-aesthetic-description',
-    'q13-deliverables', 'q14-budget',
-    'q15-inspiration-refs',
-    'q7-decision-maker', 'q7-decision-maker-other',
-    'q12-existing-assets',
-    'q16-anything-else'
+    'q13-deliverables',
+    'q15-inspiration-refs',      // Q14
+    'q7-decision-maker',         // Q15
+    'q7-decision-maker-other',   // Q15b
+    'delivery-date',             // Q16
+    'q14-budget',                // Q17
+    'q12-existing-assets',       // Q18
+    'q16-anything-else'          // Q19
   ];
 
   function escapeCSVCell(value) {

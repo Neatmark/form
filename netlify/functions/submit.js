@@ -258,6 +258,13 @@ exports.handler = async (event) => {
       }
     } catch (err) {
       console.error('[Turnstile] Verification request failed:', err.message);
+      // Fail closed — if we cannot reach Cloudflare, reject the submission.
+      // This prevents Turnstile from being silently bypassed via a network error.
+      return {
+        statusCode: 503,
+        headers: CORS_HEADERS,
+        body: JSON.stringify({ success: false, error: 'Security check could not be completed. Please try again in a moment.' })
+      };
     }
   } else {
     delete payload['cf-turnstile-response'];

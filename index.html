@@ -9,17 +9,21 @@
 <meta name="robots" content="noindex, nofollow">
 <title>Neatmark Client Form</title>
 
-<!-- Open Graph / Facebook -->
-<meta property="og:type" content="website">
-<meta property="og:title" content="Neatmark Client Intake">
+<!-- Open Graph / Facebook / WhatsApp / Telegram / Discord / Slack -->
+<!-- og:image MUST be an absolute URL — relative paths are ignored by all social bots -->
+<meta property="og:type"        content="website">
+<meta property="og:url"         content="https://form.neatmark.studio/">
+<meta property="og:title"       content="Neatmark Client Intake">
 <meta property="og:description" content="Brand identity client intake form">
-<meta property="og:image" content="/assets/preview.png">
+<meta property="og:image"       content="https://form.neatmark.studio/assets/preview.png">
+<meta property="og:image:width"  content="1200">
+<meta property="og:image:height" content="630">
 
-<!-- Twitter -->
-<meta property="twitter:card" content="summary_large_image">
-<meta property="twitter:title" content="Neatmark Client Intake">
-<meta property="twitter:description" content="Brand identity client intake form">
-<meta property="twitter:image" content="/assets/preview.png">
+<!-- Twitter / X card -->
+<meta name="twitter:card"        content="summary_large_image">
+<meta name="twitter:title"       content="Neatmark Client Intake">
+<meta name="twitter:description" content="Brand identity client intake form">
+<meta name="twitter:image"       content="https://form.neatmark.studio/assets/preview.png">
 
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 <script src="assets/theme-init.js"></script>
@@ -325,17 +329,7 @@
       </div>
 
       <div class="q-card">
-        <div class="q-header"><span class="q-num">14</span><p class="q-label" data-i18n="form.questions.q14.label">What is your budget approach for this project?</p></div>
-        <div class="check-grid">
-          <label class="check-label"><input type="radio" name="q14-budget" value="Low / lowest possible cost" required><span data-i18n="form.questions.q14.options.low">Low / lowest possible cost</span></label>
-          <label class="check-label"><input type="radio" name="q14-budget" value="Mid-range / balanced price–quality"><span data-i18n="form.questions.q14.options.mid">Mid-range / balanced price&ndash;quality</span></label>
-          <label class="check-label"><input type="radio" name="q14-budget" value="High / premium"><span data-i18n="form.questions.q14.options.high">High / premium</span></label>
-          <label class="check-label"><input type="radio" name="q14-budget" value="Premium / full brand investment"><span data-i18n="form.questions.q14.options.best">Premium / full brand investment (&euro;3,000+)</span></label>
-        </div>
-      </div>
-
-      <div class="q-card">
-        <div class="q-header"><span class="q-num">15</span><p class="q-label" data-i18n="form.questions.q15.label">Got any logos, photos, or moodboards that inspire your brand's direction? Drop them here.</p></div>
+        <div class="q-header"><span class="q-num">14</span><p class="q-label" data-i18n="form.questions.q15.label">Got any logos, photos, or moodboards that inspire your brand's direction? Drop them here.</p></div>
         <p class="q-hint" data-i18n="form.questions.q15.hint">Up to 8 images. PNG, JPG, WEBP, or GIF.</p>
         <div class="q20-upload-area" id="q15UploadArea">
           <input type="file" id="q15FileInput" accept=".png,.jpg,.jpeg,.webp,.gif,image/png,image/jpeg,image/webp,image/gif" multiple hidden />
@@ -376,7 +370,7 @@
       </div>
 
       <div class="q-card">
-        <div class="q-header"><span class="q-num">16</span><p class="q-label" data-i18n="form.questions.q7.label">Who is the main action taker / decision maker for this project?</p></div>
+        <div class="q-header"><span class="q-num">15</span><p class="q-label" data-i18n="form.questions.q7.label">Who is the main action taker / decision maker for this project?</p></div>
         <p class="q-hint" data-i18n="form.questions.q7.hint">This helps us know who we'll be presenting to and whose sign-off matters.</p>
         <div class="check-grid">
           <label class="check-label"><input type="radio" name="q7-decision-maker" value="Me / myself" required><span data-i18n="form.questions.q7.options.me">Me / myself</span></label>
@@ -387,13 +381,7 @@
       </div>
 
       <div class="q-card">
-        <div class="q-header"><span class="q-num">17</span><p class="q-label" data-i18n="form.questions.q12.label">Do you have existing brand assets that must carry into the new identity?</p></div>
-        <p class="q-hint" data-i18n="form.questions.q12.hint">If starting fresh, leave blank. If keeping elements, tell us what and why.</p>
-        <input type="text" name="q12-existing-assets" maxlength="300" data-i18n-placeholder="form.questions.q12.placeholder" placeholder="We want to keep our current logo mark but redesign everything else...">
-      </div>
-
-      <div class="q-card">
-        <div class="q-header"><span class="q-num">18</span><p class="q-label" data-i18n="form.questions.qdelivery.label">What is your ideal delivery timeframe?</p></div>
+        <div class="q-header"><span class="q-num">16</span><p class="q-label" data-i18n="form.questions.qdelivery.label">What is your ideal delivery timeframe?</p></div>
         <p class="q-hint" data-i18n="form.questions.qdelivery.hint">This helps us plan your project slot. We'll confirm the exact timeline on the kickoff call.</p>
         <div class="check-grid">
           <label class="check-label"><input type="radio" name="delivery-date" value="ASAP" required><span data-i18n="form.metadata.deliveryDateOptions.asap">ASAP (As Soon As Possible)</span></label>
@@ -401,6 +389,22 @@
           <label class="check-label"><input type="radio" name="delivery-date" value="1–2 months"><span data-i18n="form.metadata.deliveryDateOptions.months1to2">1&ndash;2 months</span></label>
           <label class="check-label"><input type="radio" name="delivery-date" value="3+ months"><span data-i18n="form.metadata.deliveryDateOptions.months3plus">3+ months</span></label>
         </div>
+      </div>
+
+      <div class="q-card">
+        <div class="q-header"><span class="q-num">17</span><p class="q-label" data-i18n="form.questions.q14.label">What is your budget approach for this project?</p></div>
+        <div class="check-grid">
+          <label class="check-label"><input type="radio" name="q14-budget" value="Low / lowest possible cost" required><span data-i18n="form.questions.q14.options.low">Low / lowest possible cost</span></label>
+          <label class="check-label"><input type="radio" name="q14-budget" value="Mid-range / balanced price–quality"><span data-i18n="form.questions.q14.options.mid">Mid-range / balanced price&ndash;quality</span></label>
+          <label class="check-label"><input type="radio" name="q14-budget" value="High / premium"><span data-i18n="form.questions.q14.options.high">High / premium</span></label>
+          <label class="check-label"><input type="radio" name="q14-budget" value="Premium / full brand investment"><span data-i18n="form.questions.q14.options.best">Premium / full brand investment (&euro;3,000+)</span></label>
+        </div>
+      </div>
+
+      <div class="q-card">
+        <div class="q-header"><span class="q-num">18</span><p class="q-label" data-i18n="form.questions.q12.label">Do you have existing brand assets that must carry into the new identity?</p></div>
+        <p class="q-hint" data-i18n="form.questions.q12.hint">If starting fresh, leave blank. If keeping elements, tell us what and why.</p>
+        <input type="text" name="q12-existing-assets" maxlength="300" data-i18n-placeholder="form.questions.q12.placeholder" placeholder="We want to keep our current logo mark but redesign everything else...">
       </div>
 
       <div class="q-card">

@@ -1,4 +1,10 @@
+# ── Search engine crawlers ────────────────────────────────────────────────────
+# This is a private client intake form — no indexing wanted anywhere.
+
 User-agent: Googlebot
+Disallow: /
+
+User-agent: Googlebot-Image
 Disallow: /
 
 User-agent: Bingbot
@@ -7,5 +13,72 @@ Disallow: /
 User-agent: Yandex
 Disallow: /
 
+User-agent: YandexImages
+Disallow: /
+
 User-agent: Baiduspider
+Disallow: /
+
+User-agent: DuckDuckBot
+Disallow: /
+
+User-agent: Sogou
+Disallow: /
+
+User-agent: Exabot
+Disallow: /
+
+User-agent: ia_archiver
+Disallow: /
+
+# ── Social media link-preview bots ───────────────────────────────────────────
+# These bots only fetch the page to generate a rich preview card when someone
+# shares the link — they do NOT index content or affect search rankings.
+# Allowing them means WhatsApp / Telegram / Discord / Slack will show
+# the branded preview image when a client shares the form link.
+# They are explicitly allowed here (no Disallow rule = allowed by default,
+# but listed for clarity).
+
+# Facebook / Instagram / Messenger
+User-agent: facebookexternalhit
+Allow: /
+
+# Twitter / X
+User-agent: Twitterbot
+Allow: /
+
+# LinkedIn
+User-agent: LinkedInBot
+Allow: /
+
+# WhatsApp
+User-agent: WhatsApp
+Allow: /
+
+# Telegram
+User-agent: TelegramBot
+Allow: /
+
+# Discord
+User-agent: Discordbot
+Allow: /
+
+# Slack
+User-agent: Slackbot
+Allow: /
+
+User-agent: Slackbot-LinkExpanding
+Allow: /
+
+# Pinterest
+User-agent: Pinterest
+Allow: /
+
+User-agent: Pinterestbot
+Allow: /
+
+# ── Catch-all ─────────────────────────────────────────────────────────────────
+# Block any bot not explicitly listed above (other scrapers, AI crawlers, etc.)
+
+User-agent: *
 Disallow: /

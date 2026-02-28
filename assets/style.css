@@ -2156,3 +2156,34 @@ html[dir="rtl"] .nav-icon { transform: scaleX(-1); }
 
 /* Dashboard modal icon buttons — hidden during edit mode */
 .modal-icon-btn.hidden-in-edit { display: none; }
+
+/* ── Mobile: keep lang switcher as a pill (not just a circle) ────────────────
+   On small screens the hdr-circle normally collapses to a 40×40 icon.
+   For the language toggle we always want the pill with the code label visible
+   so it's obvious it's a language selector, not a theme or other action.   */
+@media (max-width: 540px) {
+  #langToggle {
+    width: auto;
+    height: 34px;
+    border-radius: 999px;
+    padding: 0 10px;
+    gap: 3px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  #langToggle .lang-code {
+    display: inline;   /* always show the code text on mobile */
+  }
+  #langToggle .lang-caret {
+    width: 8px;
+    height: 4px;
+  }
+  /* Keep theme toggle as a compact circle on mobile */
+  #themeToggle {
+    width: 34px;
+    height: 34px;
+  }
+  .header-actions {
+    gap: 6px;
+  }
+}

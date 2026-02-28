@@ -2066,6 +2066,28 @@ button.detail-section-toggle[aria-expanded="true"] .detail-section-chevron {
     display: none;
   }
 
+  /* Language button stays a pill on mobile — not a circle.
+     Must come after the .btn rule above to win specificity.
+     Mirrors the #langToggle override in style.css exactly.   */
+  .header-actions .dash-lang-btn {
+    width: auto;
+    height: 36px;
+    border-radius: 999px;
+    padding: 0 10px;
+    gap: 4px;
+    font-size: 12px;
+    justify-content: center;
+  }
+
+  .header-actions .dash-lang-btn .dash-lang-code {
+    display: inline; /* keep the language code text visible */
+  }
+
+  .header-actions .dash-lang-btn svg {
+    width: 8px;
+    height: 4px;
+  }
+
   /* Export button: show icon + count only, no text */
   .header-actions #exportBtn {
     width: auto;
@@ -2992,4 +3014,192 @@ html[dir="rtl"] .dash-lang-menu {
   width: 16px;
   height: 16px;
   color: #fff;
+}
+
+/* ── Hide Netlify Identity's default bottom widget ──────────────────────────
+   We use our own custom login card (#loginScreen) and call netlifyIdentity.open()
+   manually. The default sticky widget at the bottom is redundant and unstyled
+   when the widget CSS is blocked. Hide it entirely on the dashboard page.     */
+[data-netlify-identity-button],
+#netlify-identity-widget,
+.netlify-identity-widget-overlay,
+.netlify-identity-button,
+[class*="netlifyWidget"],
+[id*="netlifyWidget"] {
+  display: none !important;
+}
+
+/* ── Edit-mode: field-aware checkbox / radio grids ───────────────────────────
+   Matches the visual style of the public form's check-label pattern,
+   adapted for the dashboard colour palette and compact layout.            */
+
+.edit-check-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.edit-radio-grid {
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+
+.edit-check-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text-hi);
+  transition: border-color 0.15s ease, background 0.15s ease;
+  user-select: none;
+  line-height: 1.4;
+}
+
+.edit-check-label:hover {
+  border-color: var(--accent);
+}
+
+.edit-check-label--checked {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+}
+
+.edit-check-label input[type="checkbox"],
+.edit-check-label input[type="radio"] {
+  width: 15px;
+  height: 15px;
+  accent-color: var(--accent);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* "Other" text input below the decision-maker radio group */
+.edit-other-input {
+  margin-top: 10px;
+  width: 100%;
+}
+
+/* Aesthetic notes textarea below the aesthetic checkbox grid */
+.edit-aesthetic-desc {
+  margin-top: 10px;
+  width: 100%;
+  min-height: 80px;
+}
+
+/* Label row in edit mode: matches view-mode qa-label-row but works as a <label> */
+.edit-qa-label-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+@media (max-width: 600px) {
+  .edit-check-grid,
+  .edit-radio-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Edit-mode: Inspiration image upload zone ────────────────────────────────
+   Mirrors the public form's q15 dropzone feel but adapted for dashboard.  */
+
+.edit-insp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.edit-insp-thumb {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  aspect-ratio: 1;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+}
+
+.edit-insp-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.edit-insp-remove {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0,0,0,.65);
+  color: #fff;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  opacity: 0;
+  transition: opacity .15s;
+}
+.edit-insp-thumb:hover .edit-insp-remove,
+.edit-insp-thumb:focus-within .edit-insp-remove {
+  opacity: 1;
+}
+
+.edit-insp-dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 22px 16px;
+  margin-top: 10px;
+  border: 2px dashed var(--border);
+  border-radius: 12px;
+  background: var(--surface-2);
+  cursor: pointer;
+  transition: border-color .2s, background .2s;
+  text-align: center;
+}
+.edit-insp-dropzone:hover,
+.edit-insp-dropzone:focus-within,
+.edit-insp-dragover {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 6%, var(--surface-2));
+}
+
+.edit-insp-upload-icon {
+  width: 28px;
+  height: 28px;
+  color: var(--text-mid);
+  pointer-events: none;
+}
+.edit-insp-upload-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-hi);
+  pointer-events: none;
+}
+.edit-insp-upload-sub {
+  font-size: 11px;
+  color: var(--text-mid);
+  pointer-events: none;
+}
+
+.edit-insp-status {
+  font-size: 12px;
+  color: var(--text-mid);
+  margin-top: 6px;
+  min-height: 16px;
 }
