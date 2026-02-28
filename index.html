@@ -22,15 +22,7 @@
 <meta property="twitter:image" content="/assets/preview.png">
 
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
-<script>
-  (function() {
-    var saved = localStorage.getItem('user-theme');
-    var theme = (saved === 'dark' || saved === 'light') ? saved
-      : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    document.documentElement.setAttribute('data-theme', theme);
-    document.documentElement.setAttribute('data-theme-mode', saved ? saved : 'auto');
-  })();
-</script>
+<script src="assets/theme-init.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Mona+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
 <script src="assets/i18n.js"></script>
@@ -38,11 +30,11 @@
 <body>
 
 <noscript>
-  <div style="position:fixed;inset:0;z-index:9999;background:#e6fcf8;display:flex;align-items:center;justify-content:center;padding:24px;font-family:sans-serif;text-align:center;">
-    <div style="max-width:440px;">
-      <div style="font-size:48px;margin-bottom:16px;">&#9888;&#65039;</div>
-      <h2 style="font-size:20px;font-weight:800;color:#00373c;margin-bottom:12px;">JavaScript is required &nbsp;&middot;&nbsp; JavaScript est requis &nbsp;&middot;&nbsp; <span dir="rtl">JavaScript &#x645;&#x637;&#x644;&#x648;&#x628;</span></h2>
-      <p style="color:#006d77;line-height:1.8;font-size:14px;">Please enable JavaScript in your browser and reload.<br><em>Veuillez activer JavaScript et recharger la page.</em><br><em dir="rtl">&#x64A;&#x631;&#x62C;&#x649; &#x62A;&#x641;&#x639;&#x64A;&#x644; JavaScript &#x62B;&#x645; &#x625;&#x639;&#x627;&#x62F;&#x629; &#x62A;&#x62D;&#x645;&#x64A;&#x644; &#x627;&#x644;&#x635;&#x641;&#x62D;&#x629;.</em></p>
+  <div class="noscript-overlay">
+    <div class="noscript-inner">
+      <div class="noscript-icon">&#9888;&#65039;</div>
+      <h2 class="noscript-title">JavaScript is required &nbsp;&middot;&nbsp; JavaScript est requis &nbsp;&middot;&nbsp; <span dir="rtl">JavaScript &#x645;&#x637;&#x644;&#x648;&#x628;</span></h2>
+      <p class="noscript-text">Please enable JavaScript in your browser and reload.<br><em>Veuillez activer JavaScript et recharger la page.</em><br><em dir="rtl">&#x64A;&#x631;&#x62C;&#x649; &#x62A;&#x641;&#x639;&#x64A;&#x644; JavaScript &#x62B;&#x645; &#x625;&#x639;&#x627;&#x62F;&#x629; &#x62A;&#x62D;&#x645;&#x64A;&#x644; &#x627;&#x644;&#x635;&#x641;&#x62D;&#x629;.</em></p>
     </div>
   </div>
 </noscript>
@@ -50,7 +42,7 @@
 <form name="brand-intake" method="POST">
 
 <!-- Honeypot -->
-<input type="text" name="website" value="" autocomplete="off" tabindex="-1" aria-hidden="true" style="position:fixed;top:-9999px;left:0;width:1px;height:1px;opacity:0;pointer-events:none;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;">
+<input type="text" name="website" value="" autocomplete="off" tabindex="-1" aria-hidden="true" class="honeypot">
 
 <!-- ═══════════════════════════════════════════
      PAGE STEPPER BAR
@@ -130,7 +122,7 @@
   <div class="form-page active" id="formPage1" data-page="1">
 
     <!-- EDIT MODE BANNER -->
-    <div class="edit-mode-banner" id="editModeBanner" style="display:none" role="status" aria-live="polite">
+    <div class="edit-mode-banner" id="editModeBanner" role="status" aria-live="polite">
       <span class="edit-mode-icon" aria-hidden="true">
         <i data-lucide="edit-3" class="icon icon-edit"></i>
       </span>
@@ -138,7 +130,7 @@
     </div>
 
     <!-- DRAFT BANNER -->
-    <div class="draft-banner" id="draftBanner" style="display:none">
+    <div class="draft-banner" id="draftBanner">
       <span class="draft-banner-icon" aria-hidden="true">
         <i data-lucide="file-text" class="icon icon-draft"></i>
       </span>
@@ -313,7 +305,7 @@
           <label class="check-label check-label--ranked"><input type="checkbox" name="q11-aesthetic" value="Tech-forward"><span class="rank-badge"></span><span data-i18n="form.questions.q11.options.techForward">Tech-forward &amp; innovative</span></label>
           <label class="check-label check-label--ranked"><input type="checkbox" name="q11-aesthetic" value="Nostalgic & heritage"><span class="rank-badge"></span><span data-i18n="form.questions.q11.options.nostalgicHeritage">Nostalgic &amp; heritage</span></label>
         </div>
-        <textarea name="q11-aesthetic-description" style="margin-top:10px;min-height:64px" maxlength="1000" data-i18n-placeholder="form.questions.q11Description.placeholder" placeholder="Or describe your own aesthetic direction..."></textarea>
+        <textarea name="q11-aesthetic-description" class="q11-description-textarea" maxlength="1000" data-i18n-placeholder="form.questions.q11Description.placeholder" placeholder="Or describe your own aesthetic direction..."></textarea>
       </div>
 
       <div class="q-card">
@@ -391,7 +383,7 @@
           <label class="check-label"><input type="radio" name="q7-decision-maker" value="My boss / the boss"><span data-i18n="form.questions.q7.options.boss">My boss / the boss</span></label>
           <label class="check-label"><input type="radio" name="q7-decision-maker" value="Other"><span data-i18n="form.questions.q7.options.other">Other (please specify):</span></label>
         </div>
-        <input type="text" name="q7-decision-maker-other" id="q7OtherInput" style="margin-top:10px;display:none;" data-i18n-placeholder="form.questions.q7.otherPlaceholder" placeholder="Please specify...">
+        <input type="text" name="q7-decision-maker-other" id="q7OtherInput" class="q7-other-input" data-i18n-placeholder="form.questions.q7.otherPlaceholder" placeholder="Please specify...">
       </div>
 
       <div class="q-card">
@@ -522,9 +514,8 @@
 <!-- Modals -->
 <div class="duplicate-modal" id="duplicateModal" aria-hidden="true">
   <div class="duplicate-modal-card" role="dialog" aria-modal="true" aria-labelledby="duplicateModalMessage">
-    <p class="duplicate-modal-message" id="duplicateModalMessage" data-i18n="modal.duplicate.message">You've already sent a submission for this brand. Would you like to override the previous submission or send a completely new one?</p>
+    <p class="duplicate-modal-message" id="duplicateModalMessage" data-i18n="modal.duplicate.message">You've already sent a submission for this brand. Would you like to send a completely new one?</p>
     <div class="duplicate-modal-actions">
-      <button type="button" class="duplicate-action-btn" id="duplicateOverrideBtn" data-i18n="modal.duplicate.override">Override</button>
       <button type="button" class="duplicate-action-btn" id="duplicateSendNewBtn" data-i18n="modal.duplicate.sendNew">Send as New</button>
       <button type="button" class="duplicate-action-btn" id="duplicateCancelBtn" data-i18n="modal.duplicate.cancel">Cancel</button>
     </div>

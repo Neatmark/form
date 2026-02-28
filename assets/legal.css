@@ -1,0 +1,52 @@
+/**
+ * legal.css
+ * ─────────
+ * Styles for privacy.html and cookies.html.
+ * Previously inlined in each page; extracted to remove style-src unsafe-inline from CSP.
+ */
+
+.legal-header { max-width: 720px; margin: 0 auto; padding: 32px 32px 0; display: flex; justify-content: space-between; align-items: center; }
+.legal-page   { max-width: 720px; margin: 0 auto; padding: 48px 32px 80px; }
+
+.legal-back       { display: inline-flex; align-items: center; gap: 6px; color: var(--text-mid); font-size: 14px; font-weight: 600; text-decoration: none; transition: color .15s; }
+.legal-back:hover { color: var(--text-hi); }
+
+.legal-eyebrow { font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--text-mid); margin-bottom: 12px; margin-top: 48px; }
+.legal-title   { font-size: clamp(32px, 6vw, 52px); font-weight: 900; letter-spacing: -.03em; line-height: 1.05; color: var(--text-hi); margin-bottom: 12px; }
+.legal-updated { font-size: 14px; color: var(--text-lo); margin-bottom: 56px; }
+.legal-divider { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
+
+.legal-section           { margin-bottom: 44px; }
+.legal-section h2        { font-size: 18px; font-weight: 800; color: var(--text-hi); margin-bottom: 12px; letter-spacing: -.01em; }
+.legal-section p,
+.legal-section ul        { font-size: 16px; line-height: 1.75; color: var(--text-mid); margin-bottom: 16px; }
+.legal-section ul        { padding-left: 20px; }
+.legal-section ul li     { margin-bottom: 8px; }
+.legal-section a         { color: var(--text-hi); }
+
+html[dir="rtl"] .legal-section ul { padding-left: 0; padding-right: 20px; }
+
+/* ── Contrast boosts for legal pages ── */
+[data-theme="light"] .legal-updated              { color: rgba(0, 55, 60, 0.62); }
+[data-theme="light"] .legal-section p,
+[data-theme="light"] .legal-section ul,
+[data-theme="light"] .cookie-table td            { color: #004047; }
+[data-theme="light"] .cookie-table th            { color: #00272b; }
+[data-theme="dark"]  .legal-updated              { color: #7abdb6; }
+[data-theme="dark"]  .legal-section p,
+[data-theme="dark"]  .legal-section ul,
+[data-theme="dark"]  .cookie-table td            { color: #c0e5e0; }
+[data-theme="dark"]  .cookie-table th            { color: #e6fcf8; }
+
+/* ── Cookie table (cookies.html) ── */
+.cookie-table                   { width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 16px; }
+.cookie-table th                { text-align: left; padding: 10px 14px; font-weight: 700; color: var(--text-hi); border-bottom: 1px solid var(--border); }
+html[dir="rtl"] .cookie-table th { text-align: right; }
+.cookie-table td                { padding: 10px 14px; color: var(--text-mid); border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.6; }
+.cookie-table tr:last-child td  { border-bottom: none; }
+
+@media (max-width: 620px) {
+  .legal-header { padding: 24px 18px 0; }
+  .legal-page   { padding: 32px 18px 60px; }
+  .cookie-table { font-size: 13px; }
+}

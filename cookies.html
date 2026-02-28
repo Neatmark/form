@@ -7,52 +7,10 @@
 <title>Cookie Policy - Neatmark</title>
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 <!-- No-flash theme -->
-<script>
-  (function() {
-    var saved = localStorage.getItem('user-theme');
-    var theme = (saved === 'dark' || saved === 'light')
-      ? saved
-      : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    document.documentElement.setAttribute('data-theme', theme);
-    document.documentElement.setAttribute('data-theme-mode', saved || 'auto');
-  })();
-</script>
+<script src="assets/theme-init.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Mona+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
-<style>
-  .legal-header{max-width:720px;margin:0 auto;padding:32px 32px 0;display:flex;justify-content:space-between;align-items:center;}
-  .legal-page{max-width:720px;margin:0 auto;padding:48px 32px 80px;}
-  .legal-back{display:inline-flex;align-items:center;gap:6px;color:var(--text-mid);font-size:14px;font-weight:600;text-decoration:none;transition:color .15s;}
-  .legal-back:hover{color:var(--text-hi);}
-  .legal-eyebrow{font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-mid);margin-bottom:12px;margin-top:48px;}
-  .legal-title{font-size:clamp(32px,6vw,52px);font-weight:900;letter-spacing:-.03em;line-height:1.05;color:var(--text-hi);margin-bottom:12px;}
-  .legal-updated{font-size:14px;color:var(--text-lo);margin-bottom:56px;}
-  .legal-section{margin-bottom:44px;}
-  .legal-section h2{font-size:18px;font-weight:800;color:var(--text-hi);margin-bottom:12px;letter-spacing:-.01em;}
-  .legal-section p,.legal-section ul{font-size:16px;line-height:1.75;color:var(--text-mid);margin-bottom:16px;}
-  .legal-section ul{padding-left:20px;}
-  html[dir="rtl"] .legal-section ul{padding-left:0;padding-right:20px;}
-  .legal-section ul li{margin-bottom:8px;}
-  .legal-section a{color:var(--text-hi);}
-  /* ── Contrast boosts for legal pages ── */
-  [data-theme="light"] .legal-updated{color:rgba(0,55,60,0.62);}
-  [data-theme="light"] .legal-section p,
-  [data-theme="light"] .legal-section ul,
-  [data-theme="light"] .cookie-table td{color:#004047;}
-  [data-theme="light"] .cookie-table th{color:#00272b;}
-  [data-theme="dark"] .legal-updated{color:#7abdb6;}
-  [data-theme="dark"] .legal-section p,
-  [data-theme="dark"] .legal-section ul,
-  [data-theme="dark"] .cookie-table td{color:#c0e5e0;}
-  [data-theme="dark"] .cookie-table th{color:#e6fcf8;}
-  .legal-divider{border:none;border-top:1px solid var(--border);margin:48px 0;}
-  .cookie-table{width:100%;border-collapse:collapse;font-size:14px;margin-bottom:16px;}
-  .cookie-table th{text-align:left;padding:10px 14px;font-weight:700;color:var(--text-hi);border-bottom:1px solid var(--border);}
-  html[dir="rtl"] .cookie-table th{text-align:right;}
-  .cookie-table td{padding:10px 14px;color:var(--text-mid);border-bottom:1px solid var(--border);vertical-align:top;line-height:1.6;}
-  .cookie-table tr:last-child td{border-bottom:none;}
-  @media(max-width:620px){.legal-header{padding:24px 18px 0;}.legal-page{padding:32px 18px 60px;}.cookie-table{font-size:13px;}}
-</style>
+<link rel="stylesheet" href="assets/legal.css">
 <script src="assets/i18n.js"></script>
 </head>
 <body>
@@ -130,8 +88,16 @@
     <ul>
       <li data-i18n="legal.cookies.s3_li1">Google Fonts loads the typefaces used in the form design. When your browser requests a font, Google may log your IP address as part of the standard web request. We do not control this.</li>
       <li data-i18n="legal.cookies.s3_li2">Netlify Identity handles administrator authentication for the dashboard. It sets its own session cookies to keep admins logged in. This only applies to Neatmark staff, not to clients filling out the form.</li>
+      <li data-i18n="legal.cookies.s3_li3"><strong>Cloudflare Turnstile</strong> is a security verification service that runs when you submit the form. It may send your IP address to Cloudflare to confirm you are not a bot. See Cloudflare's privacy policy for details on how they handle that data.</li>
     </ul>
     <p data-i18n="legal.cookies.s3_p2">We do not use Google Analytics, Facebook Pixel, or any other advertising or behavioral tracking tool.</p>
+  </div>
+
+  <hr class="legal-divider">
+
+  <div class="legal-section">
+    <h2 data-i18n="legal.cookies.s_ip_title">IP address processing on submission</h2>
+    <p data-i18n="legal.cookies.s_ip_p1">When you submit the form, our server temporarily reads your IP address for two strictly limited purposes: (1) to apply rate limiting to prevent abusive submissions — this data is held in memory only during a short rolling window and is never written to the database; (2) to infer your country of origin via network headers provided by our infrastructure (Netlify or Cloudflare). Only the resulting country name (e.g. "United Kingdom (GB)") is stored with your submission — your IP address itself is never permanently stored.</p>
   </div>
 
   <div class="legal-section">
@@ -157,38 +123,6 @@
 </div>
 
 <script src="https://unpkg.com/lucide@latest"></script>
-<script>
-(function() {
-  function initLegalLang() {
-    var langToggle = document.getElementById('langToggle');
-    var langMenu   = document.getElementById('langMenu');
-    if (!langToggle || !langMenu) return;
-    function syncUI(lang) {
-      var codeEl = langToggle.querySelector('.lang-code');
-      if (codeEl) codeEl.textContent = lang.toUpperCase();
-      langMenu.querySelectorAll('li[data-lang]').forEach(function(li) {
-        li.setAttribute('aria-selected', li.getAttribute('data-lang') === lang ? 'true' : 'false');
-      });
-    }
-    function openMenu() { langToggle.setAttribute('aria-expanded','true'); langMenu.classList.add('open'); }
-    function closeMenu() { langToggle.setAttribute('aria-expanded','false'); langMenu.classList.remove('open'); }
-    langToggle.addEventListener('click', function(e) { e.stopPropagation(); langToggle.getAttribute('aria-expanded') === 'true' ? closeMenu() : openMenu(); });
-    langMenu.addEventListener('click', function(e) { e.stopPropagation(); });
-    langMenu.querySelectorAll('li[data-lang]').forEach(function(li) {
-      li.setAttribute('tabindex','0');
-      function select(e) { e.preventDefault(); e.stopPropagation(); closeMenu(); if (window.i18n) { window.i18n.setLanguage(li.getAttribute('data-lang')); syncUI(li.getAttribute('data-lang')); } }
-      li.addEventListener('click', select);
-      li.addEventListener('touchend', select);
-      li.addEventListener('keydown', function(e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(e); } });
-    });
-    document.addEventListener('click', function(e) { if (!langToggle.contains(e.target) && !langMenu.contains(e.target)) closeMenu(); });
-    document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeMenu(); });
-    window.addEventListener('languageChanged', function(e) { syncUI(e.detail.language); });
-    var saved = localStorage.getItem('preferred-language');
-    if (saved) syncUI(saved);
-  }
-  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initLegalLang); } else { initLegalLang(); }
-})();
-</script>
+<script src="assets/legal-lang.js"></script>
 </body>
 </html>

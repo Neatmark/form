@@ -1361,6 +1361,17 @@ function buildClientEmail({ brandName, clientName, editLink }, lang = 'en') {
   const copy       = EMAIL_COPY[lang] || EMAIL_COPY.en;
   const safeBrand  = escapeHtml(brandName  || 'your brand');
   const safeClient = escapeHtml(clientName || 'there');
+  // Validate editLink: must be a full https URL on the expected origin before embedding in HTML.
+  // escapeHtml converts quotes/angle brackets so the href attribute cannot be broken out of.
+  const safeEditLink = (() => {
+    try {
+      const u = new URL(String(editLink || ''));
+      if (u.protocol !== 'https:') return '#';
+      return escapeHtml(u.href);
+    } catch {
+      return '#';
+    }
+  })();
 
   const bodyHtml = `
     <h2 style="color:#006d77;margin:0 0 8px;">${copy.clientGreeting(safeClient)}</h2>
@@ -1377,7 +1388,7 @@ function buildClientEmail({ brandName, clientName, editLink }, lang = 'en') {
       <p style="margin:0 0 16px;font-size:13px;color:#444;line-height:1.6;">
         ${copy.clientEditBody}
       </p>
-      <a href="${editLink}"
+      <a href="${safeEditLink}"
          style="display:inline-block;background:#006d77;color:#ffffff;text-decoration:none;
                 padding:12px 24px;border-radius:6px;font-size:14px;font-weight:700;">
         ${copy.clientEditBtn}

@@ -407,13 +407,13 @@ if (window.netlifyIdentity) {
 }
 
 function showLogin() {
-  document.getElementById('loginScreen').style.display = 'flex';
-  document.getElementById('dashboardScreen').style.display = 'none';
+  document.getElementById('loginScreen').classList.remove('hidden');
+  document.getElementById('dashboardScreen').classList.remove('visible');
 }
 
 function showDashboard() {
-  document.getElementById('loginScreen').style.display = 'none';
-  document.getElementById('dashboardScreen').style.display = 'block';
+  document.getElementById('loginScreen').classList.add('hidden');
+  document.getElementById('dashboardScreen').classList.add('visible');
 }
 
 async function loadSubmissions() {
@@ -1019,8 +1019,8 @@ function setModalActionButtons(mode) {
 
   if (mode === 'edit') {
     // Hide header icon buttons while editing
-    if (modalEditIconBtn) modalEditIconBtn.style.display = 'none';
-    if (modalDeleteIconBtn) modalDeleteIconBtn.style.display = 'none';
+    if (modalEditIconBtn) modalEditIconBtn.classList.add('hidden-in-edit');
+    if (modalDeleteIconBtn) modalDeleteIconBtn.classList.add('hidden-in-edit');
     modalActions.innerHTML = `
       <button class="btn" id="cancelEditBtn">${dt('detail.edit.cancel', 'Cancel')}</button>
       <button class="btn btn-primary" id="saveEditBtn">${dt('detail.edit.save', 'Save Changes')}</button>
@@ -1038,16 +1038,16 @@ function setModalActionButtons(mode) {
       const closeBtn = document.getElementById('modalCloseBtn');
       closeBtn?.parentNode?.insertBefore(cancelIconBtn, closeBtn);
     }
-    if (cancelIconBtn) cancelIconBtn.style.display = '';
+    if (cancelIconBtn) cancelIconBtn.classList.remove('hidden-in-edit');
     if (window.lucide) window.lucide.createIcons();
     return;
   }
 
   // view mode: show header icon buttons, clear modal-actions, hide cancel icon
-  if (modalEditIconBtn) modalEditIconBtn.style.display = '';
-  if (modalDeleteIconBtn) modalDeleteIconBtn.style.display = '';
+  if (modalEditIconBtn) modalEditIconBtn.classList.remove('hidden-in-edit');
+  if (modalDeleteIconBtn) modalDeleteIconBtn.classList.remove('hidden-in-edit');
   const cancelIconBtn = document.getElementById('modalCancelIconBtn');
-  if (cancelIconBtn) cancelIconBtn.style.display = 'none';
+  if (cancelIconBtn) cancelIconBtn.classList.add('hidden-in-edit');
 
   // No approve/reject buttons in footer — they live in the overview card dropdown
   modalActions.innerHTML = '';
@@ -1625,7 +1625,7 @@ function renderDetailPanel() {
         ? `<div class="q20-dash-preview-grid">${refs.map((ref, i) => {
             const smallUrl    = escapeHtml(getSmallPhotoUrl(String(ref)));
             const originalUrl = escapeHtml(getOriginalPhotoUrl(String(ref)));
-            return `<div class="q20-dash-thumb-wrap" title="Click to open full resolution" style="cursor:pointer;" onclick="window.open('${originalUrl}','_blank')"><img src="${smallUrl}" class="q20-dash-thumb" alt="Inspiration ${i + 1}" loading="lazy" /><div class="q20-dash-thumb-overlay"><i data-lucide="zoom-in" style="width:16px;height:16px;color:#fff;"></i></div></div>`;
+            return `<div class="q20-dash-thumb-wrap" title="Click to open full resolution" style="cursor:pointer;" data-original-url="${originalUrl}"><img src="${smallUrl}" class="q20-dash-thumb" alt="Inspiration ${i + 1}" loading="lazy" /><div class="q20-dash-thumb-overlay"><i data-lucide="zoom-in" style="width:16px;height:16px;color:#fff;"></i></div></div>`;
           }).join('')}</div>`
         : `<div class="qa-value qa-empty">${dt('detail.questionnaire.noImages', 'No images uploaded')}</div>`;
       return `<article class="qa-card"><div class="qa-label-row"><span class="qa-num-badge">15</span><span class="qa-label-text">Inspiration Images</span></div>${imagesHtml}</article>`;
@@ -1655,6 +1655,13 @@ function renderDetailPanel() {
   `;
 
   modalBody.innerHTML = `${overviewSection}${historySection}${questionnaireSection}`;
+
+  // Wire inspiration image thumbnails — open full-res in new tab safely (noopener)
+  modalBody.querySelectorAll('.q20-dash-thumb-wrap[data-original-url]').forEach(el => {
+    el.addEventListener('click', () => {
+      window.open(el.dataset.originalUrl, '_blank', 'noopener,noreferrer');
+    });
+  });
 
   // Wire collapsible section toggles
   modalBody.querySelectorAll('.detail-section-toggle').forEach(toggleBtn => {

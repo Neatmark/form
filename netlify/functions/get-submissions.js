@@ -35,9 +35,13 @@ exports.handler = async (event, context) => {
     : [];
   const isAdminRole = userRoles.includes('admin');
   const isAllowedEmail = adminEmails.includes(userEmail);
-  const allowAnyAuthenticatedUser = adminEmails.length === 0;
 
-  if (!allowAnyAuthenticatedUser && !isAdminRole && !isAllowedEmail) {
+  // Fail closed: if ADMIN_EMAILS is not configured, deny everyone except users
+  // with an explicit 'admin' role. Never allow any-authenticated-user fallback.
+  if (!isAdminRole && !isAllowedEmail) {
+    if (adminEmails.length === 0) {
+      console.error('[get-submissions] ADMIN_EMAILS is not configured — denying access. Set this env var in Netlify.');
+    }
     return {
       statusCode: 403,
       headers: CORS_HEADERS,

@@ -20,6 +20,40 @@ const CORS_HEADERS = {
   'Access-Control-Allow-Headers': 'Content-Type'
 };
 
+// ── In-process rate limiter ───────────────────────────────────────────────────
+// Prevents high-volume token-lookup loops from hammering the database.
+const rateLimitStore = new Map();
+const RATE_LIMIT_WINDOW_MS    = 60 * 1000; // 1-minute window
+const RATE_LIMIT_MAX_REQUESTS = 30;        // 30 lookups per minute per IP
+
+function getClientIp(event) {
+  return (
+    event.headers['x-forwarded-for']?.split(',')[0]?.trim() ||
+    event.headers['client-ip'] ||
+    'unknown'
+  );
+}
+
+function isRateLimited(ip) {
+  const now   = Date.now();
+  let   entry = rateLimitStore.get(ip);
+
+  if (!entry || now > entry.resetAt) {
+    rateLimitStore.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
+    return false;
+  }
+
+  entry.count++;
+
+  if (rateLimitStore.size > 2000) {
+    for (const [key, val] of rateLimitStore) {
+      if (now > val.resetAt) rateLimitStore.delete(key);
+    }
+  }
+
+  return entry.count > RATE_LIMIT_MAX_REQUESTS;
+}
+
 // Fields to expose for form pre-fill (excludes internal Supabase columns)
 const FORM_FIELDS = [
   'client-name', 'brand-name', 'email', 'client-website', 'delivery-date',
@@ -41,6 +75,16 @@ exports.handler = async (event) => {
       statusCode: 405,
       headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
       body: JSON.stringify({ error: 'Method Not Allowed' })
+    };
+  }
+
+  // ── Rate limit ──────────────────────────────────────────────────────────────
+  const clientIp = getClientIp(event);
+  if (isRateLimited(clientIp)) {
+    return {
+      statusCode: 429,
+      headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ error: 'Too many requests. Please slow down.' })
     };
   }
 

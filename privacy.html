@@ -7,43 +7,10 @@
 <title>Privacy Policy - Neatmark</title>
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 <!-- No-flash theme -->
-<script>
-  (function() {
-    var saved = localStorage.getItem('user-theme');
-    var theme = (saved === 'dark' || saved === 'light')
-      ? saved
-      : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    document.documentElement.setAttribute('data-theme', theme);
-    document.documentElement.setAttribute('data-theme-mode', saved || 'auto');
-  })();
-</script>
+<script src="assets/theme-init.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Mona+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
-<style>
-  .legal-header{max-width:720px;margin:0 auto;padding:32px 32px 0;display:flex;justify-content:space-between;align-items:center;}
-  .legal-page{max-width:720px;margin:0 auto;padding:48px 32px 80px;}
-  .legal-back{display:inline-flex;align-items:center;gap:6px;color:var(--text-mid);font-size:14px;font-weight:600;text-decoration:none;transition:color .15s;}
-  .legal-back:hover{color:var(--text-hi);}
-  .legal-eyebrow{font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-mid);margin-bottom:12px;margin-top:48px;}
-  .legal-title{font-size:clamp(32px,6vw,52px);font-weight:900;letter-spacing:-.03em;line-height:1.05;color:var(--text-hi);margin-bottom:12px;}
-  .legal-updated{font-size:14px;color:var(--text-lo);margin-bottom:56px;}
-  .legal-section{margin-bottom:44px;}
-  .legal-section h2{font-size:18px;font-weight:800;color:var(--text-hi);margin-bottom:12px;letter-spacing:-.01em;}
-  .legal-section p,.legal-section ul{font-size:16px;line-height:1.75;color:var(--text-mid);margin-bottom:16px;}
-  .legal-section ul{padding-left:20px;}
-  html[dir="rtl"] .legal-section ul{padding-left:0;padding-right:20px;}
-  .legal-section ul li{margin-bottom:8px;}
-  .legal-section a{color:var(--text-hi);}
-  /* ── Contrast boosts for legal pages ── */
-  [data-theme="light"] .legal-updated{color:rgba(0,55,60,0.62);}
-  [data-theme="light"] .legal-section p,
-  [data-theme="light"] .legal-section ul{color:#004047;}
-  [data-theme="dark"] .legal-updated{color:#7abdb6;}
-  [data-theme="dark"] .legal-section p,
-  [data-theme="dark"] .legal-section ul{color:#c0e5e0;}
-  .legal-divider{border:none;border-top:1px solid var(--border);margin:48px 0;}
-  @media(max-width:620px){.legal-header{padding:24px 18px 0;}.legal-page{padding:32px 18px 60px;}}
-</style>
+<link rel="stylesheet" href="assets/legal.css">
 <script src="assets/i18n.js"></script>
 </head>
 <body>
@@ -127,6 +94,24 @@
   </div>
 
   <div class="legal-section">
+    <h2 data-i18n="legal.privacy.s_security_title">Security checks</h2>
+    <p data-i18n="legal.privacy.s_security_p1">To protect the form against abuse and automated submissions, we implement several server-side security layers:</p>
+    <ul>
+      <li data-i18n="legal.privacy.s_security_li1"><strong>Cloudflare Turnstile</strong> — a non-intrusive verification system (similar to a CAPTCHA) that runs in your browser at the time of submission. It confirms you are a human user by analysing behavioural signals, without requiring you to solve puzzles or create an account. The verification result is sent to Cloudflare's servers for validation. Cloudflare may temporarily process your IP address as part of this.</li>
+      <li data-i18n="legal.privacy.s_security_li2"><strong>Honeypot field</strong> — an invisible form field that is hidden from human users but visible to bots. If this field is filled in, the submission is silently and automatically rejected.</li>
+      <li data-i18n="legal.privacy.s_security_li3"><strong>Rate limiting</strong> — we limit the number of submissions and duplicate checks allowed per IP address within a rolling time window. Your IP is used temporarily in memory for this purpose only and is never permanently stored in our database.</li>
+      <li data-i18n="legal.privacy.s_security_li4"><strong>Field length validation</strong> — the length of each form field is checked server-side to prevent injection or overflow attempts.</li>
+    </ul>
+    <p data-i18n="legal.privacy.s_security_p2">These measures exist solely to ensure the integrity of the form. They are not used to identify you, profile you, or collect data beyond what is described in this policy.</p>
+  </div>
+
+  <div class="legal-section">
+    <h2 data-i18n="legal.privacy.s_country_title">Country detection</h2>
+    <p data-i18n="legal.privacy.s_country_p1">When you submit the form, we automatically detect your country of origin from network headers provided by our hosting infrastructure (Netlify) or Cloudflare. This results in a two-letter country code (e.g. "GB" for United Kingdom) that is converted into a human-readable country name and stored alongside your submission.</p>
+    <p data-i18n="legal.privacy.s_country_p2">This information is used solely to provide context for incoming requests. It is not used for advertising, geo-restriction, or any automated decision-making. We do not know your city, region, or precise IP address — only the country as inferred by our network infrastructure.</p>
+  </div>
+
+  <div class="legal-section">
     <h2 data-i18n="legal.privacy.s9_title">Changes to this policy</h2>
     <p data-i18n="legal.privacy.s9_p1">If we make any meaningful changes to how we handle your data, we will update this page and revise the date at the top.</p>
   </div>
@@ -138,38 +123,6 @@
 </div>
 
 <script src="https://unpkg.com/lucide@latest"></script>
-<script>
-(function() {
-  function initLegalLang() {
-    var langToggle = document.getElementById('langToggle');
-    var langMenu   = document.getElementById('langMenu');
-    if (!langToggle || !langMenu) return;
-    function syncUI(lang) {
-      var codeEl = langToggle.querySelector('.lang-code');
-      if (codeEl) codeEl.textContent = lang.toUpperCase();
-      langMenu.querySelectorAll('li[data-lang]').forEach(function(li) {
-        li.setAttribute('aria-selected', li.getAttribute('data-lang') === lang ? 'true' : 'false');
-      });
-    }
-    function openMenu() { langToggle.setAttribute('aria-expanded','true'); langMenu.classList.add('open'); }
-    function closeMenu() { langToggle.setAttribute('aria-expanded','false'); langMenu.classList.remove('open'); }
-    langToggle.addEventListener('click', function(e) { e.stopPropagation(); langToggle.getAttribute('aria-expanded') === 'true' ? closeMenu() : openMenu(); });
-    langMenu.addEventListener('click', function(e) { e.stopPropagation(); });
-    langMenu.querySelectorAll('li[data-lang]').forEach(function(li) {
-      li.setAttribute('tabindex','0');
-      function select(e) { e.preventDefault(); e.stopPropagation(); closeMenu(); if (window.i18n) { window.i18n.setLanguage(li.getAttribute('data-lang')); syncUI(li.getAttribute('data-lang')); } }
-      li.addEventListener('click', select);
-      li.addEventListener('touchend', select);
-      li.addEventListener('keydown', function(e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(e); } });
-    });
-    document.addEventListener('click', function(e) { if (!langToggle.contains(e.target) && !langMenu.contains(e.target)) closeMenu(); });
-    document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeMenu(); });
-    window.addEventListener('languageChanged', function(e) { syncUI(e.detail.language); });
-    var saved = localStorage.getItem('preferred-language');
-    if (saved) syncUI(saved);
-  }
-  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initLegalLang); } else { initLegalLang(); }
-})();
-</script>
+<script src="assets/legal-lang.js"></script>
 </body>
 </html>

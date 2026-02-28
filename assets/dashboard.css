@@ -2971,3 +2971,9 @@ html[dir="rtl"] .dash-lang-menu {
   right: auto;
   left: 0;
 }
+
+/* Sort arrow icon (was inline style) */
+.sort-arrow-icon { opacity: .6; margin-left: 2px; flex-shrink: 0; }
+
+/* Login screen hidden state (show by default, hide when dashboard is active) */
+.login-screen.hidden { display: none !important; }

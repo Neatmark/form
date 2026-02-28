@@ -36,6 +36,36 @@ const CORS_HEADERS = {
   'Access-Control-Allow-Headers': 'Content-Type'
 };
 
+// ── In-process rate limiter ───────────────────────────────────────────────────
+// 20 uploads per 10 minutes per IP — prevents storage exhaustion attacks.
+const rateLimitStore = new Map();
+const RATE_LIMIT_WINDOW_MS    = 10 * 60 * 1000;
+const RATE_LIMIT_MAX_REQUESTS = 20;
+
+function getClientIp(event) {
+  return (
+    event.headers['x-forwarded-for']?.split(',')[0]?.trim() ||
+    event.headers['client-ip'] ||
+    'unknown'
+  );
+}
+
+function isRateLimited(ip) {
+  const now   = Date.now();
+  let   entry = rateLimitStore.get(ip);
+  if (!entry || now > entry.resetAt) {
+    rateLimitStore.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
+    return false;
+  }
+  entry.count++;
+  if (rateLimitStore.size > 2000) {
+    for (const [key, val] of rateLimitStore) {
+      if (now > val.resetAt) rateLimitStore.delete(key);
+    }
+  }
+  return entry.count > RATE_LIMIT_MAX_REQUESTS;
+}
+
 function sanitizeFilename(value) {
   return String(value || 'photo')
     .toLowerCase()
@@ -51,6 +81,16 @@ exports.handler = async (event) => {
   }
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, headers: CORS_HEADERS, body: 'Method Not Allowed' };
+  }
+
+  // ── Rate limit ────────────────────────────────────────────────────────────
+  const clientIp = getClientIp(event);
+  if (isRateLimited(clientIp)) {
+    return {
+      statusCode: 429,
+      headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ error: 'Too many uploads. Please slow down.' })
+    };
   }
 
   const supabaseUrl = process.env.SUPABASE_URL;
@@ -107,6 +147,25 @@ exports.handler = async (event) => {
       statusCode: 413,
       headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
       body: JSON.stringify({ error: 'Image exceeds 10 MB limit.' })
+    };
+  }
+
+  // ── Magic byte validation ─────────────────────────────────────────
+  // Verify the actual file signature matches the declared MIME type.
+  // Prevents clients from disguising non-image files as images.
+  function detectMimeFromBuffer(buf) {
+    if (buf[0] === 0xFF && buf[1] === 0xD8 && buf[2] === 0xFF)                            return 'image/jpeg';
+    if (buf[0] === 0x89 && buf[1] === 0x50 && buf[2] === 0x4E && buf[3] === 0x47)         return 'image/png';
+    if (buf[0] === 0x52 && buf[1] === 0x49 && buf[2] === 0x46 && buf[3] === 0x46)         return 'image/webp'; // RIFF container (WebP)
+    if (buf[0] === 0x47 && buf[1] === 0x49 && buf[2] === 0x46)                            return 'image/gif';
+    return null;
+  }
+  const detectedMime = detectMimeFromBuffer(originalBuffer);
+  if (!detectedMime || detectedMime !== mimeType) {
+    return {
+      statusCode: 400,
+      headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ error: 'File content does not match declared type.' })
     };
   }
 

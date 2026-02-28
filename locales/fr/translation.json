@@ -215,8 +215,7 @@
   "modal": {
     "duplicate": {
       "title": "Soumission en double",
-      "message": "Vous avez déjà envoyé une soumission pour cette marque. Voulez-vous remplacer la soumission précédente ou envoyer une toute nouvelle?",
-      "override": "Remplacer",
+      "message": "Vous avez déjà envoyé une soumission pour cette marque. Voulez-vous envoyer une toute nouvelle soumission ?",
       "sendNew": "Envoyer comme nouveau",
       "cancel": "Annuler"
     },
@@ -488,7 +487,17 @@
       "s9_title": "Modifications de cette politique",
       "s9_p1": "Si nous apportons des modifications significatives à la manière dont nous traitons vos données, nous mettrons cette page à jour et réviserons la date en haut. Nous n'appliquerons pas rétroactivement des pratiques sensiblement moins favorables que celles en vigueur au moment de votre soumission.",
       "s10_title": "Questions",
-      "s10_p1": "Si vous avez des questions sur cette politique ou sur la gestion de vos données, contactez-nous via notre site neatmark.studio. Nous sommes disponibles pour clarifier tout point qui vous semblerait flou."
+      "s10_p1": "Si vous avez des questions sur cette politique ou sur la gestion de vos données, contactez-nous via notre site neatmark.studio. Nous sommes disponibles pour clarifier tout point qui vous semblerait flou.",
+      "s_security_title": "Vérifications de sécurité",
+      "s_security_p1": "Afin de protéger le formulaire contre les abus et les soumissions automatisées, nous mettons en œuvre plusieurs couches de sécurité côté serveur :",
+      "s_security_li1": "Cloudflare Turnstile — un système de vérification discret (similaire à un CAPTCHA) qui s'exécute dans votre navigateur au moment de la soumission. Il confirme que vous êtes un utilisateur humain en analysant des signaux comportementaux, sans vous demander de résoudre des puzzles ni créer de compte. Le résultat de la vérification est envoyé aux serveurs de Cloudflare pour validation. Cloudflare peut traiter temporairement votre adresse IP dans ce cadre.",
+      "s_security_li2": "Champ honeypot — un champ de formulaire invisible pour les utilisateurs humains mais visible pour les robots. Si ce champ est rempli, la soumission est automatiquement rejetée de manière silencieuse.",
+      "s_security_li3": "Limitation de débit — nous limitons le nombre de soumissions et de vérifications de doublons autorisées par adresse IP sur une période glissante. Votre adresse IP est utilisée temporairement en mémoire à cette seule fin et n'est pas enregistrée de manière permanente dans notre base de données.",
+      "s_security_li4": "Validation de la longueur des champs — la longueur de chaque champ du formulaire est vérifiée côté serveur pour prévenir les tentatives d'injection ou de surcharge.",
+      "s_security_p2": "Ces mesures ont pour unique but d'assurer l'intégrité du formulaire. Elles ne servent pas à vous identifier, à vous profiler ni à collecter des données à votre insu au-delà de ce qui est décrit dans cette politique.",
+      "s_country_title": "Détection du pays",
+      "s_country_p1": "Lorsque vous soumettez le formulaire, nous détectons automatiquement votre pays d'origine à partir d'en-têtes réseau fournis par notre infrastructure d'hébergement (Netlify) ou par Cloudflare. Cela se traduit par un code pays à deux lettres (par exemple « FR » pour France) qui est converti en nom de pays lisible et enregistré avec votre soumission.",
+      "s_country_p2": "Cette information nous aide uniquement à contextualiser les demandes entrantes. Elle n'est pas utilisée à des fins publicitaires, de géo-restriction ni d'aucune autre prise de décision automatisée. Nous ne connaissons pas votre ville, région ou adresse IP précise — uniquement le pays tel que déduit par notre infrastructure réseau."
     },
     "cookies": {
       "title": "Politique de cookies",
@@ -518,7 +527,10 @@
       "s3_p1": "Notre formulaire utilise un petit nombre de ressources externes pour fonctionner correctement :",
       "s3_li1": "Google Fonts charge les polices utilisées dans le design du formulaire. Lorsque votre navigateur demande une police, Google peut enregistrer votre adresse IP dans le cadre d'une requête web standard. Nous ne contrôlons pas cela.",
       "s3_li2": "Netlify Identity gère l'authentification des administrateurs du tableau de bord. Il pose ses propres cookies de session pour maintenir les admins connectés. Cela ne concerne que les équipes Neatmark, pas les clients remplissant le formulaire.",
+      "s3_li3": "Cloudflare Turnstile est un service de vérification de sécurité qui s'exécute lorsque vous soumettez le formulaire. Il peut envoyer votre adresse IP à Cloudflare afin de confirmer que vous n'êtes pas un robot. Consultez la politique de confidentialité de Cloudflare pour plus d'informations sur leur traitement des données.",
       "s3_p2": "Nous n'utilisons pas Google Analytics, Facebook Pixel, ni aucun autre outil de suivi publicitaire ou comportemental. Aucun service marketing tiers ne reçoit de données vous concernant.",
+      "s_ip_title": "Traitement de l'adresse IP lors de la soumission",
+      "s_ip_p1": "Lorsque vous soumettez le formulaire, notre serveur lit temporairement votre adresse IP pour deux finalités strictement limitées : (1) appliquer une limitation de débit afin d'éviter les soumissions abusives — cette donnée n'est conservée qu'en mémoire vive pendant une courte fenêtre glissante, jamais écrite en base de données ; (2) déduire votre pays d'origine via des en-têtes réseau fournis par notre infrastructure (Netlify ou Cloudflare). Seul le nom du pays résultant (par exemple « France (FR) ») est enregistré avec votre soumission — l'adresse IP elle-même n'est jamais stockée de manière permanente.",
       "s4_title": "Comment effacer ou désactiver le stockage",
       "s4_p1": "Vous avez le contrôle total de ce qui est stocké dans votre navigateur. Vous pouvez effacer les éléments listés ci-dessus à tout moment via les paramètres de votre navigateur en vidant les données du site pour ce domaine. La plupart des navigateurs permettent aussi de bloquer complètement le stockage local, mais cela peut affecter la sauvegarde automatique du brouillon.",
       "s4_p2": "Le formulaire inclut également un bouton Effacer le brouillon qui supprime uniquement le brouillon sans toucher aux autres préférences enregistrées.",

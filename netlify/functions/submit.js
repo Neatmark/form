@@ -1,7 +1,6 @@
 const { createClient } = require('@supabase/supabase-js');
 const { randomUUID }   = require('crypto');
-// Email / document generation is handled by the separate send-emails function.
-// Nothing from _shared is needed here anymore.
+const crypto           = require('crypto');
 
 // ── CORS ──────────────────────────────────────────────────────────────────────
 const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || '*';
@@ -12,7 +11,6 @@ const CORS_HEADERS = {
 };
 
 // ── In-process rate limiter ───────────────────────────────────────────────────
-// Covers warm instances. For global rate limiting consider Upstash Redis.
 const rateLimitStore = new Map();
 const RATE_LIMIT_WINDOW_MS    = 10 * 60 * 1000; // 10-minute window
 const RATE_LIMIT_MAX_REQUESTS = 5;               // 5 submissions per 10 min per IP
@@ -45,10 +43,25 @@ function getClientIp(event) {
   );
 }
 
+// ── HMAC send-token ───────────────────────────────────────────────────────────
+// Authorises the browser to call send-emails after a confirmed DB write.
+// Set INTERNAL_SECRET in Netlify environment variables (any long random string).
+// Without it, send-emails falls back to rate-limiting only (logs a warning).
+function makeSendToken(timestamp) {
+  const secret = process.env.INTERNAL_SECRET;
+  if (!secret) {
+    console.warn('[submit] INTERNAL_SECRET not set — send-emails HMAC protection inactive. Set this env var.');
+    return null;
+  }
+  return crypto
+    .createHmac('sha256', secret)
+    .update(String(timestamp))
+    .digest('hex');
+}
+
 // ── Field allowlist & array fields ───────────────────────────────────────────
 const ALLOWED_FIELDS = [
   'client-name', 'brand-name', 'email', 'client-website', 'delivery-date',
-  'agreed-delivery-date', 'status', 'project-status',
   'q1-business-description', 'q2-problem-transformation', 'q3-ideal-customer',
   'q3b-customer-desire', 'q4-competitors', 'q5-brand-personality', 'q6-positioning',
   'q-launch-context', 'q7-decision-maker', 'q7-decision-maker-other', 'q8-brands-admired',
@@ -128,10 +141,8 @@ exports.handler = async (event) => {
   // ── Env vars ────────────────────────────────────────────────────────────────
   const supabaseUrl  = process.env.SUPABASE_URL;
   const supabaseKey  = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_KEY;
-  const siteUrl      = process.env.SITE_URL          || 'https://form.neatmark.studio';
+  const siteUrl      = process.env.SITE_URL || 'https://form.neatmark.studio';
 
-  // Netlify injects x-country (ISO 3166-1 alpha-2) automatically at the CDN edge.
-  // No API call needed — it's just a request header.
   const countryCode = (
     event.headers['x-country'] ||
     event.headers['x-nf-country'] ||
@@ -157,7 +168,7 @@ exports.handler = async (event) => {
     TW:'Taiwan',TZ:'Tanzania',TH:'Thailand',TN:'Tunisia',TR:'Turkey',UG:'Uganda',
     UA:'Ukraine',AE:'United Arab Emirates',GB:'United Kingdom',US:'United States',
     UY:'Uruguay',UZ:'Uzbekistan',VE:'Venezuela',VN:'Vietnam',YE:'Yemen',ZM:'Zambia',
-    ZW:'Zimbabwe',PS:'Palestine',LY:'Libya'
+    ZW:'Zimbabwe',PS:'Palestine'
   };
 
   const clientCountry = countryCode
@@ -213,7 +224,6 @@ exports.handler = async (event) => {
         };
       }
     } catch (err) {
-      // If Cloudflare is unreachable, allow through — don't block real users
       console.error('[Turnstile] Verification request failed:', err.message);
     }
   } else {
@@ -232,14 +242,13 @@ exports.handler = async (event) => {
     }
   }
 
-  // ── Extract control flags ───────────────────────────────────────────────────
-  const editToken            = String(payload.__editToken || '').trim();
-  const submissionAction     = String(payload.__submissionAction || '').trim().toLowerCase();
-  const overrideSubmissionId = String(payload.__overrideSubmissionId || '').trim();
-  const editedBy             = String(payload.__editedBy || payload.editedBy || 'client').trim().toLowerCase();
-  const lang                 = ['en', 'fr', 'ar'].includes(String(payload.__lang || '').trim())
-                                 ? String(payload.__lang).trim()
-                                 : 'en';
+  // ── Strip ALL internal control fields from payload ──────────────────────────
+  // Override submissions are NOT allowed — submissions can only be updated via
+  // a valid edit token (PATH A below). Any __submissionAction field is ignored.
+  const editToken = String(payload.__editToken || '').trim();
+  const lang      = ['en', 'fr', 'ar'].includes(String(payload.__lang || '').trim())
+                      ? String(payload.__lang).trim()
+                      : 'en';
 
   delete payload.__editToken;
   delete payload.__submissionAction;
@@ -257,7 +266,6 @@ exports.handler = async (event) => {
     }
   });
 
-  // Store detected country (from Netlify geo header) — not a user-submitted field
   if (clientCountry) record['client-country'] = clientCountry;
 
   try {
@@ -265,10 +273,11 @@ exports.handler = async (event) => {
 
     // ════════════════════════════════════════════════════════════════════════════
     // PATH A: Token-based client edit
+    // The ONLY way to update an existing submission. The token is generated on
+    // first submit, emailed to the client, single-use, and expires after 30 days.
     // ════════════════════════════════════════════════════════════════════════════
     if (editToken) {
-      // Validate UUID format
-      if (!/^[0-9a-f-]{32,36}$/i.test(editToken)) {
+      if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(editToken)) {
         return {
           statusCode: 400,
           headers: CORS_HEADERS,
@@ -276,7 +285,6 @@ exports.handler = async (event) => {
         };
       }
 
-      // Look up token in Supabase
       const { data: tokenRow, error: tokenErr } = await supabase
         .from('submissions')
         .select('id, edit_token, edit_token_expires_at, history, created_at')
@@ -300,7 +308,6 @@ exports.handler = async (event) => {
         };
       }
 
-      // Build updated history
       const baseHistory = Array.isArray(tokenRow.history) && tokenRow.history.length > 0
         ? tokenRow.history
         : [{ label: 'original', date: String(tokenRow.created_at || record.created_at), editedBy: 'client' }];
@@ -320,59 +327,22 @@ exports.handler = async (event) => {
         };
       }
 
-      // Return immediately — edit confirmation email is sent by the client
-      // via a fire-and-forget call to /.netlify/functions/send-emails.
-      // Strip internal DB fields before sending record to client.
+      const sendTimestamp = Date.now();
+      const sendToken     = makeSendToken(sendTimestamp);
+
       const { edit_token: _t, edit_token_expires_at: _e, history: _h, ...publicRecord } = record;
       return {
         statusCode: 200,
         headers: CORS_HEADERS,
-        body: JSON.stringify({ success: true, isEdit: true, lang, record: publicRecord })
+        body: JSON.stringify({ success: true, isEdit: true, lang, record: publicRecord, sendToken, sendTimestamp })
       };
     }
 
     // ════════════════════════════════════════════════════════════════════════════
-    // PATH B: Admin override (from dashboard)
-    // ════════════════════════════════════════════════════════════════════════════
-    if (submissionAction === 'override' && overrideSubmissionId) {
-      const { data: existingRow, error: fetchError } = await supabase
-        .from('submissions')
-        .select('history, created_at')
-        .eq('id', overrideSubmissionId)
-        .single();
-
-      if (fetchError || !existingRow) {
-        console.error('Override target not found, inserting as new', fetchError);
-        record.history = [{ label: 'original', date: record.created_at, editedBy: 'client' }];
-        const { error } = await supabase.from('submissions').insert([record]);
-        if (error) {
-          return { statusCode: 500, headers: CORS_HEADERS, body: JSON.stringify({ success: false, error: error.message }) };
-        }
-      } else {
-        const baseHistory = Array.isArray(existingRow.history) && existingRow.history.length > 0
-          ? existingRow.history
-          : [{ label: 'original', date: String(existingRow.created_at || record.created_at), editedBy: 'client' }];
-        const nextHistory = [...baseHistory, { label: 'edited', date: record.created_at, editedBy }];
-
-        const { error } = await supabase
-          .from('submissions')
-          .update({ ...record, history: nextHistory })
-          .eq('id', overrideSubmissionId);
-
-        if (error) {
-          return { statusCode: 500, headers: CORS_HEADERS, body: JSON.stringify({ success: false, error: error.message }) };
-        }
-      }
-
-      return { statusCode: 200, headers: CORS_HEADERS, body: JSON.stringify({ success: true }) };
-    }
-
-    // ════════════════════════════════════════════════════════════════════════════
-    // PATH C: New submission
+    // PATH B: New submission
     // ════════════════════════════════════════════════════════════════════════════
     record.history = [{ label: 'original', date: record.created_at, editedBy: 'client' }];
 
-    // Generate secure edit token (30-day expiry)
     const newEditToken   = randomUUID();
     const tokenExpiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
     record.edit_token            = newEditToken;
@@ -383,17 +353,16 @@ exports.handler = async (event) => {
       return { statusCode: 500, headers: CORS_HEADERS, body: JSON.stringify({ success: false, error: insertError.message }) };
     }
 
-    // Build edit link to include in the client email (sent by send-emails function)
     const editLink = `${siteUrl}/?token=${encodeURIComponent(newEditToken)}&lang=${lang}`;
 
-    // Return success immediately — PDF generation and email sending are handled
-    // by a fire-and-forget call to /.netlify/functions/send-emails from the client.
-    // Strip internal DB fields before exposing the record.
+    const sendTimestamp = Date.now();
+    const sendToken     = makeSendToken(sendTimestamp);
+
     const { edit_token: _t, edit_token_expires_at: _e, history: _h, ...publicRecord } = record;
     return {
       statusCode: 200,
       headers: CORS_HEADERS,
-      body: JSON.stringify({ success: true, isEdit: false, editLink, lang, record: publicRecord })
+      body: JSON.stringify({ success: true, isEdit: false, editLink, lang, record: publicRecord, sendToken, sendTimestamp })
     };
 
   } catch (err) {

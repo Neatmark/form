@@ -15,6 +15,7 @@
  *   - Cache-Control: private (not CDN-cached) for private assets.
  */
 
+const path = require('path');
 const { createClient } = require('@supabase/supabase-js');
 
 const ALLOWED_BUCKETS = new Set(['small-photos', 'original-photos', 'logos']);
@@ -110,8 +111,9 @@ exports.handler = async (event) => {
       statusCode: 200,
       headers: {
         ...CORS_HEADERS,
-        'Content-Type':  contentTypeFromPath(ref),
-        'Cache-Control': 'private, max-age=3600'
+        'Content-Type':        contentTypeFromPath(ref),
+        'Content-Disposition': `inline; filename="${path.basename(ref)}"`,
+        'Cache-Control':       'private, max-age=3600'
       },
       body: buffer.toString('base64'),
       isBase64Encoded: true

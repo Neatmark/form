@@ -2099,3 +2099,60 @@ html[dir="rtl"] .nav-icon { transform: scaleX(-1); }
     padding: 32px 0 0;
   }
 }
+
+
+/* ══════════════════════════════════════════════════════════════
+   CLASS-BASED VISIBILITY — replaces all inline style="..." usage
+   Added to eliminate 'unsafe-inline' from CSP style-src
+══════════════════════════════════════════════════════════════ */
+
+/* Generic hidden utility */
+.hidden { display: none !important; }
+
+/* Noscript overlay (inside <noscript> — not affected by CSP, but kept clean) */
+.noscript-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: #e6fcf8;
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px; font-family: sans-serif; text-align: center;
+}
+.noscript-inner  { max-width: 440px; }
+.noscript-icon   { font-size: 48px; margin-bottom: 16px; }
+.noscript-title  { font-size: 20px; font-weight: 800; color: #00373c; margin-bottom: 12px; }
+.noscript-text   { color: #006d77; line-height: 1.8; font-size: 14px; }
+
+/* Honeypot input */
+.honeypot {
+  position: fixed; top: -9999px; left: 0;
+  width: 1px; height: 1px; opacity: 0;
+  pointer-events: none; overflow: hidden;
+  clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+
+/* Edit-mode banner — hidden by default, shown via .visible */
+.edit-mode-banner         { display: none; }
+.edit-mode-banner.visible { display: flex; }
+
+/* Draft banner — hidden by default, shown via .visible */
+.draft-banner         { display: none; }
+.draft-banner.visible { display: flex; }
+
+/* Q11 aesthetic description textarea */
+.q11-description-textarea { margin-top: 10px; min-height: 64px; }
+
+/* Q7 "other" text input — hidden until "Other" radio is selected */
+.q7-other-input         { display: none; margin-top: 10px; }
+.q7-other-input.visible { display: block; }
+
+/* Q15 dropzone — hidden when image limit is reached */
+.q20-dropzone.hidden-by-limit { display: none; }
+
+/* Field validation error state */
+.field-error { border-color: var(--red) !important; }
+
+/* Dashboard: login / main screen visibility */
+.dashboard-screen         { display: none; }
+.dashboard-screen.visible { display: block; }
+
+/* Dashboard modal icon buttons — hidden during edit mode */
+.modal-icon-btn.hidden-in-edit { display: none; }

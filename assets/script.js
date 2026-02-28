@@ -179,9 +179,12 @@ function askDuplicateSubmissionAction() {
   const sendNewBtn = document.getElementById('duplicateSendNewBtn');
   const cancelBtn = document.getElementById('duplicateCancelBtn');
 
-  if (!modal || !overrideBtn || !sendNewBtn || !cancelBtn) {
+  if (!modal || !sendNewBtn || !cancelBtn) {
     throw new Error('Duplicate confirmation modal is missing.');
   }
+
+  // Override is not allowed — hide the button so only "Create new" is available
+  if (overrideBtn) overrideBtn.classList.add('hidden');
 
   modal.classList.add('active');
   modal.setAttribute('aria-hidden', 'false');
@@ -190,14 +193,8 @@ function askDuplicateSubmissionAction() {
     const cleanup = () => {
       modal.classList.remove('active');
       modal.setAttribute('aria-hidden', 'true');
-      overrideBtn.removeEventListener('click', onOverride);
       sendNewBtn.removeEventListener('click', onSendNew);
       cancelBtn.removeEventListener('click', onCancel);
-    };
-
-    const onOverride = () => {
-      cleanup();
-      resolve('override');
     };
 
     const onSendNew = () => {
@@ -210,7 +207,6 @@ function askDuplicateSubmissionAction() {
       resolve('cancel');
     };
 
-    overrideBtn.addEventListener('click', onOverride);
     sendNewBtn.addEventListener('click', onSendNew);
     cancelBtn.addEventListener('click', onCancel);
   });
@@ -332,15 +328,15 @@ function showDraftBanner(visible) {
 
   if (visible) {
     banner.classList.remove('hiding');
-    banner.style.display = 'flex';
+    banner.classList.add('visible');
     // Auto-dismiss after 5 seconds
     draftBannerTimer = setTimeout(() => {
       banner.classList.add('hiding');
-      setTimeout(() => { banner.style.display = 'none'; }, 300);
+      setTimeout(() => { banner.classList.remove('visible'); }, 300);
     }, 5000);
   } else {
     banner.classList.add('hiding');
-    setTimeout(() => { banner.style.display = 'none'; }, 300);
+    setTimeout(() => { banner.classList.remove('visible'); }, 300);
   }
 }
 
@@ -364,13 +360,11 @@ function showPage(targetPage, back = false) {
   const current = document.getElementById(`formPage${currentPage}`);
   if (current) {
     current.classList.remove('active', 'slide-back');
-    current.style.display = 'none';
   }
 
   // Show target page
   const target = document.getElementById(`formPage${targetPage}`);
   if (target) {
-    target.style.display = 'block';
     // Briefly remove active so animation re-triggers
     target.classList.remove('active', 'slide-back');
     // Force reflow
@@ -420,14 +414,14 @@ function validatePage(pageNum) {
     if (el.type === 'radio') return; // handled separately below
     if (!el.value.trim()) {
       el.reportValidity?.();
-      el.style.borderColor = 'var(--red)';
+      el.classList.add('field-error');
       if (!firstError) firstError = el;
       el.addEventListener('input', function fix() {
-        el.style.borderColor = '';
+        el.classList.remove('field-error');
         el.removeEventListener('input', fix);
       }, { once: true });
     } else {
-      el.style.borderColor = '';
+      el.classList.remove('field-error');
     }
   });
 
@@ -832,7 +826,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Show edit mode banner, hide draft banner
       const editBanner = document.getElementById('editModeBanner');
-      if (editBanner) editBanner.style.display = 'flex';
+      if (editBanner) editBanner.classList.add('visible');
 
       // Update submit button label to "Save Changes"
       const submitBtn = document.getElementById('submitBtn');
@@ -924,7 +918,7 @@ document.addEventListener('DOMContentLoaded', () => {
     clearDraftBtn.addEventListener('click', (e) => {
       e.preventDefault();
       draftClearModal.setAttribute('aria-hidden', 'false');
-      draftClearModal.style.display = 'flex';
+      draftClearModal.classList.add('active');
     });
 
     draftClearConfirmBtn.addEventListener('click', () => {
@@ -932,18 +926,18 @@ document.addEventListener('DOMContentLoaded', () => {
       form.reset();
       form.querySelectorAll('.check-label').forEach(lbl => lbl.classList.remove('checked'));
       draftClearModal.setAttribute('aria-hidden', 'true');
-      draftClearModal.style.display = 'none';
+      draftClearModal.classList.remove('active');
     });
 
     draftClearCancelBtn.addEventListener('click', () => {
       draftClearModal.setAttribute('aria-hidden', 'true');
-      draftClearModal.style.display = 'none';
+      draftClearModal.classList.remove('active');
     });
 
     draftClearModal.addEventListener('click', (e) => {
       if (e.target === draftClearModal) {
         draftClearModal.setAttribute('aria-hidden', 'true');
-        draftClearModal.style.display = 'none';
+        draftClearModal.classList.remove('active');
       }
     });
   }
@@ -1035,12 +1029,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (duplicateMatch) {
           const action = await askDuplicateSubmissionAction();
           if (action === 'cancel') return;
-          formData.append('__submissionAction', action);
-          if (action === 'override') {
-            formData.append('__overrideSubmissionId', duplicateMatch.submissionId);
-            formData.append('__editedBy', 'client');
-            formData.append('editedBy', 'client');
-          }
+          // action is always 'send-as-new' — no override path exists
         }
       }
 
@@ -1064,10 +1053,12 @@ document.addEventListener('DOMContentLoaded', () => {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            record:   submitResult.record,
-            isEdit:   submitResult.isEdit   ?? false,
-            editLink: submitResult.editLink ?? '',
-            lang:     submitResult.lang     ?? (window.i18n.getLanguage ? window.i18n.getLanguage() : 'en')
+            record:        submitResult.record,
+            isEdit:        submitResult.isEdit        ?? false,
+            editLink:      submitResult.editLink       ?? '',
+            lang:          submitResult.lang           ?? (window.i18n.getLanguage ? window.i18n.getLanguage() : 'en'),
+            sendToken:     submitResult.sendToken      ?? null,
+            sendTimestamp: submitResult.sendTimestamp  ?? null
           })
         }).catch(err => console.warn('[send-emails] Background call failed:', err));
       }
@@ -1096,7 +1087,7 @@ document.addEventListener('DOMContentLoaded', () => {
     clearFormBtn.addEventListener('click', (e) => {
       e.preventDefault();
       clearConfirmModal.setAttribute('aria-hidden', 'false');
-      clearConfirmModal.style.display = 'flex';
+      clearConfirmModal.classList.add('active');
     });
 
     clearConfirmBtn.addEventListener('click', async () => {
@@ -1105,20 +1096,20 @@ document.addEventListener('DOMContentLoaded', () => {
       // Fix: also strip visual "checked" state from radio/checkbox pills
       form.querySelectorAll('.check-label').forEach(lbl => lbl.classList.remove('checked'));
       clearConfirmModal.setAttribute('aria-hidden', 'true');
-      clearConfirmModal.style.display = 'none';
+      clearConfirmModal.classList.remove('active');
       await showAlert(window.i18n.t('messages.clearSuccess', 'Form cleared. Your draft has been removed from your browser.'), 'success');
     });
 
     clearCancelBtn.addEventListener('click', () => {
       clearConfirmModal.setAttribute('aria-hidden', 'true');
-      clearConfirmModal.style.display = 'none';
+      clearConfirmModal.classList.remove('active');
     });
 
     // Close modal when clicking outside
     clearConfirmModal.addEventListener('click', (e) => {
       if (e.target === clearConfirmModal) {
         clearConfirmModal.setAttribute('aria-hidden', 'true');
-        clearConfirmModal.style.display = 'none';
+        clearConfirmModal.classList.remove('active');
       }
     });
   }
@@ -1129,7 +1120,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function syncQ7Other() {
     if (!q7OtherInput) return;
     const otherSelected = Array.from(q7Radios).some(r => r.value === 'Other' && r.checked);
-    q7OtherInput.style.display = otherSelected ? '' : 'none';
+    q7OtherInput.classList.toggle('visible', otherSelected);
     if (!otherSelected) q7OtherInput.value = '';
   }
   q7Radios.forEach(r => r.addEventListener('change', syncQ7Other));
@@ -1221,7 +1212,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     if (window.lucide) window.lucide.createIcons();
-    if (q15Dropzone) q15Dropzone.style.display = getQ15Count() >= MAX_Q15_IMAGES ? 'none' : '';
+    if (q15Dropzone) q15Dropzone.classList.toggle('hidden-by-limit', getQ15Count() >= MAX_Q15_IMAGES);
   }
 
   function syncQ15HiddenInputs() {
