@@ -11,6 +11,7 @@
  */
 
 const { createClient } = require('@supabase/supabase-js');
+const { toDbKey } = require('./_field_map');
 
 const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || '*';
 if (ALLOWED_ORIGIN === '*') {
@@ -287,7 +288,7 @@ exports.handler = async (event, context) => {
       }
     }
 
-    update[key] = normalized;
+    update[toDbKey(key)] = normalized;
   }
 
   if (Object.keys(update).length === 0) {

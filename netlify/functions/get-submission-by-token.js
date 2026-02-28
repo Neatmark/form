@@ -12,6 +12,7 @@
 
 const { createClient } = require('@supabase/supabase-js');
 const { isRateLimited } = require('./_ratelimit');
+const { toDbKey, FORM_FIELDS_LEGACY, FORM_FIELDS_DB } = require('./_field_map');
 
 const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || '*';
 if (ALLOWED_ORIGIN === '*') {
@@ -23,18 +24,6 @@ const CORS_HEADERS = {
   'Access-Control-Allow-Methods': 'GET, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type'
 };
-
-
-// Fields to expose for form pre-fill (excludes internal Supabase columns)
-const FORM_FIELDS = [
-  'client-name', 'brand-name', 'email', 'client-website', 'delivery-date',
-  'q1-business-description', 'q2-problem-transformation', 'q3-ideal-customer',
-  'q3b-customer-desire', 'q4-competitors', 'q5-brand-personality', 'q6-positioning',
-  'q-launch-context', 'q7-decision-maker', 'q7-decision-maker-other', 'q8-brands-admired',
-  'q9-color', 'q10-colors-to-avoid', 'q11-aesthetic', 'q11-aesthetic-description',
-  'q12-existing-assets', 'q13-deliverables', 'q14-budget',
-  'q15-inspiration-refs', 'q16-anything-else'
-];
 
 
 function getClientIp(event) {
@@ -97,7 +86,7 @@ exports.handler = async (event) => {
     // Fetch submission matching this token
     const { data, error } = await supabase
       .from('submissions')
-      .select('id, edit_token, edit_token_expires_at, ' + FORM_FIELDS.map(f => `"${f}"`).join(', '))
+      .select('id, edit_token, edit_token_expires_at, ' + FORM_FIELDS_DB.map(f => `"${f}"`).join(', '))
       .eq('edit_token', token)
       .limit(1)
       .single();
@@ -121,8 +110,9 @@ exports.handler = async (event) => {
 
     // Build a clean submission object with only form fields
     const submission = { id: data.id };
-    for (const field of FORM_FIELDS) {
-      if (data[field] !== undefined) submission[field] = data[field];
+    for (const field of FORM_FIELDS_LEGACY) {
+      const dbField = toDbKey(field);
+      if (data[dbField] !== undefined) submission[field] = data[dbField];
     }
 
     return {

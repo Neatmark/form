@@ -2,6 +2,7 @@ const { createClient } = require('@supabase/supabase-js');
 const { randomUUID }   = require('crypto');
 const crypto           = require('crypto');
 const { isRateLimited } = require('./_ratelimit');
+const { toDbRecord } = require('./_field_map');
 
 // ── CORS ──────────────────────────────────────────────────────────────────────
 const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || '*';
@@ -422,6 +423,7 @@ exports.handler = async (event) => {
   });
 
   if (clientCountry) record['client-country'] = clientCountry;
+  const dbRecord = toDbRecord(record);
 
   try {
     const supabase = createClient(supabaseUrl, supabaseKey, { auth: { persistSession: false } });
@@ -471,7 +473,7 @@ exports.handler = async (event) => {
       // Update the row and CLEAR the token (single use)
       const { error: updateErr } = await supabase
         .from('submissions')
-        .update({ ...record, history: nextHistory, edit_token: null, edit_token_expires_at: null })
+        .update({ ...dbRecord, history: nextHistory, edit_token: null, edit_token_expires_at: null })
         .eq('id', tokenRow.id);
 
       if (updateErr) {
@@ -503,7 +505,9 @@ exports.handler = async (event) => {
     record.edit_token            = newEditToken;
     record.edit_token_expires_at = tokenExpiresAt;
 
-    const { error: insertError } = await supabase.from('submissions').insert([record]);
+    const dbInsertRecord = toDbRecord(record);
+
+    const { error: insertError } = await supabase.from('submissions').insert([dbInsertRecord]);
     if (insertError) {
       console.error('[submit] DB insert error:', insertError.message);
       return { statusCode: 500, headers: CORS_HEADERS, body: JSON.stringify({ success: false, error: 'Submission could not be saved. Please try again.' }) };

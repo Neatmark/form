@@ -97,9 +97,9 @@ exports.handler = async (event) => {
 
     const { data, error } = await supabase
       .from('submissions')
-      .select('id, email, "brand-name"')
+      .select('id, email, brand_name')
       .ilike('email', email)
-      .ilike('brand-name', brandName)
+      .ilike('brand_name', brandName)
       .limit(1);
 
     if (error) {

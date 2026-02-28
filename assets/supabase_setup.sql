@@ -22,49 +22,50 @@ CREATE TABLE IF NOT EXISTS submissions (
   id                              uuid        PRIMARY KEY DEFAULT gen_random_uuid(),
   created_at                      timestamptz NOT NULL    DEFAULT now(),
   history                         jsonb       NOT NULL    DEFAULT '[]'::jsonb,
-  "status"                        text        NOT NULL    DEFAULT 'pending',
-  "project-status"                text,
-  "agreed-delivery-date"          text,
+  status                          text        NOT NULL    DEFAULT 'pending',
+  project_status                  text,
+  agreed_delivery_date            text,
 
   -- Client meta
-  "client-name"                   text,
-  "brand-name"                    text,
-  "email"                         text,
-  "client-website"                text,
-  "delivery-date"                 text,
+  client_name                     text,
+  brand_name                      text,
+  email                           text,
+  client_website                  text,
+  delivery_date                   text,
 
-  -- Section 01: Brand Foundation (Q01-Q08)
-  "q1-business-description"       text,
-  "q2-problem-transformation"     text,
-  "q3-ideal-customer"             text,
-  "q3b-customer-desire"           text,
-  "q4-competitors"                text,
-  "q5-brand-personality"          text,
-  "q6-positioning"                text,
-  "q-launch-context"              text,
+  -- Section 01: Brand Foundation
+  "business-description"          text,
+  "problem-transformation"        text,
+  "ideal-customer"                text,
+  "customer-desire"               text,
+  competitors                      text,
+  "brand-personality"             text,
+  positioning                      text,
+  "launch-context"                text,
 
-  -- Section 02: Visual Direction (Q09-Q15)
-  "q8-brands-admired"             text,
-  "q9-color"                      text[],   -- multi-select
-  "q10-colors-to-avoid"           text,
-  "q11-aesthetic"                 text[],   -- multi-select (ranked by selection order)
-  "q11-aesthetic-description"     text,
-  "q13-deliverables"              text[],   -- multi-select
-  "q14-budget"                    text,
+  -- Section 02: Visual Direction
+  "brands-admired"                text,
+  color_direction                   text[],   -- multi-select
+  color_choice                      text,
+  "colors-to-avoid"               text,
+  aesthetic                        text[],   -- multi-select (ranked by selection order)
+  "aesthetic-description"         text,
+  deliverables                     text[],   -- multi-select
+  budget                           text,
 
-  -- Q15: each entry is a JSON string:
+  -- Inspiration refs: each entry is a JSON string:
   --   '{"smallRef":"small/...","originalRef":"originals/..."}'
   -- Legacy entries may be plain storage-path strings.
-  "q15-inspiration-refs"          text[],
+  "inspiration-refs"              text[],
 
-  -- Section 03: Project and Scope (Q16-Q19)
-  "q7-decision-maker"             text,
-  "q7-decision-maker-other"       text,
-  "q12-existing-assets"           text,
-  "q16-anything-else"             text,
+  -- Section 03: Project and Scope
+  "decision-maker"                text,
+  "decision-maker-other"          text,
+  "existing-assets"               text,
+  "anything-else"                 text,
 
   -- Brand / company logo (stored in the 'logos' bucket)
-  "brand-logo-ref"                text,
+  brand_logo_ref                   text,
 
   -- Secure edit token (UUID) — single use, expires after 30 days
   -- Generated on new submission, cleared after client edits
@@ -72,49 +73,47 @@ CREATE TABLE IF NOT EXISTS submissions (
   edit_token_expires_at           timestamptz,
 
   -- Auto-detected from Netlify geo header (x-country) — not user-submitted
-  "client-country"                text
+  client_country                   text
 );
 
 
 -- ── 2. Migrations — add any columns that might be missing ─────────────
 --  Safe no-ops if columns already exist.
 -- ──────────────────────────────────────────────────────────────────────
-ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "client-website"                text;
-ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "q3b-customer-desire"           text;
-ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "q-launch-context"              text;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS client_website                 text;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "customer-desire"             text;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "launch-context"              text;
 ALTER TABLE submissions ADD COLUMN IF NOT EXISTS history                        jsonb        NOT NULL DEFAULT '[]'::jsonb;
-ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "status"                       text         NOT NULL DEFAULT 'pending';
-ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "project-status"               text;
-ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "agreed-delivery-date"         text;
-ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "client-name"                  text;
-ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "brand-name"                   text;
-ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "email"                        text;
-ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "delivery-date"                text;
-ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "brand-logo-ref"               text;
-ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "q1-business-description"      text;
-ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "q2-problem-transformation"    text;
-ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "client-website"                text;
-ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "q3b-customer-desire"           text;
-ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "q-launch-context"              text;
-ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "q3-ideal-customer"            text;
-ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "q4-competitors"               text;
-ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "q5-brand-personality"         text;
-ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "q6-positioning"               text;
-ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "q7-decision-maker"            text;
-ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "q7-decision-maker-other"      text;
-ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "q8-brands-admired"            text;
-ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "q9-color"                     text[];
-ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "q10-colors-to-avoid"          text;
-ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "q11-aesthetic"                text[];
-ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "q11-aesthetic-description"    text;
-ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "q12-existing-assets"          text;
-ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "q13-deliverables"             text[];
-ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "q14-budget"                   text;
-ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "q15-inspiration-refs"         text[];
-ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "q16-anything-else"            text;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS status                         text         NOT NULL DEFAULT 'pending';
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS project_status                 text;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS agreed_delivery_date           text;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS client_name                    text;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS brand_name                     text;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS email                          text;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS delivery_date                  text;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS brand_logo_ref                 text;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "business-description"        text;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "problem-transformation"      text;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "ideal-customer"              text;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS competitors                    text;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "brand-personality"           text;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS positioning                    text;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "brands-admired"              text;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS color_direction               text[];
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS color_choice                  text;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "colors-to-avoid"             text;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS aesthetic                      text[];
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "aesthetic-description"       text;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "existing-assets"             text;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS deliverables                   text[];
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS budget                         text;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "inspiration-refs"            text[];
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "decision-maker"              text;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "decision-maker-other"        text;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "anything-else"               text;
 ALTER TABLE submissions ADD COLUMN IF NOT EXISTS edit_token                   text UNIQUE;
 ALTER TABLE submissions ADD COLUMN IF NOT EXISTS edit_token_expires_at        timestamptz;
-ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "client-country"             text;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS client_country                text;
 
 
 -- ── 3. Indexes (optional but recommended for dashboard queries) ────────
@@ -122,13 +121,13 @@ CREATE INDEX IF NOT EXISTS idx_submissions_created_at
   ON submissions (created_at DESC);
 
 CREATE INDEX IF NOT EXISTS idx_submissions_email
-  ON submissions (lower("email"));
+  ON submissions (lower(email));
 
 CREATE INDEX IF NOT EXISTS idx_submissions_brand_name
-  ON submissions (lower("brand-name"));
+  ON submissions (lower(brand_name));
 
 CREATE INDEX IF NOT EXISTS idx_submissions_status
-  ON submissions ("status");
+  ON submissions (status);
 
 CREATE INDEX IF NOT EXISTS idx_submissions_edit_token
   ON submissions (edit_token)
