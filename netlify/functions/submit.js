@@ -92,6 +92,34 @@ const ARRAY_ENUM_ALLOWLISTS = {
 const EMAIL_RE     = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const SAFE_PATH_RE = /^[a-zA-Z0-9._/()-]+$/;
 
+function normalizeWebsiteUrl(value) {
+  const raw = String(value || '').trim();
+  if (!raw) return '';
+
+  const hasProtocol = /^[a-z][a-z0-9+.-]*:\/\//i.test(raw);
+  const candidate = hasProtocol ? raw : `https://${raw}`;
+  const parsed = new URL(candidate);
+
+  if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+    const err = new Error('Website must use http or https.');
+    err.code = 'WEBSITE_PROTOCOL';
+    throw err;
+  }
+
+  const host = String(parsed.hostname || '').toLowerCase();
+  if (!host || (!host.includes('.') && host !== 'localhost')) {
+    const err = new Error('Invalid website URL format.');
+    err.code = 'WEBSITE_FORMAT';
+    throw err;
+  }
+
+  const normalized = parsed.toString();
+  if (parsed.pathname === '/' && !parsed.search && !parsed.hash && normalized.endsWith('/')) {
+    return normalized.slice(0, -1);
+  }
+  return normalized;
+}
+
 // ── Field length limits (mirrors client-side maxlength) ───────────────────────
 const FIELD_MAXLENGTH = {
   'client_name':               120,
@@ -310,19 +338,15 @@ exports.handler = async (event) => {
   const websiteVal = String(payload['client_website'] || '').trim();
   if (websiteVal) {
     try {
-      const u = new URL(websiteVal);
-      if (u.protocol !== 'http:' && u.protocol !== 'https:') {
-        return {
-          statusCode: 400,
-          headers: CORS_HEADERS,
-          body: JSON.stringify({ success: false, error: 'Website must use http or https.' })
-        };
-      }
-    } catch {
+      payload['client_website'] = normalizeWebsiteUrl(websiteVal);
+    } catch (err) {
+      const message = err?.code === 'WEBSITE_PROTOCOL'
+        ? 'Website must use http or https.'
+        : 'Invalid website URL format.';
       return {
         statusCode: 400,
         headers: CORS_HEADERS,
-        body: JSON.stringify({ success: false, error: 'Invalid website URL format.' })
+        body: JSON.stringify({ success: false, error: message })
       };
     }
   }

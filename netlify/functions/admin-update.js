@@ -120,6 +120,34 @@ const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const SAFE_PATH_RE = /^[a-zA-Z0-9._/()-]+$/;
 
+function normalizeWebsiteUrl(value) {
+  const raw = String(value || '').trim();
+  if (!raw) return '';
+
+  const hasProtocol = /^[a-z][a-z0-9+.-]*:\/\//i.test(raw);
+  const candidate = hasProtocol ? raw : `https://${raw}`;
+  const parsed = new URL(candidate);
+
+  if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+    const err = new Error('Website must use http or https.');
+    err.code = 'WEBSITE_PROTOCOL';
+    throw err;
+  }
+
+  const host = String(parsed.hostname || '').toLowerCase();
+  if (!host || (!host.includes('.') && host !== 'localhost')) {
+    const err = new Error('Invalid website URL format.');
+    err.code = 'WEBSITE_FORMAT';
+    throw err;
+  }
+
+  const normalized = parsed.toString();
+  if (parsed.pathname === '/' && !parsed.search && !parsed.hash && normalized.endsWith('/')) {
+    return normalized.slice(0, -1);
+  }
+  return normalized;
+}
+
 function normalizeField(field, value) {
   if (ARRAY_FIELDS.has(field)) {
     if (value === undefined || value === null || value === '') return null;
@@ -185,7 +213,7 @@ exports.handler = async (event, context) => {
     // Only allow explicitly-permitted fields
     if (!ADMIN_UPDATABLE_FIELDS.has(key)) continue;
 
-    const normalized = normalizeField(key, value);
+    let normalized = normalizeField(key, value);
 
     // Length validation for text fields
     const maxLen = FIELD_MAXLENGTH[key];
@@ -243,19 +271,15 @@ exports.handler = async (event, context) => {
     // Website URL validation
     if (key === 'client_website' && normalized) {
       try {
-        const u = new URL(String(normalized));
-        if (u.protocol !== 'http:' && u.protocol !== 'https:') {
-          return {
-            statusCode: 400,
-            headers: CORS_HEADERS,
-            body: JSON.stringify({ error: 'Website must use http or https.' })
-          };
-        }
-      } catch {
+        normalized = normalizeWebsiteUrl(String(normalized));
+      } catch (err) {
+        const message = err?.code === 'WEBSITE_PROTOCOL'
+          ? 'Website must use http or https.'
+          : 'Invalid website URL format.';
         return {
           statusCode: 400,
           headers: CORS_HEADERS,
-          body: JSON.stringify({ error: 'Invalid website URL format.' })
+          body: JSON.stringify({ error: message })
         };
       }
     }
