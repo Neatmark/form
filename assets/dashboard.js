@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Dashboard translation helper.
  * Falls back to the English default when i18n is not loaded or key is missing.
  * Usage: dt('dashboard.loading', 'Loading…')
@@ -316,8 +316,8 @@ function getFilteredSubmissions() {
   return allSubmissions.filter(submission => {
     const data = submission.data || {};
     const searchText = [
-      data['brand-name'],
-      data['client-name'],
+      data.brand_name,
+      data.client_name,
       data['email']
     ].join(' ').toLowerCase();
 
@@ -341,14 +341,14 @@ function applyCurrentFiltersAndRender() {
         return sortMode === 'date-asc' ? dateA - dateB : dateB - dateA;
       }
       if (sortMode === 'name-asc' || sortMode === 'name-desc') {
-        const nameA = String(a.data?.['brand-name'] || '').toLowerCase();
-        const nameB = String(b.data?.['brand-name'] || '').toLowerCase();
+        const nameA = String(a.data?.brand_name || '').toLowerCase();
+        const nameB = String(b.data?.brand_name || '').toLowerCase();
         const cmp = nameA.localeCompare(nameB);
         return sortMode === 'name-asc' ? cmp : -cmp;
       }
       if (sortMode === 'delivery-asc' || sortMode === 'delivery-desc') {
-        const dA = new Date(a.data?.['delivery-date'] || '9999-12-31').getTime();
-        const dB = new Date(b.data?.['delivery-date'] || '9999-12-31').getTime();
+        const dA = new Date(a.data?.delivery_date || '9999-12-31').getTime();
+        const dB = new Date(b.data?.delivery_date || '9999-12-31').getTime();
         return sortMode === 'delivery-asc' ? dA - dB : dB - dA;
       }
       return 0;
@@ -667,156 +667,156 @@ function isQuestionnaireKey(key) {
  * Any key NOT in this set is legacy/old and will be hidden in the UI.
  */
 const VALID_QUESTIONNAIRE_FIELDS = new Set([
-  'q1-business-description',
-  'q2-problem-transformation',
-  'q3-ideal-customer',
-  'q3b-customer-desire',
-  'q4-competitors',
-  'q5-brand-personality',
-  'q6-positioning',
-  'q-launch-context',
-  'q8-brands-admired',
-  'q9-color',
-  'q10-colors-to-avoid',
-  'q11-aesthetic',
-  'q11-aesthetic-description',
-  'q13-deliverables',
-  'q14-budget',
-  'q15-inspiration-refs',
-  'q7-decision-maker',
-  'q7-decision-maker-other',
-  'q12-existing-assets',
-  'delivery-date',
-  'q16-anything-else'
+  'business_description',
+  'problem_transformation',
+  'ideal_customer',
+  'customer_desire',
+  'competitors',
+  'brand_personality',
+  'positioning',
+  'launch_context',
+  'brands_admired',
+  'color_direction',
+  'colors_to_avoid',
+  'aesthetic',
+  'aesthetic_description',
+  'deliverables',
+  'budget',
+  'inspiration_refs',
+  'decision_maker',
+  'decision_maker_other',
+  'existing_assets',
+  'delivery_date',
+  'anything_else'
 ]);
 
 // Explicit display order matching the form's question numbering (01-19)
 const QUESTIONNAIRE_FIELD_ORDER = {
-  'q1-business-description':  1,
-  'q2-problem-transformation':2,
-  'q3-ideal-customer':        3,
-  'q3b-customer-desire':      4,
-  'q4-competitors':           5,
-  'q5-brand-personality':     6,
-  'q6-positioning':           7,
-  'q-launch-context':         8,
-  'q8-brands-admired':        9,
-  'q9-color':                10,
-  'q10-colors-to-avoid':     11,
-  'q11-aesthetic':           12,
-  'q11-aesthetic-description':12.5,
-  'q13-deliverables':        13,
-  'q15-inspiration-refs':    14,   // moved: was 15, now 14 (budget moved to section 3)
-  'q7-decision-maker':       15,   // was 16
-  'q7-decision-maker-other': 15.5, // was 16.5
-  'delivery-date':           16,   // was 18
-  'q14-budget':              17,   // was 14, moved to section 3
-  'q12-existing-assets':     18,   // was 17
-  'q16-anything-else':       19,
+  'business_description':  1,
+  'problem_transformation':2,
+  'ideal_customer':        3,
+  'customer_desire':       4,
+  'competitors':           5,
+  'brand_personality':     6,
+  'positioning':           7,
+  'launch_context':        8,
+  'brands_admired':        9,
+  'color_direction':      10,
+  'colors_to_avoid':      11,
+  'aesthetic':            12,
+  'aesthetic_description': 12.5,
+  'deliverables':         13,
+  'inspiration_refs':     14,
+  'decision_maker':       15,
+  'decision_maker_other': 15.5,
+  'delivery_date':        16,
+  'budget':               17,
+  'existing_assets':      18,
+  'anything_else':        19,
 };
 
 // Clean display numbers shown in the dashboard badge
 const QUESTIONNAIRE_DISPLAY_NUM = {
-  'q1-business-description':  '01',
-  'q2-problem-transformation':'02',
-  'q3-ideal-customer':        '03',
-  'q3b-customer-desire':      '04',
-  'q4-competitors':           '05',
-  'q5-brand-personality':     '06',
-  'q6-positioning':           '07',
-  'q-launch-context':         '08',
-  'q8-brands-admired':        '09',
-  'q9-color':                 '10',
-  'q10-colors-to-avoid':      '11',
-  'q11-aesthetic':            '12',
-  'q11-aesthetic-description':'12b',
-  'q13-deliverables':         '13',
-  'q15-inspiration-refs':     '14',
-  'q7-decision-maker':        '15',
-  'q7-decision-maker-other':  '15b',
-  'delivery-date':            '16',
-  'q14-budget':               '17',
-  'q12-existing-assets':      '18',
-  'q16-anything-else':        '19',
+  'business_description':  '01',
+  'problem_transformation':'02',
+  'ideal_customer':        '03',
+  'customer_desire':       '04',
+  'competitors':           '05',
+  'brand_personality':     '06',
+  'positioning':           '07',
+  'launch_context':        '08',
+  'brands_admired':        '09',
+  'color_direction':       '10',
+  'colors_to_avoid':       '11',
+  'aesthetic':             '12',
+  'aesthetic_description': '12b',
+  'deliverables':          '13',
+  'inspiration_refs':      '14',
+  'decision_maker':        '15',
+  'decision_maker_other':  '15b',
+  'delivery_date':         '16',
+  'budget':                '17',
+  'existing_assets':       '18',
+  'anything_else':         '19',
 };
 
 // Human-readable labels for the dashboard cards
 function getFieldLabel(key) {
   const fallbacks = {
-    'q1-business-description':  'Business Description',
-    'q2-problem-transformation':'Before and After',
-    'q3-ideal-customer':        'Ideal Client',
-    'q3b-customer-desire':      'Client Trigger',
-    'q4-competitors':           'Competitors',
-    'q5-brand-personality':     'Brand Personality',
-    'q6-positioning':           'Positioning Statement',
-    'q-launch-context':         'Launch Context',
-    'q8-brands-admired':        'Admired Brands',
-    'q9-color':                 'Color Directions',
-    'q10-colors-to-avoid':      'Colors to Avoid',
-    'q11-aesthetic':            'Aesthetic Direction',
-    'q11-aesthetic-description':'Aesthetic Notes',
-    'q13-deliverables':         'Deliverables',
-    'q15-inspiration-refs':     'Inspiration Images',
-    'q7-decision-maker':        'Action Taker',
-    'q7-decision-maker-other':  'Action Taker (Other)',
-    'delivery-date':            'Delivery Timeframe',
-    'q14-budget':               'Budget Approach',
-    'q12-existing-assets':      'Brand Assets',
-    'q16-anything-else':        'Past Experience and Fears',
+    'business_description':  'Business Description',
+    'problem_transformation':'Before and After',
+    'ideal_customer':        'Ideal Client',
+    'customer_desire':       'Client Trigger',
+    'competitors':           'Competitors',
+    'brand_personality':     'Brand Personality',
+    'positioning':           'Positioning Statement',
+    'launch_context':        'Launch Context',
+    'brands_admired':        'Admired Brands',
+    'color_direction':       'Color Directions',
+    'colors_to_avoid':       'Colors to Avoid',
+    'aesthetic':             'Aesthetic Direction',
+    'aesthetic_description': 'Aesthetic Notes',
+    'deliverables':          'Deliverables',
+    'inspiration_refs':      'Inspiration Images',
+    'decision_maker':        'Action Taker',
+    'decision_maker_other':  'Action Taker (Other)',
+    'delivery_date':         'Delivery Timeframe',
+    'budget':                'Budget Approach',
+    'existing_assets':       'Brand Assets',
+    'anything_else':         'Past Experience and Fears',
   };
   const i18nKeys = {
-    'q1-business-description':  'detail.questionnaire.labels.q1',
-    'q2-problem-transformation':'detail.questionnaire.labels.q2',
-    'q3-ideal-customer':        'detail.questionnaire.labels.q3',
-    'q3b-customer-desire':      'detail.questionnaire.labels.q3b',
-    'q4-competitors':           'detail.questionnaire.labels.q4',
-    'q5-brand-personality':     'detail.questionnaire.labels.q5',
-    'q6-positioning':           'detail.questionnaire.labels.q6',
-    'q-launch-context':         'detail.questionnaire.labels.qlaunch',
-    'q8-brands-admired':        'detail.questionnaire.labels.q8',
-    'q9-color':                 'detail.questionnaire.labels.q9',
-    'q10-colors-to-avoid':      'detail.questionnaire.labels.q10',
-    'q11-aesthetic':            'detail.questionnaire.labels.q11',
-    'q11-aesthetic-description':'detail.questionnaire.labels.q11b',
-    'q13-deliverables':         'detail.questionnaire.labels.q13',
-    'q14-budget':               'detail.questionnaire.labels.q14',
-    'q15-inspiration-refs':     'detail.questionnaire.labels.q15',
-    'q7-decision-maker':        'detail.questionnaire.labels.q7',
-    'q7-decision-maker-other':  'detail.questionnaire.labels.q7b',
-    'q12-existing-assets':      'detail.questionnaire.labels.q12',
-    'delivery-date':            'detail.questionnaire.labels.delivery',
-    'q16-anything-else':        'detail.questionnaire.labels.q16',
+    'business_description':  'detail.questionnaire.labels.q1',
+    'problem_transformation':'detail.questionnaire.labels.q2',
+    'ideal_customer':        'detail.questionnaire.labels.q3',
+    'customer_desire':       'detail.questionnaire.labels.q3b',
+    'competitors':           'detail.questionnaire.labels.q4',
+    'brand_personality':     'detail.questionnaire.labels.q5',
+    'positioning':           'detail.questionnaire.labels.q6',
+    'launch_context':        'detail.questionnaire.labels.qlaunch',
+    'brands_admired':        'detail.questionnaire.labels.q8',
+    'color_direction':       'detail.questionnaire.labels.q9',
+    'colors_to_avoid':       'detail.questionnaire.labels.q10',
+    'aesthetic':             'detail.questionnaire.labels.q11',
+    'aesthetic_description': 'detail.questionnaire.labels.q11b',
+    'deliverables':          'detail.questionnaire.labels.q13',
+    'budget':                'detail.questionnaire.labels.q14',
+    'inspiration_refs':      'detail.questionnaire.labels.q15',
+    'decision_maker':        'detail.questionnaire.labels.q7',
+    'decision_maker_other':  'detail.questionnaire.labels.q7b',
+    'existing_assets':       'detail.questionnaire.labels.q12',
+    'delivery_date':         'detail.questionnaire.labels.delivery',
+    'anything_else':         'detail.questionnaire.labels.q16',
   };
   return dt(i18nKeys[key] || '', fallbacks[key] || key);
 }
 // Legacy compatibility shim — used only for export functions which do their own label logic
 const QUESTIONNAIRE_FIELD_LABELS = {
-  'q1-business-description':  'Business Description',
-  'q2-problem-transformation':'Before and After',
-  'q3-ideal-customer':        'Ideal Client',
-  'q3b-customer-desire':      'Client Trigger',
-  'q4-competitors':           'Competitors',
-  'q5-brand-personality':     'Brand Personality',
-  'q6-positioning':           'Positioning Statement',
-  'q-launch-context':         'Launch Context',
-  'q8-brands-admired':        'Admired Brands',
-  'q9-color':                 'Color Directions',
-  'q10-colors-to-avoid':      'Colors to Avoid',
-  'q11-aesthetic':            'Aesthetic Direction',
-  'q11-aesthetic-description':'Aesthetic Notes',
-  'q13-deliverables':         'Deliverables',
-  'q15-inspiration-refs':     'Inspiration Images',
-  'q7-decision-maker':        'Action Taker',
-  'q7-decision-maker-other':  'Action Taker (Other)',
-  'delivery-date':            'Delivery Timeframe',
-  'q14-budget':               'Budget Approach',
-  'q12-existing-assets':      'Brand Assets',
-  'q16-anything-else':        'Past Experience and Fears',
+  'business_description':  'Business Description',
+  'problem_transformation':'Before and After',
+  'ideal_customer':        'Ideal Client',
+  'customer_desire':       'Client Trigger',
+  'competitors':           'Competitors',
+  'brand_personality':     'Brand Personality',
+  'positioning':           'Positioning Statement',
+  'launch_context':        'Launch Context',
+  'brands_admired':        'Admired Brands',
+  'color_direction':       'Color Directions',
+  'colors_to_avoid':       'Colors to Avoid',
+  'aesthetic':             'Aesthetic Direction',
+  'aesthetic_description': 'Aesthetic Notes',
+  'deliverables':          'Deliverables',
+  'inspiration_refs':      'Inspiration Images',
+  'decision_maker':        'Action Taker',
+  'decision_maker_other':  'Action Taker (Other)',
+  'delivery_date':         'Delivery Timeframe',
+  'budget':                'Budget Approach',
+  'existing_assets':       'Brand Assets',
+  'anything_else':         'Past Experience and Fears',
 };
 
 function hasDeliveryDate(submission) {
-  return Boolean(getDisplayValue(submission?.data?.['delivery-date']));
+  return Boolean(getDisplayValue(submission?.data?.delivery_date));
 }
 
 function hasAnyQuestionnaireResponse(submission) {
@@ -860,7 +860,7 @@ function questionnaireSortKey(key) {
 }
 
 function getLogoRefFromData(data) {
-  return String(data?.['brand-logo-ref'] || '').trim();
+  return String(data?.brand_logo_ref || '').trim();
 }
 
 function getLogoUrlFromRef(logoRef) {
@@ -932,11 +932,11 @@ function isValidEmail(value) {
 
 function validateEditData(data) {
   const errors = {};
-  if (!getDisplayValue(data['client-name'])) {
-    errors['client-name'] = dt('detail.edit.validation.clientName', 'Client name is required.');
+  if (!getDisplayValue(data.client_name)) {
+    errors.client_name = dt('detail.edit.validation.clientName', 'Client name is required.');
   }
-  if (!getDisplayValue(data['brand-name'])) {
-    errors['brand-name'] = dt('detail.edit.validation.brandName', 'Brand name is required.');
+  if (!getDisplayValue(data.brand_name)) {
+    errors.brand_name = dt('detail.edit.validation.brandName', 'Brand name is required.');
   }
   const email = getDisplayValue(data.email);
   if (!email) {
@@ -1152,21 +1152,21 @@ function renderSubmissions(submissions) {
     const submissionId = String(submission.id);
     const isSelected = selectedSubmissionIds.has(submissionId);
     const escapedSubmissionId = escapeHtml(submissionId);
-    const brandName = escapeHtml(data['brand-name'] || 'Unknown Brand');
-    const clientName = escapeHtml(data['client-name'] || 'Unknown Client');
+    const brandName = escapeHtml(data.brand_name || 'Unknown Brand');
+    const clientName = escapeHtml(data.client_name || 'Unknown Client');
     const email = escapeHtml(data['email'] || 'N/A');
     const submissionStatus = String(data['status'] || 'pending').toLowerCase();
     const statusLabel = submissionStatus === 'approved' ? dt('dashboard.status.approved', 'Approved') : submissionStatus === 'rejected' ? dt('dashboard.status.rejected', 'Rejected') : dt('dashboard.status.pending', 'Pending');
     const statusBadge = `<span class="status-badge ${submissionStatus}">${statusLabel}</span>`;
 
-    const projectStatusRaw = String(data['project-status'] || '').toLowerCase();
+    const projectStatusRaw = String(data.project_status || '').toLowerCase();
     const projectStatusLabels = { 'not-started': dt('dashboard.status.notStarted', 'Not Started'), 'in-progress': dt('dashboard.status.inProgress', 'In Progress'), 'done': dt('dashboard.status.done', 'Done'), 'abandoned': dt('dashboard.status.abandoned', 'Abandoned') };
     const projectStatusBadge = projectStatusRaw && projectStatusLabels[projectStatusRaw]
       ? `<span class="status-badge project-status-badge project-status-${projectStatusRaw}">${projectStatusLabels[projectStatusRaw]}</span>`
       : '';
 
-    const agreedDeliveryRaw = getDisplayValue(data['agreed-delivery-date']);
-    const deliveryRaw = getDisplayValue(data['delivery-date']);
+    const agreedDeliveryRaw = getDisplayValue(data.agreed_delivery_date);
+    const deliveryRaw = getDisplayValue(data.delivery_date);
     let deliveryDisplay;
     let deliveryLabel;
     if (agreedDeliveryRaw) {
@@ -1179,7 +1179,7 @@ function renderSubmissions(submissions) {
       deliveryDisplay = `<span class="delivery-badge-not-set">${dt('dashboard.card.notSet', 'Not set')}</span>`;
       deliveryLabel = dt('dashboard.card.delivery', 'Delivery');
     }
-    const avatarInitials = escapeHtml(buildBrandInitials(data['brand-name'] || 'Unknown Brand'));
+    const avatarInitials = escapeHtml(buildBrandInitials(data.brand_name || 'Unknown Brand'));
     const logoRef = getLogoRefFromData(data);
     const logoUrl = logoRef ? getLogoUrlFromRef(logoRef) : '';
     const avatarContent = logoUrl
@@ -1491,7 +1491,7 @@ function renderEditableField(label, key, type = 'text') {
 // the form, not typing free text.
 // i18n-aware: labels resolved at render time via dt()
 const EDIT_CHECKBOX_DEFS = {
-  'q9-color': [
+  'color_direction': [
     { value: 'Warm neutrals',    i18n: 'form.questions.q9.options.warmNeutrals',       en: 'Warm neutrals (cream, sand, terracotta)' },
     { value: 'Cool neutrals',    i18n: 'form.questions.q9.options.coolNeutrals',       en: 'Cool neutrals (slate, stone, mist)' },
     { value: 'Deep & moody',     i18n: 'form.questions.q9.options.deepMoody',          en: 'Deep & moody (navy, forest, burgundy)' },
@@ -1502,7 +1502,7 @@ const EDIT_CHECKBOX_DEFS = {
     { value: 'Nature-inspired',  i18n: 'form.questions.q9.options.natureInspired',     en: 'Nature-inspired (moss, rust, clay)' },
     { value: 'No preference',    i18n: 'form.questions.q9.options.noPreference',       en: 'No preference, I trust your judgment' },
   ],
-  'q11-aesthetic': [
+  'aesthetic': [
     { value: 'Luxury & refined',         i18n: 'form.questions.q11.options.luxuryRefined',         en: 'Luxury & refined' },
     { value: 'Organic & artisan',         i18n: 'form.questions.q11.options.organicArtisan',        en: 'Organic & artisan' },
     { value: 'Minimal & functional',      i18n: 'form.questions.q11.options.minimalFunctional',     en: 'Minimal & functional' },
@@ -1512,7 +1512,7 @@ const EDIT_CHECKBOX_DEFS = {
     { value: 'Tech-forward',              i18n: 'form.questions.q11.options.techForward',           en: 'Tech-forward & innovative' },
     { value: 'Nostalgic & heritage',      i18n: 'form.questions.q11.options.nostalgicHeritage',     en: 'Nostalgic & heritage' },
   ],
-  'q13-deliverables': [
+  'deliverables': [
     { value: 'Primary logo',       i18n: 'form.questions.q13.options.primaryLogo',       en: 'Primary logo' },
     { value: 'Logo variations',    i18n: 'form.questions.q13.options.logoVariations',    en: 'Logo variations & submarks' },
     { value: 'Color & typography', i18n: 'form.questions.q13.options.colorTypography',   en: 'Color palette & typography system' },
@@ -1531,18 +1531,18 @@ function getEditCheckboxOptions(key) {
 
 // i18n-aware: labels resolved at render time via dt()
 const EDIT_RADIO_DEFS = {
-  'q14-budget': [
+  'budget': [
     { value: 'Low / lowest possible cost',         i18n: 'form.questions.q14.options.low',  en: 'Low / lowest possible cost' },
     { value: 'Mid-range / balanced price–1quality', i18n: 'form.questions.q14.options.mid',  en: 'Mid-range / balanced price–quality' },
     { value: 'High / premium',                      i18n: 'form.questions.q14.options.high', en: 'High / premium' },
     { value: 'Premium / full brand investment',     i18n: 'form.questions.q14.options.best', en: 'Premium / full brand investment (€3,000+)' },
   ],
-  'q7-decision-maker': [
+  'decision_maker': [
     { value: 'Me / myself',        i18n: 'form.questions.q7.options.me',    en: 'Me / myself' },
     { value: 'My boss / the boss', i18n: 'form.questions.q7.options.boss',  en: 'My boss / the boss' },
     { value: 'Other',              i18n: 'form.questions.q7.options.other', en: 'Other (please specify)' },
   ],
-  'delivery-date': [
+  'delivery_date': [
     { value: 'ASAP',         i18n: 'form.metadata.deliveryDateOptions.asap',       en: 'ASAP (As Soon As Possible)' },
     { value: '2–4 weeks', i18n: 'form.metadata.deliveryDateOptions.weeks2to4', en: '2–4 weeks' },
     { value: '1–2 months', i18n: 'form.metadata.deliveryDateOptions.months1to2', en: '1–2 months' },
@@ -1557,15 +1557,15 @@ function getEditRadioOptions(key) {
 
 // Single-line text fields (use <input type="text"> instead of <textarea>)
 const EDIT_TEXT_INPUT_FIELDS = new Set([
-  'q6-positioning', 'q10-colors-to-avoid', 'q12-existing-assets', 'q7-decision-maker-other'
+  'positioning', 'colors_to_avoid', 'existing_assets', 'decision_maker_other'
 ]);
 
 // These fields are rendered inline as part of another field; skip standalone rendering
-const EDIT_INLINE_FIELDS = new Set(['q11-aesthetic-description', 'q7-decision-maker-other']);
+const EDIT_INLINE_FIELDS = new Set(['aesthetic_description', 'decision_maker_other']);
 
 function renderEditInspirationUpload(rawValue, qNum, labelText) {
   const refs = Array.isArray(rawValue) ? rawValue : (rawValue ? [rawValue] : []);
-  const safeKey = 'q15-inspiration-refs';
+  const safeKey = 'inspiration_refs';
   const editLabel = qNum ? `${qNum}: ${escapeHtml(labelText)}` : escapeHtml(labelText);
   const uploadLabel   = dt('form.questions.q15.uploadPrompt', 'Click or drag images here');
   const uploadSublabel = dt('form.questions.q15.uploadLimit', 'Up to 8 images · PNG, JPG, WEBP, GIF');
@@ -1607,8 +1607,8 @@ function renderEditableQuestionnaireField(key, rawValue, qNum, labelText) {
   // Skip inline fields — they're rendered inside their parent field
   if (EDIT_INLINE_FIELDS.has(key)) return '';
 
-  // ── Inspiration image upload zone (Q14 / q15-inspiration-refs) ─────────────
-  if (key === 'q15-inspiration-refs') {
+  // ── Inspiration image upload zone (Q14 / inspiration_refs) ───────────────
+  if (key === 'inspiration_refs') {
     return renderEditInspirationUpload(rawValue, qNum, labelText);
   }
 
@@ -1643,12 +1643,12 @@ function renderEditableQuestionnaireField(key, rawValue, qNum, labelText) {
       </label>`;
     }).join('');
 
-    // q11-aesthetic gets an extra "describe your own" textarea below
+    // aesthetic gets an extra "describe your own" textarea below
     let extra = '';
-    if (key === 'q11-aesthetic') {
-      const descVal = escapeHtml(String(editDraftData?.['q11-aesthetic-description'] ?? ''));
+    if (key === 'aesthetic') {
+      const descVal = escapeHtml(String(editDraftData?.['aesthetic_description'] ?? ''));
       extra = `<textarea class="edit-textarea edit-aesthetic-desc"
-                         data-edit-key="q11-aesthetic-description"
+                         data-edit-key="aesthetic_description"
                          maxlength="1000"
                          placeholder="${dt('form.questions.q11Description.placeholder', 'Or describe your own aesthetic direction...')}">${descVal}</textarea>`;
     }
@@ -1672,14 +1672,14 @@ function renderEditableQuestionnaireField(key, rawValue, qNum, labelText) {
       </label>`;
     }).join('');
 
-    // q7-decision-maker gets an "Other" text input below
+    // decision_maker gets an "Other" text input below
     let extra = '';
-    if (key === 'q7-decision-maker') {
-      const otherVal = escapeHtml(String(editDraftData?.['q7-decision-maker-other'] ?? ''));
+    if (key === 'decision_maker') {
+      const otherVal = escapeHtml(String(editDraftData?.['decision_maker_other'] ?? ''));
       const otherPh  = dt('form.questions.q7.otherPlaceholder', 'Please specify...');
       extra = `<input type="text"
                       class="edit-input edit-other-input"
-                      data-edit-key="q7-decision-maker-other"
+                      data-edit-key="decision_maker_other"
                       value="${otherVal}"
                       placeholder="${escapeHtml(otherPh)}"
                       maxlength="300">`;
@@ -1732,9 +1732,9 @@ function refreshEditInspGrid() {
   const card   = document.getElementById('editInspCard');
   if (!grid || !card || !editDraftData) return;
 
-  const refs = Array.isArray(editDraftData['q15-inspiration-refs'])
-    ? editDraftData['q15-inspiration-refs']
-    : (editDraftData['q15-inspiration-refs'] ? [editDraftData['q15-inspiration-refs']] : []);
+  const refs = Array.isArray(editDraftData['inspiration_refs'])
+    ? editDraftData['inspiration_refs']
+    : (editDraftData['inspiration_refs'] ? [editDraftData['inspiration_refs']] : []);
 
   grid.innerHTML = refs.map((ref, i) => {
     const smallUrl = escapeHtml(getSmallPhotoUrl(String(ref)));
@@ -1775,10 +1775,10 @@ function refreshEditInspGrid() {
   grid.querySelectorAll('.edit-insp-remove[data-ref-index]').forEach(btn => {
     btn.addEventListener('click', () => {
       const idx = parseInt(btn.getAttribute('data-ref-index'), 10);
-      const current = Array.isArray(editDraftData['q15-inspiration-refs'])
-        ? editDraftData['q15-inspiration-refs']
+      const current = Array.isArray(editDraftData['inspiration_refs'])
+        ? editDraftData['inspiration_refs']
         : [];
-      editDraftData['q15-inspiration-refs'] = current.filter((_, i) => i !== idx);
+      editDraftData['inspiration_refs'] = current.filter((_, i) => i !== idx);
       markEditDirty();
       refreshEditInspGrid();
       if (window.lucide) window.lucide.createIcons();
@@ -1793,8 +1793,8 @@ function setupInspirationDropzone(dropzone) {
 
   async function handleFiles(files) {
     const statusEl = document.getElementById('editInspStatus');
-    const current  = Array.isArray(editDraftData?.['q15-inspiration-refs'])
-      ? [...editDraftData['q15-inspiration-refs']]
+    const current  = Array.isArray(editDraftData?.['inspiration_refs'])
+      ? [...editDraftData['inspiration_refs']]
       : [];
     const slots = 8 - current.length;
     const toUpload = Array.from(files).slice(0, slots);
@@ -1814,7 +1814,7 @@ function setupInspirationDropzone(dropzone) {
       }
     }
 
-    editDraftData['q15-inspiration-refs'] = current;
+    editDraftData['inspiration_refs'] = current;
     markEditDirty();
 
     if (statusEl) {
@@ -1866,8 +1866,8 @@ function renderDetailPanel() {
   const data = isEditingSubmission ? (editDraftData || {}) : (currentSubmission.data || {});
   const history = currentSubmission.history;
 
-  const brandName = getDisplayValue(data['brand-name']) || 'Submission Details';
-  const clientName = getDisplayValue(data['client-name']) || 'Unknown Client';
+  const brandName = getDisplayValue(data.brand_name) || 'Submission Details';
+  const clientName = getDisplayValue(data.client_name) || 'Unknown Client';
   const email = getDisplayValue(data['email']) || 'N/A';
   const logoRef = getLogoRefFromData(data);
 
@@ -1904,28 +1904,28 @@ function renderDetailPanel() {
           <div class="edit-error" id="logoUploadError"></div>
         </div>
         <div class="overview-grid">
-          ${renderEditableField(dt('detail.overview.clientName', 'Client Name'), 'client-name', 'text')}
+          ${renderEditableField(dt('detail.overview.clientName', 'Client Name'), 'client_name', 'text')}
           ${renderEditableField(dt('detail.overview.email', 'Email'), 'email', 'email')}
-          ${renderEditableField(dt('detail.overview.brandName', 'Brand Name'), 'brand-name', 'text')}
+          ${renderEditableField(dt('detail.overview.brandName', 'Brand Name'), 'brand_name', 'text')}
           <div class="overview-card edit-field">
             <label class="overview-label" for="edit-delivery-date">${dt('detail.overview.formDelivery', 'Form Delivery Date')}</label>
             <div class="custom-delivery-select" id="editDeliveryDropdown">
               <button type="button" class="edit-input edit-delivery-btn" id="editDeliveryBtn" aria-haspopup="listbox" aria-expanded="false">
-                <span class="edit-delivery-label" id="editDeliveryLabel">${escapeHtml(data['delivery-date'] || dt('detail.edit.selectTimeframe', 'Select a timeframe'))}</span>
+                <span class="edit-delivery-label" id="editDeliveryLabel">${escapeHtml(data.delivery_date || dt('detail.edit.selectTimeframe', 'Select a timeframe'))}</span>
                 <i data-lucide="chevron-down" class="icon edit-delivery-caret"></i>
               </button>
               <div class="edit-delivery-menu" id="editDeliveryMenu" role="listbox">
-                <button class="edit-delivery-option${!data['delivery-date'] ? ' active' : ''}" data-value="" role="option">${dt('detail.edit.notSet', '— Not set —')}</button>
-                <button class="edit-delivery-option${data['delivery-date'] === 'ASAP' ? ' active' : ''}" data-value="ASAP" role="option">${dt('detail.edit.asap', 'ASAP (As Soon As Possible)')}</button>
-                <button class="edit-delivery-option${data['delivery-date'] === '2–4 weeks' ? ' active' : ''}" data-value="2–4 weeks" role="option">2–4 weeks</button>
-                <button class="edit-delivery-option${data['delivery-date'] === '1–2 months' ? ' active' : ''}" data-value="1–2 months" role="option">1–2 months</button>
-                <button class="edit-delivery-option${data['delivery-date'] === '3+ months' ? ' active' : ''}" data-value="3+ months" role="option">3+ months</button>
+                <button class="edit-delivery-option${!data.delivery_date ? ' active' : ''}" data-value="" role="option">${dt('detail.edit.notSet', '— Not set —')}</button>
+                <button class="edit-delivery-option${data.delivery_date === 'ASAP' ? ' active' : ''}" data-value="ASAP" role="option">${dt('detail.edit.asap', 'ASAP (As Soon As Possible)')}</button>
+                <button class="edit-delivery-option${data.delivery_date === '2–4 weeks' ? ' active' : ''}" data-value="2–4 weeks" role="option">2–4 weeks</button>
+                <button class="edit-delivery-option${data.delivery_date === '1–2 months' ? ' active' : ''}" data-value="1–2 months" role="option">1–2 months</button>
+                <button class="edit-delivery-option${data.delivery_date === '3+ months' ? ' active' : ''}" data-value="3+ months" role="option">3+ months</button>
               </div>
             </div>
           </div>
           <div class="overview-card edit-field">
             <label class="overview-label" for="edit-agreed-delivery-date">${dt('detail.overview.agreedDelivery', 'Agreed Delivery Date')}</label>
-            <input id="edit-agreed-delivery-date" class="edit-input" type="date" data-edit-key="agreed-delivery-date" value="${escapeHtml(normalizeDateInputValue(data['agreed-delivery-date']))}" />
+            <input id="edit-agreed-delivery-date" class="edit-input" type="date" data-edit-key="agreed_delivery_date" value="${escapeHtml(normalizeDateInputValue(data.agreed_delivery_date))}" />
           </div>
           <div class="overview-card edit-field">
             <label class="overview-label">${dt('detail.overview.submissionStatus', 'Submission Status')}</label>
@@ -1945,15 +1945,15 @@ function renderDetailPanel() {
             <label class="overview-label">${dt('detail.overview.projectStatus', 'Project Status')}</label>
             <div class="custom-delivery-select" id="editProjectStatusDropdown">
               <button type="button" class="edit-input edit-delivery-btn" id="editProjectStatusBtn" aria-haspopup="listbox" aria-expanded="false">
-                <span class="edit-delivery-label" id="editProjectStatusLabel">${(function(){ const ps = String(data['project-status'] || ''); const lbs = {'not-started': dt('dashboard.status.notStarted','Not Started'),'in-progress': dt('dashboard.status.inProgress','In Progress'),'done': dt('dashboard.status.done','Done'),'abandoned': dt('dashboard.status.abandoned','Abandoned')}; return ps && lbs[ps] ? lbs[ps] : dt('detail.edit.notSet','— Not set —'); })()}</span>
+                <span class="edit-delivery-label" id="editProjectStatusLabel">${(function(){ const ps = String(data.project_status || ''); const lbs = {'not-started': dt('dashboard.status.notStarted','Not Started'),'in-progress': dt('dashboard.status.inProgress','In Progress'),'done': dt('dashboard.status.done','Done'),'abandoned': dt('dashboard.status.abandoned','Abandoned')}; return ps && lbs[ps] ? lbs[ps] : dt('detail.edit.notSet','— Not set —'); })()}</span>
                 <i data-lucide="chevron-down" class="icon edit-delivery-caret"></i>
               </button>
               <div class="edit-delivery-menu" id="editProjectStatusMenu" role="listbox">
-                <button class="edit-delivery-option${!data['project-status'] ? ' active' : ''}" data-value="" role="option">${dt('detail.edit.notSet','— Not set —')}</button>
-                <button class="edit-delivery-option project-status-option project-status-not-started${data['project-status'] === 'not-started' ? ' active' : ''}" data-value="not-started" role="option">${dt('dashboard.status.notStarted','Not Started')}</button>
-                <button class="edit-delivery-option project-status-option project-status-in-progress${data['project-status'] === 'in-progress' ? ' active' : ''}" data-value="in-progress" role="option">${dt('dashboard.status.inProgress','In Progress')}</button>
-                <button class="edit-delivery-option project-status-option project-status-done${data['project-status'] === 'done' ? ' active' : ''}" data-value="done" role="option">${dt('dashboard.status.done','Done')}</button>
-                <button class="edit-delivery-option project-status-option project-status-abandoned${data['project-status'] === 'abandoned' ? ' active' : ''}" data-value="abandoned" role="option">${dt('dashboard.status.abandoned','Abandoned')}</button>
+                <button class="edit-delivery-option${!data.project_status ? ' active' : ''}" data-value="" role="option">${dt('detail.edit.notSet','— Not set —')}</button>
+                <button class="edit-delivery-option project-status-option project-status-not-started${data.project_status === 'not-started' ? ' active' : ''}" data-value="not-started" role="option">${dt('dashboard.status.notStarted','Not Started')}</button>
+                <button class="edit-delivery-option project-status-option project-status-in-progress${data.project_status === 'in-progress' ? ' active' : ''}" data-value="in-progress" role="option">${dt('dashboard.status.inProgress','In Progress')}</button>
+                <button class="edit-delivery-option project-status-option project-status-done${data.project_status === 'done' ? ' active' : ''}" data-value="done" role="option">${dt('dashboard.status.done','Done')}</button>
+                <button class="edit-delivery-option project-status-option project-status-abandoned${data.project_status === 'abandoned' ? ' active' : ''}" data-value="abandoned" role="option">${dt('dashboard.status.abandoned','Abandoned')}</button>
               </div>
             </div>
           </div>
@@ -1968,9 +1968,9 @@ function renderDetailPanel() {
           <div class="overview-card"><div class="overview-label">${dt('detail.overview.clientName', 'Client Name')}</div><div class="overview-value">${escapeHtml(clientName)}</div></div>
           <div class="overview-card"><div class="overview-label">${dt('detail.overview.email', 'Email')}</div><div class="overview-value">${escapeHtml(email)}</div></div>
           <div class="overview-card"><div class="overview-label">${dt('detail.overview.brandName', 'Brand Name')}</div><div class="overview-value">${escapeHtml(brandName)}</div></div>
-          <div class="overview-card"><div class="overview-label">${dt('detail.overview.deliveryDate', 'Delivery Date')}</div><div class="overview-value">${formatDeliveryDateForOverview(data['delivery-date'])}</div></div>
-          <div class="overview-card"><div class="overview-label">${dt('detail.overview.agreedDelivery', 'Agreed Delivery Date')}</div><div class="overview-value">${data['agreed-delivery-date'] ? escapeHtml(formatDeliveryDateForOverview(data['agreed-delivery-date'])) : `<span class="overview-empty-badge">${dt('detail.overview.notSetYet', 'Not set yet')}</span>`}</div></div>
-          <div class="overview-card"><div class="overview-label">${dt('detail.overview.projectStatus', 'Project Status')}</div><div class="overview-value">${(function(){ const ps = String(data['project-status'] || '').toLowerCase(); const lbs = {'not-started': dt('dashboard.status.notStarted','Not Started'),'in-progress': dt('dashboard.status.inProgress','In Progress'),'done': dt('dashboard.status.done','Done'),'abandoned': dt('dashboard.status.abandoned','Abandoned')}; return ps && lbs[ps] ? '<span class="status-badge project-status-badge project-status-' + ps + '">' + lbs[ps] + '</span>' : `<span class="overview-empty-badge">${dt('detail.overview.notSet','Not set')}</span>`; })()}</div></div>
+          <div class="overview-card"><div class="overview-label">${dt('detail.overview.deliveryDate', 'Delivery Date')}</div><div class="overview-value">${formatDeliveryDateForOverview(data.delivery_date)}</div></div>
+          <div class="overview-card"><div class="overview-label">${dt('detail.overview.agreedDelivery', 'Agreed Delivery Date')}</div><div class="overview-value">${data.agreed_delivery_date ? escapeHtml(formatDeliveryDateForOverview(data.agreed_delivery_date)) : `<span class="overview-empty-badge">${dt('detail.overview.notSetYet', 'Not set yet')}</span>`}</div></div>
+          <div class="overview-card"><div class="overview-label">${dt('detail.overview.projectStatus', 'Project Status')}</div><div class="overview-value">${(function(){ const ps = String(data.project_status || '').toLowerCase(); const lbs = {'not-started': dt('dashboard.status.notStarted','Not Started'),'in-progress': dt('dashboard.status.inProgress','In Progress'),'done': dt('dashboard.status.done','Done'),'abandoned': dt('dashboard.status.abandoned','Abandoned')}; return ps && lbs[ps] ? '<span class="status-badge project-status-badge project-status-' + ps + '">' + lbs[ps] + '</span>' : `<span class="overview-empty-badge">${dt('detail.overview.notSet','Not set')}</span>`; })()}</div></div>
           <div class="overview-card"><div class="overview-label">${dt('detail.overview.submissionStatus', 'Submission Status')}</div><div class="overview-value">${(function(){ const s = String(data['status'] || 'pending').toLowerCase(); if (s === 'approved') return `<span class="status-badge approved">${dt('dashboard.status.approved','Approved')}</span>`; if (s === 'rejected') return `<span class="status-badge rejected">${dt('dashboard.status.rejected','Rejected')}</span>`; return `<span class="status-badge pending">${dt('dashboard.status.pending','Pending')}</span>`; })()}</div></div>
         </div>
       </section>
@@ -2017,8 +2017,8 @@ function renderDetailPanel() {
 
     const displayValue = getDisplayValue(value);
 
-    // Special rendering for q15-inspiration-refs (also handles legacy q20-inspiration-refs key)
-    if ((key === 'q15-inspiration-refs' || key === 'q20-inspiration-refs') && !isEditingSubmission) {
+    // Special rendering for inspiration_refs (also handles legacy q20-inspiration-refs key)
+    if ((key === 'inspiration_refs' || key === 'q20-inspiration-refs') && !isEditingSubmission) {
       const refs = Array.isArray(value) ? value : (value ? [value] : []);
       const imagesHtml = refs.length > 0
         ? `<div class="q20-dash-preview-grid">${refs.map((ref, i) => {
@@ -2259,7 +2259,7 @@ function setupEditModeInteractions() {
         if (editProjectStatusLabel) editProjectStatusLabel.textContent = val && labels[val] ? labels[val] : dt('detail.edit.notSet','— Not set —');
         editProjectStatusMenu.classList.remove('open');
         editProjectStatusBtn.setAttribute('aria-expanded', 'false');
-        if (editDraftData) editDraftData['project-status'] = val;
+        if (editDraftData) editDraftData.project_status = val;
         markEditDirty();
       });
     });
@@ -2287,7 +2287,7 @@ function setupEditModeInteractions() {
         if (editDeliveryLabel) editDeliveryLabel.textContent = val || dt('detail.edit.notSet','— Not set —');
         editDeliveryMenu.classList.remove('open');
         editDeliveryBtn.setAttribute('aria-expanded', 'false');
-        if (editDraftData) editDraftData['delivery-date'] = val;
+        if (editDraftData) editDraftData.delivery_date = val;
         markEditDirty();
       });
     });
@@ -2475,9 +2475,9 @@ async function saveEditedSubmission() {
     // Upload logo if a new one was staged
     if (pendingLogoFile) {
       const logoRef = await uploadLogoFile(pendingLogoFile, token);
-      payload['brand-logo-ref'] = logoRef;
+      payload.brand_logo_ref = logoRef;
     } else if (removeExistingLogo) {
-      payload['brand-logo-ref'] = '';
+      payload.brand_logo_ref = '';
     }
 
     // ── Call admin-update (authenticated, dedicated endpoint) ───────────────
@@ -2529,7 +2529,7 @@ async function saveEditedSubmission() {
 async function deleteCurrentSubmission() {
   if (!currentSubmission) return;
 
-  const brandName = currentSubmission.data?.['brand-name'] || 'this submission';
+  const brandName = currentSubmission.data?.brand_name || 'this submission';
 
   if (!confirm(dt('dashboard.confirm.deleteSubmission', 'Are you sure you want to delete "{{name}}"? This action cannot be undone.', { name: brandName }))) {
     return;
@@ -2597,13 +2597,13 @@ function resolveExportSubmissions(submissionsOverride) {
 
 function submissionToPlainRows(submission) {
   const data = submission.data || {};
-  const metaKeys = ['client-name', 'brand-name', 'email', 'client-website'];
+  const metaKeys = ['client_name', 'brand_name', 'email', 'client_website'];
   const rows = [];
 
   // Meta fields first
   metaKeys.forEach(key => {
     if (data[key] != null) {
-      const label = { 'client-name': 'Client Name', 'brand-name': 'Brand / Business', email: 'Email', 'client-website': 'Website' }[key] || key;
+      const label = { client_name: 'Client Name', brand_name: 'Brand / Business', email: 'Email', client_website: 'Website' }[key] || key;
       rows.push({ label, value: String(data[key] || '') });
     }
   });
@@ -2643,7 +2643,7 @@ function exportAsMarkdown(submissionsOverride) {
 
   const parts = submissions.map((sub, idx) => {
     const data = sub.data || {};
-    const brand = data['brand-name'] || 'Untitled';
+    const brand = data.brand_name || 'Untitled';
     const date = new Date(sub.created_at);
     const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     const rows = submissionToPlainRows(sub);
@@ -2687,7 +2687,7 @@ function exportAsPDF(submissionsOverride) {
 
   submissions.forEach((sub, idx) => {
     const data = sub.data || {};
-    const brand = data['brand-name'] || 'Untitled';
+    const brand = data.brand_name || 'Untitled';
     const date = new Date(sub.created_at);
     const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     const rows = submissionToPlainRows(sub);
@@ -2754,7 +2754,7 @@ async function exportAsDOCX(submissionsOverride) {
 
   submissions.forEach((sub, idx) => {
     const data = sub.data || {};
-    const brand = data['brand-name'] || 'Untitled';
+    const brand = data.brand_name || 'Untitled';
     const date = new Date(sub.created_at);
     const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     const rows = submissionToPlainRows(sub);
@@ -2803,24 +2803,24 @@ function exportAsCSV(submissionsOverride) {
 
   const columns = [
     'id', 'created_at', 'status',
-    'client-name', 'brand-name', 'email', 'client-website',
-    'agreed-delivery-date',
+    'client_name', 'brand_name', 'email', 'client_website',
+    'agreed_delivery_date',
     // Questions in display order (matching new numbering Q01–Q19)
-    'q1-business-description', 'q2-problem-transformation',
-    'q3-ideal-customer', 'q3b-customer-desire',
-    'q4-competitors', 'q5-brand-personality',
-    'q6-positioning', 'q-launch-context',
-    'q8-brands-admired',
-    'q9-color', 'q10-colors-to-avoid',
-    'q11-aesthetic', 'q11-aesthetic-description',
-    'q13-deliverables',
-    'q15-inspiration-refs',      // Q14
-    'q7-decision-maker',         // Q15
-    'q7-decision-maker-other',   // Q15b
-    'delivery-date',             // Q16
-    'q14-budget',                // Q17
-    'q12-existing-assets',       // Q18
-    'q16-anything-else'          // Q19
+    'business_description', 'problem_transformation',
+    'ideal_customer', 'customer_desire',
+    'competitors', 'brand_personality',
+    'positioning', 'launch_context',
+    'brands_admired',
+    'color_direction', 'colors_to_avoid',
+    'aesthetic', 'aesthetic_description',
+    'deliverables',
+    'inspiration_refs',          // Q14
+    'decision_maker',            // Q15
+    'decision_maker_other',      // Q15b
+    'delivery_date',             // Q16
+    'budget',                    // Q17
+    'existing_assets',           // Q18
+    'anything_else'              // Q19
   ];
 
   function escapeCSVCell(value) {
@@ -2943,7 +2943,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const headers = parseCSVRow(lines[0]);
     const values = parseCSVRow(lines[1]);
     const data = {};
-    const arrayFields = new Set(['q9-color', 'q11-aesthetic', 'q13-deliverables', 'q15-inspiration-refs']);
+    const arrayFields = new Set(['color_direction', 'aesthetic', 'deliverables', 'inspiration_refs']);
     headers.forEach((header, i) => {
       const value = values[i] ?? '';
       if (arrayFields.has(header) && value.includes(' | ')) {
@@ -3001,50 +3001,50 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function mapHeadingToFieldKey(heading) {
     const map = {
-      'Brand / Business': 'brand-name',
-      'Client Name': 'client-name',
+      'Brand / Business': 'brand_name',
+      'Client Name': 'client_name',
       'Client Email': 'email',
-      'Website': 'client-website',
-      'Delivery Timeframe': 'delivery-date',
-      'Q01: Business Description': 'q1-business-description',
-      'Q02: Before and After': 'q2-problem-transformation',
-      'Q03: Ideal Client': 'q3-ideal-customer',
-      'Q04: Client Trigger': 'q3b-customer-desire',
-      'Q05: Competitors': 'q4-competitors',
-      'Q06: Brand Personality': 'q5-brand-personality',
-      'Q07: Positioning Statement': 'q6-positioning',
-      'Q08: Launch Context': 'q-launch-context',
-      'Q09: Admired Brands': 'q8-brands-admired',
-      'Q10: Color Directions': 'q9-color',
-      'Q11: Colors to Avoid': 'q10-colors-to-avoid',
-      'Q12: Aesthetic Direction': 'q11-aesthetic',
-      'Q12: Aesthetic Notes': 'q11-aesthetic-description',
-      'Q13: Deliverables': 'q13-deliverables',
-      'Q14: Budget Approach': 'q14-budget',
-      'Q15: Inspiration Images': 'q15-inspiration-refs',
-      'Q16: Decision Maker': 'q7-decision-maker',
-      'Q16: Decision Maker (Other)': 'q7-decision-maker-other',
-      'Q17: Existing Assets': 'q12-existing-assets',
-      'Q19: Past Experience and Fears': 'q16-anything-else',
+      'Website': 'client_website',
+      'Delivery Timeframe': 'delivery_date',
+      'Q01: Business Description': 'business_description',
+      'Q02: Before and After': 'problem_transformation',
+      'Q03: Ideal Client': 'ideal_customer',
+      'Q04: Client Trigger': 'customer_desire',
+      'Q05: Competitors': 'competitors',
+      'Q06: Brand Personality': 'brand_personality',
+      'Q07: Positioning Statement': 'positioning',
+      'Q08: Launch Context': 'launch_context',
+      'Q09: Admired Brands': 'brands_admired',
+      'Q10: Color Directions': 'color_direction',
+      'Q11: Colors to Avoid': 'colors_to_avoid',
+      'Q12: Aesthetic Direction': 'aesthetic',
+      'Q12: Aesthetic Notes': 'aesthetic_description',
+      'Q13: Deliverables': 'deliverables',
+      'Q14: Budget Approach': 'budget',
+      'Q15: Inspiration Images': 'inspiration_refs',
+      'Q16: Decision Maker': 'decision_maker',
+      'Q16: Decision Maker (Other)': 'decision_maker_other',
+      'Q17: Existing Assets': 'existing_assets',
+      'Q19: Past Experience and Fears': 'anything_else',
       // Legacy keys (backwards compat for old exports)
-      'Q1 — Business Description': 'q1-business-description',
-      'Q2 — Problem + Transformation': 'q2-problem-transformation',
-      'Q3 — Ideal Customer': 'q3-ideal-customer',
-      'Q4 — Competitors + Market Gap': 'q4-competitors',
-      'Q5 — Brand Personality': 'q5-brand-personality',
-      'Q6 — Positioning Statement': 'q6-positioning',
-      'Q7 — Decision Maker': 'q7-decision-maker',
-      'Q7 — Decision Maker (Other)': 'q7-decision-maker-other',
-      'Q8 — Admired Brands': 'q8-brands-admired',
-      'Q9 — Color Directions': 'q9-color',
-      'Q10 — Colors To Avoid': 'q10-colors-to-avoid',
-      'Q11 — Aesthetic Direction': 'q11-aesthetic',
-      'Q11 — Additional Aesthetic Notes': 'q11-aesthetic-description',
-      'Q12 — Existing Assets': 'q12-existing-assets',
-      'Q13 — Needed Deliverables': 'q13-deliverables',
-      'Q14 — Budget Approach': 'q14-budget',
-      'Q15 — Inspiration Images': 'q15-inspiration-refs',
-      'Q16 — Anything Else': 'q16-anything-else',
+      'Q1 — Business Description': 'business_description',
+      'Q2 — Problem + Transformation': 'problem_transformation',
+      'Q3 — Ideal Customer': 'ideal_customer',
+      'Q4 — Competitors + Market Gap': 'competitors',
+      'Q5 — Brand Personality': 'brand_personality',
+      'Q6 — Positioning Statement': 'positioning',
+      'Q7 — Decision Maker': 'decision_maker',
+      'Q7 — Decision Maker (Other)': 'decision_maker_other',
+      'Q8 — Admired Brands': 'brands_admired',
+      'Q9 — Color Directions': 'color_direction',
+      'Q10 — Colors To Avoid': 'colors_to_avoid',
+      'Q11 — Aesthetic Direction': 'aesthetic',
+      'Q11 — Additional Aesthetic Notes': 'aesthetic_description',
+      'Q12 — Existing Assets': 'existing_assets',
+      'Q13 — Needed Deliverables': 'deliverables',
+      'Q14 — Budget Approach': 'budget',
+      'Q15 — Inspiration Images': 'inspiration_refs',
+      'Q16 — Anything Else': 'anything_else',
     };
     return map[heading] || heading.toLowerCase().replace(/\s+/g, '-');
   }
@@ -3069,13 +3069,13 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       
       // Validate required fields
-      if (!parsedData['brand-name'] || !parsedData['client-name'] || !parsedData['email']) {
+      if (!parsedData.brand_name || !parsedData.client_name || !parsedData['email']) {
         alert(dt('dashboard.alert.importMissing', 'Import failed: Missing required fields (Brand Name, Client Name, or Email)'));
         return;
       }
 
       // Convert multi-select fields to arrays
-      const multiSelectFields = ['q9-color', 'q11-aesthetic', 'q13-deliverables'];
+      const multiSelectFields = ['color_direction', 'aesthetic', 'deliverables'];
       multiSelectFields.forEach(field => {
         if (parsedData[field]) {
           parsedData[field] = parsedData[field].split(',').map(v => v.trim()).filter(Boolean);
@@ -3097,7 +3097,7 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error(`Import failed: ${response.statusText}`);
       }
 
-      alert(dt('dashboard.alert.importSuccess', 'Successfully imported: {{name}}', { name: parsedData['brand-name'] }));
+      alert(dt('dashboard.alert.importSuccess', 'Successfully imported: {{name}}', { name: parsedData.brand_name }));
       loadSubmissions();
     } catch (error) {
       console.error('Import error:', error);

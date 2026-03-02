@@ -1,4 +1,4 @@
-/**
+﻿/**
  * admin-update.js
  * ───────────────
  * Authenticated admin endpoint for updating an existing submission.
@@ -11,7 +11,6 @@
  */
 
 const { createClient } = require('@supabase/supabase-js');
-const { toDbKey } = require('./_field_map');
 
 const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || '*';
 if (ALLOWED_ORIGIN === '*') {
@@ -50,68 +49,68 @@ function requireAdmin(context) {
 // Includes all client form fields + admin-only fields (status, project-status, etc.)
 const ADMIN_UPDATABLE_FIELDS = new Set([
   // Admin-only metadata
-  'status', 'project-status', 'agreed-delivery-date',
+  'status', 'project_status', 'agreed_delivery_date',
   // Client form fields
-  'client-name', 'brand-name', 'email', 'client-website', 'delivery-date',
-  'q1-business-description', 'q2-problem-transformation', 'q3-ideal-customer',
-  'q3b-customer-desire', 'q4-competitors', 'q5-brand-personality', 'q6-positioning',
-  'q-launch-context', 'q7-decision-maker', 'q7-decision-maker-other', 'q8-brands-admired',
-  'q9-color', 'q9-color-feelings', 'q10-colors-to-avoid', 'q11-aesthetic', 'q11-aesthetic-description',
-  'q12-existing-assets', 'q13-deliverables', 'q14-budget',
-  'q15-inspiration-refs', 'q16-anything-else', 'brand-logo-ref'
+  'client_name', 'brand_name', 'email', 'client_website', 'delivery_date',
+  'business_description', 'problem_transformation', 'ideal_customer',
+  'customer_desire', 'competitors', 'brand_personality', 'positioning',
+  'launch_context', 'decision_maker', 'decision_maker_other', 'brands_admired',
+  'color_direction', 'color_choice', 'colors_to_avoid', 'aesthetic', 'aesthetic_description',
+  'existing_assets', 'deliverables', 'budget',
+  'inspiration_refs', 'anything_else', 'brand_logo_ref'
 ]);
 
-const ARRAY_FIELDS = new Set(['q9-color', 'q11-aesthetic', 'q13-deliverables', 'q15-inspiration-refs']);
+const ARRAY_FIELDS = new Set(['color_direction', 'aesthetic', 'deliverables', 'inspiration_refs']);
 
 // ── Field length limits ───────────────────────────────────────────────────────
 const FIELD_MAXLENGTH = {
-  'client-name':               120,
-  'brand-name':                120,
+  'client_name':               120,
+  'brand_name':                120,
   'email':                     254,
-  'client-website':            300,
-  'q1-business-description':  2000,
-  'q2-problem-transformation':2000,
-  'q3-ideal-customer':        2000,
-  'q3b-customer-desire':      2000,
-  'q4-competitors':           2000,
-  'q5-brand-personality':     2000,
-  'q6-positioning':            300,
-  'q-launch-context':         2000,
-  'q8-brands-admired':        2000,
-  'q9-color-feelings':         300,
-  'q10-colors-to-avoid':       300,
-  'q11-aesthetic-description':1000,
-  'q12-existing-assets':       300,
-  'q16-anything-else':        3000,
+  'client_website':            300,
+  'business_description':     2000,
+  'problem_transformation':   2000,
+  'ideal_customer':           2000,
+  'customer_desire':          2000,
+  'competitors':              2000,
+  'brand_personality':        2000,
+  'positioning':               300,
+  'launch_context':           2000,
+  'brands_admired':           2000,
+  'color_choice':              300,
+  'colors_to_avoid':           300,
+  'aesthetic_description':    1000,
+  'existing_assets':           300,
+  'anything_else':            3000,
   // Fields previously missing length limits
-  'q7-decision-maker-other':   300,
-  'brand-logo-ref':            200
+  'decision_maker_other':      300,
+  'brand_logo_ref':            200
 };
 
 // ── Enum allowlists (mirrors form HTML values) ────────────────────────────────
 const ENUM_ALLOWLISTS = {
-  'delivery-date':     new Set(['ASAP', '2–4 weeks', '1–2 months', '3+ months']),
-  'q7-decision-maker': new Set(['Me / myself', 'My boss / the boss', 'Other']),
-  'q14-budget':        new Set([
+  'delivery_date':     new Set(['ASAP', '2–4 weeks', '1–2 months', '3+ months']),
+  'decision_maker': new Set(['Me / myself', 'My boss / the boss', 'Other']),
+  'budget':        new Set([
     'Low / lowest possible cost',
     'Mid-range / balanced price–quality',
     'High / premium',
     'Premium / full brand investment'
   ]),
   'status':            new Set(['pending', 'approved', 'rejected']),
-  'project-status':    new Set(['not-started', 'in-progress', 'done', 'abandoned', ''])
+  'project_status':    new Set(['not-started', 'in-progress', 'done', 'abandoned', ''])
 };
 
 const ARRAY_ENUM_ALLOWLISTS = {
-  'q9-color': new Set([
+  'color_direction': new Set([
     'Warm neutrals', 'Cool neutrals', 'Deep & moody', 'Bold & saturated',
     'Pastels', 'Monochrome', 'Metallic', 'Nature-inspired', 'No preference'
   ]),
-  'q11-aesthetic': new Set([
+  'aesthetic': new Set([
     'Luxury & refined', 'Organic & artisan', 'Minimal & functional', 'Bold & graphic',
     'Playful & illustrative', 'Editorial & intellectual', 'Tech-forward', 'Nostalgic & heritage'
   ]),
-  'q13-deliverables': new Set([
+  'deliverables': new Set([
     'Primary logo', 'Logo variations', 'Color & typography', 'Brand guidelines',
     'Stationery', 'Social media', 'Website design', 'Packaging'
   ])
@@ -242,7 +241,7 @@ exports.handler = async (event, context) => {
     }
 
     // Website URL validation
-    if (key === 'client-website' && normalized) {
+    if (key === 'client_website' && normalized) {
       try {
         const u = new URL(String(normalized));
         if (u.protocol !== 'http:' && u.protocol !== 'https:') {
@@ -261,8 +260,8 @@ exports.handler = async (event, context) => {
       }
     }
 
-    // q15-inspiration-refs path safety
-    if (key === 'q15-inspiration-refs') {
+    // inspiration_refs path safety
+    if (key === 'inspiration_refs') {
       const refs = Array.isArray(normalized) ? normalized : [];
       if (refs.length > 10) {
         return {
@@ -289,7 +288,7 @@ exports.handler = async (event, context) => {
       }
     }
 
-    update[toDbKey(key)] = normalized;
+    update[key] = normalized;
   }
 
   if (Object.keys(update).length === 0) {
@@ -300,12 +299,12 @@ exports.handler = async (event, context) => {
     };
   }
 
-  update.updated_at = new Date().toISOString();
+  const updatedAt = new Date().toISOString();
 
   // ── Validate and append history entry ──────────────────────────────────────
   const newEntry = {
     label:    'edited',
-    date:     update.updated_at,
+    date:     updatedAt,
     editedBy: 'admin',
     adminEmail: auth.user?.email || 'unknown'  // record which admin made the change
   };

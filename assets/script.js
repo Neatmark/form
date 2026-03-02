@@ -142,7 +142,7 @@ function normalizeComparable(value) {
 async function checkDuplicateSubmission(formData) {
   const payload = formDataToObject(formData);
   const email = normalizeComparable(payload.email);
-  const brandName = normalizeComparable(payload['brand-name']);
+  const brandName = normalizeComparable(payload['brand_name']);
 
   if (!email || !brandName) {
     return null;
@@ -443,10 +443,10 @@ function validatePage(pageNum) {
     }
   });
 
-  // Page 3 custom validators: q9-color and q13-deliverables
+  // Page 3 custom validators: color_direction and deliverables
   if (pageNum === 3) {
-    const q9Checked  = pageEl.querySelectorAll('input[name="q9-color"]:checked');
-    const q13Checked = pageEl.querySelectorAll('input[name="q13-deliverables"]:checked');
+    const q9Checked  = pageEl.querySelectorAll('input[name="color_direction"]:checked');
+    const q13Checked = pageEl.querySelectorAll('input[name="deliverables"]:checked');
     const q9Error    = document.getElementById('q9ValidationError');
     const q13Error   = document.getElementById('q13ValidationError');
 
@@ -828,11 +828,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Text / textarea inputs
       const textFields = [
-        'client-name','brand-name','email','client-website',
-        'q1-business-description','q2-problem-transformation','q3-ideal-customer',
-        'q3b-customer-desire','q4-competitors','q5-brand-personality','q6-positioning',
-        'q-launch-context','q7-decision-maker-other','q8-brands-admired','q10-colors-to-avoid',
-        'q11-aesthetic-description','q12-existing-assets','q16-anything-else'
+        'client_name','brand_name','email','client_website',
+        'business_description','problem_transformation','ideal_customer',
+        'customer_desire','competitors','brand_personality','positioning',
+        'launch_context','decision_maker_other','brands_admired','colors_to_avoid',
+        'aesthetic_description','existing_assets','anything_else'
       ];
       textFields.forEach(name => {
         if (sub[name] == null) return;
@@ -843,22 +843,22 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       // Single-value radio fields
-      ['q7-decision-maker','q14-budget'].forEach(name => {
+      ['decision_maker','budget'].forEach(name => {
         if (!sub[name]) return;
         const radios = form.querySelectorAll(`input[type="radio"][name="${CSS.escape(name)}"]`);
         radios.forEach(r => { r.checked = r.value === sub[name]; });
       });
 
       // Multi-value checkbox fields
-      ['q9-color','q11-aesthetic','q13-deliverables'].forEach(name => {
+      ['color_direction','aesthetic','deliverables'].forEach(name => {
         const vals = Array.isArray(sub[name]) ? sub[name] : (sub[name] ? [sub[name]] : []);
         const checkboxes = form.querySelectorAll(`input[type="checkbox"][name="${CSS.escape(name)}"]`);
         checkboxes.forEach(cb => { cb.checked = vals.includes(cb.value); });
       });
 
-      // Delivery-date — now radio buttons, check the matching one
-      if (sub['delivery-date']) {
-        const deliveryRadio = form.querySelector(`input[type="radio"][name="delivery-date"][value="${CSS.escape(sub['delivery-date'])}"]`);
+      // delivery_date — now radio buttons, check the matching one
+      if (sub['delivery_date']) {
+        const deliveryRadio = form.querySelector(`input[type="radio"][name="delivery_date"][value="${CSS.escape(sub['delivery_date'])}"]`);
         if (deliveryRadio) deliveryRadio.checked = true;
       }
 
@@ -877,9 +877,9 @@ document.addEventListener('DOMContentLoaded', () => {
       // are all declared later in the same DOMContentLoaded scope; because
       // initEditMode is async and has already awaited the fetch above, those
       // declarations have already executed by the time we reach this point.
-      const existingRefs = Array.isArray(sub['q15-inspiration-refs'])
-        ? sub['q15-inspiration-refs']
-        : (sub['q15-inspiration-refs'] ? [sub['q15-inspiration-refs']] : []);
+      const existingRefs = Array.isArray(sub['inspiration_refs'])
+        ? sub['inspiration_refs']
+        : (sub['inspiration_refs'] ? [sub['inspiration_refs']] : []);
 
       if (existingRefs.length > 0) {
         // Populate the module-level ref array used by upload/remove handlers
@@ -908,7 +908,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ── Q11: ranked selection (no hard cap — selection order = priority) ────────
   function syncQ11Ranks() {
-    const checkboxes = Array.from(form.querySelectorAll('input[type="checkbox"][name="q11-aesthetic"]'));
+    const checkboxes = Array.from(form.querySelectorAll('input[type="checkbox"][name="aesthetic"]'));
     let rank = 1;
     checkboxes.forEach(cb => {
       const badge = cb.closest('.check-label')?.querySelector('.rank-badge');
@@ -923,20 +923,20 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  form.querySelectorAll('input[type="checkbox"][name="q11-aesthetic"]').forEach(cb => {
+  form.querySelectorAll('input[type="checkbox"][name="aesthetic"]').forEach(cb => {
     cb.addEventListener('change', syncQ11Ranks);
   });
   syncQ11Ranks(); // initial state
 
   // ── Q9 / Q13: clear validation error on first selection ────────────────────
-  form.querySelectorAll('input[name="q9-color"]').forEach(cb => {
+  form.querySelectorAll('input[name="color_direction"]').forEach(cb => {
     cb.addEventListener('change', () => {
       if (cb.checked) {
         document.getElementById('q9ValidationError')?.classList.remove('visible');
       }
     });
   });
-  form.querySelectorAll('input[name="q13-deliverables"]').forEach(cb => {
+  form.querySelectorAll('input[name="deliverables"]').forEach(cb => {
     cb.addEventListener('change', () => {
       if (cb.checked) {
         document.getElementById('q13ValidationError')?.classList.remove('visible');
@@ -1177,7 +1177,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ── Q7: show "Please specify" textbox only when "Other" is selected ──
   const q7OtherInput = document.getElementById('q7OtherInput');
-  const q7Radios = form.querySelectorAll('input[type="radio"][name="q7-decision-maker"]');
+  const q7Radios = form.querySelectorAll('input[type="radio"][name="decision_maker"]');
   function syncQ7Other() {
     if (!q7OtherInput) return;
     const otherSelected = Array.from(q7Radios).some(r => r.value === 'Other' && r.checked);
@@ -1203,7 +1203,7 @@ document.addEventListener('DOMContentLoaded', () => {
   /**
    * Upload one inspiration photo.
    * Returns a JSON-stringified object: '{"smallRef":"…","originalRef":"…"}'
-   * which is stored as a text entry in the q15-inspiration-refs text[] column.
+   * which is stored as a text entry in the inspiration_refs text[] column.
    */
 
   // ── Upload session token ──────────────────────────────────────────────────
@@ -1308,14 +1308,14 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function syncQ15HiddenInputs() {
-    document.querySelectorAll('input[name="q15-inspiration-refs"]').forEach(el => el.remove());
+    document.querySelectorAll('input[name="inspiration_refs"]').forEach(el => el.remove());
     const form = document.querySelector('form[name="brand-intake"]');
     if (!form) return;
     // Each ref is a JSON string — stored as-is in the text[] column
     q15UploadedRefs.forEach(ref => {
       const input = document.createElement('input');
       input.type = 'hidden';
-      input.name = 'q15-inspiration-refs';
+      input.name = 'inspiration_refs';
       input.value = ref;
       form.appendChild(input);
     });

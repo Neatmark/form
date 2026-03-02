@@ -1,5 +1,4 @@
 const { createClient } = require('@supabase/supabase-js');
-const { toLegacyRecord } = require('./_field_map');
 
 const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || '*';
 if (ALLOWED_ORIGIN === '*') {
@@ -93,7 +92,7 @@ exports.handler = async (event, context) => {
             id: String(id || ''),
             created_at,
             history: Array.isArray(history) ? history : [],
-            data: toLegacyRecord(rest)
+            data: rest
           };
         })
       : [];
