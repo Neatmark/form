@@ -13,7 +13,7 @@
 <title>Neatmark Client Form</title>
 
 <!-- Open Graph / Facebook / WhatsApp / Telegram / Discord / Slack -->
-<!-- og:image MUST be an absolute URL — relative paths are ignored by all social bots -->
+<!-- og:image MUST be an absolute URL â€” relative paths are ignored by all social bots -->
 <meta property="og:type"        content="website">
 <meta property="og:url"         content="https://form.neatmark.studio/">
 <meta property="og:title"       content="Neatmark Client Intake">
@@ -51,9 +51,9 @@
 <!-- Honeypot -->
 <input type="text" name="website" value="" autocomplete="off" tabindex="-1" aria-hidden="true" class="honeypot">
 
-<!-- ═══════════════════════════════════════════
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      PAGE STEPPER BAR
-═══════════════════════════════════════════ -->
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <div class="page-stepper" id="pageStepper" role="navigation" aria-label="Form steps">
   <button class="step-btn active" type="button" data-step="1" title="Your Info">
     <span class="step-num">1</span>
@@ -123,9 +123,9 @@
 <!-- FORM BODY -->
 <div class="page">
 
-  <!-- ═══════════════════════════════════════════
+  <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
        PAGE 1: Landing / Personal Info
-  ═══════════════════════════════════════════ -->
+  â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
   <div class="form-page active" id="formPage1" data-page="1">
 
     <!-- EDIT MODE BANNER -->
@@ -156,11 +156,11 @@
     <div class="client-card">
       <div class="client-field">
         <label data-i18n="form.metadata.clientName">Your Name</label>
-        <input type="text" name="client-name" required autocomplete="name" maxlength="120" data-i18n-placeholder="form.metadata.clientNamePlaceholder" placeholder="Full name">
+        <input type="text" name="client_name" required autocomplete="name" maxlength="120" data-i18n-placeholder="form.metadata.clientNamePlaceholder" placeholder="Full name">
       </div>
       <div class="client-field">
         <label data-i18n="form.metadata.brandName">Brand / Business</label>
-        <input type="text" name="brand-name" required autocomplete="organization" maxlength="120" data-i18n-placeholder="form.metadata.brandNamePlaceholder" placeholder="Your brand name">
+        <input type="text" name="brand_name" required autocomplete="organization" maxlength="120" data-i18n-placeholder="form.metadata.brandNamePlaceholder" placeholder="Your brand name">
       </div>
       <div class="client-field">
         <label data-i18n="form.metadata.email">Email</label>
@@ -168,7 +168,7 @@
       </div>
       <div class="client-field">
         <label data-i18n="form.metadata.website">Website</label>
-        <input type="url" name="client-website" autocomplete="url" maxlength="300" data-i18n-placeholder="form.metadata.websitePlaceholder" placeholder="https://yourwebsite.com">
+        <input type="url" name="client_website" autocomplete="url" maxlength="300" data-i18n-placeholder="form.metadata.websitePlaceholder" placeholder="https://yourwebsite.com">
       </div>
     </div>
 
@@ -184,9 +184,9 @@
   </div><!-- /formPage1 -->
 
 
-  <!-- ═══════════════════════════════════════════
-       PAGE 2: Section 1 — Brand Foundation
-  ═══════════════════════════════════════════ -->
+  <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+       PAGE 2: Section 1 â€” Brand Foundation
+  â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
   <div class="form-page" id="formPage2" data-page="2">
 
     <section class="section">
@@ -198,49 +198,49 @@
       <div class="q-card">
         <div class="q-header"><span class="q-num">01</span><p class="q-label" data-i18n="form.questions.q1.label">Describe your business by completing this: "I help [who] do/achieve [what] so they can [outcome]."</p></div>
         <p class="q-hint" data-i18n="form.questions.q1.hint">Avoid jargon. If you serve more than one audience, write one line per audience.</p>
-        <textarea name="q1-business-description" required maxlength="2000" data-i18n-placeholder="form.questions.q1.placeholder" placeholder="I help independent therapists build a practice that feels like them..."></textarea>
+        <textarea name="business_description" required maxlength="2000" data-i18n-placeholder="form.questions.q1.placeholder" placeholder="I help independent therapists build a practice that feels like them..."></textarea>
       </div>
 
       <div class="q-card">
         <div class="q-header"><span class="q-num">02</span><p class="q-label" data-i18n="form.questions.q2.label">Before: what does your client struggle with? After: what does life look like once they've worked with you?</p></div>
         <p class="q-hint" data-i18n="form.questions.q2.hint">Write it as two short paragraphs, one for the before and one for the after.</p>
-        <textarea name="q2-problem-transformation" required maxlength="2000" data-i18n-placeholder="form.questions.q2.placeholder" placeholder="Before: they struggle with... After: they feel..."></textarea>
+        <textarea name="problem_transformation" required maxlength="2000" data-i18n-placeholder="form.questions.q2.placeholder" placeholder="Before: they struggle with... After: they feel..."></textarea>
       </div>
 
       <div class="q-card">
         <div class="q-header"><span class="q-num">03</span><p class="q-label" data-i18n="form.questions.q3.label">Describe your ideal client as a real person, not just a demographic.</p></div>
         <p class="q-hint" data-i18n="form.questions.q3.hint">How do they spend their time? What do they care about? How do they want to be seen?</p>
-        <textarea name="q3-ideal-customer" required maxlength="2000" data-i18n-placeholder="form.questions.q3.placeholder" placeholder="She runs a small creative business, values authenticity over trends..."></textarea>
+        <textarea name="ideal_customer" required maxlength="2000" data-i18n-placeholder="form.questions.q3.placeholder" placeholder="She runs a small creative business, values authenticity over trends..."></textarea>
       </div>
 
       <div class="q-card">
         <div class="q-header"><span class="q-num">04</span><p class="q-label" data-i18n="form.questions.q3b.label">What specific frustration or desire brought this client to you, rather than figuring it out on their own or going somewhere else?</p></div>
         <p class="q-hint" data-i18n="form.questions.q3b.hint">Think about the moment they decided to look for help.</p>
-        <textarea name="q3b-customer-desire" required maxlength="2000" data-i18n-placeholder="form.questions.q3b.placeholder" placeholder="They tried a cheap logo once and it never felt right..."></textarea>
+        <textarea name="customer_desire" required maxlength="2000" data-i18n-placeholder="form.questions.q3b.placeholder" placeholder="They tried a cheap logo once and it never felt right..."></textarea>
       </div>
 
       <div class="q-card">
         <div class="q-header"><span class="q-num">05</span><p class="q-label" data-i18n="form.questions.q4.label">List 2&ndash;4 competitors or similar brands. What do you believe they get wrong or ignore?</p></div>
         <p class="q-hint" data-i18n="form.questions.q4.hint">Answer from your own conviction, no research needed.</p>
-        <textarea name="q4-competitors" required maxlength="2000" data-i18n-placeholder="form.questions.q4.placeholder" placeholder="Brand A is polished but cold. Brand B is friendly but looks cheap..."></textarea>
+        <textarea name="competitors" required maxlength="2000" data-i18n-placeholder="form.questions.q4.placeholder" placeholder="Brand A is polished but cold. Brand B is friendly but looks cheap..."></textarea>
       </div>
 
       <div class="q-card">
         <div class="q-header"><span class="q-num">06</span><p class="q-label" data-i18n="form.questions.q5.label">If your brand were a person, how would they walk into a room?</p></div>
         <p class="q-hint" data-i18n="form.questions.q5.hint">Presence, tone of voice, how they dress, how they make people feel.</p>
-        <textarea name="q5-brand-personality" required maxlength="2000" data-i18n-placeholder="form.questions.q5.placeholder" placeholder="Confident but never arrogant. They speak slowly and deliberately..."></textarea>
+        <textarea name="brand_personality" required maxlength="2000" data-i18n-placeholder="form.questions.q5.placeholder" placeholder="Confident but never arrogant. They speak slowly and deliberately..."></textarea>
       </div>
 
       <div class="q-card">
         <div class="q-header"><span class="q-num">07</span><p class="q-label" data-i18n="form.questions.q6.label">Complete this sentence: &ldquo;We are the only _____ that _____.&rdquo;</p></div>
         <p class="q-hint" data-i18n="form.questions.q6.hint">Your positioning in one line. Don't aim for perfect.</p>
-        <input type="text" name="q6-positioning" required maxlength="300" data-i18n-placeholder="form.questions.q6.placeholder" placeholder="We are the only... [just try something]">
+        <input type="text" name="positioning" required maxlength="300" data-i18n-placeholder="form.questions.q6.placeholder" placeholder="We are the only... [just try something]">
       </div>
 
       <div class="q-card">
         <div class="q-header"><span class="q-num">08</span><p class="q-label" data-i18n="form.questions.qlaunch.label">What is this brand being built for? What's the context?</p></div>
         <p class="q-hint" data-i18n="form.questions.qlaunch.hint">A product launch, a rebrand ahead of funding, a quiet refresh. This context shapes everything.</p>
-        <textarea name="q-launch-context" required maxlength="2000" data-i18n-placeholder="form.questions.qlaunch.placeholder" placeholder="We're relaunching next spring after a pivot..."></textarea>
+        <textarea name="launch_context" required maxlength="2000" data-i18n-placeholder="form.questions.qlaunch.placeholder" placeholder="We're relaunching next spring after a pivot..."></textarea>
       </div>
     </section>
 
@@ -259,9 +259,9 @@
   </div><!-- /formPage2 -->
 
 
-  <!-- ═══════════════════════════════════════════
-       PAGE 3: Section 2 — Visual Direction
-  ═══════════════════════════════════════════ -->
+  <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+       PAGE 3: Section 2 â€” Visual Direction
+  â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
   <div class="form-page" id="formPage3" data-page="3">
 
     <section class="section">
@@ -273,64 +273,64 @@
       <div class="q-card">
         <div class="q-header"><span class="q-num">09</span><p class="q-label" data-i18n="form.questions.q8.label">Share 3&ndash;5 brands or visual references you admire, inside or outside your industry. For each, include one sentence on what draws you to them.</p></div>
         <p class="q-hint" data-i18n="form.questions.q8.hint">Logos, websites, packaging, editorial layouts, even spaces. The reason matters as much as the name.</p>
-        <textarea name="q8-brands-admired" required maxlength="2000" data-i18n-placeholder="form.questions.q8.placeholder" placeholder="Apple: the restraint, nothing unnecessary. Aesop: earthy and typographic..."></textarea>
+        <textarea name="brands_admired" required maxlength="2000" data-i18n-placeholder="form.questions.q8.placeholder" placeholder="Apple: the restraint, nothing unnecessary. Aesop: earthy and typographic..."></textarea>
       </div>
 
       <div class="q-card">
         <div class="q-header"><span class="q-num">10</span><p class="q-label" data-i18n="form.questions.q9.label">Which color directions feel right for your brand? Select all that apply.</p></div>
         <p class="q-hint" data-i18n="form.questions.q9.hint">Go with your gut. You can always refine this on the kickoff call.</p>
         <div class="check-grid">
-          <label class="check-label"><input type="checkbox" name="q9-color" value="Warm neutrals"><span data-i18n="form.questions.q9.options.warmNeutrals">Warm neutrals (cream, sand, terracotta)</span></label>
-          <label class="check-label"><input type="checkbox" name="q9-color" value="Cool neutrals"><span data-i18n="form.questions.q9.options.coolNeutrals">Cool neutrals (slate, stone, mist)</span></label>
-          <label class="check-label"><input type="checkbox" name="q9-color" value="Deep & moody"><span data-i18n="form.questions.q9.options.deepMoody">Deep &amp; moody (navy, forest, burgundy)</span></label>
-          <label class="check-label"><input type="checkbox" name="q9-color" value="Bold & saturated"><span data-i18n="form.questions.q9.options.boldSaturated">Bold &amp; saturated (vibrant primaries)</span></label>
-          <label class="check-label"><input type="checkbox" name="q9-color" value="Pastels"><span data-i18n="form.questions.q9.options.pastels">Pastels &amp; soft tones</span></label>
-          <label class="check-label"><input type="checkbox" name="q9-color" value="Monochrome"><span data-i18n="form.questions.q9.options.monochrome">Black &amp; white / monochrome</span></label>
-          <label class="check-label"><input type="checkbox" name="q9-color" value="Metallic"><span data-i18n="form.questions.q9.options.metallic">Metallic / luxury tones (gold, bronze)</span></label>
-          <label class="check-label"><input type="checkbox" name="q9-color" value="Nature-inspired"><span data-i18n="form.questions.q9.options.natureInspired">Nature-inspired (moss, rust, clay)</span></label>
-          <label class="check-label"><input type="checkbox" name="q9-color" value="No preference"><span data-i18n="form.questions.q9.options.noPreference">No preference, I trust your judgment</span></label>
+          <label class="check-label"><input type="checkbox" name="color_direction" value="Warm neutrals"><span data-i18n="form.questions.q9.options.warmNeutrals">Warm neutrals (cream, sand, terracotta)</span></label>
+          <label class="check-label"><input type="checkbox" name="color_direction" value="Cool neutrals"><span data-i18n="form.questions.q9.options.coolNeutrals">Cool neutrals (slate, stone, mist)</span></label>
+          <label class="check-label"><input type="checkbox" name="color_direction" value="Deep & moody"><span data-i18n="form.questions.q9.options.deepMoody">Deep &amp; moody (navy, forest, burgundy)</span></label>
+          <label class="check-label"><input type="checkbox" name="color_direction" value="Bold & saturated"><span data-i18n="form.questions.q9.options.boldSaturated">Bold &amp; saturated (vibrant primaries)</span></label>
+          <label class="check-label"><input type="checkbox" name="color_direction" value="Pastels"><span data-i18n="form.questions.q9.options.pastels">Pastels &amp; soft tones</span></label>
+          <label class="check-label"><input type="checkbox" name="color_direction" value="Monochrome"><span data-i18n="form.questions.q9.options.monochrome">Black &amp; white / monochrome</span></label>
+          <label class="check-label"><input type="checkbox" name="color_direction" value="Metallic"><span data-i18n="form.questions.q9.options.metallic">Metallic / luxury tones (gold, bronze)</span></label>
+          <label class="check-label"><input type="checkbox" name="color_direction" value="Nature-inspired"><span data-i18n="form.questions.q9.options.natureInspired">Nature-inspired (moss, rust, clay)</span></label>
+          <label class="check-label"><input type="checkbox" name="color_direction" value="No preference"><span data-i18n="form.questions.q9.options.noPreference">No preference, I trust your judgment</span></label>
         </div>
         <p class="check-grid-error" id="q9ValidationError" aria-live="polite" data-i18n="form.validation.q9Required">Please select at least one color direction.</p>
         <div style="margin-top:18px">
-          <label for="q9-color-feelings" style="display:block;font-size:14px;font-weight:600;color:var(--text-mid);margin-bottom:10px;" data-i18n="form.questions.q9.colorFeelingsLabel">Got any specific color in mind? Drop it here</label>
-          <input type="text" id="q9-color-feelings" name="q9-color-feelings" maxlength="300" placeholder="e.g., red, blue, vibrant hues" data-i18n-placeholder="form.questions.q9.colorFeelingsPlaceholder">
+          <label for="color_choice" style="display:block;font-size:14px;font-weight:600;color:var(--text-mid);margin-bottom:10px;" data-i18n="form.questions.q9.colorFeelingsLabel">Got any specific color in mind? Drop it here</label>
+          <input type="text" id="color_choice" name="color_choice" maxlength="300" placeholder="e.g., red, blue, vibrant hues" data-i18n-placeholder="form.questions.q9.colorFeelingsPlaceholder">
         </div>
       </div>
 
       <div class="q-card">
         <div class="q-header"><span class="q-num">11</span><p class="q-label" data-i18n="form.questions.q10.label">Are there any colors that are completely off the table?</p></div>
         <p class="q-hint" data-i18n="form.questions.q10.hint">Leave blank if nothing comes to mind.</p>
-        <input type="text" name="q10-colors-to-avoid" maxlength="300" data-i18n-placeholder="form.questions.q10.placeholder" placeholder="Please avoid purple, our main competitor uses it...">
+        <input type="text" name="colors_to_avoid" maxlength="300" data-i18n-placeholder="form.questions.q10.placeholder" placeholder="Please avoid purple, our main competitor uses it...">
       </div>
 
       <div class="q-card">
         <div class="q-header"><span class="q-num">12</span><p class="q-label" data-i18n="form.questions.q11.label">Which aesthetic directions describe how your brand should look and feel? Select all that apply, in order of priority.</p></div>
         <p class="q-hint" data-i18n="form.questions.q11.hint">Your first selection is your primary direction. Select as many as feel right.</p>
         <div class="check-grid" id="q11AestheticGrid">
-          <label class="check-label check-label--ranked"><input type="checkbox" name="q11-aesthetic" value="Luxury & refined"><span class="rank-badge"></span><span data-i18n="form.questions.q11.options.luxuryRefined">Luxury &amp; refined</span></label>
-          <label class="check-label check-label--ranked"><input type="checkbox" name="q11-aesthetic" value="Organic & artisan"><span class="rank-badge"></span><span data-i18n="form.questions.q11.options.organicArtisan">Organic &amp; artisan</span></label>
-          <label class="check-label check-label--ranked"><input type="checkbox" name="q11-aesthetic" value="Minimal & functional"><span class="rank-badge"></span><span data-i18n="form.questions.q11.options.minimalFunctional">Minimal &amp; functional</span></label>
-          <label class="check-label check-label--ranked"><input type="checkbox" name="q11-aesthetic" value="Bold & graphic"><span class="rank-badge"></span><span data-i18n="form.questions.q11.options.boldGraphic">Bold &amp; graphic</span></label>
-          <label class="check-label check-label--ranked"><input type="checkbox" name="q11-aesthetic" value="Playful & illustrative"><span class="rank-badge"></span><span data-i18n="form.questions.q11.options.playfulIllustrative">Playful &amp; illustrative</span></label>
-          <label class="check-label check-label--ranked"><input type="checkbox" name="q11-aesthetic" value="Editorial & intellectual"><span class="rank-badge"></span><span data-i18n="form.questions.q11.options.editorialIntellectual">Editorial &amp; intellectual</span></label>
-          <label class="check-label check-label--ranked"><input type="checkbox" name="q11-aesthetic" value="Tech-forward"><span class="rank-badge"></span><span data-i18n="form.questions.q11.options.techForward">Tech-forward &amp; innovative</span></label>
-          <label class="check-label check-label--ranked"><input type="checkbox" name="q11-aesthetic" value="Nostalgic & heritage"><span class="rank-badge"></span><span data-i18n="form.questions.q11.options.nostalgicHeritage">Nostalgic &amp; heritage</span></label>
+          <label class="check-label check-label--ranked"><input type="checkbox" name="aesthetic" value="Luxury & refined"><span class="rank-badge"></span><span data-i18n="form.questions.q11.options.luxuryRefined">Luxury &amp; refined</span></label>
+          <label class="check-label check-label--ranked"><input type="checkbox" name="aesthetic" value="Organic & artisan"><span class="rank-badge"></span><span data-i18n="form.questions.q11.options.organicArtisan">Organic &amp; artisan</span></label>
+          <label class="check-label check-label--ranked"><input type="checkbox" name="aesthetic" value="Minimal & functional"><span class="rank-badge"></span><span data-i18n="form.questions.q11.options.minimalFunctional">Minimal &amp; functional</span></label>
+          <label class="check-label check-label--ranked"><input type="checkbox" name="aesthetic" value="Bold & graphic"><span class="rank-badge"></span><span data-i18n="form.questions.q11.options.boldGraphic">Bold &amp; graphic</span></label>
+          <label class="check-label check-label--ranked"><input type="checkbox" name="aesthetic" value="Playful & illustrative"><span class="rank-badge"></span><span data-i18n="form.questions.q11.options.playfulIllustrative">Playful &amp; illustrative</span></label>
+          <label class="check-label check-label--ranked"><input type="checkbox" name="aesthetic" value="Editorial & intellectual"><span class="rank-badge"></span><span data-i18n="form.questions.q11.options.editorialIntellectual">Editorial &amp; intellectual</span></label>
+          <label class="check-label check-label--ranked"><input type="checkbox" name="aesthetic" value="Tech-forward"><span class="rank-badge"></span><span data-i18n="form.questions.q11.options.techForward">Tech-forward &amp; innovative</span></label>
+          <label class="check-label check-label--ranked"><input type="checkbox" name="aesthetic" value="Nostalgic & heritage"><span class="rank-badge"></span><span data-i18n="form.questions.q11.options.nostalgicHeritage">Nostalgic &amp; heritage</span></label>
         </div>
-        <textarea name="q11-aesthetic-description" class="q11-description-textarea" maxlength="1000" data-i18n-placeholder="form.questions.q11Description.placeholder" placeholder="Or describe your own aesthetic direction..."></textarea>
+        <textarea name="aesthetic_description" class="q11-description-textarea" maxlength="1000" data-i18n-placeholder="form.questions.q11Description.placeholder" placeholder="Or describe your own aesthetic direction..."></textarea>
       </div>
 
       <div class="q-card">
         <div class="q-header"><span class="q-num">13</span><p class="q-label" data-i18n="form.questions.q13.label">Which deliverables do you need from this project?</p></div>
         <p class="q-hint" data-i18n="form.questions.q13.hint">Pick everything you think you'll need. We can always adjust on the kickoff call.</p>
         <div class="check-grid">
-          <label class="check-label"><input type="checkbox" name="q13-deliverables" value="Primary logo"><span data-i18n="form.questions.q13.options.primaryLogo">Primary logo</span></label>
-          <label class="check-label"><input type="checkbox" name="q13-deliverables" value="Logo variations"><span data-i18n="form.questions.q13.options.logoVariations">Logo variations &amp; submarks</span></label>
-          <label class="check-label"><input type="checkbox" name="q13-deliverables" value="Color & typography"><span data-i18n="form.questions.q13.options.colorTypography">Color palette &amp; typography system</span></label>
-          <label class="check-label"><input type="checkbox" name="q13-deliverables" value="Brand guidelines"><span data-i18n="form.questions.q13.options.brandGuidelines">Brand guidelines document</span></label>
-          <label class="check-label"><input type="checkbox" name="q13-deliverables" value="Stationery"><span data-i18n="form.questions.q13.options.stationery">Business cards &amp; stationery</span></label>
-          <label class="check-label"><input type="checkbox" name="q13-deliverables" value="Social media"><span data-i18n="form.questions.q13.options.socialMedia">Social media templates</span></label>
-          <label class="check-label"><input type="checkbox" name="q13-deliverables" value="Website design"><span data-i18n="form.questions.q13.options.websiteDesign">Website design</span></label>
-          <label class="check-label"><input type="checkbox" name="q13-deliverables" value="Packaging"><span data-i18n="form.questions.q13.options.packaging">Packaging design</span></label>
+          <label class="check-label"><input type="checkbox" name="deliverables" value="Primary logo"><span data-i18n="form.questions.q13.options.primaryLogo">Primary logo</span></label>
+          <label class="check-label"><input type="checkbox" name="deliverables" value="Logo variations"><span data-i18n="form.questions.q13.options.logoVariations">Logo variations &amp; submarks</span></label>
+          <label class="check-label"><input type="checkbox" name="deliverables" value="Color & typography"><span data-i18n="form.questions.q13.options.colorTypography">Color palette &amp; typography system</span></label>
+          <label class="check-label"><input type="checkbox" name="deliverables" value="Brand guidelines"><span data-i18n="form.questions.q13.options.brandGuidelines">Brand guidelines document</span></label>
+          <label class="check-label"><input type="checkbox" name="deliverables" value="Stationery"><span data-i18n="form.questions.q13.options.stationery">Business cards &amp; stationery</span></label>
+          <label class="check-label"><input type="checkbox" name="deliverables" value="Social media"><span data-i18n="form.questions.q13.options.socialMedia">Social media templates</span></label>
+          <label class="check-label"><input type="checkbox" name="deliverables" value="Website design"><span data-i18n="form.questions.q13.options.websiteDesign">Website design</span></label>
+          <label class="check-label"><input type="checkbox" name="deliverables" value="Packaging"><span data-i18n="form.questions.q13.options.packaging">Packaging design</span></label>
         </div>
         <p class="check-grid-error" id="q13ValidationError" aria-live="polite" data-i18n="form.validation.q13Required">Please select at least one deliverable.</p>
       </div>
@@ -365,9 +365,9 @@
   </div><!-- /formPage3 -->
 
 
-  <!-- ═══════════════════════════════════════════
-       PAGE 4: Section 3 — Project & Scope
-  ═══════════════════════════════════════════ -->
+  <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+       PAGE 4: Section 3 â€” Project & Scope
+  â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
   <div class="form-page" id="formPage4" data-page="4">
 
     <section class="section">
@@ -380,48 +380,48 @@
         <div class="q-header"><span class="q-num">15</span><p class="q-label" data-i18n="form.questions.q7.label">Who is the main action taker / decision maker for this project?</p></div>
         <p class="q-hint" data-i18n="form.questions.q7.hint">This helps us know who we'll be presenting to and whose sign-off matters.</p>
         <div class="check-grid">
-          <label class="check-label"><input type="radio" name="q7-decision-maker" value="Me / myself" required><span data-i18n="form.questions.q7.options.me">Me / myself</span></label>
-          <label class="check-label"><input type="radio" name="q7-decision-maker" value="My boss / the boss"><span data-i18n="form.questions.q7.options.boss">My boss / the boss</span></label>
-          <label class="check-label"><input type="radio" name="q7-decision-maker" value="Other"><span data-i18n="form.questions.q7.options.other">Other (please specify):</span></label>
+          <label class="check-label"><input type="radio" name="decision_maker" value="Me / myself" required><span data-i18n="form.questions.q7.options.me">Me / myself</span></label>
+          <label class="check-label"><input type="radio" name="decision_maker" value="My boss / the boss"><span data-i18n="form.questions.q7.options.boss">My boss / the boss</span></label>
+          <label class="check-label"><input type="radio" name="decision_maker" value="Other"><span data-i18n="form.questions.q7.options.other">Other (please specify):</span></label>
         </div>
-        <input type="text" name="q7-decision-maker-other" id="q7OtherInput" class="q7-other-input" data-i18n-placeholder="form.questions.q7.otherPlaceholder" placeholder="Please specify...">
+        <input type="text" name="decision_maker_other" id="q7OtherInput" class="q7-other-input" data-i18n-placeholder="form.questions.q7.otherPlaceholder" placeholder="Please specify...">
       </div>
 
       <div class="q-card">
         <div class="q-header"><span class="q-num">16</span><p class="q-label" data-i18n="form.questions.qdelivery.label">What is your ideal delivery timeframe?</p></div>
         <p class="q-hint" data-i18n="form.questions.qdelivery.hint">This helps us plan your project slot. We'll confirm the exact timeline on the kickoff call.</p>
         <div class="check-grid">
-          <label class="check-label"><input type="radio" name="delivery-date" value="ASAP" required><span data-i18n="form.metadata.deliveryDateOptions.asap">ASAP (As Soon As Possible)</span></label>
-          <label class="check-label"><input type="radio" name="delivery-date" value="2–4 weeks"><span data-i18n="form.metadata.deliveryDateOptions.weeks2to4">2&ndash;4 weeks</span></label>
-          <label class="check-label"><input type="radio" name="delivery-date" value="1–2 months"><span data-i18n="form.metadata.deliveryDateOptions.months1to2">1&ndash;2 months</span></label>
-          <label class="check-label"><input type="radio" name="delivery-date" value="3+ months"><span data-i18n="form.metadata.deliveryDateOptions.months3plus">3+ months</span></label>
+          <label class="check-label"><input type="radio" name="delivery_date" value="ASAP" required><span data-i18n="form.metadata.deliveryDateOptions.asap">ASAP (As Soon As Possible)</span></label>
+          <label class="check-label"><input type="radio" name="delivery_date" value="2â€“4 weeks"><span data-i18n="form.metadata.deliveryDateOptions.weeks2to4">2&ndash;4 weeks</span></label>
+          <label class="check-label"><input type="radio" name="delivery_date" value="1â€“2 months"><span data-i18n="form.metadata.deliveryDateOptions.months1to2">1&ndash;2 months</span></label>
+          <label class="check-label"><input type="radio" name="delivery_date" value="3+ months"><span data-i18n="form.metadata.deliveryDateOptions.months3plus">3+ months</span></label>
         </div>
       </div>
 
       <div class="q-card">
         <div class="q-header"><span class="q-num">17</span><p class="q-label" data-i18n="form.questions.q14.label">What is your budget approach for this project?</p></div>
         <div class="check-grid">
-          <label class="check-label"><input type="radio" name="q14-budget" value="Low / lowest possible cost" required><span data-i18n="form.questions.q14.options.low">Low / lowest possible cost</span></label>
-          <label class="check-label"><input type="radio" name="q14-budget" value="Mid-range / balanced price–quality"><span data-i18n="form.questions.q14.options.mid">Mid-range / balanced price&ndash;quality</span></label>
-          <label class="check-label"><input type="radio" name="q14-budget" value="High / premium"><span data-i18n="form.questions.q14.options.high">High / premium</span></label>
-          <label class="check-label"><input type="radio" name="q14-budget" value="Premium / full brand investment"><span data-i18n="form.questions.q14.options.best">Premium / full brand investment (&euro;3,000+)</span></label>
+          <label class="check-label"><input type="radio" name="budget" value="Low / lowest possible cost" required><span data-i18n="form.questions.q14.options.low">Low / lowest possible cost</span></label>
+          <label class="check-label"><input type="radio" name="budget" value="Mid-range / balanced priceâ€“quality"><span data-i18n="form.questions.q14.options.mid">Mid-range / balanced price&ndash;quality</span></label>
+          <label class="check-label"><input type="radio" name="budget" value="High / premium"><span data-i18n="form.questions.q14.options.high">High / premium</span></label>
+          <label class="check-label"><input type="radio" name="budget" value="Premium / full brand investment"><span data-i18n="form.questions.q14.options.best">Premium / full brand investment (&euro;3,000+)</span></label>
         </div>
       </div>
 
       <div class="q-card">
         <div class="q-header"><span class="q-num">18</span><p class="q-label" data-i18n="form.questions.q12.label">Do you have existing brand assets that must carry into the new identity?</p></div>
         <p class="q-hint" data-i18n="form.questions.q12.hint">If starting fresh, leave blank. If keeping elements, tell us what and why.</p>
-        <input type="text" name="q12-existing-assets" maxlength="300" data-i18n-placeholder="form.questions.q12.placeholder" placeholder="We want to keep our current logo mark but redesign everything else...">
+        <input type="text" name="existing_assets" maxlength="300" data-i18n-placeholder="form.questions.q12.placeholder" placeholder="We want to keep our current logo mark but redesign everything else...">
       </div>
 
       <div class="q-card">
         <div class="q-header"><span class="q-num">19</span><p class="q-label" data-i18n="form.questions.q16.label">Is there anything about your past branding experience, strong preferences, or fears we should know before we start?</p></div>
         <p class="q-hint" data-i18n="form.questions.q16.hint">What's the one thing you're most worried we might get wrong?</p>
-        <textarea name="q16-anything-else" maxlength="3000" data-i18n-placeholder="form.questions.q16.placeholder" placeholder="The last agency gave us something too generic. We really want this to feel like us..."></textarea>
+        <textarea name="anything_else" maxlength="3000" data-i18n-placeholder="form.questions.q16.placeholder" placeholder="The last agency gave us something too generic. We really want this to feel like us..."></textarea>
       </div>
     </section>
 
-    <!-- PAGE 4 NAV BUTTONS: Back left · Submit right (same layout as other pages) -->
+    <!-- PAGE 4 NAV BUTTONS: Back left Â· Submit right (same layout as other pages) -->
     <div class="page-nav-buttons page-nav-buttons--submit">
       <button type="button" class="wizard-btn wizard-btn--back" data-back="true">
         <i data-lucide="arrow-left" class="icon nav-icon"></i>
@@ -460,7 +460,7 @@
       <div class="footer-brand">
         <img src="assets/logo.svg" alt="Neatmark" class="footer-logo">
         <p class="footer-tagline" data-i18n="form.footer.tagline">Craft your vision, strengthen your voice,<br>and make your brand breathe.</p>
-        <!-- Social icons — consistent stroke style, same as Lucide used in form -->
+        <!-- Social icons â€” consistent stroke style, same as Lucide used in form -->
         <div class="footer-socials">
           <!-- Instagram -->
           <a class="footer-social-link" href="https://instagram.com/neatmark.studio" target="_blank" rel="noopener" aria-label="Instagram" title="Instagram">

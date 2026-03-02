@@ -1,4 +1,4 @@
-const fs   = require('fs');
+﻿const fs   = require('fs');
 const path = require('path');
 const { PDFDocument, StandardFonts, rgb, degrees } = require('pdf-lib');
 // fontkit is required for embedding custom Unicode fonts (Arabic support).
@@ -31,92 +31,92 @@ function sanitizeSubject(str) {
 }
 
 const FIELD_LABELS = {
-  'client-name':               'Client Name',
-  'brand-name':                'Brand / Business',
+  'client_name':               'Client Name',
+  'brand_name':                'Brand / Business',
   email:                       'Client Email',
-  'client-website':            'Website',
-  'delivery-date':             'Delivery Timeframe',
-  'q1-business-description':  'Business Description',
-  'q2-problem-transformation':'Before and After',
-  'q3-ideal-customer':        'Ideal Client',
-  'q3b-customer-desire':      'Client Trigger',
-  'q4-competitors':           'Competitors',
-  'q5-brand-personality':     'Brand Personality',
-  'q6-positioning':           'Positioning Statement',
-  'q-launch-context':         'Launch Context',
-  'q8-brands-admired':        'Admired Brands',
-  'q9-color':                 'Color Directions',
-  'q9-color-feelings':        'Color in Mind',
-  'q10-colors-to-avoid':      'Colors to Avoid',
-  'q11-aesthetic':            'Aesthetic Direction',
-  'q11-aesthetic-description':'Aesthetic Notes',
-  'q12-existing-assets':      'Existing Assets',
-  'q13-deliverables':         'Deliverables',
-  'q14-budget':               'Budget Approach',
-  'q15-inspiration-refs':     'Inspiration Images',
-  'q7-decision-maker':        'Decision Maker',
-  'q7-decision-maker-other':  'Decision Maker (Other)',
-  'q16-anything-else':        'Past Experience and Fears'
+  'client_website':            'Website',
+  'delivery_date':             'Delivery Timeframe',
+  'business_description':     'Business Description',
+  'problem_transformation':   'Before and After',
+  'ideal_customer':           'Ideal Client',
+  'customer_desire':          'Client Trigger',
+  'competitors':              'Competitors',
+  'brand_personality':        'Brand Personality',
+  'positioning':              'Positioning Statement',
+  'launch_context':           'Launch Context',
+  'brands_admired':           'Admired Brands',
+  'color_direction':          'Color Directions',
+  'color_choice':             'Color in Mind',
+  'colors_to_avoid':          'Colors to Avoid',
+  'aesthetic':                'Aesthetic Direction',
+  'aesthetic_description':    'Aesthetic Notes',
+  'existing_assets':          'Existing Assets',
+  'deliverables':             'Deliverables',
+  'budget':                   'Budget Approach',
+  'inspiration_refs':         'Inspiration Images',
+  'decision_maker':           'Decision Maker',
+  'decision_maker_other':     'Decision Maker (Other)',
+  'anything_else':            'Past Experience and Fears'
 };
 
 // French field labels (Latin-1 safe for PDF rendering)
 const FIELD_LABELS_FR = {
-  'client-name':               'Nom du client',
-  'brand-name':                'Marque / Entreprise',
+  'client_name':               'Nom du client',
+  'brand_name':                'Marque / Entreprise',
   email:                       'Email du client',
-  'client-website':            'Site web',
-  'delivery-date':             'Delai de livraison',
-  'q1-business-description':  'Description de l\'entreprise',
-  'q2-problem-transformation':'Avant et Apres',
-  'q3-ideal-customer':        'Client ideal',
-  'q3b-customer-desire':      'Declencheur client',
-  'q4-competitors':           'Concurrents',
-  'q5-brand-personality':     'Personnalite de la marque',
-  'q6-positioning':           'Positionnement',
-  'q-launch-context':         'Contexte de lancement',
-  'q8-brands-admired':        'Marques admirees',
-  'q9-color':                 'Directions de couleurs',
-  'q9-color-feelings':        'Couleur en tete',
-  'q10-colors-to-avoid':      'Couleurs a eviter',
-  'q11-aesthetic':            'Direction esthetique',
-  'q11-aesthetic-description':'Notes esthetiques',
-  'q12-existing-assets':      'Ressources existantes',
-  'q13-deliverables':         'Livrables',
-  'q14-budget':               'Approche budgetaire',
-  'q15-inspiration-refs':     'Images d\'inspiration',
-  'q7-decision-maker':        'Decideur',
-  'q7-decision-maker-other':  'Decideur (Autre)',
-  'q16-anything-else':        'Experiences passees et craintes'
+  'client_website':            'Site web',
+  'delivery_date':             'Delai de livraison',
+  'business_description':     'Description de l\'entreprise',
+  'problem_transformation':   'Avant et Apres',
+  'ideal_customer':           'Client ideal',
+  'customer_desire':          'Declencheur client',
+  'competitors':              'Concurrents',
+  'brand_personality':        'Personnalite de la marque',
+  'positioning':              'Positionnement',
+  'launch_context':           'Contexte de lancement',
+  'brands_admired':           'Marques admirees',
+  'color_direction':          'Directions de couleurs',
+  'color_choice':             'Couleur en tete',
+  'colors_to_avoid':          'Couleurs a eviter',
+  'aesthetic':                'Direction esthetique',
+  'aesthetic_description':    'Notes esthetiques',
+  'existing_assets':          'Ressources existantes',
+  'deliverables':             'Livrables',
+  'budget':                   'Approche budgetaire',
+  'inspiration_refs':         'Images d\'inspiration',
+  'decision_maker':           'Decideur',
+  'decision_maker_other':     'Decideur (Autre)',
+  'anything_else':            'Experiences passees et craintes'
 };
 
 // Arabic field labels — used for Markdown only (PDF/DOCX can't render Arabic glyphs)
 const FIELD_LABELS_AR = {
-  'client-name':               'اسم العميل',
-  'brand-name':                'البراند / الشركة',
+  'client_name':               'اسم العميل',
+  'brand_name':                'البراند / الشركة',
   email:                       'البريد الإلكتروني',
-  'client-website':            'الموقع الإلكتروني',
-  'delivery-date':             'الإطار الزمني للتسليم',
-  'q1-business-description':  'وصف النشاط التجاري',
-  'q2-problem-transformation':'قبل وبعد',
-  'q3-ideal-customer':        'العميل المثالي',
-  'q3b-customer-desire':      'محرك العميل',
-  'q4-competitors':           'المنافسون',
-  'q5-brand-personality':     'شخصية البراند',
-  'q6-positioning':           'جملة التموضع',
-  'q-launch-context':         'سياق الإطلاق',
-  'q8-brands-admired':        'براندات معجب بها',
-  'q9-color':                 'اتجاهات الألوان',
-  'q9-color-feelings':        'ألوان تراودك',
-  'q10-colors-to-avoid':      'الألوان المستبعدة',
-  'q11-aesthetic':            'الاتجاه الجمالي',
-  'q11-aesthetic-description':'ملاحظات جمالية',
-  'q12-existing-assets':      'الأصول الموجودة',
-  'q13-deliverables':         'المخرجات',
-  'q14-budget':               'نهج الميزانية',
-  'q15-inspiration-refs':     'صور الإلهام',
-  'q7-decision-maker':        'صاحب القرار',
-  'q7-decision-maker-other':  'صاحب القرار (أخرى)',
-  'q16-anything-else':        'تجارب سابقة ومخاوف'
+  'client_website':            'الموقع الإلكتروني',
+  'delivery_date':             'الإطار الزمني للتسليم',
+  'business_description':     'وصف النشاط التجاري',
+  'problem_transformation':   'قبل وبعد',
+  'ideal_customer':           'العميل المثالي',
+  'customer_desire':          'محرك العميل',
+  'competitors':              'المنافسون',
+  'brand_personality':        'شخصية البراند',
+  'positioning':              'جملة التموضع',
+  'launch_context':           'سياق الإطلاق',
+  'brands_admired':           'براندات معجب بها',
+  'color_direction':          'اتجاهات الألوان',
+  'color_choice':             'ألوان تراودك',
+  'colors_to_avoid':          'الألوان المستبعدة',
+  'aesthetic':                'الاتجاه الجمالي',
+  'aesthetic_description':    'ملاحظات جمالية',
+  'existing_assets':          'الأصول الموجودة',
+  'deliverables':             'المخرجات',
+  'budget':                   'نهج الميزانية',
+  'inspiration_refs':         'صور الإلهام',
+  'decision_maker':           'صاحب القرار',
+  'decision_maker_other':     'صاحب القرار (أخرى)',
+  'anything_else':            'تجارب سابقة ومخاوف'
 };
 
 function getFieldLabels(lang) {
@@ -542,7 +542,7 @@ const OPTION_TRANSLATIONS = {
   'Website design':     { fr: 'Design de site web',                                      ar: 'تصميم موقع ويب' },
   'Packaging':          { fr: 'Design packaging',                                        ar: 'تصميم التغليف' },
 
-  // q7-decision-maker
+  // q7-decision_maker
   'Me / myself':            { fr: 'Moi / moi-même',           ar: 'أنا / بنفسي' },
   'My boss / the boss':     { fr: 'Mon patron / le patron',   ar: 'مديري / صاحب العمل' },
   'Other':                  { fr: 'Autre',                    ar: 'آخر' },
@@ -612,39 +612,39 @@ function escapeHtml(value) {
 
 function prettifyKey(key) {
   return key
-    .replace(/^q(\d+)-/, 'Q$1: ')
-    .replace(/-/g, ' ')
+    .replace(/^q(\d+)[-_]/, 'Q$1: ')
+    .replace(/[-_]/g, ' ')
     .replace(/\b\w/g, l => l.toUpperCase());
 }
 
 // Explicit display order for all fields — used by sortedEntries and getSectionLabel
 const FIELD_DISPLAY_ORDER = {
-  'client-name': -4,
-  'brand-name': -3,
+  'client_name': -4,
+  'brand_name': -3,
   'email': -2,
-  'client-website': -1,
-  'q1-business-description': 1,
-  'q2-problem-transformation': 2,
-  'q3-ideal-customer': 3,
-  'q3b-customer-desire': 4,
-  'q4-competitors': 5,
-  'q5-brand-personality': 6,
-  'q6-positioning': 7,
-  'q-launch-context': 8,
-  'q8-brands-admired': 9,
-  'q9-color': 10,
-  'q9-color-feelings': 10.5,
-  'q10-colors-to-avoid': 11,
-  'q11-aesthetic': 12,
-  'q11-aesthetic-description': 12.5,
-  'q13-deliverables': 13,
-  'q15-inspiration-refs': 15,
-  'q7-decision-maker': 16,
-  'q7-decision-maker-other': 16.5,
-  'delivery-date': 16.7,
-  'q14-budget': 17,
-  'q12-existing-assets': 18,
-  'q16-anything-else': 19,
+  'client_website': -1,
+  'business_description': 1,
+  'problem_transformation': 2,
+  'ideal_customer': 3,
+  'customer_desire': 4,
+  'competitors': 5,
+  'brand_personality': 6,
+  'positioning': 7,
+  'launch_context': 8,
+  'brands_admired': 9,
+  'color_direction': 10,
+  'color_choice': 10.5,
+  'colors_to_avoid': 11,
+  'aesthetic': 12,
+  'aesthetic_description': 12.5,
+  'deliverables': 13,
+  'inspiration_refs': 15,
+  'decision_maker': 16,
+  'decision_maker_other': 16.5,
+  'delivery_date': 16.7,
+  'budget': 17,
+  'existing_assets': 18,
+  'anything_else': 19,
 };
 
 function sortedEntries(payload) {
@@ -682,7 +682,7 @@ function sanitizeFilenamePart(value, fallback) {
 }
 
 const SYSTEM_FIELDS = new Set([
-  'created_at', 'history', 'status', 'project-status', 'agreed-delivery-date',
+  'created_at', 'history', 'status', 'project_status', 'agreed_delivery_date',
   'edit_token', 'edit_token_expires_at'
 ]);
 
@@ -716,8 +716,8 @@ function formatHumanDate(date) {
 
 function buildMarkdown(payload, lang = 'en') {
   const now         = new Date();
-  const clientName  = normalizeValue(payload['client-name']) || 'Unknown Client';
-  const brandName   = normalizeValue(payload['brand-name'])  || 'Unknown Brand';
+  const clientName  = normalizeValue(payload.client_name) || 'Unknown Client';
+  const brandName   = normalizeValue(payload.brand_name)  || 'Unknown Brand';
   const s           = MARKDOWN_STRINGS[lang] || MARKDOWN_STRINGS.en;
   const fieldLabels = getFieldLabels(lang);
 
@@ -729,16 +729,16 @@ function buildMarkdown(payload, lang = 'en') {
     '', '---', ''
   ];
 
-  const clientCountry = normalizeValue(payload['client-country']);
+  const clientCountry = normalizeValue(payload.client_country);
   if (clientCountry) lines.push(`- **Country:** ${clientCountry}`);
   lines.push('', '---', '');
 
   for (const [key, rawValue] of sortedEntries(payload)) {
-    if (SYSTEM_FIELDS.has(key) || key === 'client-country') continue;
+    if (SYSTEM_FIELDS.has(key) || key === 'client_country') continue;
     const label = fieldLabels[key] || prettifyKey(key);
     lines.push(`## ${label}`, '');
 
-    if (key === 'q15-inspiration-refs') {
+    if (key === 'inspiration_refs') {
       const refs = Array.isArray(rawValue) ? rawValue : (rawValue ? [rawValue] : []);
       if (refs.length > 0) {
         refs.forEach((ref, i) => lines.push(`- Inspiration ${i + 1}: ${getPhotoFilename(ref)}`));
@@ -760,10 +760,10 @@ function buildMarkdown(payload, lang = 'en') {
 
 async function buildDocxBuffer(payload, imageBuffers = {}, lang = 'en') {
   const now          = new Date();
-  const clientName   = normalizeValue(payload['client-name']) || 'Unknown Client';
-  const brandName    = normalizeValue(payload['brand-name'])  || 'Unknown Brand';
+  const clientName   = normalizeValue(payload.client_name) || 'Unknown Client';
+  const brandName    = normalizeValue(payload.brand_name)  || 'Unknown Brand';
   const clientEmail  = normalizeValue(payload.email)          || 'Not provided';
-  const deliveryDate = normalizeValue(payload['delivery-date']) || 'Not provided';
+  const deliveryDate = normalizeValue(payload.delivery_date) || 'Not provided';
   const s            = DOC_STRINGS[lang] || DOC_STRINGS.en;
   const fieldLabels  = getFieldLabelsForDoc(lang);
   const isRtl        = (lang === 'ar');
@@ -798,8 +798,8 @@ async function buildDocxBuffer(payload, imageBuffers = {}, lang = 'en') {
       [s.brandBusiness,     brandName],
       [s.clientEmail,       clientEmail],
       [s.requestedDelivery, getOptionLabel(deliveryDate, lang)],
-      ...(normalizeValue(payload['client-country'])
-        ? [[s.country || 'Country:', normalizeValue(payload['client-country'])]]
+      ...(normalizeValue(payload.client_country)
+        ? [[s.country || 'Country:', normalizeValue(payload.client_country)]]
         : [])
     ]).map(([label, value]) => new Paragraph({
       children: [new TextRun({ text: label + '  ', bold: true }), new TextRun({ text: value })],
@@ -811,7 +811,7 @@ async function buildDocxBuffer(payload, imageBuffers = {}, lang = 'en') {
 
   let currentSection = null;
   for (const [key, rawValue] of sortedEntries(payload)) {
-    if (['client-name', 'brand-name', 'email', 'delivery-date', 'client-country'].includes(key)) continue;
+    if (['client_name', 'brand_name', 'email', 'delivery_date', 'client_country'].includes(key)) continue;
     if (SYSTEM_FIELDS.has(key)) continue;
 
     const label          = fieldLabels[key] || prettifyKey(key);
@@ -835,7 +835,7 @@ async function buildDocxBuffer(payload, imageBuffers = {}, lang = 'en') {
       spacing: { before: 160, after: 70 }
     }));
 
-    if (key === 'q15-inspiration-refs') {
+    if (key === 'inspiration_refs') {
       const refs = Array.isArray(rawValue) ? rawValue : (rawValue ? [rawValue] : []);
       if (refs.length > 0) {
         const imgChildren = [];
@@ -1058,11 +1058,11 @@ async function _buildPdfBufferLatin(payload, imageBuffers = {}, lang = 'en') {
 
   // ── Metadata card ─────────────────────────────────────────────────────────
   const now          = new Date();
-  const clientName   = normalizeValue(payload['client-name'])    || (isRtl ? '\u063a\u064a\u0631 \u0645\u062d\u062f\u062f' : 'Unknown Client');
-  const brandName    = normalizeValue(payload['brand-name'])     || (isRtl ? '\u063a\u064a\u0631 \u0645\u062d\u062f\u062f' : 'Unknown Brand');
+  const clientName   = normalizeValue(payload.client_name)    || (isRtl ? '\u063a\u064a\u0631 \u0645\u062d\u062f\u062f' : 'Unknown Client');
+  const brandName    = normalizeValue(payload.brand_name)     || (isRtl ? '\u063a\u064a\u0631 \u0645\u062d\u062f\u062f' : 'Unknown Brand');
   const clientEmail  = normalizeValue(payload.email)             || (isRtl ? '\u063a\u064a\u0631 \u0645\u062a\u0648\u0641\u0631' : 'Not provided');
-  const deliveryDate = normalizeValue(payload['delivery-date'])  || (isRtl ? '\u063a\u064a\u0631 \u0645\u062d\u062f\u062f' : 'Not provided');
-  const clientCountry = normalizeValue(payload['client-country']) || '';
+  const deliveryDate = normalizeValue(payload.delivery_date)  || (isRtl ? '\u063a\u064a\u0631 \u0645\u062d\u062f\u062f' : 'Not provided');
+  const clientCountry = normalizeValue(payload.client_country) || '';
   const submittedAt  = formatHumanDate(now);
 
   drawPageDecor(page, pageNum);
@@ -1163,7 +1163,7 @@ async function _buildPdfBufferLatin(payload, imageBuffers = {}, lang = 'en') {
   }
 
   // ── Render all questions ──────────────────────────────────────────────────
-  const metaFields   = new Set(['client-name', 'brand-name', 'email', 'delivery-date', 'client-country']);
+  const metaFields   = new Set(['client_name', 'brand_name', 'email', 'delivery_date', 'client_country']);
   let currentSection = null;
 
   for (const [key, rawValue] of sortedEntries(payload)) {
@@ -1178,7 +1178,7 @@ async function _buildPdfBufferLatin(payload, imageBuffers = {}, lang = 'en') {
       drawSectionHeader(sectionLabel);
     }
 
-    if (key === 'q15-inspiration-refs') {
+    if (key === 'inspiration_refs') {
       const refs = Array.isArray(rawValue) ? rawValue : (rawValue ? [rawValue] : []);
       spacer(6);
       ensureSpace(14);
@@ -1254,7 +1254,7 @@ async function buildPdfBuffer(payload, imageBuffers = {}, lang = 'en') {
     try {
       const s           = DOC_STRINGS.ar;
       const fieldLabels = getFieldLabelsForDoc('ar');
-      const metaFields  = new Set(['client-name', 'brand-name', 'email', 'delivery-date', 'client-country']);
+      const metaFields  = new Set(['client_name', 'brand_name', 'email', 'delivery_date', 'client_country']);
 
       let currentSection = null;
       const sortedFields = [];

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * get-submission-by-token.js
  * ──────────────────────────
  * Validates a one-time edit token and returns the full submission data
@@ -12,7 +12,17 @@
 
 const { createClient } = require('@supabase/supabase-js');
 const { isRateLimited } = require('./_ratelimit');
-const { toDbKey, FORM_FIELDS_LEGACY, FORM_FIELDS_DB } = require('./_field_map');
+
+// Form fields as stored in Supabase (DB column names)
+const FORM_FIELDS = [
+  'client_name', 'brand_name', 'email', 'client_website', 'delivery_date',
+  'business_description', 'problem_transformation', 'ideal_customer',
+  'customer_desire', 'competitors', 'brand_personality', 'positioning',
+  'launch_context', 'decision_maker', 'decision_maker_other', 'brands_admired',
+  'color_direction', 'color_choice', 'colors_to_avoid', 'aesthetic', 'aesthetic_description',
+  'existing_assets', 'deliverables', 'budget',
+  'inspiration_refs', 'anything_else', 'brand_logo_ref', 'client_country'
+];
 
 const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || '*';
 if (ALLOWED_ORIGIN === '*') {
@@ -86,7 +96,7 @@ exports.handler = async (event) => {
     // Fetch submission matching this token
     const { data, error } = await supabase
       .from('submissions')
-      .select('id, edit_token, edit_token_expires_at, ' + FORM_FIELDS_DB.map(f => `"${f}"`).join(', '))
+      .select('id, edit_token, edit_token_expires_at, ' + FORM_FIELDS.map(f => `"${f}"`).join(', '))
       .eq('edit_token', token)
       .limit(1)
       .single();
@@ -110,9 +120,8 @@ exports.handler = async (event) => {
 
     // Build a clean submission object with only form fields
     const submission = { id: data.id };
-    for (const field of FORM_FIELDS_LEGACY) {
-      const dbField = toDbKey(field);
-      if (data[dbField] !== undefined) submission[field] = data[dbField];
+    for (const field of FORM_FIELDS) {
+      if (data[field] !== undefined) submission[field] = data[field];
     }
 
     return {

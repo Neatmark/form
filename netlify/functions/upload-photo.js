@@ -1,4 +1,4 @@
-/**
+﻿/**
  * upload-photo.js
  * ───────────────
  * Handles inspiration image uploads for Q15.
@@ -8,7 +8,7 @@
  *
  * Returns: { success: true, smallRef: "...", originalRef: "..." }
  *
- * The client stores both refs as a JSON string inside the q15-inspiration-refs text[] column:
+ * The client stores both refs as a JSON string inside the q15-inspiration_refs text[] column:
  *   '{"small":"small/…","original":"originals/…"}'
  */
 

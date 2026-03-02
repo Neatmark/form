@@ -15,7 +15,7 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 
 -- ── 1. Core submissions table ──────────────────────────────────────────
---  All form fields use quoted, hyphenated names to match the JS payload.
+--  All form fields use snake_case names to match the JS payload.
 -- ──────────────────────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS submissions (
   -- System columns
@@ -34,35 +34,35 @@ CREATE TABLE IF NOT EXISTS submissions (
   delivery_date                   text,
 
   -- Section 01: Brand Foundation
-  "business-description"          text,
-  "problem-transformation"        text,
-  "ideal-customer"                text,
-  "customer-desire"               text,
+  business_description             text,
+  problem_transformation           text,
+  ideal_customer                   text,
+  customer_desire                  text,
   competitors                      text,
-  "brand-personality"             text,
+  brand_personality                text,
   positioning                      text,
-  "launch-context"                text,
+  launch_context                   text,
 
   -- Section 02: Visual Direction
-  "brands-admired"                text,
+  brands_admired                   text,
   color_direction                   text[],   -- multi-select
   color_choice                      text,
-  "colors-to-avoid"               text,
+  colors_to_avoid                  text,
   aesthetic                        text[],   -- multi-select (ranked by selection order)
-  "aesthetic-description"         text,
+  aesthetic_description            text,
   deliverables                     text[],   -- multi-select
   budget                           text,
 
   -- Inspiration refs: each entry is a JSON string:
   --   '{"smallRef":"small/...","originalRef":"originals/..."}'
   -- Legacy entries may be plain storage-path strings.
-  "inspiration-refs"              text[],
+  inspiration_refs                 text[],
 
   -- Section 03: Project and Scope
-  "decision-maker"                text,
-  "decision-maker-other"          text,
-  "existing-assets"               text,
-  "anything-else"                 text,
+  decision_maker                   text,
+  decision_maker_other             text,
+  existing_assets                  text,
+  anything_else                    text,
 
   -- Brand / company logo (stored in the 'logos' bucket)
   brand_logo_ref                   text,
@@ -81,8 +81,8 @@ CREATE TABLE IF NOT EXISTS submissions (
 --  Safe no-ops if columns already exist.
 -- ──────────────────────────────────────────────────────────────────────
 ALTER TABLE submissions ADD COLUMN IF NOT EXISTS client_website                 text;
-ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "customer-desire"             text;
-ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "launch-context"              text;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS customer_desire               text;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS launch_context                text;
 ALTER TABLE submissions ADD COLUMN IF NOT EXISTS history                        jsonb        NOT NULL DEFAULT '[]'::jsonb;
 ALTER TABLE submissions ADD COLUMN IF NOT EXISTS status                         text         NOT NULL DEFAULT 'pending';
 ALTER TABLE submissions ADD COLUMN IF NOT EXISTS project_status                 text;
@@ -92,25 +92,25 @@ ALTER TABLE submissions ADD COLUMN IF NOT EXISTS brand_name                     
 ALTER TABLE submissions ADD COLUMN IF NOT EXISTS email                          text;
 ALTER TABLE submissions ADD COLUMN IF NOT EXISTS delivery_date                  text;
 ALTER TABLE submissions ADD COLUMN IF NOT EXISTS brand_logo_ref                 text;
-ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "business-description"        text;
-ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "problem-transformation"      text;
-ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "ideal-customer"              text;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS business_description          text;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS problem_transformation        text;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS ideal_customer                text;
 ALTER TABLE submissions ADD COLUMN IF NOT EXISTS competitors                    text;
-ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "brand-personality"           text;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS brand_personality             text;
 ALTER TABLE submissions ADD COLUMN IF NOT EXISTS positioning                    text;
-ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "brands-admired"              text;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS brands_admired                text;
 ALTER TABLE submissions ADD COLUMN IF NOT EXISTS color_direction               text[];
 ALTER TABLE submissions ADD COLUMN IF NOT EXISTS color_choice                  text;
-ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "colors-to-avoid"             text;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS colors_to_avoid               text;
 ALTER TABLE submissions ADD COLUMN IF NOT EXISTS aesthetic                      text[];
-ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "aesthetic-description"       text;
-ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "existing-assets"             text;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS aesthetic_description         text;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS existing_assets               text;
 ALTER TABLE submissions ADD COLUMN IF NOT EXISTS deliverables                   text[];
 ALTER TABLE submissions ADD COLUMN IF NOT EXISTS budget                         text;
-ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "inspiration-refs"            text[];
-ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "decision-maker"              text;
-ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "decision-maker-other"        text;
-ALTER TABLE submissions ADD COLUMN IF NOT EXISTS "anything-else"               text;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS inspiration_refs              text[];
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS decision_maker                text;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS decision_maker_other          text;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS anything_else                 text;
 ALTER TABLE submissions ADD COLUMN IF NOT EXISTS edit_token                   text UNIQUE;
 ALTER TABLE submissions ADD COLUMN IF NOT EXISTS edit_token_expires_at        timestamptz;
 ALTER TABLE submissions ADD COLUMN IF NOT EXISTS client_country                text;
@@ -222,7 +222,7 @@ CREATE POLICY "Service role small-photos access"
 --  After running this script, verify in the dashboard:
 --
 --  1. Database → Tables → submissions
---     • All columns present (id, created_at, history, status, q1–q16…)
+--     • All columns present (id, created_at, history, status, …)
 --     • Shield icon shows RLS is ON
 --     • One policy: "Service role only"
 --

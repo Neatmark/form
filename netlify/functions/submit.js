@@ -1,8 +1,7 @@
-const { createClient } = require('@supabase/supabase-js');
+﻿const { createClient } = require('@supabase/supabase-js');
 const { randomUUID }   = require('crypto');
 const crypto           = require('crypto');
 const { isRateLimited } = require('./_ratelimit');
-const { toDbRecord } = require('./_field_map');
 
 // ── CORS ──────────────────────────────────────────────────────────────────────
 const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || '*';
@@ -52,22 +51,22 @@ function makeSendToken(timestamp, publicRecord, editLink = '') {
 
 // ── Field allowlist & array fields ───────────────────────────────────────────
 const ALLOWED_FIELDS = [
-  'client-name', 'brand-name', 'email', 'client-website', 'delivery-date',
-  'q1-business-description', 'q2-problem-transformation', 'q3-ideal-customer',
-  'q3b-customer-desire', 'q4-competitors', 'q5-brand-personality', 'q6-positioning',
-  'q-launch-context', 'q7-decision-maker', 'q7-decision-maker-other', 'q8-brands-admired',
-  'q9-color', 'q10-colors-to-avoid', 'q11-aesthetic', 'q11-aesthetic-description',
-  'q12-existing-assets', 'q13-deliverables', 'q14-budget',
-  'q15-inspiration-refs', 'q16-anything-else', 'brand-logo-ref'
+  'client_name', 'brand_name', 'email', 'client_website', 'delivery_date',
+  'business_description', 'problem_transformation', 'ideal_customer',
+  'customer_desire', 'competitors', 'brand_personality', 'positioning',
+  'launch_context', 'decision_maker', 'decision_maker_other', 'brands_admired',
+  'color_direction', 'color_choice', 'colors_to_avoid', 'aesthetic', 'aesthetic_description',
+  'existing_assets', 'deliverables', 'budget',
+  'inspiration_refs', 'anything_else', 'brand_logo_ref'
 ];
 
-const ARRAY_FIELDS = new Set(['q9-color', 'q11-aesthetic', 'q13-deliverables', 'q15-inspiration-refs']);
+const ARRAY_FIELDS = new Set(['color_direction', 'aesthetic', 'deliverables', 'inspiration_refs']);
 
 // ── Enum allowlists (mirrors form HTML values) ────────────────────────────────
 const ENUM_ALLOWLISTS = {
-  'delivery-date':     new Set(['ASAP', '2\u20134 weeks', '1\u20132 months', '3+ months']),
-  'q7-decision-maker': new Set(['Me / myself', 'My boss / the boss', 'Other']),
-  'q14-budget':        new Set([
+  'delivery_date':     new Set(['ASAP', '2\u20134 weeks', '1\u20132 months', '3+ months']),
+  'decision_maker': new Set(['Me / myself', 'My boss / the boss', 'Other']),
+  'budget':        new Set([
     'Low / lowest possible cost',
     'Mid-range / balanced price\u2013quality',
     'High / premium',
@@ -76,15 +75,15 @@ const ENUM_ALLOWLISTS = {
 };
 
 const ARRAY_ENUM_ALLOWLISTS = {
-  'q9-color': new Set([
+  'color_direction': new Set([
     'Warm neutrals', 'Cool neutrals', 'Deep & moody', 'Bold & saturated',
     'Pastels', 'Monochrome', 'Metallic', 'Nature-inspired', 'No preference'
   ]),
-  'q11-aesthetic': new Set([
+  'aesthetic': new Set([
     'Luxury & refined', 'Organic & artisan', 'Minimal & functional', 'Bold & graphic',
     'Playful & illustrative', 'Editorial & intellectual', 'Tech-forward', 'Nostalgic & heritage'
   ]),
-  'q13-deliverables': new Set([
+  'deliverables': new Set([
     'Primary logo', 'Logo variations', 'Color & typography', 'Brand guidelines',
     'Stationery', 'Social media', 'Website design', 'Packaging'
   ])
@@ -95,26 +94,26 @@ const SAFE_PATH_RE = /^[a-zA-Z0-9._/()-]+$/;
 
 // ── Field length limits (mirrors client-side maxlength) ───────────────────────
 const FIELD_MAXLENGTH = {
-  'client-name':               120,
-  'brand-name':                120,
+  'client_name':               120,
+  'brand_name':                120,
   'email':                     254,
-  'client-website':            300,
-  'q1-business-description':  2000,
-  'q2-problem-transformation':2000,
-  'q3-ideal-customer':        2000,
-  'q3b-customer-desire':      2000,
-  'q4-competitors':           2000,
-  'q5-brand-personality':     2000,
-  'q6-positioning':            300,
-  'q-launch-context':         2000,
-  'q8-brands-admired':        2000,
-  'q10-colors-to-avoid':       300,
-  'q11-aesthetic-description':1000,
-  'q12-existing-assets':       300,
-  'q16-anything-else':        3000,
+  'client_website':            300,
+  'business_description':     2000,
+  'problem_transformation':   2000,
+  'ideal_customer':           2000,
+  'customer_desire':          2000,
+  'competitors':              2000,
+  'brand_personality':        2000,
+  'positioning':               300,
+  'launch_context':           2000,
+  'brands_admired':           2000,
+  'colors_to_avoid':           300,
+  'aesthetic_description':    1000,
+  'existing_assets':           300,
+  'anything_else':            3000,
   // Fields previously missing length limits
-  'q7-decision-maker-other':   300,
-  'brand-logo-ref':            200
+  'decision_maker_other':      300,
+  'brand_logo_ref':            200
 };
 
 function normalizeFieldValue(field, value) {
@@ -308,7 +307,7 @@ exports.handler = async (event) => {
   }
 
   // ── Website URL validation ──────────────────────────────────────────────────
-  const websiteVal = String(payload['client-website'] || '').trim();
+  const websiteVal = String(payload['client_website'] || '').trim();
   if (websiteVal) {
     try {
       const u = new URL(websiteVal);
@@ -362,8 +361,8 @@ exports.handler = async (event) => {
     }
   }
 
-  // ── q15-inspiration-refs: cap count and validate storage paths ──────────────
-  const q15Raw = payload['q15-inspiration-refs'];
+  // ── inspiration_refs: cap count and validate storage paths ──────────────
+  const q15Raw = payload['inspiration_refs'];
   const q15Arr = Array.isArray(q15Raw) ? q15Raw : (q15Raw ? [q15Raw] : []);
   if (q15Arr.length > 10) {
     return {
@@ -422,8 +421,7 @@ exports.handler = async (event) => {
     }
   });
 
-  if (clientCountry) record['client-country'] = clientCountry;
-  const dbRecord = toDbRecord(record);
+  if (clientCountry) record['client_country'] = clientCountry;
 
   try {
     const supabase = createClient(supabaseUrl, supabaseKey, { auth: { persistSession: false } });
@@ -473,7 +471,7 @@ exports.handler = async (event) => {
       // Update the row and CLEAR the token (single use)
       const { error: updateErr } = await supabase
         .from('submissions')
-        .update({ ...dbRecord, history: nextHistory, edit_token: null, edit_token_expires_at: null })
+        .update({ ...record, history: nextHistory, edit_token: null, edit_token_expires_at: null })
         .eq('id', tokenRow.id);
 
       if (updateErr) {
@@ -505,9 +503,7 @@ exports.handler = async (event) => {
     record.edit_token            = newEditToken;
     record.edit_token_expires_at = tokenExpiresAt;
 
-    const dbInsertRecord = toDbRecord(record);
-
-    const { error: insertError } = await supabase.from('submissions').insert([dbInsertRecord]);
+    const { error: insertError } = await supabase.from('submissions').insert([record]);
     if (insertError) {
       console.error('[submit] DB insert error:', insertError.message);
       return { statusCode: 500, headers: CORS_HEADERS, body: JSON.stringify({ success: false, error: 'Submission could not be saved. Please try again.' }) };

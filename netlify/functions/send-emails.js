@@ -1,4 +1,4 @@
-/**
+﻿/**
  * send-emails.js
  * ──────────────
  * Generates PDF / DOCX / Markdown and sends admin + client emails.
@@ -77,7 +77,7 @@ function verifySendToken(sendToken, sendTimestamp, record, editLink = '') {
 
 // Fields that must not appear in generated documents
 const DOCUMENT_SKIP_FIELDS = new Set([
-  'created_at', 'history', 'status', 'project-status', 'agreed-delivery-date',
+  'created_at', 'history', 'status', 'project_status', 'agreed_delivery_date',
   'edit_token', 'edit_token_expires_at'
 ]);
 
@@ -150,8 +150,8 @@ exports.handler = async (event) => {
     if (clientEmailAddr.includes('@')) {
       try {
         const confirmMsg = buildEditConfirmationEmail({
-          brandName:  record['brand-name'],
-          clientName: record['client-name']
+          brandName:  record.brand_name,
+          clientName: record.client_name
         }, lang);
         await sendResendEmail({
           apiKey: resendApiKey, to: clientEmailAddr, from: fromEmail,
@@ -172,8 +172,8 @@ exports.handler = async (event) => {
   const now        = new Date();
   const dateStr    = now.toISOString().split('T')[0];
   const timeStr    = now.toTimeString().split(' ')[0].replace(/:/g, '-');
-  const brandPart  = sanitizeFilenamePart(record['brand-name'],  'brand');
-  const clientPart = sanitizeFilenamePart(record['client-name'], 'client');
+  const brandPart  = sanitizeFilenamePart(record.brand_name,  'brand');
+  const clientPart = sanitizeFilenamePart(record.client_name, 'client');
   const baseFilename = `${brandPart}_${clientPart}_${dateStr}_${timeStr}`;
 
   const docPayload = Object.fromEntries(
@@ -183,7 +183,7 @@ exports.handler = async (event) => {
   // Fetch inspiration images from Supabase storage
   const imageBuffers = {};
   if (supabase) {
-    const rawRefs    = record['q15-inspiration-refs'];
+    const rawRefs    = record['inspiration_refs'];
     const parsedRefs = Array.isArray(rawRefs) ? rawRefs : [];
     for (const refEntry of parsedRefs) {
       try {
@@ -233,11 +233,11 @@ exports.handler = async (event) => {
 
   if (adminEmail) {
     const adminMsg    = buildAdminEmail({
-      brandName:    record['brand-name'],
-      clientName:   record['client-name'],
+      brandName:    record.brand_name,
+      clientName:   record.client_name,
       email:        record.email,
-      deliveryDate: record['delivery-date'],
-      country:      record['client-country']
+      deliveryDate: record.delivery_date,
+      country:      record.client_country
     });
     const attachments = [];
     if (markdown)   attachments.push({ filename: `${baseFilename}.md`,   content: Buffer.from(markdown, 'utf8').toString('base64') });
@@ -256,8 +256,8 @@ exports.handler = async (event) => {
   const clientEmailAddr = String(record.email || '').trim();
   if (clientEmailAddr.includes('@')) {
     const clientMsg = buildClientEmail({
-      brandName:  record['brand-name'],
-      clientName: record['client-name'],
+      brandName:  record.brand_name,
+      clientName: record.client_name,
       editLink:   editLink || ''
     }, lang);
 

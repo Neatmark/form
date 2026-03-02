@@ -184,13 +184,13 @@ function buildArabicHtml(payload, lang, strings, fieldLabels, sortedFields) {
 
   // Meta card rows
   const metaRows = [
-    [s.brandBusiness,     payload['brand-name']    || '—'],
-    [s.clientName,        payload['client-name']   || '—'],
+    [s.brandBusiness,     payload.brand_name    || '—'],
+    [s.clientName,        payload.client_name   || '—'],
     [s.clientEmail,       payload['email']         || '—'],
-    [s.requestedDelivery, payload['delivery-date'] || '—'],
+    [s.requestedDelivery, payload.delivery_date || '—'],
   ];
-  if (payload['client-country']) {
-    metaRows.push([(s.country || 'Country'), payload['client-country']]);
+  if (payload.client_country) {
+    metaRows.push([(s.country || 'Country'), payload.client_country]);
   }
 
   const metaHtml = metaRows.map(([label, value]) => `
