@@ -81,7 +81,7 @@ body {
 ══════════════════════════════════════════════════════════ */
 .site-header {
   display:flex; justify-content:space-between; align-items:center;
-  max-width:680px; margin:0 auto; padding:var(--sp4) var(--sp4) var(--sp3);
+  max-width:680px; margin:0 auto; padding:var(--sp3) var(--sp4) var(--sp2);
   position:relative; z-index:100;
   border-bottom: 1px solid var(--border);
 }
@@ -219,8 +219,8 @@ html[dir="rtl"] .theme-menu { right:auto; left:0; }
    HERO
 ══════════════════════════════════════════════════════════ */
 .hero {
-  text-align:center; padding:var(--sp6) 0 var(--sp5);
-  border-bottom:1px solid var(--border); margin-bottom:var(--sp5);
+  text-align:center; padding:0 0 var(--sp4);
+  border-bottom:1px solid var(--border); margin-bottom:var(--sp4);
 }
 .hero-badge {
   display:inline-block; background:none; color:var(--text-mid);
@@ -515,7 +515,7 @@ select {
   background:var(--surface); border:1px solid var(--accent); border-left:3px solid var(--accent);
   border-radius:0; padding:var(--sp2) var(--sp3); font-size:16px; font-weight:600;
   color:var(--text-hi);
-  margin-top:var(--sp5); margin-bottom:0;
+  margin-top:var(--sp2); margin-bottom:var(--sp3);
   width:100%;
   animation:slideDown .25s ease both; box-shadow:none;
 }
