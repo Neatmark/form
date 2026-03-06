@@ -977,6 +977,12 @@ document.addEventListener('DOMContentLoaded', () => {
   form.addEventListener('input',  scheduleSave);
   form.addEventListener('change', scheduleSave);
 
+  // Dismiss button — hides toast, keeps draft data intact
+  const draftDismissBtn = document.getElementById('draftDismissBtn');
+  if (draftDismissBtn) {
+    draftDismissBtn.addEventListener('click', () => showDraftBanner(false));
+  }
+
   // Draft clear button — uses dedicated modal (no DOM mutation)
   const clearDraftBtn = document.getElementById('clearDraftBtn');
   const draftClearModal      = document.getElementById('draftClearModal');

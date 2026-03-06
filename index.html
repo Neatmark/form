@@ -51,33 +51,8 @@
 <!-- Honeypot -->
 <input type="text" name="website" value="" autocomplete="off" tabindex="-1" aria-hidden="true" class="honeypot">
 
-<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-     PAGE STEPPER BAR
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
-<div class="page-stepper" id="pageStepper" role="navigation" aria-label="Form steps">
-  <button class="step-btn active" type="button" data-step="1" title="Your Info">
-    <span class="step-num">1</span>
-    <span class="step-label" data-i18n="form.steps.step1">Your Info</span>
-  </button>
-  <div class="step-connector" id="connector1"></div>
-  <button class="step-btn" type="button" data-step="2" title="Brand Foundation">
-    <span class="step-num">2</span>
-    <span class="step-label" data-i18n="form.steps.step2">Foundation</span>
-  </button>
-  <div class="step-connector" id="connector2"></div>
-  <button class="step-btn" type="button" data-step="3" title="Visual Direction">
-    <span class="step-num">3</span>
-    <span class="step-label" data-i18n="form.steps.step3">Visual</span>
-  </button>
-  <div class="step-connector" id="connector3"></div>
-  <button class="step-btn" type="button" data-step="4" title="Project & Scope">
-    <span class="step-num">4</span>
-    <span class="step-label" data-i18n="form.steps.step4">Project</span>
-  </button>
-</div>
-
 <!-- HEADER -->
-<header class="site-header page">
+<header class="site-header page" role="banner">
   <div class="logo-wrap">
     <img src="assets/logo.png" alt="MERQ logo">
   </div>
@@ -120,6 +95,30 @@
   </div>
 </header>
 
+
+<!-- PAGE STEPPER BAR -->
+<div class="page-stepper" id="pageStepper" role="navigation" aria-label="Form steps">
+  <button class="step-btn active" type="button" data-step="1" title="Your Info">
+    <span class="step-num">1</span>
+    <span class="step-label" data-i18n="form.steps.step1">Your Info</span>
+  </button>
+  <div class="step-connector" id="connector1"></div>
+  <button class="step-btn" type="button" data-step="2" title="Brand Foundation">
+    <span class="step-num">2</span>
+    <span class="step-label" data-i18n="form.steps.step2">Foundation</span>
+  </button>
+  <div class="step-connector" id="connector2"></div>
+  <button class="step-btn" type="button" data-step="3" title="Visual Direction">
+    <span class="step-num">3</span>
+    <span class="step-label" data-i18n="form.steps.step3">Visual</span>
+  </button>
+  <div class="step-connector" id="connector3"></div>
+  <button class="step-btn" type="button" data-step="4" title="Project &amp; Scope">
+    <span class="step-num">4</span>
+    <span class="step-label" data-i18n="form.steps.step4">Project</span>
+  </button>
+</div>
+
 <!-- FORM BODY -->
 <div class="page">
 
@@ -134,15 +133,6 @@
         <i data-lucide="edit-3" class="icon icon-edit"></i>
       </span>
       <span class="edit-mode-text" data-i18n="form.editMode.banner">You are editing a previous submission. Make your changes and click Submit.</span>
-    </div>
-
-    <!-- DRAFT BANNER -->
-    <div class="draft-banner" id="draftBanner">
-      <span class="draft-banner-icon" aria-hidden="true">
-        <i data-lucide="file-text" class="icon icon-draft"></i>
-      </span>
-      <span class="draft-banner-text" data-i18n="form.draftBanner">You have a saved draft, your previous answers have been restored.</span>
-      <button class="clear-draft-btn" type="button" id="clearDraftBtn" data-i18n="form.clearDraftBtn">Clear Draft</button>
     </div>
 
     <!-- HERO -->
@@ -567,5 +557,13 @@
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
 <script src="/assets/lucide.local.js"></script>
 <script src="assets/script.js"></script>
+<!-- DRAFT TOAST: outside all layout, never causes gaps -->
+<div class="draft-banner" id="draftBanner" role="status" aria-live="polite">
+  <span class="draft-banner-text" data-i18n="form.draftBanner">You have a saved draft.</span>
+  <button class="clear-draft-btn" type="button" id="clearDraftBtn" data-i18n="form.clearDraftBtn">Clear draft</button>
+  <button class="draft-dismiss-btn" type="button" id="draftDismissBtn" aria-label="Dismiss">
+    <i data-lucide="x" class="icon"></i>
+  </button>
+</div>
 </body>
 </html>
