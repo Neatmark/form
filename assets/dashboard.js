@@ -658,7 +658,7 @@ function sectionHeader(icon, title, opts = {}) {
 }
 
 function isQuestionnaireKey(key) {
-  return /^q\d+-/i.test(key);
+  return /^q\d+-/i.test(key) || VALID_QUESTIONNAIRE_FIELDS.has(key);
 }
 
 /**
@@ -677,6 +677,7 @@ const VALID_QUESTIONNAIRE_FIELDS = new Set([
   'launch_context',
   'brands_admired',
   'color_direction',
+  'color_choice',
   'colors_to_avoid',
   'aesthetic',
   'aesthetic_description',
@@ -702,6 +703,7 @@ const QUESTIONNAIRE_FIELD_ORDER = {
   'launch_context':        8,
   'brands_admired':        9,
   'color_direction':      10,
+  'color_choice':         10.5,
   'colors_to_avoid':      11,
   'aesthetic':            12,
   'aesthetic_description': 12.5,
@@ -727,6 +729,7 @@ const QUESTIONNAIRE_DISPLAY_NUM = {
   'launch_context':        '08',
   'brands_admired':        '09',
   'color_direction':       '10',
+  'color_choice':          '10b',
   'colors_to_avoid':       '11',
   'aesthetic':             '12',
   'aesthetic_description': '12b',
@@ -753,6 +756,7 @@ function getFieldLabel(key) {
     'launch_context':        'Launch Context',
     'brands_admired':        'Admired Brands',
     'color_direction':       'Color Directions',
+    'color_choice':          'Specific Color in Mind',
     'colors_to_avoid':       'Colors to Avoid',
     'aesthetic':             'Aesthetic Direction',
     'aesthetic_description': 'Aesthetic Notes',
@@ -776,6 +780,7 @@ function getFieldLabel(key) {
     'launch_context':        'detail.questionnaire.labels.qlaunch',
     'brands_admired':        'detail.questionnaire.labels.q8',
     'color_direction':       'detail.questionnaire.labels.q9',
+    'color_choice':          'detail.questionnaire.labels.q9b',
     'colors_to_avoid':       'detail.questionnaire.labels.q10',
     'aesthetic':             'detail.questionnaire.labels.q11',
     'aesthetic_description': 'detail.questionnaire.labels.q11b',
@@ -802,6 +807,7 @@ const QUESTIONNAIRE_FIELD_LABELS = {
   'launch_context':        'Launch Context',
   'brands_admired':        'Admired Brands',
   'color_direction':       'Color Directions',
+  'color_choice':          'Specific Color in Mind',
   'colors_to_avoid':       'Colors to Avoid',
   'aesthetic':             'Aesthetic Direction',
   'aesthetic_description': 'Aesthetic Notes',
@@ -821,7 +827,7 @@ function hasDeliveryDate(submission) {
 
 function hasAnyQuestionnaireResponse(submission) {
   const data = submission?.data || {};
-  const questionnaireEntries = Object.entries(data).filter(([key]) => isQuestionnaireKey(key));
+  const questionnaireEntries = Object.entries(data).filter(([key]) => VALID_QUESTIONNAIRE_FIELDS.has(key));
   return questionnaireEntries.some(([, value]) => Boolean(getDisplayValue(value)));
 }
 
@@ -1987,7 +1993,7 @@ function renderDetailPanel() {
   `;
 
   const questionnaireEntries = Object.entries(data)
-    .filter(([key]) => isQuestionnaireKey(key) && VALID_QUESTIONNAIRE_FIELDS.has(key))
+    .filter(([key]) => VALID_QUESTIONNAIRE_FIELDS.has(key))
     .sort(([a], [b]) => {
       const aKey = questionnaireSortKey(a);
       const bKey = questionnaireSortKey(b);
@@ -3016,6 +3022,7 @@ document.addEventListener('DOMContentLoaded', () => {
       'Q08: Launch Context': 'launch_context',
       'Q09: Admired Brands': 'brands_admired',
       'Q10: Color Directions': 'color_direction',
+      'Q10b: Specific Color in Mind': 'color_choice',
       'Q11: Colors to Avoid': 'colors_to_avoid',
       'Q12: Aesthetic Direction': 'aesthetic',
       'Q12: Aesthetic Notes': 'aesthetic_description',
@@ -3037,6 +3044,7 @@ document.addEventListener('DOMContentLoaded', () => {
       'Q7 — Decision Maker (Other)': 'decision_maker_other',
       'Q8 — Admired Brands': 'brands_admired',
       'Q9 — Color Directions': 'color_direction',
+      'Q9b — Specific Color in Mind': 'color_choice',
       'Q10 — Colors To Avoid': 'colors_to_avoid',
       'Q11 — Aesthetic Direction': 'aesthetic',
       'Q11 — Additional Aesthetic Notes': 'aesthetic_description',
