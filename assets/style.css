@@ -82,7 +82,7 @@ body {
 .site-header {
   display:flex; justify-content:space-between; align-items:center;
   max-width:680px; margin:0 auto; padding:var(--sp3) var(--sp4);
-  position:relative; z-index:100;
+  position:relative; z-index:600;
   border-bottom:1px solid var(--border);
 }
 .logo-wrap img { height:22px; width:auto; display:block; filter:var(--logo-filter,none); }
