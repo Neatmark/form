@@ -21,7 +21,8 @@
 
 @font-face {
   font-family: 'Mona Sans';
-  src: url('MonaSansVF.ttf') format('truetype');
+  src: url('MonaSansVF.woff2') format('woff2'),
+       url('MonaSansVF.ttf')   format('truetype');
   font-weight: 200 900;
   font-style: normal;
   font-display: swap;
