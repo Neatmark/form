@@ -266,9 +266,19 @@
       if (!REDUCED) obs.observe(footer); else footer.classList.add('is-revealed');
     }
 
-    /* ── Dashboard elements ── */
-    ctx.querySelectorAll('.login-card, .submission-list-item, .stat-card').forEach(function (el, i) {
-      el.style.setProperty('--reveal-delay', (i * 0.06) + 's');
+    /* ── Dashboard static elements (present on load) ── */
+    ctx.querySelectorAll('.login-card').forEach(function (el) {
+      el.style.setProperty('--reveal-delay', '0s');
+      if (!REDUCED) obs.observe(el); else el.classList.add('is-revealed');
+    });
+
+    ctx.querySelectorAll('.stat-card').forEach(function (el, i) {
+      el.style.setProperty('--reveal-delay', (0.15 + i * 0.06) + 's');
+      if (!REDUCED) obs.observe(el); else el.classList.add('is-revealed');
+    });
+
+    ctx.querySelectorAll('.filters, .stats').forEach(function (el, i) {
+      el.style.setProperty('--reveal-delay', (0.1 + i * 0.07) + 's');
       if (!REDUCED) obs.observe(el); else el.classList.add('is-revealed');
     });
 
@@ -281,6 +291,95 @@
 
   function initReveals() {
     markAndObserve(document);
+    initDashboardCardObserver();
+  }
+
+  /* ── Dashboard: watch for dynamically injected submission cards ──
+     dashboard.js creates .submission-card elements at runtime.
+     A MutationObserver on .submissions-grid catches each batch
+     and staggers their reveal as they land in the DOM.           */
+  function initDashboardCardObserver() {
+    var isDash = !!document.getElementById('dashboardScreen');
+    if (!isDash) return;
+
+    /* When dashboard screen gains .visible class (after login),
+       trigger reveals for stat cards and filters that were
+       invisible because they were inside a display:none container */
+    var dashScreen = document.getElementById('dashboardScreen');
+    if (dashScreen) {
+      var dashVisibleObserver = new MutationObserver(function () {
+        if (dashScreen.classList.contains('visible')) {
+          dashVisibleObserver.disconnect();
+          setTimeout(function () {
+            dashScreen.querySelectorAll('.stat-card, .filters, .stats').forEach(function (el, i) {
+              el.style.setProperty('--reveal-delay', (i * 0.07) + 's');
+              el.classList.add('is-revealed');
+            });
+          }, 80);
+        }
+      });
+      dashVisibleObserver.observe(dashScreen, { attributes: true, attributeFilter: ['class'] });
+
+      /* If already visible on load */
+      if (dashScreen.classList.contains('visible')) {
+        dashScreen.querySelectorAll('.stat-card, .filters, .stats').forEach(function (el, i) {
+          el.style.setProperty('--reveal-delay', (i * 0.07) + 's');
+          el.classList.add('is-revealed');
+        });
+      }
+    }
+
+    function revealCard(card, delay) {
+      card.style.setProperty('--reveal-delay', delay + 's');
+      if (REDUCED) {
+        card.classList.add('is-revealed');
+      } else {
+        getObserver().observe(card);
+      }
+    }
+
+    /* Observe the grid container once it exists */
+    function attachGridObserver() {
+      var grid = document.querySelector('.submissions-grid');
+      if (!grid) return;
+
+      /* Reveal any cards already in the grid */
+      grid.querySelectorAll('.submission-card:not(.is-revealed)').forEach(function (card, i) {
+        revealCard(card, i * 0.05);
+      });
+
+      /* Watch for new cards being added */
+      var cardObserver = new MutationObserver(function (mutations) {
+        var newCards = [];
+        mutations.forEach(function (m) {
+          m.addedNodes.forEach(function (node) {
+            if (node.nodeType === 1 && node.classList.contains('submission-card')) {
+              newCards.push(node);
+            }
+          });
+        });
+        newCards.forEach(function (card, i) {
+          revealCard(card, i * 0.05);
+        });
+      });
+
+      cardObserver.observe(grid, { childList: true });
+    }
+
+    /* If grid isn't in DOM yet (dashboard screen hidden on load),
+       watch document.body until it appears */
+    var grid = document.querySelector('.submissions-grid');
+    if (grid) {
+      attachGridObserver();
+    } else {
+      var bodyObserver = new MutationObserver(function (mutations) {
+        if (document.querySelector('.submissions-grid')) {
+          bodyObserver.disconnect();
+          attachGridObserver();
+        }
+      });
+      bodyObserver.observe(document.body, { childList: true, subtree: true });
+    }
   }
 
 
@@ -310,22 +409,63 @@
       }
     });
 
-    /* Subsequent pages: standard IntersectionObserver treatment */
+    /* Subsequent pages: sequenced cascade reveal on navigation */
     var pageObserver = new MutationObserver(function (mutations) {
       mutations.forEach(function (m) {
         if (m.type === 'attributes' && m.attributeName === 'class') {
           var page = m.target;
           if (page.classList.contains('active') && !seen.has(page.id)) {
             seen.add(page.id);
-            markAndObserve(page);
-            /* Immediately reveal top elements without needing scroll */
-            setTimeout(function () {
-              page.querySelectorAll('.merq-reveal, .merq-reveal-label').forEach(function (el) {
-                if (!el.classList.contains('is-revealed')) {
-                  el.classList.add('is-revealed');
+
+            /* Stamp reveal classes directly — do NOT call markAndObserve here.
+               markAndObserve hands elements to IntersectionObserver which fires
+               immediately for in-viewport elements, racing with our stagger.
+               We own the full reveal sequence for wizard pages. */
+            var labelEls = Array.from(page.querySelectorAll(
+              '.client-field > label, .q-label, .q-hint, ' +
+              '.section-badge, .section-title, .hero-badge, .hero-desc'
+            ));
+            labelEls.forEach(function (el) {
+              if (!el.classList.contains('merq-reveal-label')) {
+                el.classList.add('merq-reveal-label');
+              }
+            });
+
+            page.querySelectorAll('.q-card, .client-card').forEach(function (card) {
+              card.querySelectorAll(
+                'input:not([type="checkbox"]):not([type="radio"]):not(.honeypot), ' +
+                'textarea, select, .check-grid, .q20-upload-area'
+              ).forEach(function (el) {
+                if (!el.classList.contains('merq-reveal')) {
+                  el.classList.add('merq-reveal');
                 }
               });
-            }, 60);
+            });
+
+            page.querySelectorAll('.section-head, .page-nav-buttons, .submit-cluster, .submit-notes').forEach(function (el) {
+              if (!el.classList.contains('merq-reveal')) {
+                el.classList.add('merq-reveal');
+              }
+            });
+
+            /* Now collect everything in DOM order and assign delays */
+            var allReveal = Array.from(page.querySelectorAll(
+              '.merq-reveal, .merq-reveal-label, .merq-reveal-rule'
+            ));
+
+            allReveal.forEach(function (el, i) {
+              el.style.setProperty('--reveal-delay', (i * 0.04) + 's');
+            });
+
+            /* Two rAFs: first lets the page slide finish painting,
+               second triggers all transitions with their stagger delays */
+            requestAnimationFrame(function () {
+              requestAnimationFrame(function () {
+                allReveal.forEach(function (el) {
+                  el.classList.add('is-revealed');
+                });
+              });
+            });
           }
         }
       });

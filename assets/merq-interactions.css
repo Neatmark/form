@@ -46,8 +46,8 @@ html {
   translate: -50% -50%;
   will-change: left, top;
   transition:
-    width        0.3s cubic-bezier(0.16, 1, 0.3, 1),
-    height       0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    width        0.3s ease,
+    height       0.3s ease,
     background   0.3s ease,
     opacity      0.3s ease;
 }
@@ -94,7 +94,7 @@ body.cursor--clicking #cursor-ring {
   background: #0D0D0D;
   z-index: 99990;
   pointer-events: none;
-  animation: curtainLift 0.9s cubic-bezier(0.19, 1, 0.22, 1) 0.08s forwards;
+  animation: curtainLift 0.9s ease 0.08s forwards;
 }
 
 @keyframes curtainLift {
@@ -113,23 +113,23 @@ body.cursor--clicking #cursor-ring {
   opacity: 0;
   transform: translateY(10px);
   transition:
-    opacity   0.6s cubic-bezier(0.16, 1, 0.3, 1) var(--reveal-delay, 0s),
-    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) var(--reveal-delay, 0s);
+    opacity   0.35s ease var(--reveal-delay, 0s),
+    transform 0.35s ease var(--reveal-delay, 0s);
 }
 
 .merq-reveal-label {
   opacity: 0;
   transform: translateY(6px);
   transition:
-    opacity   0.5s cubic-bezier(0.16, 1, 0.3, 1) var(--reveal-delay, 0s),
-    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) var(--reveal-delay, 0s);
+    opacity   0.28s ease var(--reveal-delay, 0s),
+    transform 0.28s ease var(--reveal-delay, 0s);
 }
 
 /* Horizontal rules: scaleX 0 → 1 from left */
 .merq-reveal-rule {
   transform-origin: left;
   transform: scaleX(0);
-  transition: transform 0.8s cubic-bezier(0.76, 0, 0.24, 1) var(--reveal-delay, 0s);
+  transition: transform 0.45s ease var(--reveal-delay, 0s);
 }
 html[dir="rtl"] .merq-reveal-rule {
   transform-origin: right;
@@ -163,7 +163,7 @@ html[dir="rtl"] .merq-reveal-rule {
 .word-inner {
   display: inline-block;
   transform: translateY(108%);
-  animation: wordSlide 0.7s cubic-bezier(0.16, 1, 0.3, 1) var(--word-delay, 0.55s) forwards;
+  animation: wordSlide 0.7s ease var(--word-delay, 0.55s) forwards;
 }
 
 @keyframes wordSlide {
@@ -248,7 +248,7 @@ textarea:not(:focus):not(:placeholder-shown) {
   overflow: hidden !important;
   isolation: isolate;
   transition:
-    transform 0.15s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    transform 0.15s ease !important;
 }
 
 /* Keep text above the wipe */
@@ -265,7 +265,7 @@ textarea:not(:focus):not(:placeholder-shown) {
   background: var(--accent);
   transform: scaleX(0);
   transform-origin: left;
-  transition: transform 0.35s cubic-bezier(0.76, 0, 0.24, 1);
+  transition: transform 0.35s ease;
   z-index: 0;
 }
 
@@ -288,7 +288,7 @@ textarea:not(:focus):not(:placeholder-shown) {
   gap: 10px;
   position: relative;
   z-index: 1;
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.3s ease;
 }
 
 .submit-btn:hover .merq-btn-inner {
@@ -360,7 +360,7 @@ textarea:not(:focus):not(:placeholder-shown) {
   height: 1px;
   width: 0;
   background: var(--text-hi);
-  transition: width 0.8s cubic-bezier(0.76, 0, 0.24, 1) 0.15s;
+  transition: width 0.8s ease 0.15s;
 }
 
 #merq-success.is-revealed .merq-success-rule {
@@ -386,7 +386,7 @@ textarea:not(:focus):not(:placeholder-shown) {
   transform: translateY(10px);
   transition:
     opacity   0.5s ease 0.75s,
-    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.75s;
+    transform 0.5s ease 0.75s;
 }
 
 .merq-success-headline {
@@ -403,8 +403,8 @@ textarea:not(:focus):not(:placeholder-shown) {
   opacity: 0;
   transform: translateY(20px);
   transition:
-    opacity   0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.85s,
-    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.85s;
+    opacity   0.7s ease 0.85s,
+    transform 0.7s ease 0.85s;
 }
 
 #merq-success.is-revealed .merq-success-eyebrow,
@@ -456,10 +456,10 @@ textarea:not(:focus):not(:placeholder-shown) {
 }
 .form-page.active {
   display: block;
-  animation: pageIn 0.18s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: pageIn 0.18s ease both;
 }
 .form-page.slide-back.active {
-  animation: pageInBack 0.18s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: pageInBack 0.18s ease both;
 }
 
 @keyframes pageIn {
@@ -472,6 +472,8 @@ textarea:not(:focus):not(:placeholder-shown) {
 }
 
 
+
+
 /* ══════════════════════════════════════════════════════════
    11. MICRO-UPGRADES — existing elements
    Small, invisible improvements that compound the quality.
@@ -481,9 +483,9 @@ textarea:not(:focus):not(:placeholder-shown) {
 .check-label input[type="checkbox"],
 .check-label input[type="radio"] {
   transition:
-    background    0.15s cubic-bezier(0.34, 1.56, 0.64, 1),
+    background    0.15s ease,
     border-color  0.15s ease,
-    transform     0.15s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+    transform     0.15s ease !important;
 }
 .check-label input[type="checkbox"]:checked,
 .check-label input[type="radio"]:checked {
@@ -493,10 +495,10 @@ textarea:not(:focus):not(:placeholder-shown) {
 /* Step number spring */
 .step-num {
   transition:
-    background   0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+    background   0.3s ease,
     border-color 0.3s ease,
     color        0.2s ease,
-    transform    0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+    transform    0.3s ease !important;
 }
 
 /* Wizard nav buttons: press */
@@ -505,7 +507,7 @@ textarea:not(:focus):not(:placeholder-shown) {
     background   0.18s ease,
     border-color 0.18s ease,
     color        0.18s ease,
-    transform    0.15s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    transform    0.15s ease !important;
 }
 .wizard-btn:active {
   transform: scale(0.97);
@@ -513,7 +515,7 @@ textarea:not(:focus):not(:placeholder-shown) {
 
 /* Social link lift */
 .footer-social-link {
-  transition: color 0.18s ease, transform 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transition: color 0.18s ease, transform 0.2s ease !important;
 }
 .footer-social-link:hover {
   transform: translateY(-2px);
@@ -533,7 +535,7 @@ textarea:not(:focus):not(:placeholder-shown) {
   transform: translateY(8px);
   transition:
     opacity   0.5s ease var(--reveal-delay, 0s),
-    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) var(--reveal-delay, 0s);
+    transform 0.5s ease var(--reveal-delay, 0s);
 }
 
 .login-card.is-revealed,

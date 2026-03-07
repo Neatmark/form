@@ -3216,3 +3216,358 @@ html[dir="rtl"] .dash-lang-menu {
   margin-top: 6px;
   min-height: 16px;
 }
+
+
+/* ══════════════════════════════════════════════════════════════
+   MERQ DASHBOARD — Consistency + Animation Layer
+   Brings dashboard in line with the form's type system and
+   adds the same interaction quality applied to index.html.
+   All tokens match style.css exactly.
+══════════════════════════════════════════════════════════════ */
+
+/* ── 1. BASE FONT ALIGNMENT ──────────────────────────────────
+   Form body: 16px. Dashboard body was 15px. Align everything. */
+
+body {
+  font-size: 16px;
+}
+
+/* ── 2. FORM CONTROLS — size + interaction parity ─────────────
+   Checkboxes, radios, selects, inputs in edit mode all
+   had 13px text. Form uses 16px. Fix all of them. */
+
+.edit-check-label {
+  font-size: 16px;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.edit-check-label input[type="checkbox"],
+.edit-check-label input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.15s ease, accent-color 0s;
+}
+
+.edit-check-label input[type="checkbox"]:checked,
+.edit-check-label input[type="radio"]:checked {
+  transform: scale(1.08);
+}
+
+.edit-input,
+.edit-textarea {
+  font-size: 16px;
+  padding: 12px 14px;
+  transition:
+    border-color 0.2s ease,
+    box-shadow   0.2s ease,
+    background   0.2s ease;
+}
+
+.edit-input:focus,
+.edit-textarea:focus {
+  border-color: var(--input-focus);
+  box-shadow: 0 2px 0 0 var(--input-focus);
+}
+
+/* Delivery dropdown trigger */
+.edit-delivery-btn {
+  font-size: 16px;
+  padding: 12px 14px;
+}
+
+.edit-delivery-option {
+  font-size: 16px;
+  padding: 12px 14px;
+  transition: background 0.15s ease;
+}
+
+/* Sort, export, date filter options */
+.sort-option,
+.export-option,
+.date-filter-option,
+.card-export-option {
+  font-size: 16px;
+}
+
+/* Search box */
+.search-box {
+  font-size: 16px;
+}
+
+.date-filter-btn {
+  font-size: 16px;
+}
+
+/* Detail values throughout modal */
+.detail-value,
+.overview-value,
+.qa-value,
+.response-value,
+.history-date {
+  font-size: 16px;
+}
+
+/* Q6 spectrum numbers */
+.q6-num-btn {
+  font-size: 16px;
+}
+
+/* Detail chip labels */
+.detail-chip {
+  font-size: 14px;
+}
+
+/* Stat labels */
+.stat-label {
+  font-size: 12px;
+}
+
+/* ── 3. INPUT HOVER WARMTH — matches form ─────────────────── */
+
+.edit-input:not(:focus):hover,
+.edit-textarea:not(:focus):hover,
+.search-box:not(:focus):hover {
+  background: var(--surface-2);
+}
+
+.search-box:focus {
+  border-color: var(--input-focus);
+  box-shadow: 0 2px 0 0 var(--input-focus);
+  outline: none;
+}
+
+/* ── 4. BUTTON TRANSITIONS ──────────────────────────────────── */
+
+.btn,
+.card-edit-btn,
+.card-export-btn,
+.modal-icon-btn,
+.modal-close,
+.btn-approve,
+.btn-reject,
+.logo-remove-btn {
+  transition:
+    background   0.18s ease,
+    border-color 0.18s ease,
+    color        0.18s ease,
+    transform    0.15s ease !important;
+}
+
+.btn:active,
+.card-edit-btn:active,
+.card-export-btn:active,
+.modal-icon-btn:active {
+  transform: scale(0.97) !important;
+}
+
+/* ── 5. SUBMISSION CARDS — override existing slideUp ─────────
+   Replace the CSS animation with the IntersectionObserver
+   pattern from merq-interactions.js. Cards start invisible
+   and are revealed on scroll/load by JS adding .is-revealed.  */
+
+.submission-card {
+  animation: none;
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity       0.35s ease var(--reveal-delay, 0s),
+    transform     0.35s ease var(--reveal-delay, 0s),
+    border-color  0.2s  ease,
+    background    0.2s  ease;
+}
+
+.submission-card.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Hover lift — architectural, no shadow */
+.submission-card:hover {
+  transform: translateY(-1px);
+}
+
+/* ── 6. STAT CARDS ─────────────────────────────────────────── */
+
+.stat-card {
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity      0.35s ease var(--reveal-delay, 0s),
+    transform    0.35s ease var(--reveal-delay, 0s),
+    border-color 0.15s ease;
+}
+
+.stat-card.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── 7. LOGIN CARD ─────────────────────────────────────────── */
+
+.login-card {
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity   0.4s ease 0.3s,
+    transform 0.4s ease 0.3s;
+}
+
+.login-card.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── 8. HEADER ──────────────────────────────────────────────── */
+
+.site-header {
+  animation: dashHeaderIn 0.5s ease 0.15s both;
+}
+
+@keyframes dashHeaderIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── 9. FILTERS + STATS REVEAL ──────────────────────────────── */
+
+.filters,
+.stats {
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity   0.35s ease,
+    transform 0.35s ease;
+}
+
+.filters.is-revealed,
+.stats.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── 10. MODAL ENTRANCE ─────────────────────────────────────── */
+
+.modal.active .modal-content {
+  animation: modalIn 0.25s ease both;
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Modal section body reveal */
+.detail-section-body {
+  animation: fadeSlideIn 0.2s ease both;
+}
+
+/* ── 11. DROPDOWN MENUS — consistent open animation ─────────── */
+
+.sort-menu.open,
+.export-menu,
+.card-export-menu.open,
+.edit-delivery-menu.open,
+.date-filter-menu.open,
+.dash-lang-menu.open {
+  animation: dropIn 0.16s ease both;
+}
+
+/* ── 12. DETAIL SECTION CHEVRON ─────────────────────────────── */
+
+.detail-section-chevron {
+  transition: transform 0.2s ease;
+}
+
+/* ── 13. Q6 NUM BUTTON INTERACTION ──────────────────────────── */
+
+.q6-edit-spectrums .q6-num-btn {
+  transition:
+    background   0.15s ease,
+    border-color 0.15s ease,
+    transform    0.12s ease;
+}
+
+/* ── 14. IMAGE THUMBNAILS ───────────────────────────────────── */
+
+.q20-dash-thumb-wrap {
+  transition: transform 0.2s ease;
+}
+
+.q20-dash-thumb-wrap:hover {
+  transform: scale(1.02);
+}
+
+.q20-dash-thumb {
+  transition: filter 0.2s ease;
+}
+
+.q20-dash-thumb-overlay {
+  transition: opacity 0.2s ease;
+}
+
+/* ── 15. SUBMISSION CARD SELECT CONTROL ─────────────────────── */
+
+.select-control {
+  transition:
+    border-color 0.15s ease,
+    background   0.15s ease,
+    opacity      0.15s ease;
+}
+
+/* ── 16. HISTORY TIMELINE ───────────────────────────────────── */
+
+.history-node {
+  transition: opacity 0.2s ease;
+}
+
+/* ── 17. REDUCED MOTION SAFETY ───────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .submission-card,
+  .stat-card,
+  .login-card,
+  .filters,
+  .stats {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+  }
+  .site-header {
+    animation: none !important;
+  }
+  .modal.active .modal-content {
+    animation: none !important;
+  }
+}
+
+/* ── PATCH: submission-card hover fix ───────────────────────────
+   translateY on hover conflicts with the reveal transform.
+   Use border-left as the hover signal instead — consistent
+   with the existing border-color: var(--mid) on hover.       */
+
+.submission-card:hover {
+  transform: translateY(0) !important;
+}
+
+/* Once revealed, hover shows the left accent border (already in
+   base CSS as border-color: var(--mid)) — no extra rule needed. */
+
+/* ── PATCH: dashboard-screen hidden → visible transition ────────
+   .dashboard-screen starts display:none until JS sets .visible.
+   Stat cards and filters need to be observed AFTER the screen
+   becomes visible — the CSS opacity:0 initial state handles this
+   gracefully since elements are invisible until .is-revealed.   */
+
+.dashboard-screen.visible .stat-card,
+.dashboard-screen.visible .filters,
+.dashboard-screen.visible .stats {
+  /* Already handled by IntersectionObserver in JS */
+}
+
+/* ── PATCH: edit-check-label font size mobile ───────────────── */
+@media (max-width: 600px) {
+  .edit-check-label {
+    font-size: 15px;
+  }
+}
