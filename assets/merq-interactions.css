@@ -25,64 +25,19 @@ html {
    State classes toggled by JS on <body>.
 ══════════════════════════════════════════════════════════ */
 
-/* Hide system cursor everywhere */
-*, *::before, *::after {
+/* Hide system cursor — only when JS confirms custom cursor is active.
+   JS adds html.has-custom-cursor when: not a touch device AND
+   prefers-reduced-motion is not set. This ensures accessibility
+   settings (reduced-motion, system cursor overrides) are respected. */
+html.has-custom-cursor *,
+html.has-custom-cursor *::before,
+html.has-custom-cursor *::after {
   cursor: none !important;
 }
 
-#cursor-dot {
-  display: none !important;
-}
-
-#cursor-ring {
-  position: fixed;
-  width: 22px;
-  height: 22px;
-  background: var(--text-hi) !important;
-  border: none;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 2147483647 !important;
-  translate: -50% -50%;
-  will-change: left, top;
-  opacity: 1 !important;
-  visibility: visible !important;
-  display: block !important;
-  transition:
-    width        0.3s ease,
-    height       0.3s ease,
-    background   0.3s ease,
-    opacity      0.3s ease;
-}
-
-/* State: hovering a text input */
-body.cursor--input #cursor-ring {
-  width: 28px;
-  height: 28px;
-  background: var(--accent) !important;
-}
-
-/* State: hovering submit button */
-body.cursor--submit #cursor-ring {
-  width: 28px;
-  height: 28px;
-  background: var(--accent) !important;
-  opacity: 1 !important;
-}
-
-/* State: hovering a label */
-body.cursor--label #cursor-ring {
-  width: 26px;
-  height: 26px;
-  opacity: 0.5 !important;
-}
-
-/* State: mousedown click compress */
-body.cursor--clicking #cursor-ring {
-  width: 14px;
-  height: 14px;
-  transition-duration: 0.06s;
-}
+/* #cursor-dot and #cursor-ring now live inside a Shadow DOM (#merq-cursor-host).
+   Their styles are injected inline by JS. External CSS cannot reach them.
+   State classes (cursor--input etc.) are read via :host-context() inside shadow DOM. */
 
 
 /* ══════════════════════════════════════════════════════════
@@ -562,7 +517,12 @@ textarea:not(:focus):not(:placeholder-shown) {
     transition-duration: 0.01ms !important;
     animation-delay: 0ms !important;
   }
-  #cursor-dot, #cursor-ring, #merq-curtain { display: none !important; }
+  /* Hide the shadow host — this hides the cursor ring inside it */
+  #merq-cursor-host, #merq-curtain { display: none !important; }
+  /* Restore system cursor — cursor: none is gated on .has-custom-cursor
+     (JS never adds that class when REDUCED is true) but this is a belt-
+     and-suspenders fallback in case the class somehow leaks through. */
+  *, *::before, *::after { cursor: auto !important; }
   .word-inner { transform: none !important; animation: none !important; }
   .merq-reveal, .merq-reveal-label, .merq-reveal-rule,
   .login-card, .submission-list-item, .stat-card, .legal-content > * {
@@ -582,9 +542,7 @@ textarea:not(:focus):not(:placeholder-shown) {
 html.is-touch-device *, html.is-touch-device *::before, html.is-touch-device *::after {
   cursor: auto !important;
 }
-html.is-touch-device #cursor-dot,
-html.is-touch-device #cursor-ring {
+html.is-touch-device #merq-cursor-host {
   display: none !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
 }
+

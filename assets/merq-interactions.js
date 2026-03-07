@@ -20,7 +20,20 @@
 
   if (TOUCH) {
     document.documentElement.classList.add('is-touch-device');
+  } else if (!REDUCED) {
+    /* Activate custom cursor mode — CSS gates cursor:none on this class */
+    document.documentElement.classList.add('has-custom-cursor');
   }
+
+  /* Listen for runtime changes to prefers-reduced-motion (e.g. user
+     toggles OS accessibility setting while the page is open). */
+  window.matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', function (e) {
+    if (e.matches) {
+      document.documentElement.classList.remove('has-custom-cursor');
+      var host = document.getElementById('merq-cursor-host');
+      if (host) host.style.display = 'none';
+    }
+  });
 
   /* ── Touch fallback — kills cursor if media query was wrong ─── */
   /* Chrome on Android fires ONE synthetic mousemove on first touchstart  */
@@ -33,10 +46,9 @@
   window.addEventListener('touchstart', function killCursorOnTouch(e) {
     if (e.touches && e.touches.length > 1) return; // pinch — ignore
     document.documentElement.classList.add('is-touch-device');
-    var dot  = document.getElementById('cursor-dot');
-    var ring = document.getElementById('cursor-ring');
-    if (dot)  { dot.style.display  = 'none'; }
-    if (ring) { ring.style.display = 'none'; }
+    document.documentElement.classList.remove('has-custom-cursor');
+    var host = document.getElementById('merq-cursor-host');
+    if (host) host.style.display = 'none';
     window.removeEventListener('touchstart', killCursorOnTouch, { capture: true });
   }, { capture: true, passive: true });
 
@@ -72,12 +84,79 @@
       document.body.insertBefore(curtain, document.body.firstChild);
     }
 
-    /* Custom cursor */
-    if (!document.getElementById('cursor-dot') && !TOUCH) {
-      var dot  = document.createElement('div'); dot.id  = 'cursor-dot';
-      var ring = document.createElement('div'); ring.id = 'cursor-ring';
-      document.body.appendChild(dot);
-      document.body.appendChild(ring);
+    /* Custom cursor — lives inside a Shadow DOM so zoom extensions
+       (e.g. Pinch-to-Zoom) cannot freeze its position.
+       The extension's configure() uses document.querySelectorAll('*')
+       which cannot pierce shadow DOM, so the ring element is
+       invisible to it and its MutationObserver never fires on it.
+       The HOST element (#merq-cursor-host) IS found by the extension
+       and gets its top/left frozen at 0,0 — which is exactly where
+       we want it. The ring inside uses position:fixed driven by
+       style.left / style.top set each rAF, completely untouched. */
+    if (!document.getElementById('merq-cursor-host') && !TOUCH) {
+      var host = document.createElement('div');
+      host.id  = 'merq-cursor-host';
+
+      var shadow = host.attachShadow({ mode: 'open' });
+
+      /* Inject ring styles inside shadow DOM.
+         :host-context() reads class state from body (cursor--input etc.)
+         CSS custom props (--text-hi, --accent) are inherited and
+         pierce shadow DOM boundaries automatically. */
+      var cursorStyle = document.createElement('style');
+      cursorStyle.textContent =
+        ':host {' +
+        '  all: initial;' +
+        '  position: fixed;' +
+        '  top: 0;' +
+        '  left: 0;' +
+        '  width: 0;' +
+        '  height: 0;' +
+        '  overflow: visible;' +
+        '  pointer-events: none;' +
+        '  z-index: 2147483647;' +
+        '}' +
+        '#cursor-ring {' +
+        '  position: fixed;' +
+        '  width: 22px;' +
+        '  height: 22px;' +
+        '  background: var(--text-hi, #0D0D0D);' +
+        '  border-radius: 50%;' +
+        '  pointer-events: none;' +
+        '  translate: -50% -50%;' +
+        '  will-change: left, top;' +
+        '  transition:' +
+        '    width  0.3s ease,' +
+        '    height 0.3s ease,' +
+        '    background 0.3s ease,' +
+        '    opacity 0.3s ease;' +
+        '}' +
+        /* State: text input */
+        ':host-context(body.cursor--input) #cursor-ring,' +
+        ':host-context(body.cursor--submit) #cursor-ring {' +
+        '  width: 28px;' +
+        '  height: 28px;' +
+        '  background: var(--accent, #0066FF);' +
+        '}' +
+        /* State: label hover */
+        ':host-context(body.cursor--label) #cursor-ring {' +
+        '  width: 26px;' +
+        '  height: 26px;' +
+        '  opacity: 0.5;' +
+        '}' +
+        /* State: mousedown */
+        ':host-context(body.cursor--clicking) #cursor-ring {' +
+        '  width: 14px;' +
+        '  height: 14px;' +
+        '  transition-duration: 0.06s;' +
+        '}';
+
+      var ring = document.createElement('div');
+      ring.id = 'cursor-ring';
+
+      shadow.appendChild(cursorStyle);
+      shadow.appendChild(ring);
+      document.body.appendChild(host);
     }
 
     /* Success overlay — only on form page */
@@ -105,44 +184,59 @@
 
   /* ── Zoom-extension fix ─────────────────────────────────────
      Zoom extensions (Pinch-to-Zoom, Bento Zoom, etc.) apply
-     transform:scale() or CSS zoom to <body>. When body has a
-     CSS transform, position:fixed children are no longer in
-     viewport space — they're in body's scaled CSS space.
-     clientX/clientY are still raw viewport pixels.
+     transform:scale() or CSS zoom to <body> or <html>. When
+     either has a CSS transform, position:fixed children are no
+     longer in viewport space — they're in that element's scaled
+     CSS space. clientX/clientY remain raw viewport pixels.
 
-     Fix: read body.getBoundingClientRect() to get the visual
-     rect, divide by body.offsetWidth for the actual scale.
-     Convert viewport mouse coords → body CSS coords each frame.
-     Fast path: if scale ≈ 1 (no zoom), returns null = no cost.
+     Fix: check both <html> and <body> for a scale mismatch
+     (getBoundingClientRect vs offsetWidth). Whichever one is
+     scaled, use it for the coordinate conversion.
+     Fast path: if neither is scaled (≈1), returns null.
   ══════════════════════════════════════════════════════════ */
   function getBodyZoom() {
-    var b    = document.body;
-    var rect = b.getBoundingClientRect();
-    var ow   = b.offsetWidth;
-    var oh   = b.offsetHeight;
-    if (!ow || !oh) return null;
-    var sx = rect.width  / ow;
-    var sy = rect.height / oh;
-    /* Fast path — no scale applied */
-    if (Math.abs(sx - 1) < 0.001 && Math.abs(sy - 1) < 0.001) return null;
-    return { sx: sx, sy: sy, ox: rect.left, oy: rect.top };
+    /* Some extensions scale <html>, others scale <body> — check both */
+    var candidates = [document.documentElement, document.body];
+    for (var i = 0; i < candidates.length; i++) {
+      var el   = candidates[i];
+      var rect = el.getBoundingClientRect();
+      var ow   = el.offsetWidth;
+      var oh   = el.offsetHeight;
+      if (!ow || !oh) continue;
+      var sx = rect.width  / ow;
+      var sy = rect.height / oh;
+      if (Math.abs(sx - 1) > 0.001 || Math.abs(sy - 1) > 0.001) {
+        return { sx: sx, sy: sy, ox: rect.left, oy: rect.top };
+      }
+    }
+    return null; /* Fast path — no zoom active */
   }
 
   function initCursor() {
     if (REDUCED) return;
 
-    var ring = document.getElementById('cursor-ring');
+    /* Ring lives inside shadow DOM — get it through the host's shadowRoot */
+    var host = document.getElementById('merq-cursor-host');
+    var ring = host && host.shadowRoot ? host.shadowRoot.getElementById('cursor-ring') : null;
     if (!ring) return;
 
-    /* Raw viewport coords from mouse only (ignore touch/stylus) */
+    /* Raw viewport coords from mouse only (ignore touch/stylus).
+       Also listen to mousemove as fallback — some zoom extensions
+       suppress pointermove events but still dispatch mousemove. */
     var mouseX = -100, mouseY = -100;
     var ringX  = -100, ringY  = -100;
 
-    document.addEventListener('pointermove', function (e) {
-      if (e.pointerType !== 'mouse') return;
+    function updateMouseCoords(e) {
       mouseX = e.clientX;
       mouseY = e.clientY;
+    }
+
+    document.addEventListener('pointermove', function (e) {
+      if (e.pointerType !== 'mouse') return;
+      updateMouseCoords(e);
     });
+    /* Fallback: mousemove fires even when pointermove is intercepted */
+    document.addEventListener('mousemove', updateMouseCoords, { passive: true });
 
     var LERP = 0.18;
     function tick() {
