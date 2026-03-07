@@ -420,10 +420,6 @@ textarea:not(:focus):not(:placeholder-shown) {
    2px focused vs 1px default = depth system.
 ══════════════════════════════════════════════════════════ */
 
-.client-card {
-  padding-bottom: calc(var(--sp4, 32px) + 16px);
-}
-
 .q-card {
   padding-bottom: calc(var(--sp3, 24px) + 16px);
 }

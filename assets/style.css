@@ -242,7 +242,7 @@ html[dir="rtl"] .theme-menu { right:auto; left:0; }
 ══════════════════════════════════════════════════════════ */
 .client-card {
   background:none; border:none; border-radius:0; padding:0;
-  margin-bottom:var(--sp6);
+  margin-bottom:var(--sp2);
   display:grid; grid-template-columns:1fr 1fr; gap:var(--sp3);
 }
 .client-field label {
