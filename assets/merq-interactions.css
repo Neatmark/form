@@ -38,13 +38,16 @@ html {
   position: fixed;
   width: 22px;
   height: 22px;
-  background: var(--text-hi);
+  background: var(--text-hi) !important;
   border: none;
   border-radius: 50%;
   pointer-events: none;
-  z-index: 99999;
+  z-index: 2147483647 !important;
   translate: -50% -50%;
   will-change: left, top;
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: block !important;
   transition:
     width        0.3s ease,
     height       0.3s ease,
@@ -56,22 +59,22 @@ html {
 body.cursor--input #cursor-ring {
   width: 28px;
   height: 28px;
-  background: var(--accent);
+  background: var(--accent) !important;
 }
 
 /* State: hovering submit button */
 body.cursor--submit #cursor-ring {
   width: 28px;
   height: 28px;
-  background: var(--accent);
-  opacity: 1;
+  background: var(--accent) !important;
+  opacity: 1 !important;
 }
 
 /* State: hovering a label */
 body.cursor--label #cursor-ring {
   width: 26px;
   height: 26px;
-  opacity: 0.5;
+  opacity: 0.5 !important;
 }
 
 /* State: mousedown click compress */
@@ -187,19 +190,19 @@ select:not(:focus):hover {
   transition: background 0.25s ease !important;
 }
 
-/* Focus: 2px blue + underline shadow (architectural depth) */
+/* Focus: 2px accent border — defined by line, not shadow */
 input:not([type="checkbox"]):not([type="radio"]):not(.honeypot):focus,
 textarea:focus,
 select:focus {
   border: 2px solid var(--accent) !important;
-  box-shadow: 0 2px 0 0 var(--accent) !important;
+  border-bottom-width: 3px !important;
+  box-shadow: none !important;
   outline: none !important;
   padding: 13px 15px !important;
   background: var(--input-bg) !important;
   transition:
     border-color 0.2s ease,
     border-width 0.2s ease,
-    box-shadow   0.2s ease,
     background   0.25s ease !important;
 }
 
@@ -582,4 +585,6 @@ html.is-touch-device *, html.is-touch-device *::before, html.is-touch-device *::
 html.is-touch-device #cursor-dot,
 html.is-touch-device #cursor-ring {
   display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
 }

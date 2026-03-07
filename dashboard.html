@@ -31,12 +31,12 @@
       <h1 class="header-title" data-i18n="dashboard.header.dashTitle">DASHBOARD</h1>
       <div class="header-actions">
         <button class="btn" id="importBtn">
-          <span aria-hidden="true"><i data-lucide="upload" class="icon icon-btn"></i></span>
+          <span aria-hidden="true"><i class="ph ph-upload-simple icon icon-btn"></i></span>
           <span class="header-btn-label" data-i18n="dashboard.header.import">Import</span>
         </button>
         <div class="export-dropdown">
           <button class="btn" id="exportBtn">
-            <span aria-hidden="true"><i data-lucide="download" class="icon icon-btn"></i></span>
+            <span aria-hidden="true"><i class="ph ph-download-simple icon icon-btn"></i></span>
             <span class="btn-label"><span data-i18n="dashboard.header.exportAs">Export As</span> ▾</span>
             <span class="btn-count" aria-hidden="true"></span>
           </button>
@@ -49,18 +49,18 @@
         </div>
         <button class="btn" id="themeBtn">
           <span aria-hidden="true">
-            <i data-lucide="sun"     class="icon icon-btn theme-icon-light"></i>
-            <i data-lucide="moon"    class="icon icon-btn theme-icon-dark"></i>
-            <i data-lucide="monitor" class="icon icon-btn theme-icon-auto"></i>
+            <i class="ph ph-sun icon icon-btn theme-icon-light"></i>
+            <i class="ph ph-moon icon icon-btn theme-icon-dark"></i>
+            <i class="ph ph-monitor icon icon-btn theme-icon-auto"></i>
           </span>
           <span class="header-btn-label" id="themeBtnLabel" data-i18n="dashboard.theme.auto">Auto</span>
         </button>
         <button class="btn" id="refreshBtn">
-          <span aria-hidden="true"><i data-lucide="refresh-cw" class="icon icon-btn"></i></span>
+          <span aria-hidden="true"><i class="ph ph-arrow-clockwise icon icon-btn"></i></span>
           <span class="header-btn-label" data-i18n="dashboard.header.refresh">Refresh</span>
         </button>
         <button class="btn" id="accountBtn">
-          <span aria-hidden="true"><i data-lucide="user-round" class="icon icon-btn"></i></span>
+          <span aria-hidden="true"><i class="ph ph-user-circle icon icon-btn"></i></span>
           <span class="header-btn-label" data-i18n="dashboard.header.account">Account</span>
         </button>
 
@@ -83,17 +83,17 @@
 
     <div class="stats">
       <div class="stat-card">
-        <div class="stat-icon" aria-hidden="true"><i data-lucide="file-text" class="icon icon-stat"></i></div>
+        <div class="stat-icon" aria-hidden="true"><i class="ph ph-file-text icon icon-stat"></i></div>
         <div class="stat-value" id="totalCount">-</div>
         <div class="stat-label" data-i18n="dashboard.stats.totalSubmissions">Total Submissions</div>
       </div>
       <div class="stat-card">
-        <div class="stat-icon" aria-hidden="true"><i data-lucide="calendar" class="icon icon-stat"></i></div>
+        <div class="stat-icon" aria-hidden="true"><i class="ph ph-calendar icon icon-stat"></i></div>
         <div class="stat-value" id="withDeliveryCount">-</div>
         <div class="stat-label" data-i18n="dashboard.stats.withDelivery">With Delivery Date</div>
       </div>
       <div class="stat-card">
-        <div class="stat-icon" aria-hidden="true"><i data-lucide="clock" class="icon icon-stat"></i></div>
+        <div class="stat-icon" aria-hidden="true"><i class="ph ph-clock icon icon-stat"></i></div>
         <div class="stat-value stat-value--small" id="latestSubmissionDate">-</div>
         <div class="stat-value stat-value--small stat-value-short" id="latestSubmissionDateShort" aria-hidden="true">-</div>
         <div class="stat-label" data-i18n="dashboard.stats.latestSubmission">Latest Submission</div>
@@ -103,7 +103,7 @@
     <div class="filters">
       <div class="search-filter-row">
         <div class="search-box-wrap">
-          <span class="search-icon" aria-hidden="true"><i data-lucide="search" class="icon"></i></span>
+          <span class="search-icon" aria-hidden="true"><i class="ph ph-magnifying-glass icon"></i></span>
           <input type="text" class="search-box" id="searchBox"
                  data-i18n-placeholder="dashboard.toolbar.search"
                  placeholder="Search by brand, client, or email...">
@@ -111,7 +111,7 @@
         <div class="custom-dropdown date-filter-dropdown" id="dateFilterDropdown">
           <button type="button" class="search-box date-filter-btn" id="dateFilterBtn" aria-haspopup="listbox" aria-expanded="false">
             <span class="date-filter-label" id="dateFilterLabel" data-i18n="dashboard.toolbar.dateOptions.all">All dates</span>
-            <i data-lucide="chevron-down" class="icon date-filter-caret"></i>
+            <i class="ph ph-caret-down icon date-filter-caret"></i>
           </button>
           <div class="date-filter-menu" id="dateFilterMenu" role="listbox" aria-label="Filter by date">
             <button class="date-filter-option active" data-value="all"       role="option" aria-selected="true"  data-i18n="dashboard.toolbar.dateOptions.all">All dates</button>
@@ -127,9 +127,9 @@
         <div class="filter-actions">
           <div class="sort-dropdown" id="sortDropdown">
             <button class="btn sort-btn" id="sortBtn" aria-haspopup="menu" aria-expanded="false">
-              <i data-lucide="arrow-up-down" class="icon icon-btn"></i>
+              <i class="ph ph-arrows-down-up icon icon-btn"></i>
               <span class="sort-btn-label" data-i18n="dashboard.sort.label">Sort by</span>
-              <i data-lucide="chevron-down" class="icon sort-chevron"></i>
+              <i class="ph ph-caret-down icon sort-chevron"></i>
             </button>
             <div class="sort-menu" id="sortMenu" role="menu">
               <button class="sort-option" data-sort="date-desc"     role="menuitem" data-i18n="dashboard.sort.newestFirst">Newest first</button>
@@ -142,13 +142,13 @@
           </div>
           <button class="btn action-icon-btn" id="selectVisibleBtn"
                   data-i18n-title="dashboard.select.visible" title="Select Visible" disabled>
-            <i data-lucide="check-square" class="icon"></i>
+            <i class="ph ph-check-square icon"></i>
           </button>
           <button class="btn action-icon-btn" id="clearSelectionBtn" title="Clear Selection" disabled>
-            <i data-lucide="x" class="icon"></i>
+            <i class="ph ph-x icon"></i>
           </button>
           <button class="btn btn-danger action-icon-btn" id="deleteSelectedBtn" title="Delete Selected" disabled>
-            <i data-lucide="trash" class="icon"></i>
+            <i class="ph ph-trash icon"></i>
           </button>
         </div>
         <div class="selection-info" id="selectionInfo">Showing 0 submissions</div>
@@ -170,11 +170,11 @@
           <h2 id="modalTitle" data-i18n="detail.title">Submission Details</h2>
           <div class="detail-subhead">
             <div class="detail-chip" id="detailClientChip">
-              <span class="detail-chip-icon" aria-hidden="true"><i data-lucide="user" class="icon icon-btn"></i></span>
+              <span class="detail-chip-icon" aria-hidden="true"><i class="ph ph-user icon icon-btn"></i></span>
               <span class="detail-chip-text" data-i18n="detail.unknownClient">Unknown Client</span>
             </div>
             <div class="detail-chip" id="detailEmailChip">
-              <span class="detail-chip-icon" aria-hidden="true"><i data-lucide="mail" class="icon icon-btn"></i></span>
+              <span class="detail-chip-icon" aria-hidden="true"><i class="ph ph-envelope icon icon-btn"></i></span>
               <span class="detail-chip-text">N/A</span>
             </div>
           </div>
@@ -183,11 +183,11 @@
       <div class="modal-header-actions" id="modalHeaderActions">
         <button class="modal-icon-btn modal-edit-icon-btn" id="modalEditIconBtn"
                 data-i18n-aria="dashboard.actions.edit" aria-label="Edit submission">
-          <i data-lucide="pen" class="icon icon-btn"></i>
+          <i class="ph ph-pencil icon icon-btn"></i>
         </button>
         <button class="modal-icon-btn modal-delete-icon-btn" id="modalDeleteIconBtn"
                 data-i18n-aria="dashboard.actions.delete" aria-label="Delete submission">
-          <i data-lucide="trash" class="icon icon-btn"></i>
+          <i class="ph ph-trash icon icon-btn"></i>
         </button>
         <button class="modal-close" id="modalCloseBtn">×</button>
       </div>
@@ -222,9 +222,11 @@
 <script src="/assets/docx.umd.js"></script>
 <script src="/assets/dayjs.min.js"></script>
 <script src="/assets/dayjs-relativeTime.js"></script>
-<script src="/assets/lucide.local.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<script src="/assets/phosphor-local.js"></script>
 <script src="assets/dashboard.js?v=20260227"></script>
 
 <script src="assets/merq-interactions.js"></script>
+<script>if(window.phosphor) window.phosphor.createIcons();</script>
 </body>
 </html>

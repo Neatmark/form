@@ -22,6 +22,24 @@
     document.documentElement.classList.add('is-touch-device');
   }
 
+  /* ── Touch fallback — kills cursor if media query was wrong ─── */
+  /* Chrome on Android fires ONE synthetic mousemove on first touchstart  */
+  /* causing the cursor ring to briefly appear then freeze. Prevent this  */
+  /* by listening for a real single-finger touch and disabling cursor.    */
+  /*                                                                       */
+  /* IMPORTANT: pinch-to-zoom extensions fire touchstart with             */
+  /* e.touches.length >= 2. We ONLY kill cursor on single-touch events    */
+  /* (real mobile tap). Multi-touch = desktop pinch gesture = leave alone.*/
+  window.addEventListener('touchstart', function killCursorOnTouch(e) {
+    if (e.touches && e.touches.length > 1) return; // pinch — ignore
+    document.documentElement.classList.add('is-touch-device');
+    var dot  = document.getElementById('cursor-dot');
+    var ring = document.getElementById('cursor-ring');
+    if (dot)  { dot.style.display  = 'none'; }
+    if (ring) { ring.style.display = 'none'; }
+    window.removeEventListener('touchstart', killCursorOnTouch, { capture: true });
+  }, { capture: true, passive: true });
+
   /* ── DOM ready ─────────────────────────────────────────── */
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', boot);
@@ -83,55 +101,89 @@
      Ring: rAF lerp for the lag feel (no library).
   ══════════════════════════════════════════════════════ */
 
+
+
+  /* ── Zoom-extension fix ─────────────────────────────────────
+     Zoom extensions (Pinch-to-Zoom, Bento Zoom, etc.) apply
+     transform:scale() or CSS zoom to <body>. When body has a
+     CSS transform, position:fixed children are no longer in
+     viewport space — they're in body's scaled CSS space.
+     clientX/clientY are still raw viewport pixels.
+
+     Fix: read body.getBoundingClientRect() to get the visual
+     rect, divide by body.offsetWidth for the actual scale.
+     Convert viewport mouse coords → body CSS coords each frame.
+     Fast path: if scale ≈ 1 (no zoom), returns null = no cost.
+  ══════════════════════════════════════════════════════════ */
+  function getBodyZoom() {
+    var b    = document.body;
+    var rect = b.getBoundingClientRect();
+    var ow   = b.offsetWidth;
+    var oh   = b.offsetHeight;
+    if (!ow || !oh) return null;
+    var sx = rect.width  / ow;
+    var sy = rect.height / oh;
+    /* Fast path — no scale applied */
+    if (Math.abs(sx - 1) < 0.001 && Math.abs(sy - 1) < 0.001) return null;
+    return { sx: sx, sy: sy, ox: rect.left, oy: rect.top };
+  }
+
   function initCursor() {
     if (REDUCED) return;
 
     var ring = document.getElementById('cursor-ring');
     if (!ring) return;
 
+    /* Raw viewport coords from mouse only (ignore touch/stylus) */
     var mouseX = -100, mouseY = -100;
     var ringX  = -100, ringY  = -100;
 
-    /* Ring follows mouse with a lerp lag */
-    document.addEventListener('mousemove', function (e) {
+    document.addEventListener('pointermove', function (e) {
+      if (e.pointerType !== 'mouse') return;
       mouseX = e.clientX;
       mouseY = e.clientY;
     });
 
     var LERP = 0.18;
     function tick() {
-      ringX += (mouseX - ringX) * LERP;
-      ringY += (mouseY - ringY) * LERP;
+      /* Convert viewport → body CSS coordinate space each frame.
+         When no zoom extension is active, bz is null and we use
+         raw coords directly — zero extra work in the normal case. */
+      var bz = getBodyZoom();
+      var targetX = bz ? (mouseX - bz.ox) / bz.sx : mouseX;
+      var targetY = bz ? (mouseY - bz.oy) / bz.sy : mouseY;
+      ringX += (targetX - ringX) * LERP;
+      ringY += (targetY - ringY) * LERP;
       ring.style.left = ringX + 'px';
       ring.style.top  = ringY + 'px';
       requestAnimationFrame(tick);
     }
     tick();
 
-    /* State classes based on hovered element */
-    var body = document.body;
+    /* State classes on body */
+    var root = document.body;
 
     document.addEventListener('mouseover', function (e) {
       var t = e.target;
-      body.classList.remove('cursor--input', 'cursor--submit', 'cursor--label');
+      root.classList.remove('cursor--input', 'cursor--submit', 'cursor--label');
 
       if (t.matches('input:not([type="checkbox"]):not([type="radio"]), textarea, select')) {
-        body.classList.add('cursor--input');
+        root.classList.add('cursor--input');
       } else if (t.closest('.submit-btn')) {
-        body.classList.add('cursor--submit');
+        root.classList.add('cursor--submit');
       } else if (t.matches('label') || t.closest('label') || t.classList.contains('q-label')) {
-        body.classList.add('cursor--label');
+        root.classList.add('cursor--label');
       }
     });
 
     document.addEventListener('mousedown', function () {
-      body.classList.add('cursor--clicking');
+      root.classList.add('cursor--clicking');
     });
     document.addEventListener('mouseup', function () {
-      body.classList.remove('cursor--clicking');
+      root.classList.remove('cursor--clicking');
     });
     document.addEventListener('mouseleave', function () {
-      body.classList.remove('cursor--input', 'cursor--submit', 'cursor--label', 'cursor--clicking');
+      root.classList.remove('cursor--input', 'cursor--submit', 'cursor--label', 'cursor--clicking');
     });
   }
 
@@ -586,7 +638,7 @@
         if (alertOverlay.classList.contains('active')) {
           /* Check if this is a success alert (check-circle icon) */
           var icon = document.getElementById('customAlertIcon');
-          wasSuccess = icon && icon.getAttribute('data-lucide') === 'check-circle';
+          wasSuccess = icon && icon.classList.contains('ph-check-circle');
         } else {
           /* Alert just closed */
           if (wasSuccess) {

@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="color-scheme" content="light dark">
-<meta name="theme-color" media="(prefers-color-scheme: dark)"  content="#005560">
-<meta name="theme-color" media="(prefers-color-scheme: light)" content="#e6fcf8">
+<meta name="theme-color" media="(prefers-color-scheme: dark)"  content="#0A0A0E">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#F3F4F7">
 <meta name="robots" content="noindex, nofollow">
 <!-- Prevent the ?token= edit token from leaking in Referer headers when the
      user clicks external links (e.g. the Neatmark website link in the footer) -->
@@ -76,20 +76,20 @@
               aria-haspopup="listbox" aria-expanded="false"
               aria-label="Theme selection" title="Theme">
         <span class="theme-toggle-icon" aria-hidden="true">
-          <i data-lucide="sun"     class="icon icon-theme icon-theme--light"></i>
-          <i data-lucide="moon"    class="icon icon-theme icon-theme--dark"></i>
-          <i data-lucide="monitor" class="icon icon-theme icon-theme--auto"></i>
+          <i class="ph ph-sun icon icon-theme icon-theme--light"></i>
+          <i class="ph ph-moon icon icon-theme icon-theme--dark"></i>
+          <i class="ph ph-monitor icon icon-theme icon-theme--auto"></i>
         </span>
       </button>
       <ul class="theme-menu" id="themeMenu" role="listbox" aria-label="Choose theme">
         <li role="option" data-theme-option="light" aria-selected="false">
-          <i data-lucide="sun"     class="icon theme-opt-icon"></i> Light
+          <i class="ph ph-sun icon theme-opt-icon"></i> Light
         </li>
         <li role="option" data-theme-option="dark"  aria-selected="false">
-          <i data-lucide="moon"    class="icon theme-opt-icon"></i> Dark
+          <i class="ph ph-moon icon theme-opt-icon"></i> Dark
         </li>
         <li role="option" data-theme-option="auto"  aria-selected="false">
-          <i data-lucide="monitor" class="icon theme-opt-icon"></i> Auto
+          <i class="ph ph-monitor icon theme-opt-icon"></i> Auto
         </li>
       </ul>
     </div>
@@ -97,8 +97,8 @@
 </header>
 
 
-<!-- PAGE STEPPER BAR -->
-<div class="page-stepper" id="pageStepper" role="navigation" aria-label="Form steps">
+<!-- PAGE STEPPER BAR — hidden on cover, shown from page 1 onwards -->
+<div class="page-stepper stepper-hidden" id="pageStepper" role="navigation" aria-label="Form steps">
   <button class="step-btn active" type="button" data-step="1" title="Your Info">
     <span class="step-num">1</span>
     <span class="step-label" data-i18n="form.steps.step1">Your Info</span>
@@ -126,25 +126,66 @@
   <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
        PAGE 1: Landing / Personal Info
   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
-  <div class="form-page active" id="formPage1" data-page="1">
+  <!-- ══════════════════════════════════════════════════════
+       COVER PAGE — intro before the wizard begins
+  ══════════════════════════════════════════════════════ -->
+  <div class="form-page active" id="formPage0" data-page="0">
 
-    <!-- EDIT MODE BANNER -->
-    <div class="edit-mode-banner" id="editModeBanner" role="status" aria-live="polite">
-      <span class="edit-mode-icon" aria-hidden="true">
-        <i data-lucide="edit-3" class="icon icon-edit"></i>
-      </span>
-      <span class="edit-mode-text" data-i18n="form.editMode.banner">You are editing a previous submission. Make your changes and click Submit.</span>
-    </div>
-
-    <!-- HERO -->
     <div class="hero">
       <span class="hero-badge" data-i18n="form.hero.badge">Brand Identity</span>
       <div class="hero-title" data-i18n="form.title">CLIENT<br>INTAKE</div>
       <p class="hero-desc" data-i18n="form.hero.description">Help us understand your business and creative vision. No wrong answers, the more honest you are, the stronger your brand will be.</p>
     </div>
 
+    <div class="cover-meta">
+      <div class="cover-steps-preview">
+        <div class="cover-step-item">
+          <span class="cover-step-num">01</span>
+          <span class="cover-step-label" data-i18n="form.steps.step1">Your Info</span>
+        </div>
+        <div class="cover-step-item">
+          <span class="cover-step-num">02</span>
+          <span class="cover-step-label" data-i18n="form.steps.step2">Foundation</span>
+        </div>
+        <div class="cover-step-item">
+          <span class="cover-step-num">03</span>
+          <span class="cover-step-label" data-i18n="form.steps.step3">Visual</span>
+        </div>
+        <div class="cover-step-item">
+          <span class="cover-step-num">04</span>
+          <span class="cover-step-label" data-i18n="form.steps.step4">Project</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-nav-buttons">
+      <div></div>
+      <button type="button" class="wizard-btn wizard-btn--next" id="startBtn">
+        <span data-i18n="form.nav.start">Begin</span>
+        <i class="ph ph-arrow-right icon nav-icon"></i>
+      </button>
+    </div>
+
+  </div><!-- /formPage0 -->
+
+
+  <div class="form-page" id="formPage1" data-page="1">
+
+    <!-- EDIT MODE BANNER -->
+    <div class="edit-mode-banner" id="editModeBanner" role="status" aria-live="polite">
+      <span class="edit-mode-icon" aria-hidden="true">
+        <i class="ph ph-pencil-simple icon icon-edit"></i>
+      </span>
+      <span class="edit-mode-text" data-i18n="form.editMode.banner">You are editing a previous submission. Make your changes and click Submit.</span>
+    </div>
+
     <!-- CLIENT DETAILS -->
-    <div class="client-card">
+    <section class="section">
+      <div class="section-head">
+        <span class="section-badge" data-i18n="form.sections.badge1">Section 01</span>
+        <h2 class="section-title" data-i18n="form.steps.step1">Your Info</h2>
+      </div>
+      <div class="client-card">
       <div class="client-field">
         <label data-i18n="form.metadata.clientName">Your Name</label>
         <input type="text" name="client_name" required autocomplete="name" maxlength="120" data-i18n-placeholder="form.metadata.clientNamePlaceholder" placeholder="Full name">
@@ -161,14 +202,15 @@
         <label data-i18n="form.metadata.website">Website</label>
         <input type="url" name="client_website" autocomplete="url" maxlength="300" data-i18n-placeholder="form.metadata.websitePlaceholder" placeholder="https://yourwebsite.com">
       </div>
-    </div>
+    </div><!-- /client-card -->
+    </section>
 
     <!-- PAGE 1 NAV BUTTONS -->
     <div class="page-nav-buttons">
       <div></div>
       <button type="button" class="wizard-btn wizard-btn--next" id="nextBtn1">
         <span data-i18n="form.nav.next">Next</span>
-        <i data-lucide="arrow-right" class="icon nav-icon"></i>
+        <i class="ph ph-arrow-right icon nav-icon"></i>
       </button>
     </div>
 
@@ -182,7 +224,7 @@
 
     <section class="section">
       <div class="section-head">
-        <span class="section-badge" data-i18n="form.sections.badge1">Section 01</span>
+        <span class="section-badge" data-i18n="form.sections.badge2">Section 02</span>
         <h2 class="section-title" data-i18n="form.sections.foundation">Brand Foundation</h2>
       </div>
 
@@ -238,12 +280,12 @@
     <!-- PAGE 2 NAV BUTTONS -->
     <div class="page-nav-buttons">
       <button type="button" class="wizard-btn wizard-btn--back" data-back="true">
-        <i data-lucide="arrow-left" class="icon nav-icon"></i>
+        <i class="ph ph-arrow-left icon nav-icon"></i>
         <span data-i18n="form.nav.back">Back</span>
       </button>
       <button type="button" class="wizard-btn wizard-btn--next" id="nextBtn2">
         <span data-i18n="form.nav.next">Next</span>
-        <i data-lucide="arrow-right" class="icon nav-icon"></i>
+        <i class="ph ph-arrow-right icon nav-icon"></i>
       </button>
     </div>
 
@@ -257,7 +299,7 @@
 
     <section class="section">
       <div class="section-head">
-        <span class="section-badge" data-i18n="form.sections.badge2">Section 02</span>
+        <span class="section-badge" data-i18n="form.sections.badge3">Section 03</span>
         <h2 class="section-title" data-i18n="form.sections.visual">Visual Direction</h2>
       </div>
 
@@ -332,7 +374,7 @@
         <div class="q20-upload-area" id="q15UploadArea">
           <input type="file" id="q15FileInput" accept=".png,.jpg,.jpeg,.webp,.gif,image/png,image/jpeg,image/webp,image/gif" multiple hidden />
           <div class="q20-dropzone" id="q15Dropzone" tabindex="0" role="button" aria-label="Upload inspiration images">
-            <i data-lucide="upload-cloud" class="icon q20-upload-icon"></i>
+            <i class="ph ph-cloud-arrow-up icon q20-upload-icon"></i>
             <span class="q20-upload-label" data-i18n="form.questions.q15.uploadPrompt">Click or drag images here</span>
             <span class="q20-upload-sub" data-i18n="form.questions.q15.uploadLimit">Up to 8 images &middot; PNG, JPG, WEBP, GIF</span>
           </div>
@@ -344,12 +386,12 @@
     <!-- PAGE 3 NAV BUTTONS -->
     <div class="page-nav-buttons">
       <button type="button" class="wizard-btn wizard-btn--back" data-back="true">
-        <i data-lucide="arrow-left" class="icon nav-icon"></i>
+        <i class="ph ph-arrow-left icon nav-icon"></i>
         <span data-i18n="form.nav.back">Back</span>
       </button>
       <button type="button" class="wizard-btn wizard-btn--next" id="nextBtn3">
         <span data-i18n="form.nav.next">Next</span>
-        <i data-lucide="arrow-right" class="icon nav-icon"></i>
+        <i class="ph ph-arrow-right icon nav-icon"></i>
       </button>
     </div>
 
@@ -363,7 +405,7 @@
 
     <section class="section">
       <div class="section-head">
-        <span class="section-badge" data-i18n="form.sections.badge3">Section 03</span>
+        <span class="section-badge" data-i18n="form.sections.badge4">Section 04</span>
         <h2 class="section-title" data-i18n="form.sections.project">Project &amp; Scope</h2>
       </div>
 
@@ -415,7 +457,7 @@
     <!-- PAGE 4 NAV BUTTONS: Back left Â· Submit right (same layout as other pages) -->
     <div class="page-nav-buttons page-nav-buttons--submit">
       <button type="button" class="wizard-btn wizard-btn--back" data-back="true">
-        <i data-lucide="arrow-left" class="icon nav-icon"></i>
+        <i class="ph ph-arrow-left icon nav-icon"></i>
         <span data-i18n="form.nav.back">Back</span>
       </button>
 
@@ -425,7 +467,10 @@
              id="cfTurnstile"
              data-theme="auto"
              data-size="normal"></div>
-        <button class="submit-btn" type="submit" id="submitBtn" data-i18n="form.cta.submit">Submit Form &nbsp;&rarr;</button>
+        <button class="submit-btn" type="submit" id="submitBtn">
+          <span data-i18n="form.cta.submit">Submit Form</span>
+          <i class="ph ph-arrow-right-wide icon submit-arrow"></i>
+        </button>
       </div>
     </div>
 
@@ -464,7 +509,7 @@
           <!-- LinkedIn -->
           <a class="footer-social-link" href="https://linkedin.com/company/neatmark.studio" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+              <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/>
               <rect x="2" y="9" width="4" height="12"/>
               <circle cx="4" cy="4" r="2"/>
             </svg>
@@ -547,7 +592,7 @@
 <div class="custom-alert-overlay" id="customAlertOverlay" aria-hidden="true">
   <div class="custom-alert-card" role="alertdialog" aria-labelledby="customAlertTitle" aria-describedby="customAlertMsg">
     <div class="custom-alert-icon-wrap" id="customAlertIconWrap">
-      <i data-lucide="check-circle" class="icon custom-alert-icon" id="customAlertIcon"></i>
+      <i class="ph ph-check-circle icon custom-alert-icon" id="customAlertIcon"></i>
     </div>
     <div class="custom-alert-title" id="customAlertTitle">Success</div>
     <div class="custom-alert-message" id="customAlertMsg"></div>
@@ -556,16 +601,17 @@
 </div>
 
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
-<script src="/assets/lucide.local.js"></script>
+<script src="assets/phosphor-local.js"></script>
 <script src="assets/script.js"></script>
 <!-- DRAFT TOAST: outside all layout, never causes gaps -->
 <div class="draft-banner" id="draftBanner" role="status" aria-live="polite">
   <span class="draft-banner-text" data-i18n="form.draftBanner">You have a saved draft.</span>
   <button class="clear-draft-btn" type="button" id="clearDraftBtn" data-i18n="form.clearDraftBtn">Clear draft</button>
   <button class="draft-dismiss-btn" type="button" id="draftDismissBtn" aria-label="Dismiss">
-    <i data-lucide="x" class="icon"></i>
+    <i class="ph ph-x icon"></i>
   </button>
 </div>
 <script src="assets/merq-interactions.js"></script>
+<script>if(window.phosphor) window.phosphor.createIcons();</script>
 </body>
 </html>

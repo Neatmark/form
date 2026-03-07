@@ -92,10 +92,10 @@ function showAlert(message, type = 'success') {
   iconWrap.className = 'custom-alert-icon-wrap' + (isError ? ' error' : '');
   closeBtn.className = 'custom-alert-close-btn' + (isError ? ' error-btn' : '');
 
-  // Swap icon via lucide — scope to the overlay only so we don't re-scan
-  // the whole document (icons already converted to SVG would be double-processed).
-  icon.setAttribute('data-lucide', isError ? 'x-circle' : 'check-circle');
-  if (window.lucide) window.lucide.createIcons({ context: overlay });
+  // Swap icon via Phosphor class
+  icon.className = icon.className.replace(/ph-\S+/, isError ? 'ph-x-circle' : 'ph-check-circle');
+  icon.innerHTML = '';  // clear old SVG so phosphor re-renders it
+  if (window.phosphor) window.phosphor.createIcons({ context: overlay });
 
   overlay.setAttribute('aria-hidden', 'false');
   overlay.classList.add('active');
@@ -351,16 +351,16 @@ function showDraftBanner(visible) {
 ══════════════════════════════════════════════════════════════ */
 
 const TOTAL_PAGES = 4;
-let currentPage  = 1;
+let currentPage  = 0;   // 0 = cover page, 1-4 = wizard pages
 let goingBack    = false;
 
 /**
  * Navigate to a given page number.
- * @param {number} targetPage  1–4
+ * @param {number} targetPage  0 (cover) or 1–4
  * @param {boolean} [back]     Whether we're going backwards (affects animation)
  */
 function showPage(targetPage, back = false) {
-  if (targetPage < 1 || targetPage > TOTAL_PAGES) return;
+  if (targetPage < 0 || targetPage > TOTAL_PAGES) return;
 
   // Hide current page
   const current = document.getElementById(`formPage${currentPage}`);
@@ -371,20 +371,28 @@ function showPage(targetPage, back = false) {
   // Show target page
   const target = document.getElementById(`formPage${targetPage}`);
   if (target) {
-    // Briefly remove active so animation re-triggers
     target.classList.remove('active', 'slide-back');
-    // Force reflow
     void target.offsetWidth;
     if (back) target.classList.add('slide-back');
     target.classList.add('active');
   }
 
   currentPage = targetPage;
+
+  // Show/hide stepper — only visible inside the wizard (pages 1-4)
+  const stepper = document.getElementById('pageStepper');
+  if (stepper) {
+    if (currentPage >= 1) {
+      stepper.classList.remove('stepper-hidden');
+    } else {
+      stepper.classList.add('stepper-hidden');
+    }
+  }
+
   updateStepper();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
-  // Re-create lucide icons in the newly shown page
-  if (window.lucide) window.lucide.createIcons();
+  // Phosphor icons render via CSS — no JS init needed
 }
 
 /** Update the stepper bar to reflect currentPage */
@@ -472,9 +480,15 @@ function validatePage(pageNum) {
   return true;
 }
 
-/** Wire up next buttons, back buttons, and stepper buttons */
+/** Wire up next buttons, back buttons, stepper buttons, and cover Start button */
 function initWizard() {
-  // Next buttons
+  // Cover page Start button — transitions from page 0 to page 1
+  const startBtn = document.getElementById('startBtn');
+  if (startBtn) {
+    startBtn.addEventListener('click', () => showPage(1, false));
+  }
+
+  // Next buttons (pages 1-3 advance to next page)
   for (let i = 1; i < TOTAL_PAGES; i++) {
     const btn = document.getElementById(`nextBtn${i}`);
     if (!btn) continue;
@@ -483,20 +497,19 @@ function initWizard() {
     });
   }
 
-  // Back buttons (any element with data-back="true")
+  // Back buttons — page 1 goes back to cover (page 0), others go back one step
   document.querySelectorAll('[data-back="true"]').forEach(btn => {
     btn.addEventListener('click', () => {
       showPage(currentPage - 1, true);
     });
   });
 
-  // Stepper buttons — always allow clicking (free navigation)
+  // Stepper buttons — only active inside wizard (pages 1-4)
   document.querySelectorAll('.step-btn[data-step]').forEach(btn => {
     btn.addEventListener('click', () => {
       const target = parseInt(btn.dataset.step, 10);
       if (target === currentPage) return;
       const back = target < currentPage;
-      // If going forward, validate all pages up to current
       if (!back) {
         for (let p = currentPage; p < target; p++) {
           if (!validatePage(p)) return;
@@ -566,10 +579,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   initTurnstileWidget();
 
-  if (window.lucide && typeof window.lucide.createIcons === 'function') {
-    window.lucide.createIcons();
-  }
-
   /* ── Theme dropdown ───────────────────────────────────── */
   const themeToggleButton = document.getElementById('themeToggle');
   const themeMenu         = document.getElementById('themeMenu');
@@ -601,7 +610,6 @@ document.addEventListener('DOMContentLoaded', () => {
         e.stopPropagation();
         selectThemeMode(li.getAttribute('data-theme-option'));
         closeThemeMenu();
-        if (window.lucide) window.lucide.createIcons();
       };
       li.addEventListener('click', handleSelect);
       li.addEventListener('touchend', handleSelect);
@@ -895,10 +903,14 @@ document.addEventListener('DOMContentLoaded', () => {
       const editBanner = document.getElementById('editModeBanner');
       if (editBanner) editBanner.classList.add('visible');
 
+      // Skip cover page in edit mode — jump straight to wizard page 1
+      showPage(1, false);
+
       // Update submit button label to "Save Changes"
       const submitBtn = document.getElementById('submitBtn');
       if (submitBtn) {
-        submitBtn.innerHTML = window.i18n.t('form.cta.saveChanges', 'Save Changes') + ' &nbsp;→';
+        submitBtn.innerHTML = '<span>' + window.i18n.t('form.cta.saveChanges', 'Save Changes') + '</span><i class="ph ph-arrow-right-wide icon submit-arrow"></i>';
+        if (window.phosphor) window.phosphor.createIcons({ context: submitBtn });
       }
 
     } catch (err) {
@@ -1292,7 +1304,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="q20-thumb-wrap">
           <img src="${smallUrl}" class="q20-thumb" alt="Inspiration ${i + 1}" />
           <button type="button" class="q20-remove-btn" data-index="${i}" aria-label="Remove image ${i + 1}">
-            <i data-lucide="x" class="icon"></i>
+            <i class="ph ph-x icon"></i>
           </button>
         </div>
       `;
@@ -1305,11 +1317,9 @@ document.addEventListener('DOMContentLoaded', () => {
         q15UploadedRefs.splice(idx, 1);
         renderQ15Preview();
         syncQ15HiddenInputs();
-        if (window.lucide) window.lucide.createIcons();
       });
     });
-
-    if (window.lucide) window.lucide.createIcons();
+    if (window.phosphor) window.phosphor.createIcons({ context: q15PreviewGrid });
     if (q15Dropzone) q15Dropzone.classList.toggle('hidden-by-limit', getQ15Count() >= MAX_Q15_IMAGES);
   }
 

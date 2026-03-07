@@ -783,11 +783,11 @@ async function buildDocxBuffer(payload, imageBuffers = {}, lang = 'en') {
       spacing: { after: 260 }
     }),
     new Paragraph({
-      border: { bottom: { style: BorderStyle.SINGLE, size: 6, color: '006D77' } },
+      border: { bottom: { style: BorderStyle.SINGLE, size: 6, color: '1A38C8' } },
       spacing: { after: 260 }
     }),
     new Paragraph({
-      children: [new TextRun({ text: s.submissionDetails, bold: true, allCaps: true, color: '006D77' })],
+      children: [new TextRun({ text: s.submissionDetails, bold: true, allCaps: true, color: '1A38C8' })],
       bidirectional: isRtl,
       alignment: isRtl ? AlignmentType.RIGHT : AlignmentType.LEFT,
       spacing: { after: 120 }
@@ -876,7 +876,7 @@ async function buildDocxBuffer(payload, imageBuffers = {}, lang = 'en') {
   const document = new Document({
     styles: {
       default: {
-        heading1: { run: { bold: true, size: 28, color: '006D77', font: 'Calibri' }, paragraph: { spacing: { before: 320, after: 120 } } },
+        heading1: { run: { bold: true, size: 28, color: '1A38C8', font: 'Calibri' }, paragraph: { spacing: { before: 320, after: 120 } } },
         title:    { run: { bold: true, size: 40, color: '1D1D1D', font: 'Calibri' } }
       },
       paragraphStyles: [{
@@ -902,9 +902,9 @@ async function buildDocxBuffer(payload, imageBuffers = {}, lang = 'en') {
 ───────────────────────────────────────────────────────────────────────────── */
 
 // Brand palette (RGB 0–1)
-const BRAND_TEAL   = rgb(0/255, 109/255, 119/255);  // #006d77
-const BRAND_DARK   = rgb(0/255,  55/255,  60/255);  // #00373c
-const ACCENT_LIGHT = rgb(230/255, 252/255, 248/255); // #e6fcf8
+const BRAND_BLUE   = rgb(26/255,  56/255, 200/255);  // #1A38C8 — brand accent
+const BRAND_DARK   = rgb(13/255,  13/255,  13/255);  // #0D0D0D — near black
+const ACCENT_LIGHT = rgb(243/255, 244/255, 247/255); // #F3F4F7 — cool off-white
 const GRAY_TEXT    = rgb(80/255,  80/255,  80/255);
 const GRAY_LIGHT   = rgb(220/255, 220/255, 220/255);
 const WHITE        = rgb(1, 1, 1);
@@ -998,7 +998,7 @@ async function _buildPdfBufferLatin(payload, imageBuffers = {}, lang = 'en') {
   const CONTENT_BOT = FOOTER_H;
 
   function drawPageDecor(p, num) {
-    p.drawRectangle({ x: 0, y: PAGE_H - HEADER_H, width: PAGE_W, height: HEADER_H, color: BRAND_TEAL });
+    p.drawRectangle({ x: 0, y: PAGE_H - HEADER_H, width: PAGE_W, height: HEADER_H, color: BRAND_BLUE });
 
     const title     = prepText(s.reportTitle);
     const titleSize = 14;
@@ -1085,9 +1085,9 @@ async function _buildPdfBufferLatin(payload, imageBuffers = {}, lang = 'en') {
 
   // Accent bar: right side for Arabic, left side for Latin
   if (isRtl) {
-    page.drawRectangle({ x: RIGHT - 4, y: y - CARD_H, width: 4, height: CARD_H, color: BRAND_TEAL });
+    page.drawRectangle({ x: RIGHT - 4, y: y - CARD_H, width: 4, height: CARD_H, color: BRAND_BLUE });
   } else {
-    page.drawRectangle({ x: MARGIN, y: y - CARD_H, width: 4, height: CARD_H, color: BRAND_TEAL });
+    page.drawRectangle({ x: MARGIN, y: y - CARD_H, width: 4, height: CARD_H, color: BRAND_BLUE });
   }
 
   const cardY = y - 16;
@@ -1120,7 +1120,7 @@ async function _buildPdfBufferLatin(payload, imageBuffers = {}, lang = 'en') {
   function drawSectionHeader(title) {
     spacer(12);
     ensureSpace(30);
-    page.drawRectangle({ x: MARGIN, y: y - 22, width: COL_W, height: 26, color: BRAND_TEAL });
+    page.drawRectangle({ x: MARGIN, y: y - 22, width: COL_W, height: 26, color: BRAND_BLUE });
     const t = prepText(title.toUpperCase ? title.toUpperCase() : title);
     page.drawText(t, {
       x: isRtl ? rtlX(t, boldFont, 10, RIGHT - 10) : MARGIN + 10,
@@ -1137,9 +1137,9 @@ async function _buildPdfBufferLatin(payload, imageBuffers = {}, lang = 'en') {
 
     // Accent bar: right side for RTL, left for LTR
     if (isRtl) {
-      page.drawRectangle({ x: RIGHT - 3, y: y - 14, width: 3, height: 16, color: BRAND_TEAL });
+      page.drawRectangle({ x: RIGHT - 3, y: y - 14, width: 3, height: 16, color: BRAND_BLUE });
     } else {
-      page.drawRectangle({ x: MARGIN, y: y - 14, width: 3, height: 16, color: BRAND_TEAL });
+      page.drawRectangle({ x: MARGIN, y: y - 14, width: 3, height: 16, color: BRAND_BLUE });
     }
 
     const labelLines = wrapText(label, boldFont, 9.5, COL_W - 10);
@@ -1184,9 +1184,9 @@ async function _buildPdfBufferLatin(payload, imageBuffers = {}, lang = 'en') {
       ensureSpace(14);
 
       if (isRtl) {
-        page.drawRectangle({ x: RIGHT - 3, y: y - 14, width: 3, height: 16, color: BRAND_TEAL });
+        page.drawRectangle({ x: RIGHT - 3, y: y - 14, width: 3, height: 16, color: BRAND_BLUE });
       } else {
-        page.drawRectangle({ x: MARGIN, y: y - 14, width: 3, height: 16, color: BRAND_TEAL });
+        page.drawRectangle({ x: MARGIN, y: y - 14, width: 3, height: 16, color: BRAND_BLUE });
       }
 
       const labelPrepared = prepText(label);
@@ -1304,9 +1304,9 @@ function emailWrapper(bodyHtml, lang = 'en') {
 <body style="margin:0;padding:0;background:#f4f4f4;font-family:Arial,sans-serif;direction:${dir};text-align:${textAlign};">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f4;padding:32px 16px;">
     <tr><td align="center">
-      <table width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.08);max-width:600px;">
+      <table width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff;max-width:600px;border:1px solid #c8cbd4;">
         <!-- Header bar -->
-        <tr><td style="background:#006d77;padding:24px 32px;">
+        <tr><td style="background:#0D0D0D;padding:24px 32px;">
           <span style="color:#ffffff;font-size:20px;font-weight:700;letter-spacing:.5px;">NEATMARK</span>
         </td></tr>
         <!-- Body -->
@@ -1317,7 +1317,7 @@ function emailWrapper(bodyHtml, lang = 'en') {
         <tr><td style="background:#f9f9f9;padding:16px 32px;border-top:1px solid #eee;">
           <p style="margin:0;font-size:12px;color:#999;">
             &copy; 2026 Neatmark&trade; &nbsp;&middot;&nbsp;
-            <a href="https://neatmark.studio/privacy" style="color:#006d77;text-decoration:none;">Privacy Policy</a>
+            <a href="https://neatmark.studio/privacy" style="color:#1A38C8;text-decoration:none;">Privacy Policy</a>
           </p>
         </td></tr>
       </table>
@@ -1347,12 +1347,12 @@ function buildAdminEmail({ brandName, clientName, email, deliveryDate, country }
   ];
 
   const bodyHtml = `
-    <h2 style="color:#006d77;margin:0 0 20px;">New Client Intake Submission</h2>
+    <h2 style="color:#1A38C8;margin:0 0 20px;">New Client Intake Submission</h2>
     <table cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;">
       ${rows.map(([label, value]) => `
         <tr>
-          <td style="padding:8px 12px;background:#f0faf8;font-size:13px;font-weight:700;color:#00373c;width:160px;border-bottom:1px solid #e0f0ee;">${label}</td>
-          <td style="padding:8px 12px;font-size:13px;color:#333;border-bottom:1px solid #e0f0ee;">${value}</td>
+          <td style="padding:8px 12px;background:#F3F4F7;font-size:13px;font-weight:700;color:#0D0D0D;width:160px;border-bottom:1px solid #C8CBD4;">${label}</td>
+          <td style="padding:8px 12px;font-size:13px;color:#333;border-bottom:1px solid #C8CBD4;">${value}</td>
         </tr>`).join('')}
     </table>
     <p style="margin:24px 0 0;font-size:13px;color:#666;">
@@ -1387,23 +1387,22 @@ function buildClientEmail({ brandName, clientName, editLink }, lang = 'en') {
   })();
 
   const bodyHtml = `
-    <h2 style="color:#006d77;margin:0 0 8px;">${copy.clientGreeting(safeClient)}</h2>
+    <h2 style="color:#1A38C8;margin:0 0 8px;">${copy.clientGreeting(safeClient)}</h2>
     <p style="color:#333;line-height:1.7;margin:0 0 16px;">
       ${copy.clientIntro(safeBrand)}
     </p>
     <p style="color:#333;line-height:1.7;margin:0 0 16px;">
       ${copy.clientPdfNote}
     </p>
-    <div style="margin:24px 0;padding:20px;background:#f0faf8;border-radius:8px;border-left:4px solid #006d77;">
-      <p style="margin:0 0 12px;font-size:14px;font-weight:700;color:#00373c;">
+    <div style="margin:24px 0;padding:20px;background:#F3F4F7;border-left:4px solid #1A38C8;">
+      <p style="margin:0 0 12px;font-size:14px;font-weight:700;color:#0D0D0D;">
         ${copy.clientEditHeading}
       </p>
       <p style="margin:0 0 16px;font-size:13px;color:#444;line-height:1.6;">
         ${copy.clientEditBody}
       </p>
       <a href="${safeEditLink}"
-         style="display:inline-block;background:#006d77;color:#ffffff;text-decoration:none;
-                padding:12px 24px;border-radius:6px;font-size:14px;font-weight:700;">
+         style="display:inline-block;background:#1A38C8;color:#ffffff;text-decoration:none;padding:12px 24px;border-radius:4px;font-size:14px;font-weight:700;">
         ${copy.clientEditBtn}
       </a>
     </div>`;
@@ -1428,14 +1427,14 @@ function buildEditConfirmationEmail({ brandName, clientName }, lang = 'en') {
   });
 
   const bodyHtml = `
-    <h2 style="color:#006d77;margin:0 0 8px;">${copy.editGreeting(safeClient)}</h2>
+    <h2 style="color:#1A38C8;margin:0 0 8px;">${copy.editGreeting(safeClient)}</h2>
     <p style="color:#333;line-height:1.7;margin:0 0 16px;">
       ${copy.editIntro(safeBrand, editedAt)}
     </p>
     <p style="color:#333;line-height:1.7;margin:0 0 16px;">
       ${copy.editBody}
     </p>
-    <div style="margin-top:24px;padding-top:20px;border-top:2px solid #e0f0ee;">
+    <div style="margin-top:24px;padding-top:20px;border-top:1px solid #C8CBD4;">
       <p style="margin:0;color:#888;font-size:13px;">
         ${copy.editSignoff}
       </p>

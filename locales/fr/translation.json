@@ -1,648 +1,650 @@
 {
-  "common": {
-    "appTitle": "Formulaire d'admission client Neatmark",
-    "light": "Clair",
-    "dark": "Sombre",
-    "noResponse": "Pas de réponse"
-  },
-  "header": {
-    "themeToggle": "Basculer le thème"
-  },
-  "form": {
-    "title": "FORMULAIRE D'ADMISSION",
-    "hero": {
-      "badge": "Identité de marque",
-      "description": "Aidez-nous à comprendre votre entreprise et votre vision créative. Il n'y a pas de mauvaises réponses, plus vous serez honnête, plus votre marque sera forte."
+    "common": {
+        "appTitle": "Formulaire d'admission client Neatmark",
+        "light": "Clair",
+        "dark": "Sombre",
+        "noResponse": "Pas de réponse"
     },
-    "draftBanner": "Vous avez un brouillon enregistré, vos réponses précédentes ont été restaurées.",
-    "clearDraftBtn": "Effacer le brouillon",
-    "cta": {
-      "submit": "Soumettre le formulaire",
-      "clear": "Effacer",
-      "note": "Vos réponses sont automatiquement enregistrées dans votre navigateur pour que vous puissiez revenir et modifier à tout moment. Nous examinerons votre soumission et vous recontacterons dans les 2 jours ouvrables.",
-      "editNote": "Des modifications à apporter ? Utilisez le lien de modification sécurisé envoyé à votre adresse e-mail après la soumission.",
-      "saveChanges": "Enregistrer les modifications"
-    },
-    "metadata": {
-      "clientName": "Votre nom",
-      "clientNamePlaceholder": "Nom complet",
-      "brandName": "Marque / Entreprise",
-      "brandNamePlaceholder": "Nom de votre marque",
-      "email": "Email",
-      "emailPlaceholder": "votre@email.com",
-      "website": "Site web",
-      "websitePlaceholder": "https://votresite.com",
-      "deliveryDateOptions": {
-        "select": "Sélectionnez un délai",
-        "asap": "ASAP (dès que possible)",
-        "weeks2to4": "2–4 semaines",
-        "months1to2": "1–2 mois",
-        "months3plus": "3+ mois"
-      }
-    },
-    "sections": {
-      "badge1": "Section 01",
-      "badge2": "Section 02",
-      "foundation": "Fondation de la marque",
-      "visual": "Direction visuelle",
-      "badge3": "Section 03",
-      "project": "Projet et Cadrage"
-    },
-    "questions": {
-      "q1": {
-        "label": "Décrivez votre entreprise en complétant cette phrase : « J'aide [qui] à [quoi] pour qu'ils puissent [résultat]. »",
-        "hint": "Évitez le jargon. Si vous servez plusieurs publics, écrivez une ligne par public.",
-        "placeholder": "J'aide les thérapeutes indépendants à construire une pratique qui leur ressemble, pour qu'ils attirent les clients qui leur correspondent dès le départ..."
-      },
-      "q2": {
-        "label": "Avant : avec quoi votre client lutte-t-il ? Après : à quoi ressemble sa vie une fois qu'il a travaillé avec vous ?",
-        "hint": "Écrivez-le en deux courts paragraphes, un pour l'avant et un pour l'après. Plus c'est clair, mieux votre marque peut en parler.",
-        "placeholder": "Avant : ils luttent avec... Après : ils se sentent..."
-      },
-      "q3": {
-        "label": "Décrivez votre client idéal comme une vraie personne, pas juste un segment démographique.",
-        "hint": "Comment occupe-t-il son temps ? Qu'est-ce qui lui tient à cœur ? Comment veut-il être perçu ? Quelles marques aime-t-il déjà ?",
-        "placeholder": "Elle dirige une petite entreprise créative, valorise l'authenticité sur les tendances, et veut que sa marque reflète le soin qu'elle met dans son travail..."
-      },
-      "q4": {
-        "label": "Listez 2 à 4 concurrents ou marques similaires. Que pensez-vous qu'ils font mal ou ignorent ?",
-        "hint": "Répondez depuis votre propre conviction, sans avoir besoin de faire des recherches. Qu'est-ce que vous voyez qu'il leur manque ?",
-        "placeholder": "La marque A est soignée mais froide. Elle ne parle jamais vraiment à la personne derrière l'entreprise. La marque B est sympathique mais semble bon marché..."
-      },
-      "q5": {
-        "label": "Si votre marque était une personne, comment entrerait-elle dans une pièce?",
-        "hint": "Présence, ton de voix, comment elle s'habille, comment elle fait sentir les gens. Tout est personnalité, pas de produit.",
-        "placeholder": "Confiant mais jamais arrogant. Ils parlent lentement et délibérément..."
-      },
-      "q6": {
-        "label": "Complétez cette phrase : « Nous sommes le/la seul(e) _____ qui _____.",
-        "hint": "Votre positionnement en une ligne. Ne visez pas la perfection. Une ébauche vaut mieux que rien.",
-        "placeholder": "Nous sommes le/la seul(e)... [essayez quelque chose]"
-      },
-      "q7": {
-        "label": "Qui est le principal décideur pour ce projet?",
-        "options": {
-          "me": "Moi / moi-même",
-          "boss": "Mon patron / le patron",
-          "other": "Autre (précisez):"
-        },
-        "otherPlaceholder": "Veuillez préciser...",
-        "hint": "Cela nous aide à savoir à qui nous allons présenter et dont la validation est nécessaire."
-      },
-      "q8": {
-        "label": "Partagez 3 à 5 marques ou références visuelles que vous admirez, dans votre secteur ou en dehors. Pour chacune, incluez une phrase sur ce qui vous y attire.",
-        "hint": "Logos, sites web, emballages, mises en page éditoriales, même des espaces. La raison compte autant que le nom.",
-        "placeholder": "Apple: la retenue, rien d'inutile. Aesop: naturel et typographique, l'air d'un ami cultivé. Dieter Rams: la fonction comme esthétique..."
-      },
-      "q9": {
-        "label": "Quelles directions de couleurs semblent justes pour votre marque? Sélectionnez tout ce qui s'applique.",
-        "hint": "Faites confiance à votre instinct. Vous pouvez toujours affiner ça lors de l'appel de lancement.",
-        "options": {
-          "warmNeutrals": "Neutres chauds (crème, sable, terre cuite)",
-          "coolNeutrals": "Neutres froids (ardoise, pierre, brume)",
-          "deepMoody": "Profond & intense (marine, forêt, bordeaux)",
-          "boldSaturated": "Vif & saturé (primaires vibrantes)",
-          "pastels": "Pastels & tons doux",
-          "monochrome": "Noir & blanc / monochrome",
-          "metallic": "Métallique / tons luxe (or, bronze)",
-          "natureInspired": "Inspiré de la nature (mousse, rouille, argile)",
-          "noPreference": "Pas de préférence, je fais confiance à votre jugement"
-        }
-      },
-      "q10": {
-        "label": "Y a-t-il des couleurs totalement hors de question ? Pensez aux couleurs de vos concurrents, à vos aversions personnelles, ou à ce qui ne semble tout simplement pas juste.",
-        "hint": "Laissez vide si rien ne vous vient à l'esprit.",
-        "placeholder": "Évitez le violet, notre principal concurrent l'utilise..."
-      },
-      "q11": {
-        "label": "Quelles directions esthétiques décrivent le mieux comment votre marque devrait paraître et se ressentir ? Sélectionnez tout ce qui s'applique, par ordre de priorité.",
-        "hint": "Votre premier choix est votre direction principale, le second est secondaire, et ainsi de suite. Sélectionnez autant que vous le souhaitez.",
-        "options": {
-          "luxuryRefined": "Luxe & raffiné",
-          "organicArtisan": "Organique & artisanal",
-          "minimalFunctional": "Minimal & fonctionnel",
-          "boldGraphic": "Audacieux & graphique",
-          "playfulIllustrative": "Ludique & illustratif",
-          "editorialIntellectual": "Éditorial & intellectuel",
-          "techForward": "Tourné vers la tech & innovant",
-          "nostalgicHeritage": "Nostalgique & patrimonial"
-        }
-      },
-      "q11Description": {
-        "placeholder": "Ou décrivez votre propre direction esthétique..."
-      },
-      "q12": {
-        "label": "Avez-vous des ressources de marque existantes qui doivent être intégrées dans la nouvelle identité?",
-        "hint": "Si vous partez de zéro, laissez vide. Si vous conservez des éléments, dites-nous quoi et pourquoi.",
-        "placeholder": "Nous voulons garder notre logo actuel mais tout redesigner d'autre..."
-      },
-      "q13": {
-        "label": "Quels livrables avez-vous besoin pour ce projet?",
-        "hint": "Cochez tout ce que vous pensez avoir besoin. On peut toujours ajuster lors de l'appel de lancement.",
-        "options": {
-          "primaryLogo": "Logo principal",
-          "logoVariations": "Variantes de logo & sous-marques",
-          "colorTypography": "Palette de couleurs & système typographique",
-          "brandGuidelines": "Document de directives de marque",
-          "stationery": "Cartes de visite & papeterie",
-          "socialMedia": "Modèles réseaux sociaux",
-          "websiteDesign": "Design de site web",
-          "packaging": "Design packaging"
-        }
-      },
-      "q14": {
-        "label": "Quelle est votre approche budgétaire pour ce projet?",
-        "options": {
-          "low": "Faible / coût le plus bas possible",
-          "mid": "Moyen / équilibre prix-qualité",
-          "high": "Élevé / premium",
-          "best": "Premium / investissement complet en identité de marque (3 000 €+)"
-        }
-      },
-      "q15": {
-        "label": "Vous avez des logos, photos ou moodboards qui inspirent la direction de votre marque ? Déposez-les ici. Plus nous voyons ce qui vous touche, mieux nous pouvons concevoir pour vous.",
-        "hint": "Jusqu'à 8 images. PNG, JPG, WEBP ou GIF.",
-        "uploadPrompt": "Cliquez ou glissez des images ici",
-        "uploadLimit": "Jusqu'à 8 images · PNG, JPG, WEBP, GIF"
-      },
-      "q16": {
-        "label": "Y a-t-il quelque chose concernant vos expériences passées en matière de branding, vos préférences fortes, ou vos craintes que nous devrions savoir avant de commencer?",
-        "hint": "Quelle est la seule chose dont vous vous inquiétez le plus que nous pourrions rater ? Plus vous partagez ouvertement, mieux nous pouvons adapter cela pour vous.",
-        "placeholder": "La dernière agence nous a donné quelque chose de trop générique. Nous voulons vraiment que cela nous ressemble..."
-      },
-      "q3b": {
-        "label": "Quelle frustration ou quel désir spécifique a amené ce client vers vous, plutôt que de régler ça lui-même ou d'aller ailleurs ?",
-        "hint": "Pensez au moment où il a décidé de chercher de l'aide. Qu'est-ce qui avait changé ? Qu'était-il enfin prêt à faire ?",
-        "placeholder": "Il avait essayé un logo bon marché une fois et ça n'avait jamais semblé juste. Il est maintenant prêt à investir dans quelque chose qui le représente vraiment..."
-      },
-      "qlaunch": {
-        "label": "Pour quoi cette marque est-elle construite ? Quel est le contexte ?",
-        "hint": "Un lancement de produit dans 6 semaines, un rebranding avant une levée de fonds, un rafraîchissement discret pour des raisons personnelles. Ce contexte oriente tout dans notre façon de concevoir.",
-        "placeholder": "Nous relançons au printemps prochain après un pivot. Nous avons besoin que la marque reflète notre nouvelle direction avant de parler aux investisseurs..."
-      },
-      "qdelivery": {
-        "label": "Quel est votre délai de livraison idéal ?",
-        "hint": "Cela nous aide à planifier votre créneau de projet. Nous confirmerons le calendrier exact lors de l'appel de lancement."
-      },
-      "q9Notes": {
-        "placeholder": "D'autres couleurs en tête ? Indiquez les teintes précises qui vous attirent et la sensation que vous voulez qu'elles dégagent."
-      }
-    },
-    "footer": {
-      "copyright": "Neatmark™ 2026. Tous droits réservés.",
-      "privacy": "Politique de confidentialité",
-      "cookie": "Politique des cookies",
-      "tagline": "Façonnez votre vision, renforcez votre voix,\net faites respirer votre marque.",
-      "contactTitle": "Coordonnées",
-      "linksTitle": "Liens",
-      "website": "Site web"
-    },
-    "validation": {
-      "q9Required": "Veuillez sélectionner au moins une direction de couleur.",
-      "q13Required": "Veuillez sélectionner au moins un livrable."
-    },
-    "editMode": {
-      "banner": "Vous modifiez une soumission précédente. Effectuez vos modifications et cliquez sur Enregistrer."
-    },
-    "nav": {
-      "back": "Retour",
-      "next": "Suivant"
-    },
-    "steps": {
-      "step1": "Vos infos",
-      "step2": "Fondation",
-      "step3": "Visuel",
-      "step4": "Projet"
-    }
-  },
-  "modal": {
-    "duplicate": {
-      "title": "Soumission en double",
-      "message": "Vous avez déjà envoyé une soumission pour cette marque. Voulez-vous envoyer une toute nouvelle soumission ?",
-      "sendNew": "Envoyer comme nouveau",
-      "cancel": "Annuler"
-    },
-    "clearConfirm": {
-      "title": "Effacer le formulaire",
-      "message": "Êtes-vous sûr de vouloir effacer tous les champs? Cela ne peut pas être annulé.",
-      "confirm": "Effacer tout",
-      "cancel": "Annuler"
-    },
-    "deleteConfirm": {
-      "title": "Supprimer la soumission",
-      "message": "Êtes-vous sûr? Cela ne peut pas être annulé.",
-      "confirm": "Supprimer",
-      "cancel": "Annuler"
-    },
-    "draftClear": {
-      "message": "Effacer votre brouillon ? Toutes les réponses non soumises seront supprimées.",
-      "confirm": "Oui, effacer",
-      "cancel": "Garder le brouillon"
-    }
-  },
-  "messages": {
-    "submitSuccess": "Merci! Votre formulaire a été soumis et les fichiers ont été envoyés par email avec succès.",
-    "submitSuccessLocal": "Merci! Votre formulaire a été soumis et enregistré localement pour les tests du tableau de bord.",
-    "submitError": "La soumission a échoué: {{error}}",
-    "clearSuccess": "Formulaire effacé. Votre brouillon a été supprimé de votre navigateur.",
-    "deleteSuccess": "Soumission supprimée avec succès.",
-    "submitting": "Envoi en cours…",
-    "alertSuccess": "Succès",
-    "alertError": "Une erreur est survenue",
-    "alertClose": "OK",
-    "turnstileError": "Veuillez attendre la fin de la vérification de sécurité, puis réessayez.",
-    "editSuccess": "Vos modifications ont été enregistrées et envoyées à Neatmark !"
-  },
-  "dashboard": {
-    "title": "Tableau de bord des formulaires",
     "header": {
-      "title": "Soumissions des clients",
-      "subtitle": "Gérer et examiner toutes les soumissions d'admission",
-      "dashTitle": "TABLEAU DE BORD",
-      "import": "Importer",
-      "exportAs": "Exporter comme",
-      "account": "Compte"
+        "themeToggle": "Basculer le thème"
     },
-    "toolbar": {
-      "search": "Rechercher par marque, client ou email...",
-      "filter": "Filtrer",
-      "export": "Exporter",
-      "refresh": "Actualiser",
-      "dateOptions": {
-        "all": "Toutes les dates",
-        "today": "Aujourd'hui",
-        "last7": "7 derniers jours",
-        "last30": "30 derniers jours",
-        "thisMonth": "Ce mois-ci",
-        "lastMonth": "Mois dernier"
-      }
+    "form": {
+        "title": "FORMULAIRE D'ADMISSION",
+        "hero": {
+            "badge": "Identité de marque",
+            "description": "Aidez-nous à comprendre votre entreprise et votre vision créative. Il n'y a pas de mauvaises réponses, plus vous serez honnête, plus votre marque sera forte."
+        },
+        "draftBanner": "Vous avez un brouillon enregistré, vos réponses précédentes ont été restaurées.",
+        "clearDraftBtn": "Effacer le brouillon",
+        "cta": {
+            "submit": "Soumettre le formulaire",
+            "clear": "Effacer",
+            "note": "Vos réponses sont automatiquement enregistrées dans votre navigateur pour que vous puissiez revenir et modifier à tout moment. Nous examinerons votre soumission et vous recontacterons dans les 2 jours ouvrables.",
+            "editNote": "Des modifications à apporter ? Utilisez le lien de modification sécurisé envoyé à votre adresse e-mail après la soumission.",
+            "saveChanges": "Enregistrer les modifications"
+        },
+        "metadata": {
+            "clientName": "Votre nom",
+            "clientNamePlaceholder": "Nom complet",
+            "brandName": "Marque / Entreprise",
+            "brandNamePlaceholder": "Nom de votre marque",
+            "email": "Email",
+            "emailPlaceholder": "votre@email.com",
+            "website": "Site web",
+            "websitePlaceholder": "https://votresite.com",
+            "deliveryDateOptions": {
+                "select": "Sélectionnez un délai",
+                "asap": "ASAP (dès que possible)",
+                "weeks2to4": "2–4 semaines",
+                "months1to2": "1–2 mois",
+                "months3plus": "3+ mois"
+            }
+        },
+        "sections": {
+            "badge1": "Section 01",
+            "badge2": "Section 02",
+            "foundation": "Fondation de la marque",
+            "visual": "Direction visuelle",
+            "badge3": "Section 03",
+            "project": "Projet et Cadrage",
+            "badge4": "Section 04"
+        },
+        "questions": {
+            "q1": {
+                "label": "Décrivez votre entreprise en complétant cette phrase : « J'aide [qui] à [quoi] pour qu'ils puissent [résultat]. »",
+                "hint": "Évitez le jargon. Si vous servez plusieurs publics, écrivez une ligne par public.",
+                "placeholder": "J'aide les thérapeutes indépendants à construire une pratique qui leur ressemble, pour qu'ils attirent les clients qui leur correspondent dès le départ..."
+            },
+            "q2": {
+                "label": "Avant : avec quoi votre client lutte-t-il ? Après : à quoi ressemble sa vie une fois qu'il a travaillé avec vous ?",
+                "hint": "Écrivez-le en deux courts paragraphes, un pour l'avant et un pour l'après. Plus c'est clair, mieux votre marque peut en parler.",
+                "placeholder": "Avant : ils luttent avec... Après : ils se sentent..."
+            },
+            "q3": {
+                "label": "Décrivez votre client idéal comme une vraie personne, pas juste un segment démographique.",
+                "hint": "Comment occupe-t-il son temps ? Qu'est-ce qui lui tient à cœur ? Comment veut-il être perçu ? Quelles marques aime-t-il déjà ?",
+                "placeholder": "Elle dirige une petite entreprise créative, valorise l'authenticité sur les tendances, et veut que sa marque reflète le soin qu'elle met dans son travail..."
+            },
+            "q4": {
+                "label": "Listez 2 à 4 concurrents ou marques similaires. Que pensez-vous qu'ils font mal ou ignorent ?",
+                "hint": "Répondez depuis votre propre conviction, sans avoir besoin de faire des recherches. Qu'est-ce que vous voyez qu'il leur manque ?",
+                "placeholder": "La marque A est soignée mais froide. Elle ne parle jamais vraiment à la personne derrière l'entreprise. La marque B est sympathique mais semble bon marché..."
+            },
+            "q5": {
+                "label": "Si votre marque était une personne, comment entrerait-elle dans une pièce?",
+                "hint": "Présence, ton de voix, comment elle s'habille, comment elle fait sentir les gens. Tout est personnalité, pas de produit.",
+                "placeholder": "Confiant mais jamais arrogant. Ils parlent lentement et délibérément..."
+            },
+            "q6": {
+                "label": "Complétez cette phrase : « Nous sommes le/la seul(e) _____ qui _____.",
+                "hint": "Votre positionnement en une ligne. Ne visez pas la perfection. Une ébauche vaut mieux que rien.",
+                "placeholder": "Nous sommes le/la seul(e)... [essayez quelque chose]"
+            },
+            "q7": {
+                "label": "Qui est le principal décideur pour ce projet?",
+                "options": {
+                    "me": "Moi / moi-même",
+                    "boss": "Mon patron / le patron",
+                    "other": "Autre (précisez):"
+                },
+                "otherPlaceholder": "Veuillez préciser...",
+                "hint": "Cela nous aide à savoir à qui nous allons présenter et dont la validation est nécessaire."
+            },
+            "q8": {
+                "label": "Partagez 3 à 5 marques ou références visuelles que vous admirez, dans votre secteur ou en dehors. Pour chacune, incluez une phrase sur ce qui vous y attire.",
+                "hint": "Logos, sites web, emballages, mises en page éditoriales, même des espaces. La raison compte autant que le nom.",
+                "placeholder": "Apple: la retenue, rien d'inutile. Aesop: naturel et typographique, l'air d'un ami cultivé. Dieter Rams: la fonction comme esthétique..."
+            },
+            "q9": {
+                "label": "Quelles directions de couleurs semblent justes pour votre marque? Sélectionnez tout ce qui s'applique.",
+                "hint": "Faites confiance à votre instinct. Vous pouvez toujours affiner ça lors de l'appel de lancement.",
+                "options": {
+                    "warmNeutrals": "Neutres chauds (crème, sable, terre cuite)",
+                    "coolNeutrals": "Neutres froids (ardoise, pierre, brume)",
+                    "deepMoody": "Profond & intense (marine, forêt, bordeaux)",
+                    "boldSaturated": "Vif & saturé (primaires vibrantes)",
+                    "pastels": "Pastels & tons doux",
+                    "monochrome": "Noir & blanc / monochrome",
+                    "metallic": "Métallique / tons luxe (or, bronze)",
+                    "natureInspired": "Inspiré de la nature (mousse, rouille, argile)",
+                    "noPreference": "Pas de préférence, je fais confiance à votre jugement"
+                }
+            },
+            "q10": {
+                "label": "Y a-t-il des couleurs totalement hors de question ? Pensez aux couleurs de vos concurrents, à vos aversions personnelles, ou à ce qui ne semble tout simplement pas juste.",
+                "hint": "Laissez vide si rien ne vous vient à l'esprit.",
+                "placeholder": "Évitez le violet, notre principal concurrent l'utilise..."
+            },
+            "q11": {
+                "label": "Quelles directions esthétiques décrivent le mieux comment votre marque devrait paraître et se ressentir ? Sélectionnez tout ce qui s'applique, par ordre de priorité.",
+                "hint": "Votre premier choix est votre direction principale, le second est secondaire, et ainsi de suite. Sélectionnez autant que vous le souhaitez.",
+                "options": {
+                    "luxuryRefined": "Luxe & raffiné",
+                    "organicArtisan": "Organique & artisanal",
+                    "minimalFunctional": "Minimal & fonctionnel",
+                    "boldGraphic": "Audacieux & graphique",
+                    "playfulIllustrative": "Ludique & illustratif",
+                    "editorialIntellectual": "Éditorial & intellectuel",
+                    "techForward": "Tourné vers la tech & innovant",
+                    "nostalgicHeritage": "Nostalgique & patrimonial"
+                }
+            },
+            "q11Description": {
+                "placeholder": "Ou décrivez votre propre direction esthétique..."
+            },
+            "q12": {
+                "label": "Avez-vous des ressources de marque existantes qui doivent être intégrées dans la nouvelle identité?",
+                "hint": "Si vous partez de zéro, laissez vide. Si vous conservez des éléments, dites-nous quoi et pourquoi.",
+                "placeholder": "Nous voulons garder notre logo actuel mais tout redesigner d'autre..."
+            },
+            "q13": {
+                "label": "Quels livrables avez-vous besoin pour ce projet?",
+                "hint": "Cochez tout ce que vous pensez avoir besoin. On peut toujours ajuster lors de l'appel de lancement.",
+                "options": {
+                    "primaryLogo": "Logo principal",
+                    "logoVariations": "Variantes de logo & sous-marques",
+                    "colorTypography": "Palette de couleurs & système typographique",
+                    "brandGuidelines": "Document de directives de marque",
+                    "stationery": "Cartes de visite & papeterie",
+                    "socialMedia": "Modèles réseaux sociaux",
+                    "websiteDesign": "Design de site web",
+                    "packaging": "Design packaging"
+                }
+            },
+            "q14": {
+                "label": "Quelle est votre approche budgétaire pour ce projet?",
+                "options": {
+                    "low": "Faible / coût le plus bas possible",
+                    "mid": "Moyen / équilibre prix-qualité",
+                    "high": "Élevé / premium",
+                    "best": "Premium / investissement complet en identité de marque (3 000 €+)"
+                }
+            },
+            "q15": {
+                "label": "Vous avez des logos, photos ou moodboards qui inspirent la direction de votre marque ? Déposez-les ici. Plus nous voyons ce qui vous touche, mieux nous pouvons concevoir pour vous.",
+                "hint": "Jusqu'à 8 images. PNG, JPG, WEBP ou GIF.",
+                "uploadPrompt": "Cliquez ou glissez des images ici",
+                "uploadLimit": "Jusqu'à 8 images · PNG, JPG, WEBP, GIF"
+            },
+            "q16": {
+                "label": "Y a-t-il quelque chose concernant vos expériences passées en matière de branding, vos préférences fortes, ou vos craintes que nous devrions savoir avant de commencer?",
+                "hint": "Quelle est la seule chose dont vous vous inquiétez le plus que nous pourrions rater ? Plus vous partagez ouvertement, mieux nous pouvons adapter cela pour vous.",
+                "placeholder": "La dernière agence nous a donné quelque chose de trop générique. Nous voulons vraiment que cela nous ressemble..."
+            },
+            "q3b": {
+                "label": "Quelle frustration ou quel désir spécifique a amené ce client vers vous, plutôt que de régler ça lui-même ou d'aller ailleurs ?",
+                "hint": "Pensez au moment où il a décidé de chercher de l'aide. Qu'est-ce qui avait changé ? Qu'était-il enfin prêt à faire ?",
+                "placeholder": "Il avait essayé un logo bon marché une fois et ça n'avait jamais semblé juste. Il est maintenant prêt à investir dans quelque chose qui le représente vraiment..."
+            },
+            "qlaunch": {
+                "label": "Pour quoi cette marque est-elle construite ? Quel est le contexte ?",
+                "hint": "Un lancement de produit dans 6 semaines, un rebranding avant une levée de fonds, un rafraîchissement discret pour des raisons personnelles. Ce contexte oriente tout dans notre façon de concevoir.",
+                "placeholder": "Nous relançons au printemps prochain après un pivot. Nous avons besoin que la marque reflète notre nouvelle direction avant de parler aux investisseurs..."
+            },
+            "qdelivery": {
+                "label": "Quel est votre délai de livraison idéal ?",
+                "hint": "Cela nous aide à planifier votre créneau de projet. Nous confirmerons le calendrier exact lors de l'appel de lancement."
+            },
+            "q9Notes": {
+                "placeholder": "D'autres couleurs en tête ? Indiquez les teintes précises qui vous attirent et la sensation que vous voulez qu'elles dégagent."
+            }
+        },
+        "footer": {
+            "copyright": "Neatmark™ 2026. Tous droits réservés.",
+            "privacy": "Politique de confidentialité",
+            "cookie": "Politique des cookies",
+            "tagline": "Façonnez votre vision, renforcez votre voix,\net faites respirer votre marque.",
+            "contactTitle": "Coordonnées",
+            "linksTitle": "Liens",
+            "website": "Site web"
+        },
+        "validation": {
+            "q9Required": "Veuillez sélectionner au moins une direction de couleur.",
+            "q13Required": "Veuillez sélectionner au moins un livrable."
+        },
+        "editMode": {
+            "banner": "Vous modifiez une soumission précédente. Effectuez vos modifications et cliquez sur Enregistrer."
+        },
+        "nav": {
+            "back": "Retour",
+            "next": "Suivant",
+            "start": "Commencer"
+        },
+        "steps": {
+            "step1": "Vos infos",
+            "step2": "Fondation",
+            "step3": "Visuel",
+            "step4": "Projet"
+        }
     },
-    "table": {
-      "columns": {
-        "date": "Date",
-        "time": "Heure",
-        "clientName": "Nom du client",
-        "brandName": "Nom de la marque",
-        "email": "Email",
-        "status": "Statut",
-        "actions": "Actions"
-      },
-      "status": {
-        "original": "Original",
-        "edited": "Édité",
-        "latest": "Dernier"
-      }
+    "modal": {
+        "duplicate": {
+            "title": "Soumission en double",
+            "message": "Vous avez déjà envoyé une soumission pour cette marque. Voulez-vous envoyer une toute nouvelle soumission ?",
+            "sendNew": "Envoyer comme nouveau",
+            "cancel": "Annuler"
+        },
+        "clearConfirm": {
+            "title": "Effacer le formulaire",
+            "message": "Êtes-vous sûr de vouloir effacer tous les champs? Cela ne peut pas être annulé.",
+            "confirm": "Effacer tout",
+            "cancel": "Annuler"
+        },
+        "deleteConfirm": {
+            "title": "Supprimer la soumission",
+            "message": "Êtes-vous sûr? Cela ne peut pas être annulé.",
+            "confirm": "Supprimer",
+            "cancel": "Annuler"
+        },
+        "draftClear": {
+            "message": "Effacer votre brouillon ? Toutes les réponses non soumises seront supprimées.",
+            "confirm": "Oui, effacer",
+            "cancel": "Garder le brouillon"
+        }
     },
-    "stats": {
-      "totalSubmissions": "Total des soumissions",
-      "thisMonth": "Ce mois-ci",
-      "thisWeek": "Cette semaine",
-      "today": "Aujourd'hui",
-      "withDelivery": "Avec date de livraison",
-      "latestSubmission": "Dernière soumission"
+    "messages": {
+        "submitSuccess": "Merci! Votre formulaire a été soumis et les fichiers ont été envoyés par email avec succès.",
+        "submitSuccessLocal": "Merci! Votre formulaire a été soumis et enregistré localement pour les tests du tableau de bord.",
+        "submitError": "La soumission a échoué: {{error}}",
+        "clearSuccess": "Formulaire effacé. Votre brouillon a été supprimé de votre navigateur.",
+        "deleteSuccess": "Soumission supprimée avec succès.",
+        "submitting": "Envoi en cours…",
+        "alertSuccess": "Succès",
+        "alertError": "Une erreur est survenue",
+        "alertClose": "OK",
+        "turnstileError": "Veuillez attendre la fin de la vérification de sécurité, puis réessayez.",
+        "editSuccess": "Vos modifications ont été enregistrées et envoyées à Neatmark !"
     },
-    "empty": {
-      "title": "Aucune soumission pour le moment",
-      "message": "Les soumissions apparaîtront ici une fois qu'elles seront soumises."
+    "dashboard": {
+        "title": "Tableau de bord des formulaires",
+        "header": {
+            "title": "Soumissions des clients",
+            "subtitle": "Gérer et examiner toutes les soumissions d'admission",
+            "dashTitle": "TABLEAU DE BORD",
+            "import": "Importer",
+            "exportAs": "Exporter comme",
+            "account": "Compte"
+        },
+        "toolbar": {
+            "search": "Rechercher par marque, client ou email...",
+            "filter": "Filtrer",
+            "export": "Exporter",
+            "refresh": "Actualiser",
+            "dateOptions": {
+                "all": "Toutes les dates",
+                "today": "Aujourd'hui",
+                "last7": "7 derniers jours",
+                "last30": "30 derniers jours",
+                "thisMonth": "Ce mois-ci",
+                "lastMonth": "Mois dernier"
+            }
+        },
+        "table": {
+            "columns": {
+                "date": "Date",
+                "time": "Heure",
+                "clientName": "Nom du client",
+                "brandName": "Nom de la marque",
+                "email": "Email",
+                "status": "Statut",
+                "actions": "Actions"
+            },
+            "status": {
+                "original": "Original",
+                "edited": "Édité",
+                "latest": "Dernier"
+            }
+        },
+        "stats": {
+            "totalSubmissions": "Total des soumissions",
+            "thisMonth": "Ce mois-ci",
+            "thisWeek": "Cette semaine",
+            "today": "Aujourd'hui",
+            "withDelivery": "Avec date de livraison",
+            "latestSubmission": "Dernière soumission"
+        },
+        "empty": {
+            "title": "Aucune soumission pour le moment",
+            "message": "Les soumissions apparaîtront ici une fois qu'elles seront soumises."
+        },
+        "empty_search": {
+            "title": "Aucun résultat trouvé",
+            "message": "Essayez d'ajuster vos termes de recherche."
+        },
+        "actions": {
+            "view": "Afficher",
+            "edit": "Modifier",
+            "delete": "Supprimer",
+            "download": "Télécharger"
+        },
+        "login": {
+            "title": "Accès au tableau de bord",
+            "subtitle": "Veuillez vous connecter pour voir les soumissions",
+            "btn": "Se connecter"
+        },
+        "theme": {
+            "auto": "Auto",
+            "light": "Clair",
+            "dark": "Sombre"
+        },
+        "sort": {
+            "label": "Trier par",
+            "newestFirst": "Plus récent d'abord",
+            "oldestFirst": "Plus ancien d'abord",
+            "nameAZ": "Nom A→Z",
+            "nameZA": "Nom Z→A",
+            "deliverySoonest": "Livraison la plus proche",
+            "deliveryLatest": "Livraison la plus tardive",
+            "newest": "Récent",
+            "oldest": "Ancien",
+            "az": "A→Z",
+            "za": "Z→A",
+            "soonest": "Proche",
+            "latest": "Tardif"
+        },
+        "select": {
+            "visible": "Sélectionner les visibles",
+            "deselect": "Désélectionner les visibles"
+        },
+        "loading": "Chargement des soumissions...",
+        "showing": "Affichage de {{count}} soumissions",
+        "selected": "{{count}} sélectionné(s)",
+        "clearFilters": "Effacer les filtres",
+        "noSubmissions": {
+            "title": "Aucune soumission trouvée",
+            "message": "Essayez d'ajuster votre recherche ou filtre de date."
+        },
+        "export": {
+            "filtered": "Exporter les filtrés ({{count}}) ▾",
+            "visible": "Exporter les visibles ({{count}}) ▾",
+            "noData": "Aucune soumission à exporter.",
+            "md": "Markdown (.md)",
+            "pdf": "PDF (.pdf)",
+            "docx": "Word (.docx)",
+            "csv": "CSV (.csv)"
+        },
+        "card": {
+            "email": "Email",
+            "delivery": "Livraison",
+            "agreed": "Convenu",
+            "proposed": "Proposé",
+            "notSet": "Non défini",
+            "edit": "Modifier",
+            "export": "Exporter"
+        },
+        "status": {
+            "approved": "Approuvé",
+            "rejected": "Rejeté",
+            "pending": "En attente",
+            "notStarted": "Non commencé",
+            "inProgress": "En cours",
+            "done": "Terminé",
+            "abandoned": "Abandonné",
+            "notSet": "Non défini"
+        },
+        "error": {
+            "accessDenied": "Accès refusé. Demandez à l'administrateur d'ajouter votre email à ADMIN_EMAILS.",
+            "sessionExpired": "Votre session a expiré. Veuillez vous reconnecter.",
+            "failedToLoad": "Échec du chargement des soumissions. Veuillez réessayer."
+        },
+        "confirm": {
+            "deleteSelected": "Supprimer {{count}} soumission(s) ? Cette action ne peut pas être annulée.",
+            "deleteSubmission": "Êtes-vous sûr de vouloir supprimer \"{{name}}\" ? Cette action ne peut pas être annulée.",
+            "discardChanges": "Abandonner les modifications non enregistrées ?"
+        },
+        "alert": {
+            "deletedSuccess": "{{count}} soumission(s) supprimée(s) avec succès.",
+            "deletedWithFails": "{{count}} soumission(s) supprimée(s). {{failed}} ont échoué.",
+            "failedDeleteSelected": "Échec de la suppression. Veuillez réessayer.",
+            "deleteSuccess": "Soumission supprimée avec succès",
+            "deleteFailed": "Échec de la suppression. Veuillez réessayer.",
+            "deleting": "Suppression...",
+            "notAuthenticated": "Non authentifié",
+            "statusFailed": "Échec de la mise à jour du statut : {{error}}\n\nAssurez-vous d'avoir exécuté la migration SQL pour ajouter la colonne \"status\".",
+            "saveError": "Impossible d'enregistrer les modifications : attribution d'éditeur manquante.",
+            "importUnsupported": "Type de fichier non pris en charge. Utilisez .md ou .csv",
+            "importMissing": "Importation échouée : champs obligatoires manquants (Marque, Client ou Email)",
+            "importSuccess": "Importé avec succès : {{name}}"
+        },
+        "discard": {
+            "title": "Modifications non enregistrées",
+            "message": "Vous avez des modifications non enregistrées. Les abandonner ?",
+            "keepEditing": "Continuer la modification",
+            "discard": "Abandonner"
+        }
     },
-    "empty_search": {
-      "title": "Aucun résultat trouvé",
-      "message": "Essayez d'ajuster vos termes de recherche."
-    },
-    "actions": {
-      "view": "Afficher",
-      "edit": "Modifier",
-      "delete": "Supprimer",
-      "download": "Télécharger"
-    },
-    "login": {
-      "title": "Accès au tableau de bord",
-      "subtitle": "Veuillez vous connecter pour voir les soumissions",
-      "btn": "Se connecter"
-    },
-    "theme": {
-      "auto": "Auto",
-      "light": "Clair",
-      "dark": "Sombre"
-    },
-    "sort": {
-      "label": "Trier par",
-      "newestFirst": "Plus récent d'abord",
-      "oldestFirst": "Plus ancien d'abord",
-      "nameAZ": "Nom A→Z",
-      "nameZA": "Nom Z→A",
-      "deliverySoonest": "Livraison la plus proche",
-      "deliveryLatest": "Livraison la plus tardive",
-      "newest": "Récent",
-      "oldest": "Ancien",
-      "az": "A→Z",
-      "za": "Z→A",
-      "soonest": "Proche",
-      "latest": "Tardif"
-    },
-    "select": {
-      "visible": "Sélectionner les visibles",
-      "deselect": "Désélectionner les visibles"
-    },
-    "loading": "Chargement des soumissions...",
-    "showing": "Affichage de {{count}} soumissions",
-    "selected": "{{count}} sélectionné(s)",
-    "clearFilters": "Effacer les filtres",
-    "noSubmissions": {
-      "title": "Aucune soumission trouvée",
-      "message": "Essayez d'ajuster votre recherche ou filtre de date."
-    },
-    "export": {
-      "filtered": "Exporter les filtrés ({{count}}) ▾",
-      "visible": "Exporter les visibles ({{count}}) ▾",
-      "noData": "Aucune soumission à exporter.",
-      "md": "Markdown (.md)",
-      "pdf": "PDF (.pdf)",
-      "docx": "Word (.docx)",
-      "csv": "CSV (.csv)"
-    },
-    "card": {
-      "email": "Email",
-      "delivery": "Livraison",
-      "agreed": "Convenu",
-      "proposed": "Proposé",
-      "notSet": "Non défini",
-      "edit": "Modifier",
-      "export": "Exporter"
-    },
-    "status": {
-      "approved": "Approuvé",
-      "rejected": "Rejeté",
-      "pending": "En attente",
-      "notStarted": "Non commencé",
-      "inProgress": "En cours",
-      "done": "Terminé",
-      "abandoned": "Abandonné",
-      "notSet": "Non défini"
-    },
-    "error": {
-      "accessDenied": "Accès refusé. Demandez à l'administrateur d'ajouter votre email à ADMIN_EMAILS.",
-      "sessionExpired": "Votre session a expiré. Veuillez vous reconnecter.",
-      "failedToLoad": "Échec du chargement des soumissions. Veuillez réessayer."
-    },
-    "confirm": {
-      "deleteSelected": "Supprimer {{count}} soumission(s) ? Cette action ne peut pas être annulée.",
-      "deleteSubmission": "Êtes-vous sûr de vouloir supprimer \"{{name}}\" ? Cette action ne peut pas être annulée.",
-      "discardChanges": "Abandonner les modifications non enregistrées ?"
-    },
-    "alert": {
-      "deletedSuccess": "{{count}} soumission(s) supprimée(s) avec succès.",
-      "deletedWithFails": "{{count}} soumission(s) supprimée(s). {{failed}} ont échoué.",
-      "failedDeleteSelected": "Échec de la suppression. Veuillez réessayer.",
-      "deleteSuccess": "Soumission supprimée avec succès",
-      "deleteFailed": "Échec de la suppression. Veuillez réessayer.",
-      "deleting": "Suppression...",
-      "notAuthenticated": "Non authentifié",
-      "statusFailed": "Échec de la mise à jour du statut : {{error}}\n\nAssurez-vous d'avoir exécuté la migration SQL pour ajouter la colonne \"status\".",
-      "saveError": "Impossible d'enregistrer les modifications : attribution d'éditeur manquante.",
-      "importUnsupported": "Type de fichier non pris en charge. Utilisez .md ou .csv",
-      "importMissing": "Importation échouée : champs obligatoires manquants (Marque, Client ou Email)",
-      "importSuccess": "Importé avec succès : {{name}}"
-    },
-    "discard": {
-      "title": "Modifications non enregistrées",
-      "message": "Vous avez des modifications non enregistrées. Les abandonner ?",
-      "keepEditing": "Continuer la modification",
-      "discard": "Abandonner"
-    }
-  },
-  "detailPanel": {
-    "title": "Détails de la soumission",
-    "editingBanner": "Modification de la soumission",
-    "savingChanges": "Enregistrement des modifications...",
-    "unsavedWarning": "Vous avez des modifications non enregistrées.",
-    "buttons": {
-      "save": "Enregistrer les modifications",
-      "cancel": "Annuler",
-      "close": "Fermer",
-      "edit": "Modifier",
-      "download": "Télécharger"
-    },
-    "sections": {
-      "metadata": "Métadonnées",
-      "responses": "Réponses",
-      "history": "Historique des modifications"
-    }
-  },
-  "history": {
-    "title": "Historique des modifications",
-    "originalSubmission": "Soumission originale",
-    "edited": "Édité",
-    "latest": "Dernier",
-    "byAdmin": "Par l'administrateur",
-    "byClient": "Par le client",
-    "noEdits": "Aucune modification pour le moment"
-  },
-  "logoUpload": {
-    "title": "Téléchargement de logo",
-    "dragDrop": "Glissez-déposez votre logo ici ou cliquez pour parcourir",
-    "accepted": "Formats acceptés: PNG, JPG, SVG",
-    "maxSize": "Taille maximale du fichier: 5MB",
-    "errorSize": "La taille du fichier dépasse 5MB. Veuillez choisir un fichier plus petit.",
-    "errorFormat": "Format de fichier invalide. Veuillez télécharger PNG, JPG ou SVG.",
-    "remove": "Supprimer",
-    "replace": "Remplacer"
-  },
-  "language": {
-    "label": "Langue",
-    "en": "English",
-    "fr": "Français",
-    "ar": "العربية"
-  },
-  "legal": {
-    "backToForm": "Retour au formulaire",
-    "eyebrow": "Juridique",
-    "updated": "Dernière mise à jour : février 2026",
-    "privacy": {
-      "title": "Politique de confidentialité",
-      "intro": "Chez Neatmark, nous prenons votre vie privée au sérieux. Cette page explique quelles informations nous collectons lorsque vous utilisez notre formulaire d'admission client, comment nous les utilisons et comment nous les protégeons. Nous avons volontairement rédigé ceci en langage simple. Vous méritez de savoir exactement ce qu'il advient de vos données, sans avoir à déchiffrer un jargon juridique.",
-      "s1_title": "Quelles informations nous collectons",
-      "s1_p1": "Lorsque vous remplissez et soumettez le formulaire d'admission client Neatmark, nous collectons les éléments suivants :",
-      "s1_li1": "Votre nom complet",
-      "s1_li2": "Votre adresse email",
-      "s1_li3": "Votre nom de marque ou d'entreprise",
-      "s1_li4": "Votre URL de site web, si vous choisissez de la partager",
-      "s1_li5": "Votre délai de livraison préféré",
-      "s1_p2": "Nous ne collectons aucune information de paiement, document d'identité ou donnée personnelle sensible via ce formulaire.",
-      "s2_title": "Comment nous utilisons vos informations",
-      "s2_p1": "Les informations que vous partagez avec nous sont utilisées dans un seul but : comprendre vos besoins en matière de marque pour vous offrir le meilleur travail possible. Concrètement, votre soumission nous aide à préparer le lancement de votre projet, à adapter notre approche créative à votre vision et à garder une trace de votre brief tout au long de la collaboration.",
-      "s2_p2": "Nous n'utilisons pas vos informations pour des campagnes marketing, du profilage analytique ou toute prise de décision automatisée. Nous ne vous envoyons pas d'emails non sollicités suite à votre soumission, au-delà de ce qui concerne directement votre projet avec nous.",
-      "s3_title": "Nous ne vendons ni ne partageons vos données",
-      "s3_p1": "Vos informations ne sont jamais vendues à des tiers. Nous ne travaillons pas avec des réseaux publicitaires, des courtiers en données ou des services de marketing tiers, de quelque nature que ce soit. Votre soumission n'est pas utilisée pour créer des profils publicitaires, et elle n'est partagée avec personne en dehors de l'équipe Neatmark.",
-      "s3_p2": "La seule situation dans laquelle nous partagerions des informations serait si nous y étions légalement contraints par une décision de justice ou la loi applicable, et uniquement dans la mesure nécessaire.",
-      "s4_title": "Qui peut accéder à vos données",
-      "s4_p1": "Votre soumission est stockée de manière sécurisée dans une base de données privée. Seuls les administrateurs Neatmark autorisés peuvent accéder au tableau de bord où les soumissions sont conservées. Aucun client ne peut voir la soumission d'un autre client. L'accès est protégé par authentification et limité aux membres de l'équipe qui en ont besoin pour gérer votre projet.",
-      "s4_p2": "Vos images d'inspiration et tous les fichiers téléchargés sont stockés dans un système de stockage privé à accès contrôlé. Les liens directs vers vos fichiers ne sont pas devinables publiquement ni indexables.",
-      "s5_title": "Comment nous protégeons vos données",
-      "s5_p1": "Nous prenons des mesures techniques et organisationnelles raisonnables pour assurer la sécurité de vos informations. Notre base de données et notre stockage de fichiers sont hébergés sur des plateformes utilisant un chiffrement conforme aux normes industrielles, au repos et en transit. Les identifiants d'accès sont gardés privés et ne sont pas partagés en dehors de l'équipe Neatmark.",
-      "s5_p2": "Bien qu'aucun système sur Internet ne puisse être garanti 100% sécurisé, nous faisons de notre mieux pour que vos données soient traitées de manière responsable.",
-      "s6_title": "Sauvegarde des brouillons dans votre navigateur",
-      "s6_p1": "Le formulaire utilise le stockage local de votre navigateur pour enregistrer automatiquement vos réponses au fur et à mesure que vous les saisissez, afin que vous ne perdiez pas votre travail si vous fermez l'onglet. Ces données restent entièrement dans votre navigateur et ne sont jamais envoyées à nos serveurs avant que vous n'appuyiez sur Soumettre. Vous pouvez effacer votre brouillon à tout moment via le bouton Effacer le brouillon dans le formulaire.",
-      "s7_title": "Durée de conservation de vos données",
-      "s7_p1": "Nous conservons votre soumission aussi longtemps qu'elle est pertinente pour votre projet et notre relation de travail. Si vous souhaitez que vos informations soient supprimées de nos dossiers à tout moment, envoyez-nous simplement un email et nous nous en occuperons rapidement.",
-      "s8_title": "Vos droits",
-      "s8_p1": "Vous avez le droit de nous demander quelles données nous détenons sur vous, de demander une correction si quelque chose est inexact, et de demander la suppression de vos données. Pour exercer l'un de ces droits, contactez-nous directement via les coordonnées sur notre site. Nous vous répondrons dans les plus brefs délais.",
-      "s9_title": "Modifications de cette politique",
-      "s9_p1": "Si nous apportons des modifications significatives à la manière dont nous traitons vos données, nous mettrons cette page à jour et réviserons la date en haut. Nous n'appliquerons pas rétroactivement des pratiques sensiblement moins favorables que celles en vigueur au moment de votre soumission.",
-      "s10_title": "Questions",
-      "s10_p1": "Si vous avez des questions sur cette politique ou sur la gestion de vos données, contactez-nous via notre site neatmark.studio. Nous sommes disponibles pour clarifier tout point qui vous semblerait flou.",
-      "s_security_title": "Vérifications de sécurité",
-      "s_security_p1": "Afin de protéger le formulaire contre les abus et les soumissions automatisées, nous mettons en œuvre plusieurs couches de sécurité côté serveur :",
-      "s_security_li1": "Cloudflare Turnstile — un système de vérification discret (similaire à un CAPTCHA) qui s'exécute dans votre navigateur au moment de la soumission. Il confirme que vous êtes un utilisateur humain en analysant des signaux comportementaux, sans vous demander de résoudre des puzzles ni créer de compte. Le résultat de la vérification est envoyé aux serveurs de Cloudflare pour validation. Cloudflare peut traiter temporairement votre adresse IP dans ce cadre.",
-      "s_security_li2": "Champ honeypot — un champ de formulaire invisible pour les utilisateurs humains mais visible pour les robots. Si ce champ est rempli, la soumission est automatiquement rejetée de manière silencieuse.",
-      "s_security_li3": "Limitation de débit — nous limitons le nombre de soumissions et de vérifications de doublons autorisées par adresse IP sur une période glissante. Votre adresse IP est utilisée temporairement en mémoire à cette seule fin et n'est pas enregistrée de manière permanente dans notre base de données.",
-      "s_security_li4": "Validation de la longueur des champs — la longueur de chaque champ du formulaire est vérifiée côté serveur pour prévenir les tentatives d'injection ou de surcharge.",
-      "s_security_p2": "Ces mesures ont pour unique but d'assurer l'intégrité du formulaire. Elles ne servent pas à vous identifier, à vous profiler ni à collecter des données à votre insu au-delà de ce qui est décrit dans cette politique.",
-      "s_country_title": "Détection du pays",
-      "s_country_p1": "Lorsque vous soumettez le formulaire, nous détectons automatiquement votre pays d'origine à partir d'en-têtes réseau fournis par notre infrastructure d'hébergement (Netlify) ou par Cloudflare. Cela se traduit par un code pays à deux lettres (par exemple « FR » pour France) qui est converti en nom de pays lisible et enregistré avec votre soumission.",
-      "s_country_p2": "Cette information nous aide uniquement à contextualiser les demandes entrantes. Elle n'est pas utilisée à des fins publicitaires, de géo-restriction ni d'aucune autre prise de décision automatisée. Nous ne connaissons pas votre ville, région ou adresse IP précise — uniquement le pays tel que déduit par notre infrastructure réseau.",
-      "s1_li6": "Vos réponses au questionnaire de marque, y compris les descriptions écrites, les préférences et les images d'inspiration téléchargées",
-      "s1_li7": "Votre pays, déduit automatiquement de votre connexion réseau au moment de la soumission",
-      "s1_li8": "Un lien de modification sécurisé envoyé à votre adresse email juste après la soumission, qui vous permet de revoir et mettre à jour vos réponses. Le jeton associé à ce lien est temporaire et expire après 30 jours ou après sa première utilisation.",
-      "s_infra_title": "Les services sur lesquels nous nous appuyons",
-      "s_infra_p1": "Pour faire fonctionner ce formulaire, stocker vos données et envoyer les emails de confirmation, nous travaillons avec un nombre limité de prestataires de confiance. Chacun d'eux traite vos données directement :",
-      "s_infra_li1": "Netlify héberge le site et exécute les fonctions serveur qui reçoivent et traitent votre soumission. Chaque requête transite par l'infrastructure de Netlify.",
-      "s_infra_li2": "Supabase est le moteur de base de données qui stocke vos réponses et les données de votre projet. Les données sont chiffrées au repos et en transit.",
-      "s_infra_li3": "Resend est le service d'envoi d'emails utilisé pour vous envoyer un email de confirmation et votre lien de modification sécurisé. Resend traite votre adresse email et un résumé de votre soumission pour effectuer l'envoi.",
-      "s_infra_p2": "Ces services n'utilisent pas vos données à leurs propres fins commerciales. Ce sont uniquement des outils d'infrastructure."
-    },
-    "cookies": {
-      "title": "Politique de cookies",
-      "intro": "Cette page explique comment le formulaire d'admission client Neatmark utilise les cookies et le stockage navigateur. Nous gardons cela au minimum. Nous ne sommes pas une plateforme publicitaire, nous ne vous suivons pas sur le web, et nous ne vendons ni ne partageons vos données de navigation.",
-      "s1_title": "Que sont les cookies",
-      "s1_p1": "Les cookies sont de petites données stockées dans votre navigateur par un site que vous visitez. Certains sont indispensables au fonctionnement du site, d'autres servent à mémoriser vos préférences. Notre formulaire utilise principalement le stockage local du navigateur plutôt que des cookies traditionnels, mais les règles sont les mêmes et vous méritez d'être informé des deux.",
-      "s2_title": "Ce que nous stockons et pourquoi",
-      "s2_p1": "Le tableau ci-dessous couvre tout ce que le formulaire Neatmark stocke dans votre navigateur.",
-      "s2_th1": "Nom",
-      "s2_th2": "Type",
-      "s2_th3": "Finalité",
-      "s2_th4": "Expiration",
-      "s2_r1_name": "user-theme",
-      "s2_r1_type": "Stockage local",
-      "s2_r1_purpose": "Mémorise votre thème de couleur préféré (clair, sombre ou auto) pour l'appliquer à chaque visite sans redemander.",
-      "s2_r1_expires": "Jusqu'à vidage du cache",
-      "s2_r2_name": "brand-intake-draft",
-      "s2_r2_type": "Stockage local",
-      "s2_r2_purpose": "Sauvegarde automatiquement vos réponses au formulaire pour éviter toute perte si vous fermez l'onglet. Effacé à la soumission ou en cliquant sur Effacer le brouillon.",
-      "s2_r2_expires": "Jusqu'à soumission ou effacement manuel",
-      "s2_r3_name": "preferred-language",
-      "s2_r3_type": "Stockage local",
-      "s2_r3_purpose": "Enregistre votre choix de langue pour que le formulaire se charge dans la bonne langue à votre prochaine visite.",
-      "s2_r3_expires": "Jusqu'à vidage du cache",
-      "s2_p2": "Aucun de ces éléments n'est utilisé à des fins de suivi, d'analyse ou de publicité. Ils existent uniquement pour rendre le formulaire plus agréable à utiliser.",
-      "s3_title": "Services tiers",
-      "s3_p1": "Notre formulaire utilise un petit nombre de ressources externes pour fonctionner correctement :",
-      "s3_li1": "Google Fonts charge les polices utilisées dans le design du formulaire. Lorsque votre navigateur demande une police, Google peut enregistrer votre adresse IP dans le cadre d'une requête web standard. Nous ne contrôlons pas cela.",
-      "s3_li3": "Cloudflare Turnstile est un service de vérification de sécurité qui s'exécute lorsque vous soumettez le formulaire. Il peut envoyer votre adresse IP à Cloudflare afin de confirmer que vous n'êtes pas un robot. Consultez la politique de confidentialité de Cloudflare pour plus d'informations sur leur traitement des données.",
-      "s3_p2": "Nous n'utilisons pas Google Analytics, Facebook Pixel, ni aucun autre outil de suivi publicitaire ou comportemental. Aucun service marketing tiers ne reçoit de données vous concernant.",
-      "s_ip_title": "Traitement de l'adresse IP lors de la soumission",
-      "s_ip_p1": "Lorsque vous soumettez le formulaire, notre serveur lit temporairement votre adresse IP pour deux finalités strictement limitées : (1) appliquer une limitation de débit afin d'éviter les soumissions abusives — cette donnée n'est conservée qu'en mémoire vive pendant une courte fenêtre glissante, jamais écrite en base de données ; (2) déduire votre pays d'origine via des en-têtes réseau fournis par notre infrastructure (Netlify ou Cloudflare). Seul le nom du pays résultant (par exemple « France (FR) ») est enregistré avec votre soumission — l'adresse IP elle-même n'est jamais stockée de manière permanente.",
-      "s4_title": "Comment effacer ou désactiver le stockage",
-      "s4_p1": "Vous avez le contrôle total de ce qui est stocké dans votre navigateur. Vous pouvez effacer les éléments listés ci-dessus à tout moment via les paramètres de votre navigateur en vidant les données du site pour ce domaine. La plupart des navigateurs permettent aussi de bloquer complètement le stockage local, mais cela peut affecter la sauvegarde automatique du brouillon.",
-      "s4_p2": "Le formulaire inclut également un bouton Effacer le brouillon qui supprime uniquement le brouillon sans toucher aux autres préférences enregistrées.",
-      "s5_title": "Nous n'utilisons pas de cookies publicitaires",
-      "s5_p1": "Nous voulons être clairs là-dessus. Aucun réseau publicitaire ne suit les visites de ce formulaire. Aucun pixel de reciblage ne se déclenche lorsque vous chargez cette page. Nous n'utilisons pas votre visite pour vous servir des publicités ailleurs sur Internet. Les données que vous partagez ici restent ici, utilisées uniquement pour travailler sur votre projet.",
-      "s6_title": "Modifications de cette politique",
-      "s6_p1": "Si nous ajoutons de nouveaux éléments de stockage ou services tiers, nous mettrons cette page à jour ainsi que la date en haut. Nous n'introduirons pas de technologies de suivi ou publicitaires sans en être transparents ici au préalable.",
-      "s7_title": "Questions",
-      "s7_p1": "Si vous avez des questions sur les cookies ou la gestion de vos données navigateur, contactez-nous via notre site neatmark.studio.",
-      "s3_li2": "Netlify héberge le site et traite toutes les requêtes du formulaire côté serveur. Netlify ne dépose pas de cookies dans votre navigateur, mais il gère vos requêtes et votre adresse IP dans le cadre normal du routage Internet.",
-      "s3_li4": "Resend est utilisé pour envoyer les emails de confirmation et le lien de modification sécurisé. Il traite votre adresse email uniquement pour l'envoi et ne dépose aucun cookie dans votre navigateur."
-    }
-  },
-  "detail": {
-    "title": "Détails de la soumission",
-    "unknownClient": "Client inconnu",
-    "cancelEdit": "Annuler la modification",
-    "editBanner": "Modification en cours, les changements ne sont pas encore enregistrés",
-    "sections": {
-      "overview": "Aperçu",
-      "history": "Historique de la soumission",
-      "questionnaire": "Questionnaire de marque"
-    },
-    "overview": {
-      "clientName": "Nom du client",
-      "email": "Email",
-      "brandName": "Nom de la marque",
-      "deliveryDate": "Date de livraison",
-      "formDelivery": "Délai (formulaire)",
-      "agreedDelivery": "Date de livraison convenue",
-      "projectStatus": "Statut du projet",
-      "submissionStatus": "Statut de la soumission",
-      "notSet": "Non défini",
-      "notSetYet": "Pas encore défini",
-      "notSpecified": "Non spécifié"
-    },
-    "edit": {
-      "logoUpload": "Déposez un logo ou cliquez pour télécharger",
-      "selectTimeframe": "Sélectionnez un délai",
-      "notSet": "— Non défini —",
-      "asap": "ASAP (dès que possible)",
-      "logoErrorType": "Type non pris en charge. Utilisez PNG, JPG, SVG ou WEBP.",
-      "logoErrorSize": "Fichier trop volumineux. Maximum 2 Mo.",
-      "validation": {
-        "clientName": "Le nom du client est requis.",
-        "brandName": "Le nom de la marque est requis.",
-        "email": "L'email est requis.",
-        "emailInvalid": "Veuillez entrer une adresse email valide."
-      },
-      "cancel": "Annuler",
-      "save": "Enregistrer les modifications"
-    },
-    "questionnaire": {
-      "noResponses": "Cette soumission n'a pas encore de réponses au questionnaire.",
-      "noImages": "Aucune image téléchargée",
-      "noResponse": "Pas de réponse",
-      "labels": {
-        "q1": "Description de l'entreprise",
-        "q2": "Avant et Après",
-        "q3": "Client idéal",
-        "q3b": "Déclencheur client",
-        "q4": "Concurrents",
-        "q5": "Personnalité de la marque",
-        "q6": "Déclaration de positionnement",
-        "qlaunch": "Contexte de lancement",
-        "q8": "Marques admirées",
-        "q9": "Directions de couleurs",
-        "q10": "Couleurs à éviter",
-        "q11": "Direction esthétique",
-        "q11b": "Notes esthétiques",
-        "q13": "Livrables",
-        "q14": "Approche budgétaire",
-        "q15": "Images d'inspiration",
-        "q7": "Responsable du projet",
-        "q7b": "Responsable (Autre)",
-        "q12": "Ressources de marque existantes",
-        "delivery": "Délai de livraison",
-        "q16": "Expériences passées et craintes"
-      }
+    "detailPanel": {
+        "title": "Détails de la soumission",
+        "editingBanner": "Modification de la soumission",
+        "savingChanges": "Enregistrement des modifications...",
+        "unsavedWarning": "Vous avez des modifications non enregistrées.",
+        "buttons": {
+            "save": "Enregistrer les modifications",
+            "cancel": "Annuler",
+            "close": "Fermer",
+            "edit": "Modifier",
+            "download": "Télécharger"
+        },
+        "sections": {
+            "metadata": "Métadonnées",
+            "responses": "Réponses",
+            "history": "Historique des modifications"
+        }
     },
     "history": {
-      "label": "Historique",
-      "noData": "Aucune donnée d'historique disponible.",
-      "noEditsYet": "Aucune modification pour le moment, c'est la soumission originale.",
-      "unknownDate": "Date inconnue",
-      "unknownTime": "Heure inconnue",
-      "unknown": "Inconnu",
-      "latestTag": "Dernier",
-      "justNow": "à l'instant"
+        "title": "Historique des modifications",
+        "originalSubmission": "Soumission originale",
+        "edited": "Édité",
+        "latest": "Dernier",
+        "byAdmin": "Par l'administrateur",
+        "byClient": "Par le client",
+        "noEdits": "Aucune modification pour le moment"
     },
-    "q6": {
-      "title": "Spectres de personnalité",
-      "hint": "1 = extrême gauche, 5 = extrême droite",
-      "playful": "Ludique",
-      "serious": "Sérieux",
-      "minimalist": "Minimaliste",
-      "expressive": "Expressif",
-      "approachable": "Accessible",
-      "authoritative": "Autoritaire",
-      "classic": "Classique",
-      "contemporary": "Contemporain"
+    "logoUpload": {
+        "title": "Téléchargement de logo",
+        "dragDrop": "Glissez-déposez votre logo ici ou cliquez pour parcourir",
+        "accepted": "Formats acceptés: PNG, JPG, SVG",
+        "maxSize": "Taille maximale du fichier: 5MB",
+        "errorSize": "La taille du fichier dépasse 5MB. Veuillez choisir un fichier plus petit.",
+        "errorFormat": "Format de fichier invalide. Veuillez télécharger PNG, JPG ou SVG.",
+        "remove": "Supprimer",
+        "replace": "Remplacer"
+    },
+    "language": {
+        "label": "Langue",
+        "en": "English",
+        "fr": "Français",
+        "ar": "العربية"
+    },
+    "legal": {
+        "backToForm": "Retour au formulaire",
+        "eyebrow": "Juridique",
+        "updated": "Dernière mise à jour : février 2026",
+        "privacy": {
+            "title": "Politique de confidentialité",
+            "intro": "Chez Neatmark, nous prenons votre vie privée au sérieux. Cette page explique quelles informations nous collectons lorsque vous utilisez notre formulaire d'admission client, comment nous les utilisons et comment nous les protégeons. Nous avons volontairement rédigé ceci en langage simple. Vous méritez de savoir exactement ce qu'il advient de vos données, sans avoir à déchiffrer un jargon juridique.",
+            "s1_title": "Quelles informations nous collectons",
+            "s1_p1": "Lorsque vous remplissez et soumettez le formulaire d'admission client Neatmark, nous collectons les éléments suivants :",
+            "s1_li1": "Votre nom complet",
+            "s1_li2": "Votre adresse email",
+            "s1_li3": "Votre nom de marque ou d'entreprise",
+            "s1_li4": "Votre URL de site web, si vous choisissez de la partager",
+            "s1_li5": "Votre délai de livraison préféré",
+            "s1_p2": "Nous ne collectons aucune information de paiement, document d'identité ou donnée personnelle sensible via ce formulaire.",
+            "s2_title": "Comment nous utilisons vos informations",
+            "s2_p1": "Les informations que vous partagez avec nous sont utilisées dans un seul but : comprendre vos besoins en matière de marque pour vous offrir le meilleur travail possible. Concrètement, votre soumission nous aide à préparer le lancement de votre projet, à adapter notre approche créative à votre vision et à garder une trace de votre brief tout au long de la collaboration.",
+            "s2_p2": "Nous n'utilisons pas vos informations pour des campagnes marketing, du profilage analytique ou toute prise de décision automatisée. Nous ne vous envoyons pas d'emails non sollicités suite à votre soumission, au-delà de ce qui concerne directement votre projet avec nous.",
+            "s3_title": "Nous ne vendons ni ne partageons vos données",
+            "s3_p1": "Vos informations ne sont jamais vendues à des tiers. Nous ne travaillons pas avec des réseaux publicitaires, des courtiers en données ou des services de marketing tiers, de quelque nature que ce soit. Votre soumission n'est pas utilisée pour créer des profils publicitaires, et elle n'est partagée avec personne en dehors de l'équipe Neatmark.",
+            "s3_p2": "La seule situation dans laquelle nous partagerions des informations serait si nous y étions légalement contraints par une décision de justice ou la loi applicable, et uniquement dans la mesure nécessaire.",
+            "s4_title": "Qui peut accéder à vos données",
+            "s4_p1": "Votre soumission est stockée de manière sécurisée dans une base de données privée. Seuls les administrateurs Neatmark autorisés peuvent accéder au tableau de bord où les soumissions sont conservées. Aucun client ne peut voir la soumission d'un autre client. L'accès est protégé par authentification et limité aux membres de l'équipe qui en ont besoin pour gérer votre projet.",
+            "s4_p2": "Vos images d'inspiration et tous les fichiers téléchargés sont stockés dans un système de stockage privé à accès contrôlé. Les liens directs vers vos fichiers ne sont pas devinables publiquement ni indexables.",
+            "s5_title": "Comment nous protégeons vos données",
+            "s5_p1": "Nous prenons des mesures techniques et organisationnelles raisonnables pour assurer la sécurité de vos informations. Notre base de données et notre stockage de fichiers sont hébergés sur des plateformes utilisant un chiffrement conforme aux normes industrielles, au repos et en transit. Les identifiants d'accès sont gardés privés et ne sont pas partagés en dehors de l'équipe Neatmark.",
+            "s5_p2": "Bien qu'aucun système sur Internet ne puisse être garanti 100% sécurisé, nous faisons de notre mieux pour que vos données soient traitées de manière responsable.",
+            "s6_title": "Sauvegarde des brouillons dans votre navigateur",
+            "s6_p1": "Le formulaire utilise le stockage local de votre navigateur pour enregistrer automatiquement vos réponses au fur et à mesure que vous les saisissez, afin que vous ne perdiez pas votre travail si vous fermez l'onglet. Ces données restent entièrement dans votre navigateur et ne sont jamais envoyées à nos serveurs avant que vous n'appuyiez sur Soumettre. Vous pouvez effacer votre brouillon à tout moment via le bouton Effacer le brouillon dans le formulaire.",
+            "s7_title": "Durée de conservation de vos données",
+            "s7_p1": "Nous conservons votre soumission aussi longtemps qu'elle est pertinente pour votre projet et notre relation de travail. Si vous souhaitez que vos informations soient supprimées de nos dossiers à tout moment, envoyez-nous simplement un email et nous nous en occuperons rapidement.",
+            "s8_title": "Vos droits",
+            "s8_p1": "Vous avez le droit de nous demander quelles données nous détenons sur vous, de demander une correction si quelque chose est inexact, et de demander la suppression de vos données. Pour exercer l'un de ces droits, contactez-nous directement via les coordonnées sur notre site. Nous vous répondrons dans les plus brefs délais.",
+            "s9_title": "Modifications de cette politique",
+            "s9_p1": "Si nous apportons des modifications significatives à la manière dont nous traitons vos données, nous mettrons cette page à jour et réviserons la date en haut. Nous n'appliquerons pas rétroactivement des pratiques sensiblement moins favorables que celles en vigueur au moment de votre soumission.",
+            "s10_title": "Questions",
+            "s10_p1": "Si vous avez des questions sur cette politique ou sur la gestion de vos données, contactez-nous via notre site neatmark.studio. Nous sommes disponibles pour clarifier tout point qui vous semblerait flou.",
+            "s_security_title": "Vérifications de sécurité",
+            "s_security_p1": "Afin de protéger le formulaire contre les abus et les soumissions automatisées, nous mettons en œuvre plusieurs couches de sécurité côté serveur :",
+            "s_security_li1": "Cloudflare Turnstile — un système de vérification discret (similaire à un CAPTCHA) qui s'exécute dans votre navigateur au moment de la soumission. Il confirme que vous êtes un utilisateur humain en analysant des signaux comportementaux, sans vous demander de résoudre des puzzles ni créer de compte. Le résultat de la vérification est envoyé aux serveurs de Cloudflare pour validation. Cloudflare peut traiter temporairement votre adresse IP dans ce cadre.",
+            "s_security_li2": "Champ honeypot — un champ de formulaire invisible pour les utilisateurs humains mais visible pour les robots. Si ce champ est rempli, la soumission est automatiquement rejetée de manière silencieuse.",
+            "s_security_li3": "Limitation de débit — nous limitons le nombre de soumissions et de vérifications de doublons autorisées par adresse IP sur une période glissante. Votre adresse IP est utilisée temporairement en mémoire à cette seule fin et n'est pas enregistrée de manière permanente dans notre base de données.",
+            "s_security_li4": "Validation de la longueur des champs — la longueur de chaque champ du formulaire est vérifiée côté serveur pour prévenir les tentatives d'injection ou de surcharge.",
+            "s_security_p2": "Ces mesures ont pour unique but d'assurer l'intégrité du formulaire. Elles ne servent pas à vous identifier, à vous profiler ni à collecter des données à votre insu au-delà de ce qui est décrit dans cette politique.",
+            "s_country_title": "Détection du pays",
+            "s_country_p1": "Lorsque vous soumettez le formulaire, nous détectons automatiquement votre pays d'origine à partir d'en-têtes réseau fournis par notre infrastructure d'hébergement (Netlify) ou par Cloudflare. Cela se traduit par un code pays à deux lettres (par exemple « FR » pour France) qui est converti en nom de pays lisible et enregistré avec votre soumission.",
+            "s_country_p2": "Cette information nous aide uniquement à contextualiser les demandes entrantes. Elle n'est pas utilisée à des fins publicitaires, de géo-restriction ni d'aucune autre prise de décision automatisée. Nous ne connaissons pas votre ville, région ou adresse IP précise — uniquement le pays tel que déduit par notre infrastructure réseau.",
+            "s1_li6": "Vos réponses au questionnaire de marque, y compris les descriptions écrites, les préférences et les images d'inspiration téléchargées",
+            "s1_li7": "Votre pays, déduit automatiquement de votre connexion réseau au moment de la soumission",
+            "s1_li8": "Un lien de modification sécurisé envoyé à votre adresse email juste après la soumission, qui vous permet de revoir et mettre à jour vos réponses. Le jeton associé à ce lien est temporaire et expire après 30 jours ou après sa première utilisation.",
+            "s_infra_title": "Les services sur lesquels nous nous appuyons",
+            "s_infra_p1": "Pour faire fonctionner ce formulaire, stocker vos données et envoyer les emails de confirmation, nous travaillons avec un nombre limité de prestataires de confiance. Chacun d'eux traite vos données directement :",
+            "s_infra_li1": "Netlify héberge le site et exécute les fonctions serveur qui reçoivent et traitent votre soumission. Chaque requête transite par l'infrastructure de Netlify.",
+            "s_infra_li2": "Supabase est le moteur de base de données qui stocke vos réponses et les données de votre projet. Les données sont chiffrées au repos et en transit.",
+            "s_infra_li3": "Resend est le service d'envoi d'emails utilisé pour vous envoyer un email de confirmation et votre lien de modification sécurisé. Resend traite votre adresse email et un résumé de votre soumission pour effectuer l'envoi.",
+            "s_infra_p2": "Ces services n'utilisent pas vos données à leurs propres fins commerciales. Ce sont uniquement des outils d'infrastructure."
+        },
+        "cookies": {
+            "title": "Politique de cookies",
+            "intro": "Cette page explique comment le formulaire d'admission client Neatmark utilise les cookies et le stockage navigateur. Nous gardons cela au minimum. Nous ne sommes pas une plateforme publicitaire, nous ne vous suivons pas sur le web, et nous ne vendons ni ne partageons vos données de navigation.",
+            "s1_title": "Que sont les cookies",
+            "s1_p1": "Les cookies sont de petites données stockées dans votre navigateur par un site que vous visitez. Certains sont indispensables au fonctionnement du site, d'autres servent à mémoriser vos préférences. Notre formulaire utilise principalement le stockage local du navigateur plutôt que des cookies traditionnels, mais les règles sont les mêmes et vous méritez d'être informé des deux.",
+            "s2_title": "Ce que nous stockons et pourquoi",
+            "s2_p1": "Le tableau ci-dessous couvre tout ce que le formulaire Neatmark stocke dans votre navigateur.",
+            "s2_th1": "Nom",
+            "s2_th2": "Type",
+            "s2_th3": "Finalité",
+            "s2_th4": "Expiration",
+            "s2_r1_name": "user-theme",
+            "s2_r1_type": "Stockage local",
+            "s2_r1_purpose": "Mémorise votre thème de couleur préféré (clair, sombre ou auto) pour l'appliquer à chaque visite sans redemander.",
+            "s2_r1_expires": "Jusqu'à vidage du cache",
+            "s2_r2_name": "brand-intake-draft",
+            "s2_r2_type": "Stockage local",
+            "s2_r2_purpose": "Sauvegarde automatiquement vos réponses au formulaire pour éviter toute perte si vous fermez l'onglet. Effacé à la soumission ou en cliquant sur Effacer le brouillon.",
+            "s2_r2_expires": "Jusqu'à soumission ou effacement manuel",
+            "s2_r3_name": "preferred-language",
+            "s2_r3_type": "Stockage local",
+            "s2_r3_purpose": "Enregistre votre choix de langue pour que le formulaire se charge dans la bonne langue à votre prochaine visite.",
+            "s2_r3_expires": "Jusqu'à vidage du cache",
+            "s2_p2": "Aucun de ces éléments n'est utilisé à des fins de suivi, d'analyse ou de publicité. Ils existent uniquement pour rendre le formulaire plus agréable à utiliser.",
+            "s3_title": "Services tiers",
+            "s3_p1": "Notre formulaire utilise un petit nombre de ressources externes pour fonctionner correctement :",
+            "s3_li1": "Google Fonts charge les polices utilisées dans le design du formulaire. Lorsque votre navigateur demande une police, Google peut enregistrer votre adresse IP dans le cadre d'une requête web standard. Nous ne contrôlons pas cela.",
+            "s3_li3": "Cloudflare Turnstile est un service de vérification de sécurité qui s'exécute lorsque vous soumettez le formulaire. Il peut envoyer votre adresse IP à Cloudflare afin de confirmer que vous n'êtes pas un robot. Consultez la politique de confidentialité de Cloudflare pour plus d'informations sur leur traitement des données.",
+            "s3_p2": "Nous n'utilisons pas Google Analytics, Facebook Pixel, ni aucun autre outil de suivi publicitaire ou comportemental. Aucun service marketing tiers ne reçoit de données vous concernant.",
+            "s_ip_title": "Traitement de l'adresse IP lors de la soumission",
+            "s_ip_p1": "Lorsque vous soumettez le formulaire, notre serveur lit temporairement votre adresse IP pour deux finalités strictement limitées : (1) appliquer une limitation de débit afin d'éviter les soumissions abusives — cette donnée n'est conservée qu'en mémoire vive pendant une courte fenêtre glissante, jamais écrite en base de données ; (2) déduire votre pays d'origine via des en-têtes réseau fournis par notre infrastructure (Netlify ou Cloudflare). Seul le nom du pays résultant (par exemple « France (FR) ») est enregistré avec votre soumission — l'adresse IP elle-même n'est jamais stockée de manière permanente.",
+            "s4_title": "Comment effacer ou désactiver le stockage",
+            "s4_p1": "Vous avez le contrôle total de ce qui est stocké dans votre navigateur. Vous pouvez effacer les éléments listés ci-dessus à tout moment via les paramètres de votre navigateur en vidant les données du site pour ce domaine. La plupart des navigateurs permettent aussi de bloquer complètement le stockage local, mais cela peut affecter la sauvegarde automatique du brouillon.",
+            "s4_p2": "Le formulaire inclut également un bouton Effacer le brouillon qui supprime uniquement le brouillon sans toucher aux autres préférences enregistrées.",
+            "s5_title": "Nous n'utilisons pas de cookies publicitaires",
+            "s5_p1": "Nous voulons être clairs là-dessus. Aucun réseau publicitaire ne suit les visites de ce formulaire. Aucun pixel de reciblage ne se déclenche lorsque vous chargez cette page. Nous n'utilisons pas votre visite pour vous servir des publicités ailleurs sur Internet. Les données que vous partagez ici restent ici, utilisées uniquement pour travailler sur votre projet.",
+            "s6_title": "Modifications de cette politique",
+            "s6_p1": "Si nous ajoutons de nouveaux éléments de stockage ou services tiers, nous mettrons cette page à jour ainsi que la date en haut. Nous n'introduirons pas de technologies de suivi ou publicitaires sans en être transparents ici au préalable.",
+            "s7_title": "Questions",
+            "s7_p1": "Si vous avez des questions sur les cookies ou la gestion de vos données navigateur, contactez-nous via notre site neatmark.studio.",
+            "s3_li2": "Netlify héberge le site et traite toutes les requêtes du formulaire côté serveur. Netlify ne dépose pas de cookies dans votre navigateur, mais il gère vos requêtes et votre adresse IP dans le cadre normal du routage Internet.",
+            "s3_li4": "Resend est utilisé pour envoyer les emails de confirmation et le lien de modification sécurisé. Il traite votre adresse email uniquement pour l'envoi et ne dépose aucun cookie dans votre navigateur."
+        }
+    },
+    "detail": {
+        "title": "Détails de la soumission",
+        "unknownClient": "Client inconnu",
+        "cancelEdit": "Annuler la modification",
+        "editBanner": "Modification en cours, les changements ne sont pas encore enregistrés",
+        "sections": {
+            "overview": "Aperçu",
+            "history": "Historique de la soumission",
+            "questionnaire": "Questionnaire de marque"
+        },
+        "overview": {
+            "clientName": "Nom du client",
+            "email": "Email",
+            "brandName": "Nom de la marque",
+            "deliveryDate": "Date de livraison",
+            "formDelivery": "Délai (formulaire)",
+            "agreedDelivery": "Date de livraison convenue",
+            "projectStatus": "Statut du projet",
+            "submissionStatus": "Statut de la soumission",
+            "notSet": "Non défini",
+            "notSetYet": "Pas encore défini",
+            "notSpecified": "Non spécifié"
+        },
+        "edit": {
+            "logoUpload": "Déposez un logo ou cliquez pour télécharger",
+            "selectTimeframe": "Sélectionnez un délai",
+            "notSet": "— Non défini —",
+            "asap": "ASAP (dès que possible)",
+            "logoErrorType": "Type non pris en charge. Utilisez PNG, JPG, SVG ou WEBP.",
+            "logoErrorSize": "Fichier trop volumineux. Maximum 2 Mo.",
+            "validation": {
+                "clientName": "Le nom du client est requis.",
+                "brandName": "Le nom de la marque est requis.",
+                "email": "L'email est requis.",
+                "emailInvalid": "Veuillez entrer une adresse email valide."
+            },
+            "cancel": "Annuler",
+            "save": "Enregistrer les modifications"
+        },
+        "questionnaire": {
+            "noResponses": "Cette soumission n'a pas encore de réponses au questionnaire.",
+            "noImages": "Aucune image téléchargée",
+            "noResponse": "Pas de réponse",
+            "labels": {
+                "q1": "Description de l'entreprise",
+                "q2": "Avant et Après",
+                "q3": "Client idéal",
+                "q3b": "Déclencheur client",
+                "q4": "Concurrents",
+                "q5": "Personnalité de la marque",
+                "q6": "Déclaration de positionnement",
+                "qlaunch": "Contexte de lancement",
+                "q8": "Marques admirées",
+                "q9": "Directions de couleurs",
+                "q10": "Couleurs à éviter",
+                "q11": "Direction esthétique",
+                "q11b": "Notes esthétiques",
+                "q13": "Livrables",
+                "q14": "Approche budgétaire",
+                "q15": "Images d'inspiration",
+                "q7": "Responsable du projet",
+                "q7b": "Responsable (Autre)",
+                "q12": "Ressources de marque existantes",
+                "delivery": "Délai de livraison",
+                "q16": "Expériences passées et craintes"
+            }
+        },
+        "history": {
+            "label": "Historique",
+            "noData": "Aucune donnée d'historique disponible.",
+            "noEditsYet": "Aucune modification pour le moment, c'est la soumission originale.",
+            "unknownDate": "Date inconnue",
+            "unknownTime": "Heure inconnue",
+            "unknown": "Inconnu",
+            "latestTag": "Dernier",
+            "justNow": "à l'instant"
+        },
+        "q6": {
+            "title": "Spectres de personnalité",
+            "hint": "1 = extrême gauche, 5 = extrême droite",
+            "playful": "Ludique",
+            "serious": "Sérieux",
+            "minimalist": "Minimaliste",
+            "expressive": "Expressif",
+            "approachable": "Accessible",
+            "authoritative": "Autoritaire",
+            "classic": "Classique",
+            "contemporary": "Contemporain"
+        }
     }
-  }
 }

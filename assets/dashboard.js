@@ -233,10 +233,10 @@ function renderHistoryTimeline(historyEntries, options = {}) {
         ? dt('history.byClient', 'By Client')
         : dt('detail.history.unknown', 'Unknown');
     const editedByIconName = entry.editedBy === 'admin'
-      ? 'shield'
+      ? 'ph-shield-check'
       : entry.editedBy === 'client'
-        ? 'user'
-        : 'help-circle';
+        ? 'ph-user'
+        : 'ph-question';
 
     return `
       <li class="history-node${isLatest ? ' latest' : ''}">
@@ -245,7 +245,7 @@ function renderHistoryTimeline(historyEntries, options = {}) {
           <div class="history-head">
             <span class="history-badge ${isOriginal ? 'original' : 'edited'}">${badgeText}</span>
             <span class="history-attribution ${entry.editedBy}">
-              <span aria-hidden="true"><i data-lucide="${editedByIconName}" class="icon icon-btn"></i></span>
+              <span aria-hidden="true"><i class="ph ${editedByIconName} icon icon-btn"></i></span>
               <span>${editedByText}</span>
             </span>
             ${isLatest ? `<span class="history-latest-tag">${dt('detail.history.latestTag', 'Latest')}</span>` : ''}
@@ -640,17 +640,17 @@ function sectionHeader(icon, title, opts = {}) {
     return `
       <button type="button" class="detail-section-head detail-section-toggle${opts.collapsed ? ' collapsed' : ''}" aria-expanded="${opts.collapsed ? 'false' : 'true'}" data-collapse-target="${opts.targetId || ''}">
         <span class="detail-section-icon" aria-hidden="true">
-          <i data-lucide="${icon}" class="icon icon-section"></i>
+          <i class="ph ${icon} icon icon-section"></i>
         </span>
         <h3 class="detail-section-title">${title}</h3>
-        <i data-lucide="chevron-down" class="icon detail-section-chevron"></i>
+        <i class="ph ph-caret-down icon detail-section-chevron"></i>
       </button>
     `;
   }
   return `
     <div class="detail-section-head">
       <span class="detail-section-icon" aria-hidden="true">
-        <i data-lucide="${icon}" class="icon icon-section"></i>
+        <i class="ph ${icon} icon icon-section"></i>
       </span>
       <h3 class="detail-section-title">${title}</h3>
     </div>
@@ -1056,12 +1056,11 @@ function setModalActionButtons(mode) {
       cancelIconBtn.id = 'modalCancelIconBtn';
       cancelIconBtn.className = 'modal-icon-btn modal-cancel-icon-btn';
       cancelIconBtn.setAttribute('aria-label', dt('detail.cancelEdit', 'Cancel editing'));
-      cancelIconBtn.innerHTML = '<i data-lucide="rotate-ccw" class="icon icon-btn"></i>';
+      cancelIconBtn.innerHTML = '<i class="ph ph-arrow-counter-clockwise icon icon-btn"></i>';
       const closeBtn = document.getElementById('modalCloseBtn');
       closeBtn?.parentNode?.insertBefore(cancelIconBtn, closeBtn);
     }
     if (cancelIconBtn) cancelIconBtn.classList.remove('hidden-in-edit');
-    if (window.lucide) window.lucide.createIcons();
     return;
   }
 
@@ -1120,7 +1119,7 @@ function renderSubmissions(submissions) {
     container.innerHTML = `
       <div class="empty-state" role="status" aria-live="polite">
         <div class="empty-state-icon" aria-hidden="true">
-          <i data-lucide="inbox" class="icon icon-stat"></i>
+          <i class="ph ph-tray icon icon-stat"></i>
         </div>
         <div class="empty-state-title">${dt('dashboard.noSubmissions.title', 'No submissions found')}</div>
         <div class="empty-state-copy">${dt('dashboard.noSubmissions.message', 'Try adjusting your search or date filter.')}</div>
@@ -1228,12 +1227,12 @@ function renderSubmissions(submissions) {
         <div class="submission-meta">
           <div class="submission-date" title="${relativeTime}">${dateStr} · ${timeStr}</div>
           <button class="card-edit-btn" aria-label="Edit submission ${brandName}">
-            <i data-lucide="pen" class="icon icon-btn"></i>
+            <i class="ph ph-pencil icon icon-btn"></i>
             <span class="card-btn-label">${dt('dashboard.card.edit', 'Edit')}</span>
           </button>
           <div class="card-export">
             <button class="card-export-btn" aria-haspopup="menu" aria-expanded="${exportMenuOpen ? 'true' : 'false'}" aria-label="Export submission ${brandName}">
-              <i data-lucide="download" class="icon icon-btn"></i>
+              <i class="ph ph-download-simple icon icon-btn"></i>
               <span class="card-btn-label">${dt('dashboard.card.export', 'Export')}</span>
             </button>
             <div class="card-export-menu${exportMenuOpen ? ' open' : ''}" role="menu">
@@ -1323,10 +1322,6 @@ function renderSubmissions(submissions) {
   container.innerHTML = '';
   container.appendChild(grid);
   updateSelectionToolbar();
-
-  if (window.lucide && typeof window.lucide.createIcons === 'function') {
-    window.lucide.createIcons();
-  }
   applyTheme(getDashActiveMode());
 
   // Listen for OS changes when in auto mode
@@ -1592,7 +1587,7 @@ function renderEditInspirationUpload(rawValue, qNum, labelText) {
       <input type="file" id="editInspFileInput"
              accept=".png,.jpg,.jpeg,.webp,.gif,image/png,image/jpeg,image/webp,image/gif"
              multiple hidden>
-      <i data-lucide="upload-cloud" class="icon edit-insp-upload-icon"></i>
+      <i class="ph ph-cloud-arrow-up icon edit-insp-upload-icon"></i>
       <span class="edit-insp-upload-label">${escapeHtml(uploadLabel)}</span>
       <span class="edit-insp-upload-sub">${escapeHtml(uploadSublabel)}</span>
     </label>`;
@@ -1767,7 +1762,7 @@ function refreshEditInspGrid() {
     dzEl.innerHTML = `<input type="file" id="editInspFileInput"
              accept=".png,.jpg,.jpeg,.webp,.gif,image/png,image/jpeg,image/webp,image/gif"
              multiple hidden>
-      <i data-lucide="upload-cloud" class="icon edit-insp-upload-icon"></i>
+      <i class="ph ph-cloud-arrow-up icon edit-insp-upload-icon"></i>
       <span class="edit-insp-upload-label">${escapeHtml(uploadLabel)}</span>
       <span class="edit-insp-upload-sub">${escapeHtml(uploadSublabel)}</span>`;
     card.insertBefore(dzEl, card.querySelector('.edit-insp-status'));
@@ -1787,7 +1782,6 @@ function refreshEditInspGrid() {
       editDraftData['inspiration_refs'] = current.filter((_, i) => i !== idx);
       markEditDirty();
       refreshEditInspGrid();
-      if (window.lucide) window.lucide.createIcons();
     });
   });
 }
@@ -1829,7 +1823,6 @@ function setupInspirationDropzone(dropzone) {
         : '';
     }
     refreshEditInspGrid();
-    if (window.lucide) window.lucide.createIcons();
   }
 
   // Click-to-browse
@@ -1895,16 +1888,16 @@ function renderDetailPanel() {
     overviewSection = `
       <section class="detail-section">
         <div class="edit-banner">${dt('detail.editBanner', 'Editing submission, changes are not saved yet')}</div>
-        ${sectionHeader('list', dt('detail.sections.overview', 'Overview'))}
+        ${sectionHeader('ph-list', dt('detail.sections.overview', 'Overview'))}
         <div class="logo-upload-wrap">
           <div class="logo-upload-row">
             <label class="logo-dropzone" id="logoDropzone" tabindex="0" aria-label="Upload brand logo">
               <input id="logoFileInput" type="file" accept=".png,.jpg,.jpeg,.svg,.webp,image/png,image/jpeg,image/svg+xml,image/webp" hidden />
-              <i data-lucide="upload" class="icon icon-upload-sm"></i>
+              <i class="ph ph-upload-simple icon icon-upload-sm"></i>
               <span>${dt('detail.edit.logoUpload', 'Drop logo or click to upload')}</span>
             </label>
             <button class="modal-icon-btn logo-remove-btn" id="removeLogoBtn" type="button" aria-label="Remove logo" title="Remove logo">
-              <i data-lucide="trash" class="icon icon-btn"></i>
+              <i class="ph ph-trash icon icon-btn"></i>
             </button>
           </div>
           <div class="edit-error" id="logoUploadError"></div>
@@ -1918,7 +1911,7 @@ function renderDetailPanel() {
             <div class="custom-delivery-select" id="editDeliveryDropdown">
               <button type="button" class="edit-input edit-delivery-btn" id="editDeliveryBtn" aria-haspopup="listbox" aria-expanded="false">
                 <span class="edit-delivery-label" id="editDeliveryLabel">${escapeHtml(data.delivery_date || dt('detail.edit.selectTimeframe', 'Select a timeframe'))}</span>
-                <i data-lucide="chevron-down" class="icon edit-delivery-caret"></i>
+                <i class="ph ph-caret-down icon edit-delivery-caret"></i>
               </button>
               <div class="edit-delivery-menu" id="editDeliveryMenu" role="listbox">
                 <button class="edit-delivery-option${!data.delivery_date ? ' active' : ''}" data-value="" role="option">${dt('detail.edit.notSet', '— Not set —')}</button>
@@ -1938,7 +1931,7 @@ function renderDetailPanel() {
             <div class="custom-delivery-select" id="editSubmissionStatusDropdown">
               <button type="button" class="edit-input edit-delivery-btn" id="editSubmissionStatusBtn" aria-haspopup="listbox" aria-expanded="false">
                 <span class="edit-delivery-label" id="editSubmissionStatusLabel">${(function(){ const s = String(data['status'] || 'pending').toLowerCase(); return s === 'approved' ? dt('dashboard.status.approved','Approved') : s === 'rejected' ? dt('dashboard.status.rejected','Rejected') : dt('dashboard.status.pending','Pending'); })()}</span>
-                <i data-lucide="chevron-down" class="icon edit-delivery-caret"></i>
+                <i class="ph ph-caret-down icon edit-delivery-caret"></i>
               </button>
               <div class="edit-delivery-menu" id="editSubmissionStatusMenu" role="listbox">
                 <button class="edit-delivery-option submission-status-option submission-status-pending${(!data['status'] || data['status'] === 'pending') ? ' active' : ''}" data-value="pending" role="option">${dt('dashboard.status.pending','Pending')}</button>
@@ -1952,7 +1945,7 @@ function renderDetailPanel() {
             <div class="custom-delivery-select" id="editProjectStatusDropdown">
               <button type="button" class="edit-input edit-delivery-btn" id="editProjectStatusBtn" aria-haspopup="listbox" aria-expanded="false">
                 <span class="edit-delivery-label" id="editProjectStatusLabel">${(function(){ const ps = String(data.project_status || ''); const lbs = {'not-started': dt('dashboard.status.notStarted','Not Started'),'in-progress': dt('dashboard.status.inProgress','In Progress'),'done': dt('dashboard.status.done','Done'),'abandoned': dt('dashboard.status.abandoned','Abandoned')}; return ps && lbs[ps] ? lbs[ps] : dt('detail.edit.notSet','— Not set —'); })()}</span>
-                <i data-lucide="chevron-down" class="icon edit-delivery-caret"></i>
+                <i class="ph ph-caret-down icon edit-delivery-caret"></i>
               </button>
               <div class="edit-delivery-menu" id="editProjectStatusMenu" role="listbox">
                 <button class="edit-delivery-option${!data.project_status ? ' active' : ''}" data-value="" role="option">${dt('detail.edit.notSet','— Not set —')}</button>
@@ -1969,7 +1962,7 @@ function renderDetailPanel() {
   } else {
     overviewSection = `
       <section class="detail-section">
-        ${sectionHeader('list', dt('detail.sections.overview', 'Overview'))}
+        ${sectionHeader('ph-list', dt('detail.sections.overview', 'Overview'))}
         <div class="overview-grid">
           <div class="overview-card"><div class="overview-label">${dt('detail.overview.clientName', 'Client Name')}</div><div class="overview-value">${escapeHtml(clientName)}</div></div>
           <div class="overview-card"><div class="overview-label">${dt('detail.overview.email', 'Email')}</div><div class="overview-value">${escapeHtml(email)}</div></div>
@@ -1985,7 +1978,7 @@ function renderDetailPanel() {
 
   const historySection = `
     <section class="detail-section">
-      ${sectionHeader('history', dt('detail.sections.history', 'Submission History'), { collapsible: true, collapsed: true, targetId: 'historyBody' })}
+      ${sectionHeader('ph-clock-counter-clockwise', dt('detail.sections.history', 'Submission History'), { collapsible: true, collapsed: true, targetId: 'historyBody' })}
       <div class="detail-section-body" id="historyBody" hidden>
         ${renderHistoryTimeline(history, { isLoading: !Array.isArray(history) })}
       </div>
@@ -2030,7 +2023,7 @@ function renderDetailPanel() {
         ? `<div class="q20-dash-preview-grid">${refs.map((ref, i) => {
             const smallUrl    = escapeHtml(getSmallPhotoUrl(String(ref)));
             const originalUrl = escapeHtml(getOriginalPhotoUrl(String(ref)));
-            return `<div class="q20-dash-thumb-wrap" title="Click to open full resolution" data-original-url="${originalUrl}"><img src="${smallUrl}" class="q20-dash-thumb" alt="Inspiration ${i + 1}" loading="lazy" /><div class="q20-dash-thumb-overlay"><i data-lucide="zoom-in" class="icon q20-zoom-icon"></i></div></div>`;
+            return `<div class="q20-dash-thumb-wrap" title="Click to open full resolution" data-original-url="${originalUrl}"><img src="${smallUrl}" class="q20-dash-thumb" alt="Inspiration ${i + 1}" loading="lazy" /><div class="q20-dash-thumb-overlay"><i class="ph ph-magnifying-glass-plus icon q20-zoom-icon"></i></div></div>`;
           }).join('')}</div>`
         : `<div class="qa-value qa-empty">${dt('detail.questionnaire.noImages', 'No images uploaded')}</div>`;
       return `<article class="qa-card"><div class="qa-label-row"><span class="qa-num-badge">15</span><span class="qa-label-text">Inspiration Images</span></div>${imagesHtml}</article>`;
@@ -2053,7 +2046,7 @@ function renderDetailPanel() {
 
   const questionnaireSection = `
     <section class="detail-section">
-      ${sectionHeader('puzzle', dt('detail.sections.questionnaire', 'Brand Questionnaire'))}
+      ${sectionHeader('ph-puzzle-piece', dt('detail.sections.questionnaire', 'Brand Questionnaire'))}
       ${questionnaireCallout}
       <div class="qa-grid">${questionnaireItems}</div>
     </section>
@@ -2149,10 +2142,6 @@ function renderDetailPanel() {
 
   setupEditModeInteractions();
   modal?.classList.add('active');
-
-  if (window.lucide && typeof window.lucide.createIcons === 'function') {
-    window.lucide.createIcons();
-  }
 }
 
 function setupEditModeInteractions() {
@@ -2902,9 +2891,6 @@ function toggleTheme() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  if (window.lucide && typeof window.lucide.createIcons === 'function') {
-    window.lucide.createIcons();
-  }
 
   const searchBox = document.getElementById('searchBox');
   const loginBtn = document.getElementById('loginBtn');
