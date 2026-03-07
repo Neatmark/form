@@ -354,6 +354,36 @@ const TOTAL_PAGES = 4;
 let currentPage  = 0;   // 0 = cover page, 1-4 = wizard pages
 let goingBack    = false;
 
+/* Turnstile state — hoisted to outer scope so showPage can trigger
+   lazy init when the user reaches the submit page. */
+let _turnstileWidgetId = null;
+async function _waitForTurnstile(maxAttempts = 60, intervalMs = 100) {
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    if (window.turnstile && typeof window.turnstile.render === 'function') return true;
+    await new Promise(resolve => setTimeout(resolve, intervalMs));
+  }
+  return false;
+}
+async function initTurnstileWidget() {
+  const container = document.getElementById('cfTurnstile');
+  if (!container) return;
+  try {
+    const cfgResp = await fetch('/.netlify/functions/get-public-config', { cache: 'no-store' });
+    const cfg = await cfgResp.json();
+    const siteKey = String(cfg?.turnstileSiteKey || '').trim() || '1x00000000000000000000AA';
+    const ready = await _waitForTurnstile();
+    if (!ready) { console.warn('[Turnstile] API did not load in time.'); return; }
+    _turnstileWidgetId = window.turnstile.render('#cfTurnstile', {
+      sitekey: siteKey,
+      theme: container.getAttribute('data-theme') || 'auto',
+      size:  container.getAttribute('data-size')  || 'normal'
+    });
+    window.__turnstileWidgetId = _turnstileWidgetId;
+  } catch (err) {
+    console.warn('[Turnstile] Failed to initialize widget from public config:', err);
+  }
+}
+
 /**
  * Navigate to a given page number.
  * @param {number} targetPage  0 (cover) or 1–4
@@ -391,6 +421,20 @@ function showPage(targetPage, back = false) {
 
   updateStepper();
   window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // ── Lazy init: fire deferred work as the user approaches each step ──
+  // Page 2 reached → pre-warm upload token so it's ready by page 3
+  if (targetPage === 2) {
+    if (typeof getUploadToken === 'function') {
+      getUploadToken().catch(() => { /* will retry on actual upload */ });
+    }
+  }
+  // Page 4 reached → init Turnstile (needs get-public-config)
+  if (targetPage === 4) {
+    if (typeof initTurnstileWidget === 'function' && !window.__turnstileWidgetId) {
+      initTurnstileWidget();
+    }
+  }
 
   // Phosphor icons render via CSS — no JS init needed
 }
@@ -529,47 +573,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // Init wizard first so pages are shown correctly
   initWizard();
 
-  let turnstileWidgetId = null;
-
-  async function waitForTurnstile(maxAttempts = 60, intervalMs = 100) {
-    for (let attempt = 0; attempt < maxAttempts; attempt++) {
-      if (window.turnstile && typeof window.turnstile.render === 'function') {
-        return true;
-      }
-      await new Promise(resolve => setTimeout(resolve, intervalMs));
-    }
-    return false;
-  }
-
-  async function initTurnstileWidget() {
-    const container = document.getElementById('cfTurnstile');
-    if (!container) return;
-
-    try {
-      const cfgResp = await fetch('/.netlify/functions/get-public-config', { cache: 'no-store' });
-      const cfg = await cfgResp.json();
-      const siteKey = String(cfg?.turnstileSiteKey || '').trim() || '1x00000000000000000000AA';
-
-      const ready = await waitForTurnstile();
-      if (!ready) {
-        console.warn('[Turnstile] API did not load in time.');
-        return;
-      }
-
-      turnstileWidgetId = window.turnstile.render('#cfTurnstile', {
-        sitekey: siteKey,
-        theme: container.getAttribute('data-theme') || 'auto',
-        size: container.getAttribute('data-size') || 'normal'
-      });
-      window.__turnstileWidgetId = turnstileWidgetId;
-    } catch (err) {
-      console.warn('[Turnstile] Failed to initialize widget from public config:', err);
-    }
-  }
 
   function getTurnstileToken(form) {
-    const apiToken = (window.turnstile && turnstileWidgetId !== null)
-      ? String(window.turnstile.getResponse(turnstileWidgetId) || '').trim()
+    const apiToken = (window.turnstile && _turnstileWidgetId !== null)
+      ? String(window.turnstile.getResponse(_turnstileWidgetId) || '').trim()
       : '';
     if (apiToken) return apiToken;
 
@@ -577,7 +584,11 @@ document.addEventListener('DOMContentLoaded', () => {
     return turnstileInput ? String(turnstileInput.value || '').trim() : '';
   }
 
-  initTurnstileWidget();
+  /* initTurnstileWidget() is called lazily when the user reaches
+     the submit page (page 4) — see the showPage hook below.
+     Calling it on DOMContentLoaded put get-public-config (651 ms)
+     on the critical path even though Turnstile isn't needed until
+     the final step. */
 
   /* ── Theme dropdown ───────────────────────────────────── */
   const themeToggleButton = document.getElementById('themeToggle');
@@ -1250,8 +1261,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Pre-fetch upload token immediately so the first upload is instant
-  getUploadToken().catch(() => { /* will retry on actual upload */ });
+  /* getUploadToken() pre-warm is triggered lazily when the user
+     reaches page 2 (one step before the upload field on page 3) —
+     see the showPage hook below. Calling it on DOMContentLoaded
+     put get-upload-token (1,129 ms cold start) on the critical
+     path for every visitor, most of whom never reach the upload. */
 
   async function uploadImageToStorage(file) {
     const base64 = await new Promise((res, rej) => {
