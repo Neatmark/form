@@ -5,7 +5,7 @@
 ────────────────────────────────────────────────────────────────────────── */
 
 const THEME_STORAGE_KEY = 'user-theme';
-const THEME_COLORS = { dark: '#005560', light: '#e6fcf8' };
+const THEME_COLORS = { dark: '#1C2B1A', light: '#E7E5D9' };
 
 function getOsTheme() {
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';

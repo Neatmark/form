@@ -55,10 +55,10 @@
 
 /* ── Dark ── */
 [data-theme="dark"] {
-  --bg:#0a0a0a; --surface:#1C2B1A; --surface-2:#263B28;
-  --border:#2E3D2E; --text-hi:#F5F4F0; --text-mid:#A1BFA1; --text-lo:#416745;
-  --accent:#A1BFA1; --accent-2:#416745; --accent-light:#263B28;
-  --error:#E8472E; --input-bg:#1C2B1A; --logo-filter:none;
+  --bg:#1C2B1A; --surface:#263B28; --surface-2:#2E3D2E;
+  --border:#3A4F3A; --text-hi:#F5F4F0; --text-mid:#A1BFA1; --text-lo:#5A7A5A;
+  --accent:#D4F577; --accent-2:#A1BFA1; --accent-light:#3A4F3A;
+  --error:#FF6B5B; --input-bg:#263B28; --logo-filter:none;
 }
 
 /* ── Reset ── */
@@ -96,7 +96,14 @@ body {
   position:relative; z-index:600;
   border-bottom:1px solid var(--border);
 }
-.logo-wrap img { height:22px; width:auto; display:block; filter:var(--logo-filter,none); }
+.logo-wrap img {
+  height:22px; width:auto; display:block;
+  /* mask-based theming: SVG shape inherits --text-hi color */
+  -webkit-mask: url('logo.svg') no-repeat center/contain;
+  mask: url('logo.svg') no-repeat center/contain;
+  background-color: var(--text-hi);
+  min-width: 80px;
+}
 .header-actions { display:flex; align-items:center; gap:var(--sp1); flex-shrink:0; }
 
 .hdr-circle {
@@ -729,7 +736,12 @@ select {
 .footer-grid { display:grid; grid-template-columns:1fr auto auto; gap:var(--sp6); align-items:start; }
 
 .footer-brand { display:flex; flex-direction:column; align-items:flex-start; gap:var(--sp2); }
-.footer-logo { height:22px; width:auto; display:block; filter:var(--logo-filter,none); }
+.footer-logo {
+  height:22px; width:auto; display:block; min-width:80px;
+  -webkit-mask: url('logo.svg') no-repeat center/contain;
+  mask: url('logo.svg') no-repeat center/contain;
+  background-color: var(--text-hi);
+}
 .footer-tagline { font-size:14px; font-weight:400; color:var(--text-mid); line-height:1.75; max-width:260px; }
 .footer-socials { display:flex; align-items:center; gap:var(--sp2); margin-top:4px; }
 .footer-social-link { display:inline-flex; align-items:center; justify-content:center; color:var(--text-mid); text-decoration:none; transition:color .12s; }

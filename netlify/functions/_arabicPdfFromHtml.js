@@ -124,10 +124,10 @@ async function htmlToPdfBuffer(html) {
 // ── Brand palette ─────────────────────────────────────────────────────────────
 const C = {
   teal:   '#263B28',
-  dark:   '#00373c',
-  accent: '#e6fcf8',
+  dark:   '#202020',
+  accent: '#E7E5D9',
   gray:   '#505050',
-  light:  '#dcdcdc',
+  light:  '#C8C9C2',
 };
 
 function escHtml(str) {
@@ -227,7 +227,7 @@ html, body {
   font-family: ${fontStack};
   font-size: 10pt;
   color: ${C.gray};
-  background: #fff;
+  background: #F5F4F0;
   direction: ${dir};
   unicode-bidi: embed;
   font-feature-settings: "calt" 1, "kern" 1, "liga" 1, "curs" 1, "clig" 1;
@@ -246,7 +246,7 @@ html, body {
 }
 .hdr-title { color: #fff; font-size: 14pt; font-weight: bold; }
 .hdr-brand {
-  color: rgba(204,255,249,.9); font-size: 10pt; font-weight: bold;
+  color: rgba(161,191,161,0.9); font-size: 10pt; font-weight: bold;
   font-family: Arial, sans-serif; direction: ltr; unicode-bidi: isolate;
 }
 
@@ -293,7 +293,7 @@ html, body {
   height: 28px; border-top: .5px solid ${C.light};
   display: flex; align-items: center; justify-content: center;
   font-size: 8pt; color: ${C.gray};
-  font-family: Arial, sans-serif; direction: ltr; background: #fff;
+  font-family: Arial, sans-serif; direction: ltr; background: #F5F4F0;
 }
 </style>
 </head>

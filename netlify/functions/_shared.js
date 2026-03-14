@@ -783,11 +783,11 @@ async function buildDocxBuffer(payload, imageBuffers = {}, lang = 'en') {
       spacing: { after: 260 }
     }),
     new Paragraph({
-      border: { bottom: { style: BorderStyle.SINGLE, size: 6, color: '1A38C8' } },
+      border: { bottom: { style: BorderStyle.SINGLE, size: 6, color: '263B28' } },
       spacing: { after: 260 }
     }),
     new Paragraph({
-      children: [new TextRun({ text: s.submissionDetails, bold: true, allCaps: true, color: '1A38C8' })],
+      children: [new TextRun({ text: s.submissionDetails, bold: true, allCaps: true, color: '263B28' })],
       bidirectional: isRtl,
       alignment: isRtl ? AlignmentType.RIGHT : AlignmentType.LEFT,
       spacing: { after: 120 }
@@ -876,7 +876,7 @@ async function buildDocxBuffer(payload, imageBuffers = {}, lang = 'en') {
   const document = new Document({
     styles: {
       default: {
-        heading1: { run: { bold: true, size: 28, color: '1A38C8', font: 'Calibri' }, paragraph: { spacing: { before: 320, after: 120 } } },
+        heading1: { run: { bold: true, size: 28, color: '263B28', font: 'Calibri' }, paragraph: { spacing: { before: 320, after: 120 } } },
         title:    { run: { bold: true, size: 40, color: '1D1D1D', font: 'Calibri' } }
       },
       paragraphStyles: [{
@@ -902,12 +902,12 @@ async function buildDocxBuffer(payload, imageBuffers = {}, lang = 'en') {
 ───────────────────────────────────────────────────────────────────────────── */
 
 // Brand palette (RGB 0–1)
-const BRAND_BLUE   = rgb(26/255,  56/255, 200/255);  // #263B28 — brand accent
-const BRAND_DARK   = rgb(13/255,  13/255,  13/255);  // #0D0D0D — near black
-const ACCENT_LIGHT = rgb(243/255, 244/255, 247/255); // #F3F4F7 — cool off-white
+const BRAND_BLUE   = rgb(38/255,  59/255,  40/255);  // #263B28 — dark forest green
+const BRAND_DARK   = rgb(32/255,  32/255,  32/255);  // #202020 — near black
+const ACCENT_LIGHT = rgb(231/255, 229/255, 217/255); // #E7E5D9 — warm alabaster
 const GRAY_TEXT    = rgb(80/255,  80/255,  80/255);
-const GRAY_LIGHT   = rgb(220/255, 220/255, 220/255);
-const WHITE        = rgb(1, 1, 1);
+const GRAY_LIGHT   = rgb(200/255, 201/255, 194/255); // #C8C9C2 — warm border
+const WHITE        = rgb(245/255, 244/255, 240/255); // #F5F4F0 — warm off-white
 
 async function _buildPdfBufferLatin(payload, imageBuffers = {}, lang = 'en') {
   const s          = DOC_STRINGS[lang] || DOC_STRINGS.en;
@@ -1394,7 +1394,7 @@ function buildClientEmail({ brandName, clientName, editLink }, lang = 'en') {
     <p style="color:#333;line-height:1.7;margin:0 0 16px;">
       ${copy.clientPdfNote}
     </p>
-    <div style="margin:24px 0;padding:20px;background:#F3F4F7;border-left:4px solid #263B28;">
+    <div style="margin:24px 0;padding:20px;background:#E7E5D9;border-left:4px solid #263B28;">
       <p style="margin:0 0 12px;font-size:14px;font-weight:700;color:#0D0D0D;">
         ${copy.clientEditHeading}
       </p>
@@ -1402,7 +1402,7 @@ function buildClientEmail({ brandName, clientName, editLink }, lang = 'en') {
         ${copy.clientEditBody}
       </p>
       <a href="${safeEditLink}"
-         style="display:inline-block;background:#263B28;color:#ffffff;text-decoration:none;padding:12px 24px;border-radius:4px;font-size:14px;font-weight:700;">
+         style="display:inline-block;background:#263B28;color:#F5F4F0;text-decoration:none;padding:12px 24px;border-radius:4px;font-size:14px;font-weight:700;">
         ${copy.clientEditBtn}
       </a>
     </div>`;

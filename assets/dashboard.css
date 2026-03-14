@@ -51,12 +51,12 @@ html[lang="ar"] select { font-family: 'Norsal', sans-serif; }
 }
 
 [data-theme="dark"] {
-  --bg:#0a0a0a; --surface:#1C2B1A; --surface-2:#263B28;
-  --border:#2E3D2E; --text-hi:#F5F4F0; --text-mid:#A1BFA1; --text-lo:#416745;
-  --accent:#416745; --red:#E8472E; --mid:#416745;
-  --pill-bg:#A1BFA1; --pill-text:#202020; --btn-bg:#A1BFA1; --btn-text:#202020;
-  --input-bg:#1C2B1A; --input-border:#2E3D2E; --input-focus:#A1BFA1;
-  --q6-bg:#1C2B1A; --q6-text:#F5F4F0; --logo-filter:none;
+  --bg:#1C2B1A; --surface:#263B28; --surface-2:#2E3D2E;
+  --border:#3A4F3A; --text-hi:#F5F4F0; --text-mid:#A1BFA1; --text-lo:#5A7A5A;
+  --accent:#D4F577; --red:#FF6B5B; --mid:#D4F577;
+  --pill-bg:#D4F577; --pill-text:#1C2B1A; --btn-bg:#D4F577; --btn-text:#1C2B1A;
+  --input-bg:#263B28; --input-border:#3A4F3A; --input-focus:#D4F577;
+  --q6-bg:#263B28; --q6-text:#F5F4F0; --logo-filter:none;
 }
 
 /* Phosphor icon utility */

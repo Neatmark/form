@@ -2850,7 +2850,7 @@ function handleExport(format, submissionsOverride) {
 
 /* ── End export helpers ────────────────────────────────── */
 
-const DASH_THEME_COLORS = { dark: '#00373c', light: '#e6fcf8' };
+const DASH_THEME_COLORS = { dark: '#1C2B1A', light: '#E7E5D9' };
 
 function getDashOsTheme() {
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
