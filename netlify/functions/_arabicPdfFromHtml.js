@@ -123,7 +123,7 @@ async function htmlToPdfBuffer(html) {
 
 // ── Brand palette ─────────────────────────────────────────────────────────────
 const C = {
-  teal:   '#006d77',
+  teal:   '#263B28',
   dark:   '#00373c',
   accent: '#e6fcf8',
   gray:   '#505050',
@@ -300,13 +300,13 @@ html, body {
 <body>
 <div class="hdr">
   <div class="hdr-title">${escHtml(s.reportTitle || 'Submission Report')}</div>
-  <div class="hdr-brand">Neatmark Studio</div>
+  <div class="hdr-brand">Zarvo Studio</div>
 </div>
 <div class="content">
   <div class="meta"><table>${metaHtml}</table></div>
   ${qaHtml}
 </div>
-<div class="ftr">Neatmark Studio &nbsp;&middot;&nbsp; ${escHtml(s.reportTitle || 'Report')}</div>
+<div class="ftr">Zarvo Studio &nbsp;&middot;&nbsp; ${escHtml(s.reportTitle || 'Report')}</div>
 </body>
 </html>`;
 }

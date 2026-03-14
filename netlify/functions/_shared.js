@@ -155,7 +155,7 @@ const SECTION_LABELS_MARKDOWN = SECTION_LABELS;
 const DOC_STRINGS = {
   en: {
     reportTitle:       'CLIENT INTAKE REPORT',
-    preparedBy:        'Prepared by Neatmark',
+    preparedBy:        'Prepared by Zarvo',
     submissionDetails: 'Submission Details',
     submitted:         'Submitted:',
     clientName:        'Client Name:',
@@ -165,12 +165,12 @@ const DOC_STRINGS = {
     country:           'Country:',
     noResponse:        'No response',
     noImages:          'No images uploaded',
-    neatmarkStudio:    'Neatmark Studio',
+    neatmarkStudio:    'Zarvo Studio',
     pageLabel:         'Page'
   },
   fr: {
     reportTitle:       'RAPPORT D\'INTEGR. CLIENT',
-    preparedBy:        'Prepare par Neatmark',
+    preparedBy:        'Prepare par Zarvo',
     submissionDetails: 'Details de la soumission',
     submitted:         'Soumis le:',
     clientName:        'Nom du client:',
@@ -180,12 +180,12 @@ const DOC_STRINGS = {
     country:           'Pays:',
     noResponse:        'Pas de reponse',
     noImages:          'Aucune image deposee',
-    neatmarkStudio:    'Neatmark Studio',
+    neatmarkStudio:    'Zarvo Studio',
     pageLabel:         'Page'
   },
   ar: {
     reportTitle:       'تقرير استقبال العميل',
-    preparedBy:        'من إعداد Neatmark',
+    preparedBy:        'من إعداد Zarvo',
     submissionDetails: 'تفاصيل الاستمارة',
     submitted:         'تاريخ التقديم',
     clientName:        'اسم العميل',
@@ -195,7 +195,7 @@ const DOC_STRINGS = {
     country:           'الدولة:',
     noResponse:        'لا توجد إجابة',
     noImages:          'لم يتم رفع صور',
-    neatmarkStudio:    'Neatmark Studio',
+    neatmarkStudio:    'Zarvo Studio',
     pageLabel:         'صفحة'
   }
 };
@@ -240,16 +240,16 @@ const EMAIL_COPY = {
     clientEditBody:       'You have 30 days to update your answers using the secure link below. This link is personal, so please keep it to yourself.',
     clientEditBtn:        'Edit My Submission &rarr;',
     clientPlainText:      (clientName, brandName, editLink) =>
-      `Thank you, ${clientName}!\n\nWe've received your brand intake for ${brandName}.\n\nTo edit your answers (valid for 30 days):\n${editLink}\n\nWe'll be in touch within 2 business days.\n\n— The Neatmark Team`,
+      `Thank you, ${clientName}!\n\nWe've received your brand intake for ${brandName}.\n\nTo edit your answers (valid for 30 days):\n${editLink}\n\nWe'll be in touch within 2 business days.\n\n— The Zarvo Team`,
 
     // Edit confirmation email
     editSubject:          (brandName) => `Edits Received: Brand Intake for ${brandName}`,
     editGreeting:         (clientName) => `Edits received, ${clientName}!`,
-    editIntro:            (brandName, editedAt) => `Your updates to the brand intake for <strong>${brandName}</strong> have been successfully received by Neatmark on <strong>${editedAt}</strong>.`,
+    editIntro:            (brandName, editedAt) => `Your updates to the brand intake for <strong>${brandName}</strong> have been successfully received by Zarvo on <strong>${editedAt}</strong>.`,
     editBody:             'Our team has been notified and will incorporate your latest answers into the project. If you have any questions, just reply to this email.',
-    editSignoff:          '— The Neatmark Team',
+    editSignoff:          '— The Zarvo Team',
     editPlainText:        (clientName, brandName, editedAt) =>
-      `Edits received!\n\nYour updates to the brand intake for ${brandName} have been received on ${editedAt}.\n\nOur team has been notified.\n\n— The Neatmark Team`
+      `Edits received!\n\nYour updates to the brand intake for ${brandName} have been received on ${editedAt}.\n\nOur team has been notified.\n\n— The Zarvo Team`
   },
 
   fr: {
@@ -261,15 +261,15 @@ const EMAIL_COPY = {
     clientEditBody:       'Vous avez 30 jours pour mettre a jour vos reponses via le lien securise ci-dessous. Ce lien est personnel, ne le partagez pas.',
     clientEditBtn:        'Modifier ma soumission &rarr;',
     clientPlainText:      (clientName, brandName, editLink) =>
-      `Merci, ${clientName} !\n\nNous avons bien recu votre formulaire de marque pour ${brandName}.\n\nPour modifier vos reponses (valable 30 jours) :\n${editLink}\n\nNous vous recontacterons sous 2 jours ouvrables.\n\n— L'equipe Neatmark`,
+      `Merci, ${clientName} !\n\nNous avons bien recu votre formulaire de marque pour ${brandName}.\n\nPour modifier vos reponses (valable 30 jours) :\n${editLink}\n\nNous vous recontacterons sous 2 jours ouvrables.\n\n— L'equipe Zarvo`,
 
     editSubject:          (brandName) => `Modifications recues : Formulaire de marque pour ${brandName}`,
     editGreeting:         (clientName) => `Modifications recues, ${clientName}\u00a0!`,
-    editIntro:            (brandName, editedAt) => `Vos mises a jour du formulaire de marque pour <strong>${brandName}</strong> ont ete bien recues par Neatmark le <strong>${editedAt}</strong>.`,
+    editIntro:            (brandName, editedAt) => `Vos mises a jour du formulaire de marque pour <strong>${brandName}</strong> ont ete bien recues par Zarvo le <strong>${editedAt}</strong>.`,
     editBody:             'Notre equipe a ete notifiee et integrera vos dernieres reponses dans le projet. Si vous avez des questions, repondez simplement a cet email.',
-    editSignoff:          '— L\'equipe Neatmark',
+    editSignoff:          '— L\'equipe Zarvo',
     editPlainText:        (clientName, brandName, editedAt) =>
-      `Modifications recues !\n\nVos mises a jour du formulaire de marque pour ${brandName} ont ete recues le ${editedAt}.\n\nNotre equipe a ete notifiee.\n\n— L'equipe Neatmark`
+      `Modifications recues !\n\nVos mises a jour du formulaire de marque pour ${brandName} ont ete recues le ${editedAt}.\n\nNotre equipe a ete notifiee.\n\n— L'equipe Zarvo`
   },
 
   ar: {
@@ -281,15 +281,15 @@ const EMAIL_COPY = {
     clientEditBody:       '\u0644\u062f\u064a\u0643 30 \u064a\u0648\u0645\u0627\u064b \u0644\u062a\u062d\u062f\u064a\u062b \u0625\u062c\u0627\u0628\u0627\u062a\u0643 \u0639\u0628\u0631 \u0627\u0644\u0631\u0627\u0628\u0637 \u0627\u0644\u0622\u0645\u0646 \u0623\u062f\u0646\u0627\u0647. \u0647\u0630\u0627 \u0627\u0644\u0631\u0627\u0628\u0637 \u0634\u062e\u0635\u064a\u060c \u0644\u0627 \u062a\u0634\u0627\u0631\u0643\u0647 \u0645\u0639 \u0623\u062d\u062f.',
     clientEditBtn:        '\u062a\u0639\u062f\u064a\u0644 \u0627\u0633\u062a\u0645\u0627\u0631\u062a\u064a \u2192',
     clientPlainText:      (clientName, brandName, editLink) =>
-      `\u0634\u0643\u0631\u0627\u064b \u0644\u0643\u060c ${clientName}!\n\n\u0644\u0642\u062f \u0627\u0633\u062a\u0644\u0645\u0646\u0627 \u0627\u0633\u062a\u0645\u0627\u0631\u0629 \u0627\u0644\u0628\u0631\u0627\u0646\u062f \u0644\u0640 ${brandName}.\n\n\u0644\u062a\u0639\u062f\u064a\u0644 \u0625\u062c\u0627\u0628\u0627\u062a\u0643 (\u0635\u0627\u0644\u062d \u0644\u0645\u062f\u0629 30 \u064a\u0648\u0645\u0627\u064b):\n${editLink}\n\n\u0633\u0646\u062a\u0648\u0627\u0635\u0644 \u0645\u0639\u0643 \u062e\u0644\u0627\u0644 \u064a\u0648\u0645\u064a \u0639\u0645\u0644.\n\n\u2014 \u0641\u0631\u064a\u0642 Neatmark`,
+      `\u0634\u0643\u0631\u0627\u064b \u0644\u0643\u060c ${clientName}!\n\n\u0644\u0642\u062f \u0627\u0633\u062a\u0644\u0645\u0646\u0627 \u0627\u0633\u062a\u0645\u0627\u0631\u0629 \u0627\u0644\u0628\u0631\u0627\u0646\u062f \u0644\u0640 ${brandName}.\n\n\u0644\u062a\u0639\u062f\u064a\u0644 \u0625\u062c\u0627\u0628\u0627\u062a\u0643 (\u0635\u0627\u0644\u062d \u0644\u0645\u062f\u0629 30 \u064a\u0648\u0645\u0627\u064b):\n${editLink}\n\n\u0633\u0646\u062a\u0648\u0627\u0635\u0644 \u0645\u0639\u0643 \u062e\u0644\u0627\u0644 \u064a\u0648\u0645\u064a \u0639\u0645\u0644.\n\n\u2014 \u0641\u0631\u064a\u0642 Zarvo`,
 
     editSubject:          (brandName) => `\u062a\u0645 \u0627\u0633\u062a\u0644\u0627\u0645 \u0627\u0644\u062a\u0639\u062f\u064a\u0644\u0627\u062a: \u0627\u0633\u062a\u0645\u0627\u0631\u0629 \u0627\u0644\u0628\u0631\u0627\u0646\u062f \u0644\u0640 ${brandName}`,
     editGreeting:         (clientName) => `\u062a\u0645 \u0627\u0633\u062a\u0644\u0627\u0645 \u0627\u0644\u062a\u0639\u062f\u064a\u0644\u0627\u062a\u060c ${clientName}!`,
-    editIntro:            (brandName, editedAt) => `\u062a\u0645 \u0627\u0633\u062a\u0644\u0627\u0645 \u062a\u062d\u062f\u064a\u062b\u0627\u062a\u0643 \u0639\u0644\u0649 \u0627\u0633\u062a\u0645\u0627\u0631\u0629 \u0627\u0644\u0628\u0631\u0627\u0646\u062f \u0644\u0640 <strong>${brandName}</strong> \u0628\u0646\u062c\u0627\u062d \u0645\u0646 \u0642\u0650\u0628\u064e\u0644 Neatmark \u0641\u064a <strong>${editedAt}</strong>.`,
+    editIntro:            (brandName, editedAt) => `\u062a\u0645 \u0627\u0633\u062a\u0644\u0627\u0645 \u062a\u062d\u062f\u064a\u062b\u0627\u062a\u0643 \u0639\u0644\u0649 \u0627\u0633\u062a\u0645\u0627\u0631\u0629 \u0627\u0644\u0628\u0631\u0627\u0646\u062f \u0644\u0640 <strong>${brandName}</strong> \u0628\u0646\u062c\u0627\u062d \u0645\u0646 \u0642\u0650\u0628\u064e\u0644 Zarvo \u0641\u064a <strong>${editedAt}</strong>.`,
     editBody:             '\u062a\u0645 \u0625\u0634\u0639\u0627\u0631 \u0641\u0631\u064a\u0642\u0646\u0627 \u0648\u0633\u064a\u0623\u062e\u0630 \u0625\u062c\u0627\u0628\u0627\u062a\u0643 \u0627\u0644\u0623\u062e\u064a\u0631\u0629 \u0628\u0639\u064a\u0646 \u0627\u0644\u0627\u0639\u062a\u0628\u0627\u0631 \u0641\u064a \u0627\u0644\u0645\u0634\u0631\u0648\u0639. \u0625\u0630\u0627 \u0643\u0627\u0646 \u0644\u062f\u064a\u0643 \u0623\u064a \u0633\u0624\u0627\u0644\u060c \u0631\u062f \u0639\u0644\u0649 \u0647\u0630\u0627 \u0627\u0644\u0628\u0631\u064a\u062f.',
-    editSignoff:          '\u2014 \u0641\u0631\u064a\u0642 Neatmark',
+    editSignoff:          '\u2014 \u0641\u0631\u064a\u0642 Zarvo',
     editPlainText:        (clientName, brandName, editedAt) =>
-      `\u062a\u0645 \u0627\u0633\u062a\u0644\u0627\u0645 \u0627\u0644\u062a\u0639\u062f\u064a\u0644\u0627\u062a!\n\n\u062a\u0645 \u0627\u0633\u062a\u0644\u0627\u0645 \u062a\u062d\u062f\u064a\u062b\u0627\u062a\u0643 \u0644\u0640 ${brandName} \u0641\u064a ${editedAt}.\n\n\u062a\u0645 \u0625\u0634\u0639\u0627\u0631 \u0641\u0631\u064a\u0642\u0646\u0627.\n\n\u2014 \u0641\u0631\u064a\u0642 Neatmark`
+      `\u062a\u0645 \u0627\u0633\u062a\u0644\u0627\u0645 \u0627\u0644\u062a\u0639\u062f\u064a\u0644\u0627\u062a!\n\n\u062a\u0645 \u0627\u0633\u062a\u0644\u0627\u0645 \u062a\u062d\u062f\u064a\u062b\u0627\u062a\u0643 \u0644\u0640 ${brandName} \u0641\u064a ${editedAt}.\n\n\u062a\u0645 \u0625\u0634\u0639\u0627\u0631 \u0641\u0631\u064a\u0642\u0646\u0627.\n\n\u2014 \u0641\u0631\u064a\u0642 Zarvo`
   }
 };
 
@@ -902,7 +902,7 @@ async function buildDocxBuffer(payload, imageBuffers = {}, lang = 'en') {
 ───────────────────────────────────────────────────────────────────────────── */
 
 // Brand palette (RGB 0–1)
-const BRAND_BLUE   = rgb(26/255,  56/255, 200/255);  // #1A38C8 — brand accent
+const BRAND_BLUE   = rgb(26/255,  56/255, 200/255);  // #263B28 — brand accent
 const BRAND_DARK   = rgb(13/255,  13/255,  13/255);  // #0D0D0D — near black
 const ACCENT_LIGHT = rgb(243/255, 244/255, 247/255); // #F3F4F7 — cool off-white
 const GRAY_TEXT    = rgb(80/255,  80/255,  80/255);
@@ -1008,7 +1008,7 @@ async function _buildPdfBufferLatin(payload, imageBuffers = {}, lang = 'en') {
     p.drawText(title, { x: titleX, y: PAGE_H - HEADER_H + 20, size: titleSize, font: boldFont, color: WHITE });
 
     // Studio name always in Latin (brand name)
-    const studio = 'Neatmark Studio';
+    const studio = 'Zarvo Studio';
     p.drawText(studio, {
       x: isRtl ? MARGIN : RIGHT - boldFont.widthOfTextAtSize(studio, 10),
       y: PAGE_H - HEADER_H + 22,
@@ -1307,7 +1307,7 @@ function emailWrapper(bodyHtml, lang = 'en') {
       <table width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff;max-width:600px;border:1px solid #c8cbd4;">
         <!-- Header bar -->
         <tr><td style="background:#0D0D0D;padding:24px 32px;">
-          <span style="color:#ffffff;font-size:20px;font-weight:700;letter-spacing:.5px;">NEATMARK</span>
+          <span style="color:#ffffff;font-size:20px;font-weight:700;letter-spacing:.5px;">ZARVO</span>
         </td></tr>
         <!-- Body -->
         <tr><td style="padding:32px;direction:${dir};text-align:${textAlign};">
@@ -1316,8 +1316,8 @@ function emailWrapper(bodyHtml, lang = 'en') {
         <!-- Footer -->
         <tr><td style="background:#f9f9f9;padding:16px 32px;border-top:1px solid #eee;">
           <p style="margin:0;font-size:12px;color:#999;">
-            &copy; 2026 Neatmark&trade; &nbsp;&middot;&nbsp;
-            <a href="https://neatmark.studio/privacy" style="color:#1A38C8;text-decoration:none;">Privacy Policy</a>
+            &copy; 2026 Zarvo&trade; &nbsp;&middot;&nbsp;
+            <a href="https://neatmark.studio/privacy" style="color:#263B28;text-decoration:none;">Privacy Policy</a>
           </p>
         </td></tr>
       </table>
@@ -1347,7 +1347,7 @@ function buildAdminEmail({ brandName, clientName, email, deliveryDate, country }
   ];
 
   const bodyHtml = `
-    <h2 style="color:#1A38C8;margin:0 0 20px;">New Client Intake Submission</h2>
+    <h2 style="color:#263B28;margin:0 0 20px;">New Client Intake Submission</h2>
     <table cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;">
       ${rows.map(([label, value]) => `
         <tr>
@@ -1387,14 +1387,14 @@ function buildClientEmail({ brandName, clientName, editLink }, lang = 'en') {
   })();
 
   const bodyHtml = `
-    <h2 style="color:#1A38C8;margin:0 0 8px;">${copy.clientGreeting(safeClient)}</h2>
+    <h2 style="color:#263B28;margin:0 0 8px;">${copy.clientGreeting(safeClient)}</h2>
     <p style="color:#333;line-height:1.7;margin:0 0 16px;">
       ${copy.clientIntro(safeBrand)}
     </p>
     <p style="color:#333;line-height:1.7;margin:0 0 16px;">
       ${copy.clientPdfNote}
     </p>
-    <div style="margin:24px 0;padding:20px;background:#F3F4F7;border-left:4px solid #1A38C8;">
+    <div style="margin:24px 0;padding:20px;background:#F3F4F7;border-left:4px solid #263B28;">
       <p style="margin:0 0 12px;font-size:14px;font-weight:700;color:#0D0D0D;">
         ${copy.clientEditHeading}
       </p>
@@ -1402,7 +1402,7 @@ function buildClientEmail({ brandName, clientName, editLink }, lang = 'en') {
         ${copy.clientEditBody}
       </p>
       <a href="${safeEditLink}"
-         style="display:inline-block;background:#1A38C8;color:#ffffff;text-decoration:none;padding:12px 24px;border-radius:4px;font-size:14px;font-weight:700;">
+         style="display:inline-block;background:#263B28;color:#ffffff;text-decoration:none;padding:12px 24px;border-radius:4px;font-size:14px;font-weight:700;">
         ${copy.clientEditBtn}
       </a>
     </div>`;
@@ -1427,7 +1427,7 @@ function buildEditConfirmationEmail({ brandName, clientName }, lang = 'en') {
   });
 
   const bodyHtml = `
-    <h2 style="color:#1A38C8;margin:0 0 8px;">${copy.editGreeting(safeClient)}</h2>
+    <h2 style="color:#263B28;margin:0 0 8px;">${copy.editGreeting(safeClient)}</h2>
     <p style="color:#333;line-height:1.7;margin:0 0 16px;">
       ${copy.editIntro(safeBrand, editedAt)}
     </p>

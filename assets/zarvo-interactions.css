@@ -1,0 +1,548 @@
+/* ══════════════════════════════════════════════════════════════
+   ZARVO — Interaction Layer
+   CSS-native. No libraries. Every effect earned from first principles.
+   Wraps the existing design system without touching its logic.
+
+   Design tokens inherited from style.css:
+   --bg, --surface, --surface-2, --border,
+   --text-hi, --text-mid, --accent, --input-bg
+══════════════════════════════════════════════════════════════ */
+
+
+/* ══════════════════════════════════════════════════════════
+   0. SMOOTH SCROLL
+══════════════════════════════════════════════════════════ */
+
+html {
+  scroll-behavior: smooth;
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   1. CUSTOM CURSOR
+   Dot: instant, follows mouse via CSS custom properties set by JS.
+   Ring: lags behind via rAF lerp in JS, positioned via .style.
+   State classes toggled by JS on <body>.
+══════════════════════════════════════════════════════════ */
+
+/* Hide system cursor — only when JS confirms custom cursor is active.
+   JS adds html.has-custom-cursor when: not a touch device AND
+   prefers-reduced-motion is not set. This ensures accessibility
+   settings (reduced-motion, system cursor overrides) are respected. */
+html.has-custom-cursor *,
+html.has-custom-cursor *::before,
+html.has-custom-cursor *::after {
+  cursor: none !important;
+}
+
+/* #cursor-dot and #cursor-ring now live inside a Shadow DOM (#zarvo-cursor-host).
+   Their styles are injected inline by JS. External CSS cannot reach them.
+   State classes (cursor--input etc.) are read via :host-context() inside shadow DOM. */
+
+
+/* ══════════════════════════════════════════════════════════
+   2. PAGE CURTAIN
+   Full-screen #202020 cover. Slides off via CSS animation.
+   No JS needed — fires on every page load automatically.
+══════════════════════════════════════════════════════════ */
+
+#zarvo-curtain {
+  position: fixed;
+  inset: 0;
+  background: #202020;
+  z-index: 99990;
+  pointer-events: none;
+  animation: curtainLift 0.9s ease 0.08s forwards;
+}
+
+@keyframes curtainLift {
+  0%   { transform: translateY(0%); }
+  100% { transform: translateY(-100%); }
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   3. SCROLL REVEALS
+   JS adds .is-revealed via IntersectionObserver.
+   CSS owns all timing, easing, stagger via --reveal-delay.
+══════════════════════════════════════════════════════════ */
+
+.zarvo-reveal {
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity   0.35s ease var(--reveal-delay, 0s),
+    transform 0.35s ease var(--reveal-delay, 0s);
+}
+
+.zarvo-reveal-label {
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity   0.28s ease var(--reveal-delay, 0s),
+    transform 0.28s ease var(--reveal-delay, 0s);
+}
+
+/* Horizontal rules: scaleX 0 → 1 from left */
+.zarvo-reveal-rule {
+  transform-origin: left;
+  transform: scaleX(0);
+  transition: transform 0.45s ease var(--reveal-delay, 0s);
+}
+html[dir="rtl"] .zarvo-reveal-rule {
+  transform-origin: right;
+}
+
+/* Revealed state */
+.zarvo-reveal.is-revealed,
+.zarvo-reveal-label.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+.zarvo-reveal-rule.is-revealed {
+  transform: scaleX(1);
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   4. HERO WORD REVEAL
+   JS splits .hero-title text into .word-wrap > .word-inner.
+   Sets --word-delay inline per span. CSS animates.
+══════════════════════════════════════════════════════════ */
+
+.word-wrap {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding-bottom: 0.06em;
+  margin-bottom: -0.06em;
+}
+
+.word-inner {
+  display: inline-block;
+  transform: translateY(108%);
+  animation: wordSlide 0.7s ease var(--word-delay, 0.55s) forwards;
+}
+
+@keyframes wordSlide {
+  from { transform: translateY(108%); }
+  to   { transform: translateY(0); }
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   5. INPUT MICRO-INTERACTIONS
+   :focus-within handles label state — no JS.
+   :not(:placeholder-shown) handles filled blur state — no JS.
+   JS only adds .zarvo-shake for the empty-blur whisper.
+══════════════════════════════════════════════════════════ */
+
+/* Hover: warm bg pull */
+input:not(:focus):not([type="checkbox"]):not([type="radio"]):not(.honeypot):hover,
+textarea:not(:focus):hover,
+select:not(:focus):hover {
+  background: var(--surface-2) !important;
+  transition: background 0.25s ease !important;
+}
+
+/* Focus: 2px accent border — defined by line, not shadow */
+input:not([type="checkbox"]):not([type="radio"]):not(.honeypot):focus,
+textarea:focus,
+select:focus {
+  border: 2px solid var(--accent) !important;
+  border-bottom-width: 3px !important;
+  box-shadow: none !important;
+  outline: none !important;
+  padding: 13px 15px !important;
+  background: var(--input-bg) !important;
+  transition:
+    border-color 0.2s ease,
+    border-width 0.2s ease,
+    background   0.25s ease !important;
+}
+
+/* Label: blue + letter-spacing open when any child input is focused */
+.client-field:focus-within > label {
+  color: var(--accent) !important;
+  letter-spacing: 0.04em !important;
+  transition: color 0.2s ease, letter-spacing 0.2s ease;
+}
+
+/* q-card label brightens on focus-within */
+.q-card:focus-within > .q-header .q-label,
+.q-card:focus-within .q-label {
+  color: var(--text-hi);
+  transition: color 0.2s ease;
+}
+
+/* Blur + filled: clean handoff — border snaps back */
+input:not([type="checkbox"]):not([type="radio"]):not(:focus):not(:placeholder-shown):not(.honeypot),
+textarea:not(:focus):not(:placeholder-shown) {
+  border-color: var(--border) !important;
+  border-width: 1px !important;
+  box-shadow: none !important;
+}
+
+/* Shake — empty blur whisper. JS adds/removes class. */
+@keyframes zarvoShake {
+  0%   { transform: translateX(0); }
+  18%  { transform: translateX(-3px); }
+  54%  { transform: translateX(3px); }
+  78%  { transform: translateX(-1.5px); }
+  100% { transform: translateX(0); }
+}
+
+.zarvo-shake {
+  animation: zarvoShake 0.22s cubic-bezier(0.36, 0.07, 0.19, 0.97) forwards;
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   6. SUBMIT BUTTON — Wipe + text shift + press + loading
+══════════════════════════════════════════════════════════ */
+
+.submit-btn {
+  position: relative !important;
+  overflow: hidden !important;
+  isolation: isolate;
+  transition:
+    transform 0.15s ease !important;
+}
+
+/* Keep text above the wipe */
+.submit-btn > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Blue wipe: slides left → right via ::before */
+.submit-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s ease;
+  z-index: 0;
+}
+
+.submit-btn:hover::before {
+  transform: scaleX(1);
+}
+
+/* Override flat style.css hover — wipe provides the color change */
+.submit-btn:hover {
+  background: var(--text-hi) !important;
+  border-color: var(--text-hi) !important;
+  color: var(--bg) !important;
+}
+
+/* Text inner wrapper — shifts right on hover */
+.zarvo-btn-inner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  position: relative;
+  z-index: 1;
+  transition: transform 0.3s ease;
+}
+
+.submit-btn:hover .zarvo-btn-inner {
+  transform: translateX(3px);
+}
+
+/* Click press */
+.submit-btn:active {
+  transform: scale(0.97) !important;
+}
+
+/* Loading: em-dash trio, sequential blink */
+.submit-btn[data-loading="true"] {
+  pointer-events: none;
+}
+
+.zarvo-loading-dashes {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  position: relative;
+  z-index: 1;
+}
+
+.zarvo-loading-dashes .d {
+  display: inline-block;
+  opacity: 0.2;
+  animation: dashBlink 0.9s ease-in-out infinite;
+  font-weight: 900;
+}
+.zarvo-loading-dashes .d:nth-child(1) { animation-delay: 0s; }
+.zarvo-loading-dashes .d:nth-child(2) { animation-delay: 0.2s; }
+.zarvo-loading-dashes .d:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes dashBlink {
+  0%, 100% { opacity: 0.2; }
+  45%       { opacity: 1; }
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   7. SUCCESS STATE
+   Horizontal rule draws across. Type rises below.
+   JS adds .is-visible then .is-revealed in sequence.
+══════════════════════════════════════════════════════════ */
+
+#zarvo-success {
+  position: fixed;
+  inset: 0;
+  z-index: 8900;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+#zarvo-success.is-visible {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.zarvo-success-rule {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  height: 1px;
+  width: 0;
+  background: var(--text-hi);
+  transition: width 0.8s ease 0.15s;
+}
+
+#zarvo-success.is-revealed .zarvo-success-rule {
+  width: 100%;
+}
+
+.zarvo-success-copy {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 0 var(--sp4, 32px);
+}
+
+.zarvo-success-eyebrow {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-mid);
+  margin-bottom: 14px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity   0.5s ease 0.75s,
+    transform 0.5s ease 0.75s;
+}
+
+.zarvo-success-headline {
+  display: block;
+  font-family: 'Mona Sans', 'Norsal', sans-serif;
+  font-size: clamp(2.5rem, 8vw, 5rem);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: var(--text-hi);
+  line-height: 0.9;
+  font-stretch: 125%;
+  font-variation-settings: 'opsz' 100, 'wdth' 125;
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity   0.7s ease 0.85s,
+    transform 0.7s ease 0.85s;
+}
+
+#zarvo-success.is-revealed .zarvo-success-eyebrow,
+#zarvo-success.is-revealed .zarvo-success-headline {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   8. SWISS ELEVATION — depth without shadows
+   Bottom > top padding grounds the form.
+   2px focused vs 1px default = depth system.
+══════════════════════════════════════════════════════════ */
+
+.q-card {
+  padding-bottom: calc(var(--sp3, 24px) + 16px);
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   9. CHROME REVEALS
+   Header and stepper: CSS animation on load.
+   Footer: via IntersectionObserver in JS.
+══════════════════════════════════════════════════════════ */
+
+.site-header,
+.legal-header {
+  animation: chromeFadeIn 0.6s ease 0.65s both;
+}
+
+.page-stepper {
+  animation: chromeFadeIn 0.5s ease 0.75s both;
+}
+
+@keyframes chromeFadeIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   10. FORM PAGE TRANSITIONS
+   Slight directional slide when wizard advances or goes back.
+══════════════════════════════════════════════════════════ */
+
+.form-page {
+  display: none;
+}
+.form-page.active {
+  display: block;
+  animation: pageIn 0.18s ease both;
+}
+.form-page.slide-back.active {
+  animation: pageInBack 0.18s ease both;
+}
+
+@keyframes pageIn {
+  from { opacity: 0; transform: translateX(16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes pageInBack {
+  from { opacity: 0; transform: translateX(-16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+
+
+
+/* ══════════════════════════════════════════════════════════
+   11. MICRO-UPGRADES — existing elements
+   Small, invisible improvements that compound the quality.
+══════════════════════════════════════════════════════════ */
+
+/* Checkbox / radio: spring on check */
+.check-label input[type="checkbox"],
+.check-label input[type="radio"] {
+  transition:
+    background    0.15s ease,
+    border-color  0.15s ease,
+    transform     0.15s ease !important;
+}
+.check-label input[type="checkbox"]:checked,
+.check-label input[type="radio"]:checked {
+  transform: scale(1.08);
+}
+
+/* Step number spring */
+.step-num {
+  transition:
+    background   0.3s ease,
+    border-color 0.3s ease,
+    color        0.2s ease,
+    transform    0.3s ease !important;
+}
+
+/* Wizard nav buttons: press */
+.wizard-btn {
+  transition:
+    background   0.18s ease,
+    border-color 0.18s ease,
+    color        0.18s ease,
+    transform    0.15s ease !important;
+}
+.wizard-btn:active {
+  transform: scale(0.97);
+}
+
+/* Social link lift */
+.footer-social-link {
+  transition: color 0.18s ease, transform 0.2s ease !important;
+}
+.footer-social-link:hover {
+  transform: translateY(-2px);
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   12. DASHBOARD + LEGAL REVEALS
+   Same IntersectionObserver pattern. Lighter stagger.
+══════════════════════════════════════════════════════════ */
+
+.login-card,
+.submission-list-item,
+.stat-card,
+.legal-content > * {
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity   0.5s ease var(--reveal-delay, 0s),
+    transform 0.5s ease var(--reveal-delay, 0s);
+}
+
+.login-card.is-revealed,
+.submission-list-item.is-revealed,
+.stat-card.is-revealed,
+.legal-content > *.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   13. PREFERS-REDUCED-MOTION
+   All motion collapses to instant. Form remains fully usable.
+══════════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+  }
+  /* Hide the shadow host — this hides the cursor ring inside it */
+  #zarvo-cursor-host, #zarvo-curtain { display: none !important; }
+  /* Restore system cursor — cursor: none is gated on .has-custom-cursor
+     (JS never adds that class when REDUCED is true) but this is a belt-
+     and-suspenders fallback in case the class somehow leaks through. */
+  *, *::before, *::after { cursor: auto !important; }
+  .word-inner { transform: none !important; animation: none !important; }
+  .zarvo-reveal, .zarvo-reveal-label, .zarvo-reveal-rule,
+  .login-card, .submission-list-item, .stat-card, .legal-content > * {
+    opacity: 1 !important; transform: none !important; transition: none !important;
+  }
+  .site-header, .legal-header, .page-stepper {
+    animation: none !important; opacity: 1 !important; transform: none !important;
+  }
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   14. TOUCH DEVICES
+   JS adds .is-touch-device to <html>. Restores system cursor.
+══════════════════════════════════════════════════════════ */
+
+html.is-touch-device *, html.is-touch-device *::before, html.is-touch-device *::after {
+  cursor: auto !important;
+}
+html.is-touch-device #zarvo-cursor-host {
+  display: none !important;
+}
+

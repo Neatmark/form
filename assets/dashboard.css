@@ -10,25 +10,25 @@
 }
 
 :root {
-  --bg:           #F3F4F7;
-  --surface:      #FFFFFF;
-  --surface-2:    #E8EBF2;
-  --border:       #C8CBD4;
-  --text-hi:      #0D0D0D;
+  --bg:           #E7E5D9;
+  --surface:      #F5F4F0;
+  --surface-2:    #E1E3DD;
+  --border:       #C8C9C2;
+  --text-hi:      #202020;
   --text-mid:     #555555;
   --text-lo:      #AAAAAA;
-  --accent:       #1A38C8;
+  --accent:       #263B28;
   --red:          #C8392B;
-  --mid:          #1A38C8;
+  --mid:          #263B28;
   --pill-bg:      #0D0D0D;
   --pill-text:    #FFFFFF;
   --btn-bg:       #0D0D0D;
   --btn-text:     #FFFFFF;
-  --input-bg:     #FFFFFF;
-  --input-border: #C8CBD4;
-  --input-focus:  #1A38C8;
-  --q6-bg:        #E8EBF2;
-  --q6-text:      #0D0D0D;
+  --input-bg:     #F5F4F0;
+  --input-border: #C8C9C2;
+  --input-focus:  #263B28;
+  --q6-bg:        #E1E3DD;
+  --q6-text:      #202020;
   --logo-filter:  none;
   --sp1:8px; --sp2:16px; --sp3:24px; --sp4:32px; --sp5:48px; --sp6:64px;
 }
@@ -42,21 +42,21 @@ html[lang="ar"] textarea,
 html[lang="ar"] select { font-family: 'Norsal', sans-serif; }
 
 [data-theme="light"] {
-  --bg:#F3F4F7; --surface:#FFFFFF; --surface-2:#E8EBF2;
-  --border:#C8CBD4; --text-hi:#0D0D0D; --text-mid:#555555; --text-lo:#AAAAAA;
-  --accent:#1A38C8; --red:#C8392B; --mid:#1A38C8;
-  --pill-bg:#0D0D0D; --pill-text:#FFFFFF; --btn-bg:#0D0D0D; --btn-text:#FFFFFF;
-  --input-bg:#FFFFFF; --input-border:#C8CBD4; --input-focus:#1A38C8;
-  --q6-bg:#E8EBF2; --q6-text:#0D0D0D; --logo-filter:none;
+  --bg:#E7E5D9; --surface:#FFFFFF; --surface-2:#E8EBF2;
+  --border:#C8C9C2; --text-hi:#202020; --text-mid:#555550; --text-lo:#AAAAAA;
+  --accent:#263B28; --red:#C8392B; --mid:#263B28;
+  --pill-bg:#263B28; --pill-text:#FFFFFF; --btn-bg:#263B28; --btn-text:#FFFFFF;
+  --input-bg:#F5F4F0; --input-border:#C8C9C2; --input-focus:#263B28;
+  --q6-bg:#E1E3DD; --q6-text:#202020; --logo-filter:none;
 }
 
 [data-theme="dark"] {
-  --bg:#0A0A0E; --surface:#16161C; --surface-2:#202028;
-  --border:#2E2E3A; --text-hi:#F5F5F5; --text-mid:#AAAAAA; --text-lo:#555555;
-  --accent:#3D5FE0; --red:#E8472E; --mid:#3D5FE0;
-  --pill-bg:#F5F5F5; --pill-text:#0D0D0D; --btn-bg:#F5F5F5; --btn-text:#0D0D0D;
-  --input-bg:#16161C; --input-border:#2E2E3A; --input-focus:#3D5FE0;
-  --q6-bg:#16161C; --q6-text:#F5F5F5; --logo-filter:invert(1);
+  --bg:#0a0a0a; --surface:#1C2B1A; --surface-2:#263B28;
+  --border:#2E3D2E; --text-hi:#F5F4F0; --text-mid:#A1BFA1; --text-lo:#416745;
+  --accent:#416745; --red:#E8472E; --mid:#416745;
+  --pill-bg:#A1BFA1; --pill-text:#202020; --btn-bg:#A1BFA1; --btn-text:#202020;
+  --input-bg:#1C2B1A; --input-border:#2E3D2E; --input-focus:#A1BFA1;
+  --q6-bg:#1C2B1A; --q6-text:#F5F4F0; --logo-filter:none;
 }
 
 /* Phosphor icon utility */
@@ -3213,7 +3213,7 @@ html[dir="rtl"] .dash-lang-menu {
 
 
 /* ══════════════════════════════════════════════════════════════
-   MERQ DASHBOARD — Consistency + Animation Layer
+   ZARVO DASHBOARD — Consistency + Animation Layer
    Brings dashboard in line with the form's type system and
    adds the same interaction quality applied to index.html.
    All tokens match style.css exactly.
@@ -3356,7 +3356,7 @@ body {
 
 /* ── 5. SUBMISSION CARDS — override existing slideUp ─────────
    Replace the CSS animation with the IntersectionObserver
-   pattern from merq-interactions.js. Cards start invisible
+   pattern from zarvo-interactions.js. Cards start invisible
    and are revealed on scroll/load by JS adding .is-revealed.  */
 
 .submission-card {

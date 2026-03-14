@@ -1,6 +1,6 @@
 {
     "common": {
-        "appTitle": "Formulaire d'admission client Neatmark",
+        "appTitle": "Formulaire d'admission client Zarvo",
         "light": "Clair",
         "dark": "Sombre",
         "noResponse": "Pas de réponse"
@@ -190,7 +190,7 @@
             }
         },
         "footer": {
-            "copyright": "Neatmark™ 2026. Tous droits réservés.",
+            "copyright": "Zarvo™ 2026. Tous droits réservés.",
             "privacy": "Politique de confidentialité",
             "cookie": "Politique des cookies",
             "tagline": "Façonnez votre vision, renforcez votre voix,\net faites respirer votre marque.",
@@ -253,7 +253,7 @@
         "alertError": "Une erreur est survenue",
         "alertClose": "OK",
         "turnstileError": "Veuillez attendre la fin de la vérification de sécurité, puis réessayez.",
-        "editSuccess": "Vos modifications ont été enregistrées et envoyées à Neatmark !"
+        "editSuccess": "Vos modifications ont été enregistrées et envoyées à Zarvo !"
     },
     "dashboard": {
         "title": "Tableau de bord des formulaires",
@@ -462,9 +462,9 @@
         "updated": "Dernière mise à jour : février 2026",
         "privacy": {
             "title": "Politique de confidentialité",
-            "intro": "Chez Neatmark, nous prenons votre vie privée au sérieux. Cette page explique quelles informations nous collectons lorsque vous utilisez notre formulaire d'admission client, comment nous les utilisons et comment nous les protégeons. Nous avons volontairement rédigé ceci en langage simple. Vous méritez de savoir exactement ce qu'il advient de vos données, sans avoir à déchiffrer un jargon juridique.",
+            "intro": "Chez Zarvo, nous prenons votre vie privée au sérieux. Cette page explique quelles informations nous collectons lorsque vous utilisez notre formulaire d'admission client, comment nous les utilisons et comment nous les protégeons. Nous avons volontairement rédigé ceci en langage simple. Vous méritez de savoir exactement ce qu'il advient de vos données, sans avoir à déchiffrer un jargon juridique.",
             "s1_title": "Quelles informations nous collectons",
-            "s1_p1": "Lorsque vous remplissez et soumettez le formulaire d'admission client Neatmark, nous collectons les éléments suivants :",
+            "s1_p1": "Lorsque vous remplissez et soumettez le formulaire d'admission client Zarvo, nous collectons les éléments suivants :",
             "s1_li1": "Votre nom complet",
             "s1_li2": "Votre adresse email",
             "s1_li3": "Votre nom de marque ou d'entreprise",
@@ -475,13 +475,13 @@
             "s2_p1": "Les informations que vous partagez avec nous sont utilisées dans un seul but : comprendre vos besoins en matière de marque pour vous offrir le meilleur travail possible. Concrètement, votre soumission nous aide à préparer le lancement de votre projet, à adapter notre approche créative à votre vision et à garder une trace de votre brief tout au long de la collaboration.",
             "s2_p2": "Nous n'utilisons pas vos informations pour des campagnes marketing, du profilage analytique ou toute prise de décision automatisée. Nous ne vous envoyons pas d'emails non sollicités suite à votre soumission, au-delà de ce qui concerne directement votre projet avec nous.",
             "s3_title": "Nous ne vendons ni ne partageons vos données",
-            "s3_p1": "Vos informations ne sont jamais vendues à des tiers. Nous ne travaillons pas avec des réseaux publicitaires, des courtiers en données ou des services de marketing tiers, de quelque nature que ce soit. Votre soumission n'est pas utilisée pour créer des profils publicitaires, et elle n'est partagée avec personne en dehors de l'équipe Neatmark.",
+            "s3_p1": "Vos informations ne sont jamais vendues à des tiers. Nous ne travaillons pas avec des réseaux publicitaires, des courtiers en données ou des services de marketing tiers, de quelque nature que ce soit. Votre soumission n'est pas utilisée pour créer des profils publicitaires, et elle n'est partagée avec personne en dehors de l'équipe Zarvo.",
             "s3_p2": "La seule situation dans laquelle nous partagerions des informations serait si nous y étions légalement contraints par une décision de justice ou la loi applicable, et uniquement dans la mesure nécessaire.",
             "s4_title": "Qui peut accéder à vos données",
-            "s4_p1": "Votre soumission est stockée de manière sécurisée dans une base de données privée. Seuls les administrateurs Neatmark autorisés peuvent accéder au tableau de bord où les soumissions sont conservées. Aucun client ne peut voir la soumission d'un autre client. L'accès est protégé par authentification et limité aux membres de l'équipe qui en ont besoin pour gérer votre projet.",
+            "s4_p1": "Votre soumission est stockée de manière sécurisée dans une base de données privée. Seuls les administrateurs Zarvo autorisés peuvent accéder au tableau de bord où les soumissions sont conservées. Aucun client ne peut voir la soumission d'un autre client. L'accès est protégé par authentification et limité aux membres de l'équipe qui en ont besoin pour gérer votre projet.",
             "s4_p2": "Vos images d'inspiration et tous les fichiers téléchargés sont stockés dans un système de stockage privé à accès contrôlé. Les liens directs vers vos fichiers ne sont pas devinables publiquement ni indexables.",
             "s5_title": "Comment nous protégeons vos données",
-            "s5_p1": "Nous prenons des mesures techniques et organisationnelles raisonnables pour assurer la sécurité de vos informations. Notre base de données et notre stockage de fichiers sont hébergés sur des plateformes utilisant un chiffrement conforme aux normes industrielles, au repos et en transit. Les identifiants d'accès sont gardés privés et ne sont pas partagés en dehors de l'équipe Neatmark.",
+            "s5_p1": "Nous prenons des mesures techniques et organisationnelles raisonnables pour assurer la sécurité de vos informations. Notre base de données et notre stockage de fichiers sont hébergés sur des plateformes utilisant un chiffrement conforme aux normes industrielles, au repos et en transit. Les identifiants d'accès sont gardés privés et ne sont pas partagés en dehors de l'équipe Zarvo.",
             "s5_p2": "Bien qu'aucun système sur Internet ne puisse être garanti 100% sécurisé, nous faisons de notre mieux pour que vos données soient traitées de manière responsable.",
             "s6_title": "Sauvegarde des brouillons dans votre navigateur",
             "s6_p1": "Le formulaire utilise le stockage local de votre navigateur pour enregistrer automatiquement vos réponses au fur et à mesure que vous les saisissez, afin que vous ne perdiez pas votre travail si vous fermez l'onglet. Ces données restent entièrement dans votre navigateur et ne sont jamais envoyées à nos serveurs avant que vous n'appuyiez sur Soumettre. Vous pouvez effacer votre brouillon à tout moment via le bouton Effacer le brouillon dans le formulaire.",
@@ -515,11 +515,11 @@
         },
         "cookies": {
             "title": "Politique de cookies",
-            "intro": "Cette page explique comment le formulaire d'admission client Neatmark utilise les cookies et le stockage navigateur. Nous gardons cela au minimum. Nous ne sommes pas une plateforme publicitaire, nous ne vous suivons pas sur le web, et nous ne vendons ni ne partageons vos données de navigation.",
+            "intro": "Cette page explique comment le formulaire d'admission client Zarvo utilise les cookies et le stockage navigateur. Nous gardons cela au minimum. Nous ne sommes pas une plateforme publicitaire, nous ne vous suivons pas sur le web, et nous ne vendons ni ne partageons vos données de navigation.",
             "s1_title": "Que sont les cookies",
             "s1_p1": "Les cookies sont de petites données stockées dans votre navigateur par un site que vous visitez. Certains sont indispensables au fonctionnement du site, d'autres servent à mémoriser vos préférences. Notre formulaire utilise principalement le stockage local du navigateur plutôt que des cookies traditionnels, mais les règles sont les mêmes et vous méritez d'être informé des deux.",
             "s2_title": "Ce que nous stockons et pourquoi",
-            "s2_p1": "Le tableau ci-dessous couvre tout ce que le formulaire Neatmark stocke dans votre navigateur.",
+            "s2_p1": "Le tableau ci-dessous couvre tout ce que le formulaire Zarvo stocke dans votre navigateur.",
             "s2_th1": "Nom",
             "s2_th2": "Type",
             "s2_th3": "Finalité",

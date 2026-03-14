@@ -1,6 +1,6 @@
 /* ══════════════════════════════════════════════════════════════
-   NEATMARK — Swiss International Typographic Style
-   Mona Sans · #F2F4F8 · #0D0D0D · #1A38C8 · #CACACA
+   ZARVO — Swiss International Typographic Style
+   Mona Sans · #E7E5D9 · #202020 · #263B28 · #A1BFA1
    8pt spacing system · No radius · No shadow · No gradients
 ══════════════════════════════════════════════════════════════ */
 
@@ -28,16 +28,18 @@
   font-display: swap;
 }
 :root {
-  --bg:       #F3F4F7;
-  --surface:  #FFFFFF;
-  --surface-2:#E8EBF2;
-  --border:   #C8CBD4;
-  --text-hi:  #0D0D0D;
-  --text-mid: #555555;
+  --bg:       #E7E5D9;
+  --surface:  #F5F4F0;
+  --surface-2:#E1E3DD;
+  --border:   #C8C9C2;
+  --text-hi:  #202020;
+  --text-mid: #555550;
   --text-lo:  #AAAAAA;
-  --accent:   #1A38C8;
+  --accent:   #263B28;
+  --accent-2: #416745;
+  --accent-light: #A1BFA1;
   --error:    #C8392B;
-  --input-bg: #FFFFFF;
+  --input-bg: #F5F4F0;
   --logo-filter: none;
   --sp1:8px; --sp2:16px; --sp3:24px;
   --sp4:32px; --sp5:48px; --sp6:64px;
@@ -45,16 +47,18 @@
 
 /* ── Light ── */
 [data-theme="light"] {
-  --bg:#F3F4F7; --surface:#FFFFFF; --surface-2:#E8EBF2;
-  --border:#C8CBD4; --text-hi:#0D0D0D; --text-mid:#555555; --text-lo:#AAAAAA;
-  --accent:#1A38C8; --error:#C8392B; --input-bg:#FFFFFF; --logo-filter:none;
+  --bg:#E7E5D9; --surface:#F5F4F0; --surface-2:#E1E3DD;
+  --border:#C8C9C2; --text-hi:#202020; --text-mid:#555550; --text-lo:#AAAAAA;
+  --accent:#263B28; --accent-2:#416745; --accent-light:#A1BFA1;
+  --error:#C8392B; --input-bg:#F5F4F0; --logo-filter:none;
 }
 
 /* ── Dark ── */
 [data-theme="dark"] {
-  --bg:#0A0A0E; --surface:#16161C; --surface-2:#202028;
-  --border:#2E2E3A; --text-hi:#F5F5F5; --text-mid:#AAAAAA; --text-lo:#555555;
-  --accent:#3D5FE0; --error:#E8472E; --input-bg:#16161C; --logo-filter:invert(1);
+  --bg:#0a0a0a; --surface:#1C2B1A; --surface-2:#263B28;
+  --border:#2E3D2E; --text-hi:#F5F4F0; --text-mid:#A1BFA1; --text-lo:#416745;
+  --accent:#A1BFA1; --accent-2:#416745; --accent-light:#263B28;
+  --error:#E8472E; --input-bg:#1C2B1A; --logo-filter:none;
 }
 
 /* ── Reset ── */
@@ -528,7 +532,7 @@ select {
   gap:var(--sp1); cursor:pointer; background:var(--surface); text-align:center;
   transition:border-color .15s, background .15s;
 }
-.q20-dropzone:hover { border-color:var(--accent); background:rgba(59,91,255,0.02); }
+.q20-dropzone:hover { border-color:var(--accent); background:rgba(38,59,40,0.04); }
 .q20-dropzone:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
 .q20-upload-icon { font-size:22px; color:var(--text-mid); }
 .q20-upload-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-hi); }
