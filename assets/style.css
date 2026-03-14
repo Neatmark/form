@@ -39,6 +39,7 @@
   --accent:   #263B28;
   --error:    #C8392B;
   --input-bg: #FAFBF9;
+  color-scheme: light;
   --sp1:8px; --sp2:16px; --sp3:24px;
   --sp4:32px; --sp5:48px; --sp6:64px;
 }
@@ -58,6 +59,21 @@
 /* ── Reset ── */
 *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
 html { overflow-x:hidden; max-width:100vw; }
+
+/* Tell the browser which color scheme is active so native controls render correctly */
+[data-theme="light"] { color-scheme: light; }
+[data-theme="dark"]  { color-scheme: dark; }
+
+/* Override browser autofill background — must use box-shadow trick */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0px 1000px var(--input-bg) inset !important;
+  -webkit-text-fill-color: var(--text-hi) !important;
+  caret-color: var(--text-hi);
+}
 
 /* ── Body — opsz 72 for body-level optical sharpness ── */
 body {
@@ -91,9 +107,13 @@ body {
   border-bottom:1px solid var(--border);
 }
 .logo-wrap svg {
-  height:22px; width:auto; display:block;
+  height:22px;
+  width:auto;
+  aspect-ratio: 752.8 / 167.62;
+  display:block;
   fill: var(--text-hi);
   transition: fill 0.15s ease;
+  overflow:visible;
 }
 .header-actions { display:flex; align-items:center; gap:var(--sp1); flex-shrink:0; }
 
@@ -182,7 +202,8 @@ html[dir="rtl"] .theme-menu { right:auto; left:0; }
   -webkit-tap-highlight-color:transparent; outline:none;
 }
 @media (hover:hover) and (pointer:fine) {
-  .step-btn:hover { background:rgba(26,56,200,0.08); }
+  .step-btn:hover { background:rgba(38,59,40,0.10); }
+  [data-theme="dark"] .step-btn:hover { background:rgba(212,245,119,0.08); }
 }
 .step-btn:active, .step-btn:focus { background:none; }
 .step-btn:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
@@ -210,6 +231,24 @@ html[dir="rtl"] .theme-menu { right:auto; left:0; }
   background:var(--text-hi); border-color:var(--text-hi); color:#fff;
 }
 .step-btn.completed .step-label { color:var(--text-hi); }
+
+/* Dark mode — inactive step numbers need more visible contrast */
+[data-theme="dark"] .step-num {
+  color:var(--text-mid);
+  border-color:var(--border);
+  background:var(--surface-2);
+}
+[data-theme="dark"] .step-label {
+  color:var(--text-mid);
+}
+[data-theme="dark"] .step-btn.active .step-num {
+  background:var(--accent); border-color:var(--accent); color:var(--bg);
+}
+[data-theme="dark"] .step-btn.active .step-label { color:var(--accent); }
+[data-theme="dark"] .step-btn.completed .step-num {
+  background:var(--text-hi); border-color:var(--text-hi); color:var(--bg);
+}
+[data-theme="dark"] .step-btn.completed .step-label { color:var(--text-hi); }
 
 .step-connector {
   flex:1; max-width:64px; height:1px;
@@ -348,6 +387,9 @@ html[dir="rtl"] .theme-menu { right:auto; left:0; }
   border-radius:0; padding:8px 10px; border:none;
   line-height:1;
 }
+[data-theme="dark"] .section-badge {
+  color:var(--bg);
+}
 .section-title {
   font-size:clamp(28px, 6vw, 52px); font-weight:900; letter-spacing:-0.035em;
   text-transform:uppercase; color:var(--text-hi); line-height:0.9; font-stretch:125%;
@@ -411,8 +453,11 @@ input[type="email"]:focus, input[type="url"]:focus, select:focus {
 }
 select {
   padding:14px 40px 14px 16px;
-  background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%230D0D0D' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%230D0D0C' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
   background-position:right 12px center; background-repeat:no-repeat; background-size:14px; cursor:pointer;
+}
+[data-theme="dark"] select {
+  background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23F4F6F4' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
 }
 
 /* ── Custom select ── */
@@ -728,9 +773,13 @@ select {
 
 .footer-brand { display:flex; flex-direction:column; align-items:flex-start; gap:var(--sp2); }
 .footer-logo {
-  height:22px; width:auto; display:block; min-width:80px;
+  height:22px;
+  width:auto;
+  aspect-ratio: 752.8 / 167.62;
+  display:block;
   fill: var(--text-hi);
   transition: fill 0.15s ease;
+  overflow:visible;
 }
 .footer-tagline { font-size:14px; font-weight:400; color:var(--text-mid); line-height:1.75; max-width:260px; }
 .footer-socials { display:flex; align-items:center; gap:var(--sp2); margin-top:4px; }
@@ -862,4 +911,16 @@ html[dir="rtl"] .theme-menu       { right:auto; left:0; }
   #themeToggle { padding:0 8px; }
   .header-actions { gap:4px; }
   .draft-banner.visible { left:var(--sp2); right:var(--sp2); max-width:none; bottom:var(--sp2); }
+}
+
+/* ── Dark mode: when accent is lime, text on accent backgrounds must be near-black not white ── */
+[data-theme="dark"] .submit-btn:hover,
+[data-theme="dark"] .wizard-btn--next:hover,
+[data-theme="dark"] .duplicate-action-btn:first-child,
+[data-theme="dark"] .q20-remove-btn:hover,
+[data-theme="dark"] .clear-btn:hover {
+  color: var(--bg);
+}
+[data-theme="dark"] .scale-opt.selected {
+  color: var(--bg);
 }
