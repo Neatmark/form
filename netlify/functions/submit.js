@@ -252,6 +252,19 @@ exports.handler = async (event) => {
     isNetlifyDevRuntime ||
     /localhost|127\.0\.0\.1/i.test(String(ALLOWED_ORIGIN)) ||
     /localhost|127\.0\.0\.1/i.test(String(siteUrl));
+
+  if (!turnstileSecret && !isLocalEnv) {
+    console.error('[Turnstile] TURNSTILE_SECRET_KEY is missing in non-local environment. Rejecting submission.');
+    return {
+      statusCode: 500,
+      headers: CORS_HEADERS,
+      body: JSON.stringify({
+        success: false,
+        error: 'Security check is not configured. Please try again later.'
+      })
+    };
+  }
+
   const localTurnstileBypass = String(process.env.TURNSTILE_LOCAL_BYPASS || '').trim().toLowerCase() === 'true';
   if (turnstileSecret) {
     const rawTurnstileToken = payload['cf-turnstile-response'];

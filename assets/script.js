@@ -1155,7 +1155,7 @@ document.addEventListener('DOMContentLoaded', () => {
         await showAlert(window.i18n.t('messages.submitError', {error: message}) || `Submission failed: ${message}`, 'error');
       }
       if (window.turnstile) {
-        if (turnstileWidgetId !== null) window.turnstile.reset(turnstileWidgetId);
+        if (_turnstileWidgetId !== null) window.turnstile.reset(_turnstileWidgetId);
         else window.turnstile.reset('#cfTurnstile');
       }
     } finally {
