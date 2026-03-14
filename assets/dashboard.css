@@ -10,11 +10,11 @@
 }
 
 :root {
-  --bg:           #E7E5D9;
-  --surface:      #F5F4F0;
-  --surface-2:    #E1E3DD;
-  --border:       #C8C9C2;
-  --text-hi:      #202020;
+  --bg:           #F2F4F1;
+  --surface:      #FAFBF9;
+  --surface-2:    #E8EBE6;
+  --border:       #C8CBC4;
+  --text-hi:      #0D0D0C;
   --text-mid:     #555555;
   --text-lo:      #AAAAAA;
   --accent:       #263B28;
@@ -24,12 +24,11 @@
   --pill-text:    #FFFFFF;
   --btn-bg:       #0D0D0D;
   --btn-text:     #FFFFFF;
-  --input-bg:     #F5F4F0;
-  --input-border: #C8C9C2;
+  --input-bg:     #FAFBF9;
+  --input-border: #C8CBC4;
   --input-focus:  #263B28;
-  --q6-bg:        #E1E3DD;
-  --q6-text:      #202020;
-  --logo-filter:  none;
+  --q6-bg:        #E8EBE6;
+  --q6-text:      #0D0D0C;
   --sp1:8px; --sp2:16px; --sp3:24px; --sp4:32px; --sp5:48px; --sp6:64px;
 }
 
@@ -42,21 +41,19 @@ html[lang="ar"] textarea,
 html[lang="ar"] select { font-family: 'Norsal', sans-serif; }
 
 [data-theme="light"] {
-  --bg:#E7E5D9; --surface:#FFFFFF; --surface-2:#E8EBF2;
-  --border:#C8C9C2; --text-hi:#202020; --text-mid:#555550; --text-lo:#AAAAAA;
+  --bg:#F2F4F1; --surface:#FAFBF9; --surface-2:#E8EBE6;
+  --border:#C8CBC4; --text-hi:#0D0D0C; --text-mid:#555553; --text-lo:#AAAAAA;
   --accent:#263B28; --red:#C8392B; --mid:#263B28;
-  --pill-bg:#263B28; --pill-text:#FFFFFF; --btn-bg:#263B28; --btn-text:#FFFFFF;
-  --input-bg:#F5F4F0; --input-border:#C8C9C2; --input-focus:#263B28;
-  --q6-bg:#E1E3DD; --q6-text:#202020; --logo-filter:none;
+  --pill-bg:#263B28; --pill-text:#FAFBF9; --btn-bg:#263B28; --btn-text:#FAFBF9;
+  --input-bg:#FAFBF9; --input-border:#C8CBC4; --input-focus:#263B28;
 }
 
 [data-theme="dark"] {
-  --bg:#1C2B1A; --surface:#263B28; --surface-2:#2E3D2E;
-  --border:#3A4F3A; --text-hi:#F5F4F0; --text-mid:#A1BFA1; --text-lo:#5A7A5A;
-  --accent:#D4F577; --red:#FF6B5B; --mid:#D4F577;
-  --pill-bg:#D4F577; --pill-text:#1C2B1A; --btn-bg:#D4F577; --btn-text:#1C2B1A;
-  --input-bg:#263B28; --input-border:#3A4F3A; --input-focus:#D4F577;
-  --q6-bg:#263B28; --q6-text:#F5F4F0; --logo-filter:none;
+  --bg:#0A0D0A; --surface:#141814; --surface-2:#1C221C;
+  --border:#2A322A; --text-hi:#F4F6F4; --text-mid:#AAAAAA; --text-lo:#555555;
+  --accent:#D4F577; --red:#E8472E; --mid:#D4F577;
+  --pill-bg:#D4F577; --pill-text:#0A0D0A; --btn-bg:#D4F577; --btn-text:#0A0D0A;
+  --input-bg:#141814; --input-border:#2A322A; --input-focus:#D4F577;
 }
 
 /* Phosphor icon utility */
