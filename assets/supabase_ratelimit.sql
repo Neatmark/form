@@ -1,5 +1,5 @@
 -- ======================================================================
---  NEATMARK — Rate Limiting Migration
+--  zarvo — Rate Limiting Migration
 --  Run this in: Supabase Dashboard → SQL Editor → Run
 --
 --  Safe to run more than once (all statements are idempotent).

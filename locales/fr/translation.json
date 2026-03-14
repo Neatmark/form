@@ -492,7 +492,7 @@
             "s9_title": "Modifications de cette politique",
             "s9_p1": "Si nous apportons des modifications significatives à la manière dont nous traitons vos données, nous mettrons cette page à jour et réviserons la date en haut. Nous n'appliquerons pas rétroactivement des pratiques sensiblement moins favorables que celles en vigueur au moment de votre soumission.",
             "s10_title": "Questions",
-            "s10_p1": "Si vous avez des questions sur cette politique ou sur la gestion de vos données, contactez-nous via notre site neatmark.studio. Nous sommes disponibles pour clarifier tout point qui vous semblerait flou.",
+            "s10_p1": "Si vous avez des questions sur cette politique ou sur la gestion de vos données, contactez-nous via notre site zarvo.studio. Nous sommes disponibles pour clarifier tout point qui vous semblerait flou.",
             "s_security_title": "Vérifications de sécurité",
             "s_security_p1": "Afin de protéger le formulaire contre les abus et les soumissions automatisées, nous mettons en œuvre plusieurs couches de sécurité côté serveur :",
             "s_security_li1": "Cloudflare Turnstile — un système de vérification discret (similaire à un CAPTCHA) qui s'exécute dans votre navigateur au moment de la soumission. Il confirme que vous êtes un utilisateur humain en analysant des signaux comportementaux, sans vous demander de résoudre des puzzles ni créer de compte. Le résultat de la vérification est envoyé aux serveurs de Cloudflare pour validation. Cloudflare peut traiter temporairement votre adresse IP dans ce cadre.",
@@ -552,7 +552,7 @@
             "s6_title": "Modifications de cette politique",
             "s6_p1": "Si nous ajoutons de nouveaux éléments de stockage ou services tiers, nous mettrons cette page à jour ainsi que la date en haut. Nous n'introduirons pas de technologies de suivi ou publicitaires sans en être transparents ici au préalable.",
             "s7_title": "Questions",
-            "s7_p1": "Si vous avez des questions sur les cookies ou la gestion de vos données navigateur, contactez-nous via notre site neatmark.studio.",
+            "s7_p1": "Si vous avez des questions sur les cookies ou la gestion de vos données navigateur, contactez-nous via notre site zarvo.studio.",
             "s3_li2": "Netlify héberge le site et traite toutes les requêtes du formulaire côté serveur. Netlify ne dépose pas de cookies dans votre navigateur, mais il gère vos requêtes et votre adresse IP dans le cadre normal du routage Internet.",
             "s3_li4": "Resend est utilisé pour envoyer les emails de confirmation et le lien de modification sécurisé. Il traite votre adresse email uniquement pour l'envoi et ne dépose aucun cookie dans votre navigateur."
         }

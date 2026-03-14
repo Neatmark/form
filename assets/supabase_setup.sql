@@ -1,5 +1,5 @@
 -- ======================================================================
---  NEATMARK — Complete Supabase Setup
+--  zarvo — Complete Supabase Setup
 --  Run this entire file in: Supabase Dashboard → SQL Editor → Run
 --
 --  Safe to run more than once:

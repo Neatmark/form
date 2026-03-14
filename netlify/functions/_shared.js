@@ -165,7 +165,7 @@ const DOC_STRINGS = {
     country:           'Country:',
     noResponse:        'No response',
     noImages:          'No images uploaded',
-    neatmarkStudio:    'Zarvo Studio',
+    zarvoStudio:    'Zarvo Studio',
     pageLabel:         'Page'
   },
   fr: {
@@ -180,7 +180,7 @@ const DOC_STRINGS = {
     country:           'Pays:',
     noResponse:        'Pas de reponse',
     noImages:          'Aucune image deposee',
-    neatmarkStudio:    'Zarvo Studio',
+    zarvoStudio:    'Zarvo Studio',
     pageLabel:         'Page'
   },
   ar: {
@@ -195,7 +195,7 @@ const DOC_STRINGS = {
     country:           'الدولة:',
     noResponse:        'لا توجد إجابة',
     noImages:          'لم يتم رفع صور',
-    neatmarkStudio:    'Zarvo Studio',
+    zarvoStudio:    'Zarvo Studio',
     pageLabel:         'صفحة'
   }
 };
@@ -1317,7 +1317,7 @@ function emailWrapper(bodyHtml, lang = 'en') {
         <tr><td style="background:#f9f9f9;padding:16px 32px;border-top:1px solid #eee;">
           <p style="margin:0;font-size:12px;color:#999;">
             &copy; 2026 Zarvo&trade; &nbsp;&middot;&nbsp;
-            <a href="https://neatmark.studio/privacy" style="color:#263B28;text-decoration:none;">Privacy Policy</a>
+            <a href="https://zarvo.studio/privacy" style="color:#263B28;text-decoration:none;">Privacy Policy</a>
           </p>
         </td></tr>
       </table>

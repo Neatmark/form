@@ -190,7 +190,7 @@ exports.handler = async (event) => {
       body: JSON.stringify({ success: false, error: 'Too many submissions. Please wait a few minutes before trying again.' })
     };
   }
-  const siteUrl      = process.env.SITE_URL || 'https://form.neatmark.studio';
+  const siteUrl      = process.env.SITE_URL || 'https://form.zarvo.studio';
 
   const countryCode = (
     event.headers['x-country'] ||

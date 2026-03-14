@@ -133,7 +133,7 @@ exports.handler = async (event) => {
   }
 
   const resendApiKey = process.env.RESEND_API_KEY;
-  const fromEmail    = process.env.RESEND_FROM_EMAIL || 'noreply@neatmark.studio';
+  const fromEmail    = process.env.RESEND_FROM_EMAIL || 'noreply@zarvo.studio';
   const adminEmail   = process.env.RECIPIENT_EMAIL;   // Required — no hardcoded fallback
   if (!resendApiKey) {
     console.error('[send-emails] RESEND_API_KEY is missing — no emails sent.');

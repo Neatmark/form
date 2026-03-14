@@ -1,5 +1,5 @@
 {
-  "name": "zarvo-form-backend",
+  "name": "zarvo-form",
   "version": "1.0.0",
   "private": true,
   "description": "Netlify function backend for form export and email delivery",

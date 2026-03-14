@@ -3079,7 +3079,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Submit to backend
       const apiUrl = isLocalDashboardMode 
         ? '/.netlify/functions/submit'
-        : 'https://form.neatmark.studio/.netlify/functions/submit';
+        : 'https://form.zarvo.studio/.netlify/functions/submit';
 
       const response = await fetch(apiUrl, {
         method: 'POST',
