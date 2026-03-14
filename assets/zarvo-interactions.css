@@ -546,3 +546,16 @@ html.is-touch-device #zarvo-cursor-host {
   display: none !important;
 }
 
+
+/* ── Dark mode contrast corrections ── */
+/* Label on focus: use bright near-white instead of lime for better contrast */
+[data-theme="dark"] .client-field:focus-within > label {
+  color: var(--text-hi) !important;
+}
+
+/* Hover bg on inputs: use surface-2 which is dark enough in dark mode */
+[data-theme="dark"] input:not(:focus):not([type="checkbox"]):not([type="radio"]):not(.honeypot):hover,
+[data-theme="dark"] textarea:not(:focus):hover,
+[data-theme="dark"] select:not(:focus):hover {
+  background: var(--surface-2) !important;
+}

@@ -48,12 +48,14 @@
 [data-theme="light"] {
   --bg:#F2F4F1; --surface:#FAFBF9; --surface-2:#E8EBE6;
   --border:#C8CBC4; --text-hi:#0D0D0C; --text-mid:#555553; --text-lo:#AAAAAA;
+  --accent:#263B28; --error:#C8392B; --input-bg:#FAFBF9;
 }
 
-/* ── Dark ── same structure as Neatmark dark but green-hued instead of blue-hued */
+/* ── Dark ── near-black with green hue, lime accent */
 [data-theme="dark"] {
   --bg:#0A0D0A; --surface:#141814; --surface-2:#1C221C;
-  --border:#2A322A; --text-hi:#F4F6F4; --text-mid:#AAAAAA; --text-lo:#555555;
+  --border:#2A322A; --text-hi:#F4F6F4; --text-mid:#9AAA9A; --text-lo:#4A5A4A;
+  --accent:#D4F577; --error:#E8472E; --input-bg:#141814;
 }
 
 /* ── Reset ── */
